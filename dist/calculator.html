@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ka" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="calculator_page_title">ნაკვეთის კალკულატორი — Premium Drones Georgia</title>
+  <meta name="description" content="შეიყვანეთ თქვენი სამუშაო პარამეტრები და გამოთვალეთ ხსნარის მოცულობა და დრო." data-i18n-content="calculator_page_description">
+  <meta name="theme-color" content="#ffffff">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Premium Drones Georgia" data-i18n-content="og_title">
+  <meta property="og:description" content="სიზუსტე თქვენს მეურნეობაში." data-i18n-content="og_description">
+  <meta property="og:image" content="https://premium-drones.ge/assets/img/p150-max-flight.webp">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/NotoSansGeorgian-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script src="/assets/js/content.js" defer></script>
+  <script src="/assets/js/script.js" defer></script>
+  <script src="/assets/js/payments-config.js" defer></script>
+  <script src="/assets/js/photos.js" defer></script>
+  <script src="/assets/js/shop.js" defer></script>
+<link rel="canonical" href="https://premium-drones.ge/calculator.html">
+<link rel="alternate" hreflang="ka" href="https://premium-drones.ge/calculator.html">
+<link rel="alternate" hreflang="en" href="https://premium-drones.ge/en/calculator.html">
+<link rel="alternate" hreflang="ru" href="https://premium-drones.ge/ru/calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://premium-drones.ge/calculator.html">
+<meta property="og:url" content="https://premium-drones.ge/calculator.html">
+</head>
+<body>
+<a class="skip-link" href="#main" data-i18n="a11y_skip">მთავარ შინაარსზე გადასვლა</a><header class="site-header">
+    <div class="header-inner container">
+      <a class="brand" href="/" data-home aria-label="Premium Drones Georgia">
+        <img src="/assets/img/pdg-logo.png" alt="PDG — Premium Drones Georgia" width="780" height="213">
+      </a>
+      <nav class="site-nav" id="site-nav" aria-label="მთავარი ნავიგაცია" data-i18n-aria="nav_label">
+        <a href="/#drones" data-i18n="nav_drones">დრონები</a>
+        <a href="/#services" data-i18n="nav_service">სერვისი</a>
+        <a href="/shop.html" data-local data-i18n="nav_shop">მაღაზია</a>
+        <a href="/#academy" data-i18n="nav_academy">აკადემია</a>
+        <a href="/#gallery" data-i18n="nav_gallery">გალერეა</a>
+        <a href="/#blog" data-i18n="nav_blog">ბლოგი</a>
+      </nav>
+      <div class="header-actions">
+        <nav class="languages" aria-label="ენა" data-i18n-aria="language_label">
+          <a href="/calculator.html" data-lang="ka" aria-current="page">KA</a><span aria-hidden="true">/</span><a href="/en/calculator.html" data-lang="en">EN</a>
+        </nav>
+        <a class="header-contact" href="/#contact"><span data-i18n="nav_contact">კონტაქტი</span><span aria-hidden="true">↗</span></a>
+        <a class="cart-link" href="/shop.html#cart" data-local aria-label="კალათა" data-i18n-aria="cart_title"><svg width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg><span class="cart-count" id="cartCount" hidden>0</span></a><button class="nav-toggle" id="navToggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="მენიუს გახსნა" data-i18n-aria="menu_open"><span></span><span></span></button>
+      </div>
+    </div>
+  </header><main id="main"><section class="page-hero"><div class="container">
+<a class="back-link" href="/" data-home data-i18n="back_home">← მთავარი გვერდი</a><p class="eyebrow" data-i18n="calculator_eyebrow">სამუშაოს დაგეგმვა</p>
+<h1 data-i18n="calculator_heading">ნაკვეთის კალკულატორი</h1>
+<p class="page-intro" data-i18n="calculator_intro">შეიყვანეთ თქვენი სამუშაო პარამეტრები და გამოთვალეთ ხსნარის მოცულობა და დრო.</p>
+</div></section>
+  <section class="section"><div class="container calculator-layout">
+<form id="calcForm"><div class="form-grid">
+    <div class="form-field">
+<label for="calcArea" data-i18n="calc_area">ფართობი (ჰა)</label><input id="calcArea" name="area" type="number" min="0.01" max="100000" step="any" inputmode="decimal" placeholder="10">
+</div>
+    <div class="form-field">
+<label for="calcRate" data-i18n="calc_rate">ხსნარის ნორმა (ლ/ჰა)</label><input id="calcRate" name="rate" type="number" min="0.01" max="10000" step="any" inputmode="decimal">
+</div>
+    <div class="form-field full">
+<label for="calcThroughput" data-i18n="calc_throughput">თქვენი სამუშაო წარმადობა (ჰა/სთ)</label><input id="calcThroughput" name="throughput" type="number" min="0.01" max="1000" step="any" inputmode="decimal">
+</div>
+  </div></form>
+<div class="calculator-results" aria-live="polite">
+<div class="calculator-result">
+<p data-i18n="calc_volume">საჭირო ხსნარი</p>
+<output id="calcVolume" for="calcArea calcRate">—</output>
+</div>
+<div class="calculator-result">
+<p data-i18n="calc_time">სავარაუდო დრო</p>
+<output id="calcTime" for="calcArea calcThroughput">—</output>
+</div>
+</div>
+<p class="small-note" data-i18n="calculator_note">შედეგი გამოთვლილია თქვენს მიერ შეყვანილი მონაცემებით. დრო არ მოიცავს დამუხტვას, შევსებასა და გადაადგილებას. ხსნარის ნორმა შეარჩიეთ აგრონომთან და პრეპარატის ეტიკეტის მიხედვით.</p>
+<noscript><p class="form-note" data-i18n="calculator_no_js">კალკულატორისთვის ჩართეთ JavaScript.</p></noscript>
+</div></section>
+</main><footer class="site-footer">
+    <div class="container footer-main">
+      <a class="brand" href="/" data-home aria-label="Premium Drones Georgia"><img src="/assets/img/pdg-logo.png" alt="PDG — Premium Drones Georgia" width="780" height="213" loading="lazy"></a>
+      <div class="footer-contact">
+<a href="tel:+995550004333">+995 550 00 43 33</a><a href="mailto:info@premium-drones.ge">info@premium-drones.ge</a>
+</div>
+      <p class="footer-place" data-i18n="address">ლაგოდეხი, საქართველო</p>
+    </div>
+    <div class="container footer-bottom">
+<p>© 2026 Premium Drones Georgia</p>
+<div>
+<a href="/calculator.html" data-local data-i18n="calculator_link">კალკულატორი</a><button type="button" class="theme-toggle" id="themeToggle" data-i18n="theme_button">თემის შეცვლა</button><a href="/ru/calculator.html" data-lang="ru" lang="ru">RU</a><span>premium-drones.ge</span>
+</div>
+</div>
+  </footer><dialog class="lightbox" id="lightbox" aria-label="ფოტოს ნახვა" data-i18n-aria="lightbox_label">
+    <button type="button" class="lightbox-close" aria-label="დახურვა" data-i18n-aria="close_label">×</button>
+    <figure><img id="lightboxImage" alt=""><figcaption id="lightboxCaption"></figcaption></figure>
+    <div class="lightbox-controls">
+<button type="button" data-gallery-step="-1" aria-label="წინა ფოტო" data-i18n-aria="previous_photo">←</button><span id="lightboxCounter"></span><button type="button" data-gallery-step="1" aria-label="შემდეგი ფოტო" data-i18n-aria="next_photo">→</button>
+</div>
+  </dialog>
+</body>
+</html>

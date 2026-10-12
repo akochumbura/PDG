@@ -1,0 +1,14 @@
+# Use this in the EXISTING HTTPS premium-drones.ge server block, after placing dist contents
+# in /var/www/pdg. Keep the existing certificate directives and other services.
+# This is a static document root, not a replacement for the missing FastAPI app.
+root /var/www/pdg;
+index index.html;
+charset utf-8;
+
+location / {
+    try_files $uri $uri/ =404;
+}
+location /assets/ {
+    try_files $uri =404;
+    expires 1h;
+}

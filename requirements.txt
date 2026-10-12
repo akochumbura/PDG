@@ -1,0 +1,4 @@
+lxml
+fonttools
+brotli
+pillow
