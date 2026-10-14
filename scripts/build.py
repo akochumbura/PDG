@@ -1,4 +1,8 @@
 """One command to rebuild and check the whole site:  python scripts/build.py"""
+import os,sys as _sys
+if os.environ.get('CF_PAGES'):
+    # On Cloudflare Pages: dist/ is already built, checked and committed, so publish it as is.
+    print('Cloudflare Pages: publishing the committed dist/ folder as is.'); _sys.exit(0)
 import subprocess,sys,shutil
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT/'scripts')); import pricing
