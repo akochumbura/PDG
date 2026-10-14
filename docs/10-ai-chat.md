@@ -44,3 +44,10 @@ The chat button ("მოგვწერეთ") opens a chat that stays on the w
 5. Deployments → ⋯ → Retry deployment.
 The alert comes once per conversation when a visitor writes after you last read it; the key is never in the alert.
 CallMeBot is a free third-party service for personal alerts (no guarantee); the official alternative is Meta's WhatsApp Business Cloud API.
+
+## AI on every message + learning from the team (2026-10-14)
+- With ANTHROPIC_API_KEY set, the AI answers every visitor message. After a team reply in a chat, the AI pauses in that chat for 30 minutes, then answers again.
+- Learning: every team reply from the inbox is saved with the visitor's question (KV key `learn:index`, newest 80). The AI treats these as trusted PDG answers and reuses them for similar questions. Switch off with LEARN_ENABLED = off.
+- PDG facts (prices, stock, delivery, warranty, specs) only from KNOWLEDGE and team answers; general drone/agronomy questions from the model's general knowledge. Still no pesticide dosages.
+- This is not model training: the model itself does not change; it reads these answers each time.
+- Inbox: https://premium-drones.ge/api/chat/inbox shows a sign-in box (keys with + # & work); spaces around the key are ignored.

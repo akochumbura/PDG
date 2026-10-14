@@ -75,5 +75,7 @@ TODO in Cloudflare (dashboard, owner's account):
    Check: https://premium-drones.ge/api/chat/config must show "live":true.
 3. Optional WhatsApp alert (CallMeBot): secrets WHATSAPP_ALERT_PHONE (+995550004333) and WHATSAPP_ALERT_KEY (from CallMeBot after sending "I allow callmebot to send me messages").
 4. After adding bindings/secrets: Deployments → ⋯ → Retry deployment.
+6. AI replies: owner must create ANTHROPIC_API_KEY (console.anthropic.com, set a monthly limit) and add it as a Secret on pdg, then redeploy. AI answers all messages, pauses 30 min after a team reply, learns from team replies (KV learn:index). Greeting = "გამარჯობა! რით შეგვიძლია დაგეხმაროთ?" (owner: no "ჩვენი გუნდი გიპასუხებთ ამავე ჩატში").
+7. Inbox: open /api/chat/inbox without ?key — sign-in box.
 5. Later: Bank of Georgia e-commerce agreement → secrets BOG_CLIENT_ID, BOG_CLIENT_SECRET (payments). Optional ANTHROPIC_API_KEY for AI replies in chat.
 Pending from owner: product photos (no people), BOG agreement, deposit % (10% assumed), other payment options (asked: TBC, installments, invoice?).
