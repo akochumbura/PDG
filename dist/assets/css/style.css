@@ -559,4 +559,10 @@ html[data-theme=dark] .model-status.is-available,html[data-theme=dark] .product-
   .part-row .add-btn{min-height:40px;padding:8px 14px;font-size:12px}
   .hero h1{font-size:min(41px,10.4vw);max-width:none}html[lang=en] .hero h1,html[lang=ru] .hero h1{font-size:46px}}
 @media(max-width:380px){.brand{width:124px}.header-actions{gap:12px}}
+.hero-brand{display:flex;flex-direction:column;gap:6px;margin-bottom:clamp(18px,2vw,28px)}
+.hero-brand-latin{display:flex;align-items:center;gap:14px;font-family:var(--font-latin);font-weight:700;font-size:clamp(17px,1.65vw,25px);letter-spacing:.14em;text-transform:uppercase;color:#fff}
+.hero-brand-latin:before{content:'';width:32px;height:2px;background:var(--accent);flex-shrink:0}
+.hero-brand-local{font-size:clamp(15px,1.3vw,19px);color:rgba(255,255,255,.86);padding-left:46px}
+.hero-brand-local:empty{display:none}
+.dealer-name{font-weight:600}
 [hidden]{display:none!important}

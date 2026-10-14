@@ -63,7 +63,7 @@ for path,doc in documents.items():
     page=path.read_text(encoding='utf-8')
     for banned in ['technical-service.webp','founder','Tchumburidze','ჭუმბურიძე','1000+','product-tile','CEO']:
         if banned in page:errors.append(f'{relative}: contains {banned!r} (not allowed by owner brief)')
-    if not doc.xpath('//*[@data-i18n="dealer_line" or @data-i18n="about_intro"]') and path.name=='index.html':errors.append(f'{relative}: dealer line missing')
+    if not doc.xpath('//*[@data-i18n="dealer_rest" or @data-i18n="about_intro"]') and path.name=='index.html':errors.append(f'{relative}: dealer line missing')
     if lang=='en' and re.search('[\u10a0-\u10ff]',' '.join(t for t in doc.xpath('//body//text()[not(ancestor::script)]'))):errors.append(f'{relative}: Georgian text leaked into English')
     for key,label in [('ka','KA'),('en','EN'),('ru','RU')]:
         if not doc.xpath(f'//a[@data-lang="{key}"]'):errors.append(f'{relative}: missing {label} switch')

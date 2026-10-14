@@ -325,7 +325,10 @@ window.PDG_CONTENT = {
     "loc_long": "Storage and service support in Tbilisi. Field experience and operations from Lagodekhi.",
     "loc_footer_tbilisi": "Tbilisi — storage and service",
     "home_parts_intro": "Original XAG batteries, chargers, generator and RTK — from stock, at a fixed price in lari.",
-    "footer_copy": "© 2026 Premium Drones Georgia"
+    "footer_copy": "© 2026 Premium Drones Georgia",
+    "brand_name": "Premium Drones Georgia",
+    "dealer_rest": "is the official and exclusive XAG dealer in the Caucasus region.",
+    "brand_local": ""
   },
   "ru": {
     "page_title": "Агродроны XAG в Грузии — Premium Drones Georgia",
@@ -607,6 +610,9 @@ window.PDG_CONTENT = {
     "loc_long": "Склад и сервисная поддержка в Тбилиси. Полевой опыт и операции из Лагодехи.",
     "loc_footer_tbilisi": "Тбилиси — склад и сервис",
     "home_parts_intro": "Оригинальные батареи XAG, зарядные устройства, генератор и RTK — со склада, по фиксированной цене в лари.",
-    "footer_copy": "© 2026 Premium Drones Georgia"
+    "footer_copy": "© 2026 Premium Drones Georgia",
+    "brand_name": "Premium Drones Georgia",
+    "dealer_rest": "является официальным и единственным дилером XAG в Кавказском регионе.",
+    "brand_local": ""
   }
 };
