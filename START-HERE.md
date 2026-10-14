@@ -14,6 +14,7 @@ Claude edits, runs `python scripts/build.py` (rebuild + checks), and gives back 
 
 ## Where things live
 - Products and USD base prices: `scripts/catalog.csv` (group: kit|power|spray|control|acc|spare; image = kit photo)
+- Social pages (Facebook, Instagram, TikTok, YouTube): paste the addresses into `scripts/site_config.py`; empty ones stay hidden
 - Exchange rate and markups (+10% kits, +70% parts): `scripts/pricing.py`
 - Georgian text: `dist/index.html` (home) and `scripts/page-bodies.html` (other pages); English/Russian: `dist/assets/js/content.js`
 - Product photos: `python scripts/import-photos.py <folder>` with files named by part code, then `python scripts/build.py`

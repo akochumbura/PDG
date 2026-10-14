@@ -6,6 +6,8 @@ import sys
 from html import escape
 from urllib.parse import urlsplit, urlunsplit
 from lxml import html, etree
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from site_config import SOCIAL
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / 'dist'
@@ -88,6 +90,12 @@ def render(page_source, language, filename):
         element.set('href',target_prefix+target_path)
         if target==language:element.set('aria-current','page')
         else:element.attrib.pop('aria-current',None)
+    for slot in doc.xpath('//div[@class="footer-social"]'):
+        for child in list(slot): slot.remove(child)
+        slot.text=None
+        for name,url in SOCIAL.items():
+            if url.strip():
+                a=etree.SubElement(slot,'a',href=url.strip(),target='_blank',rel='noopener noreferrer'); a.text=name
     for element in doc.xpath('//a[@href]'):
         element.set('href', pretty(element.get('href')))
     # Remove any prior generated metadata so repeated generation is idempotent.

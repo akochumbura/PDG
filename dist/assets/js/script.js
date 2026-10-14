@@ -37,6 +37,12 @@
     if (targetLanguage === lang) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
   });
+  const header = document.querySelector(".site-header");
+  if (header) {
+    const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 8);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
   const nav = document.getElementById("site-nav");
   const navToggle = document.getElementById("navToggle");
   function closeNav() {
