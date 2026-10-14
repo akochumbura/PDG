@@ -58,3 +58,5 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - P150 MAX: 80 L tank, 32 L/min (two pumps), 46 L/min with the XAG 4-Nozzle Upgrade Kit (orchards and vineyards), 120 L spreader, 80 kg payload.
 - No calculator page (removed on request).
 - Site is published by pushing to GitHub akochumbura/PDG (main); Cloudflare Pages project "pdg" builds with `pip install lxml && python3 scripts/build.py`, output `dist`.
+- P150 MAX facts (owner + xa.com/en/p150max): 80 L tank, 32 L/min (2 pumps), 46 L/min with the 4-Nozzle Upgrade Kit (recommended for orchards and vineyards), granule container 115 L (owner confirmed; not 120), 300 kg/min, 9 m spread width, 80 kg payload, 20 m/s, RealTerra mapping up to 20 ha/flight, 4D radar 1.5–100 m, B141050 1050 Wh / 1500 cycles, IPX6K.
+- No calculator page (removed by owner request).
