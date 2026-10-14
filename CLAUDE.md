@@ -124,6 +124,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - Product pages (scripts/product_pages.py → build-products.py): /b141050-battery, /cm13600s-charger, /gc4000-plus-generator,
   specs from p150_specs.py 'power'. Cards, home part list and search open them. Only items with verified xa.com specs get a page
   (B13970S: no verified specs, no page).
+- Every page title starts with "PREMIUM DRONES GEORGIA — " (build-pages.py adds it).
 - Logo lockups (owner, 14 Oct 2026 night): the XAG logo is exactly the height of the whole PDG logo (incl. the PREMIUM DRONES
   GEORGIA line), aspect ratios kept, centred; header = PDG ~ XAG with a literal "~", strip = XAG ~ PDG; "~" in --xag-black. build.py adds ?v=hash to /assets/img URLs so changed logos/photos reach visitors at once.
 - Home hero (owner, 14 Oct 2026 night): heading, sentence and buttons at the top with equal gaps (32px desktop, 24px phone);
