@@ -76,7 +76,7 @@ for path,doc in documents.items():
     # Internal commercial data must never be published.
     for word in ('Landed unit cost','Gross margin','Gross profit','Revenue ex VAT','Unit EUR','invoice_'):
         if word in page:errors.append(f'{relative}: internal commercial data {word!r}')
-    if not doc.xpath('//*[@data-i18n="dealer_rest" or @data-i18n="about_intro"]') and path.name=='index.html':errors.append(f'{relative}: dealer line missing')
+    if not doc.xpath('//*[@data-i18n="dealer_rest" or @data-i18n="dealer_strip" or @data-i18n="about_intro"]') and path.name=='index.html':errors.append(f'{relative}: dealer line missing')
     if lang=='en' and re.search('[\u10a0-\u10ff]',' '.join(t for t in doc.xpath('//body//text()[not(ancestor::script)][not(ancestor::*[@lang="ka"])]'))):errors.append(f'{relative}: Georgian text leaked into English')
     for key,label in [('ka','KA'),('en','EN'),('ru','RU')]:
         if not doc.xpath(f'//a[@data-lang="{key}"]'):errors.append(f'{relative}: missing {label} switch')

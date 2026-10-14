@@ -919,3 +919,17 @@ html[data-theme=dark] .dealer-logo .logo-dark,html[data-theme=dark] .about-xag-m
 @media(max-width:360px){.mobile-bar{gap:6px;padding-left:8px;padding-right:8px}.mobile-bar-btn{font-size:13px}.mobile-bar-btn svg{display:none}}
 .kit-config .page-intro{margin-bottom:28px}
 .about-xag-text p{margin:0 0 14px}
+/* Brand strip below the hero: XAG ~ PDG, centred, then the dealer sentence (owner, 14 Oct 2026) */
+.dealer-band .dealer-inner{flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2vw,22px);padding-block:clamp(28px,3.4vw,48px);text-align:center}
+.dealer-logos{display:flex;align-items:center;justify-content:center;gap:clamp(14px,2.4vw,36px)}
+.dealer-cell{display:flex;align-items:center;justify-content:center;width:clamp(128px,20vw,280px);height:clamp(44px,6.4vw,88px)}
+.dealer-cell img{width:auto;height:auto;max-width:100%;max-height:100%}
+.dealer-cell img[src*="xag-logo"]{height:80%}
+.dealer-tilde{font:300 clamp(28px,3.6vw,52px)/1 var(--font-latin);color:var(--muted)}
+.dealer-band .dealer-line{margin:0;max-width:60ch;font-size:clamp(15px,1.4vw,19px)}
+.dealer-cell .logo-dark{display:none}
+html[data-theme=dark] .dealer-cell .logo-light{display:none}
+html[data-theme=dark] .dealer-cell .logo-dark{display:block}
+/* Equal containers, logos pulled toward the separator so both gaps are the same */
+.dealer-logos .dealer-cell:first-child,.brand-duo .brand-cell:first-child{justify-content:flex-end}
+.dealer-logos .dealer-cell:last-child,.brand-duo .brand-cell:last-child{justify-content:flex-start}

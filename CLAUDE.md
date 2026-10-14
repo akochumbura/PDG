@@ -83,6 +83,13 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - Schema: Organization with Tbilisi + Lagodekhi locations (no HQ, hours or village address); Product/Offer only for in-stock priced items
   with own photo + packages; quote-only and previous models have no Offer. verify-site.py blocks ₾0 cart buttons, bad tel links, cost data.
 
+## Logos and home hero (owner, 14 Oct 2026, late)
+- Logo colours = official XAG file (xa.com xag-icon.svg): black #3D3C38, red #CC0000. pdg-logo-light.png / pdg-logo-dark.png and the
+  app icon / favicon were recoloured to exactly these values (dark version: #F4F3EF + #CC0000). pdg-logo.png = untouched original.
+- Header: PDG – XAG (equal containers). Strip below the hero: XAG ~ PDG (literal "~"), then exactly
+  "საქართველოს პრემიუმ დრონები არის XAG-ის ოფიციალური და ერთადერთი დილერი კავკასიაში." (key dealer_strip). No extra slogans.
+- Hero: heading "XAG P150 MAX" only; no brand lines above it.
+
 ## STATUS — 2026-10-14 (read this first in a new chat)
 Live: premium-drones.ge on Cloudflare Pages project "pdg" (account ako.chumburidze@gmail.com), auto-deploys from GitHub akochumbura/PDG main.
 Build: dist/ is built locally with `python3 scripts/build.py` and COMMITTED; on Cloudflare (CF_PAGES set) build.py exits at once and dist/ is published as is.
