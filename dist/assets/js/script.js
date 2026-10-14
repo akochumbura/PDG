@@ -44,6 +44,12 @@
     document.addEventListener("click", (e) => { if (!langList.hidden && !e.target.closest(".lang-menu")) setLang(false); });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !langList.hidden) { setLang(false); langBtn.focus(); } });
   }
+  const reveal = document.querySelectorAll("[data-reveal]");
+  if (reveal.length && "IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    root.classList.add("js-reveal");
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+    reveal.forEach((el) => io.observe(el));
+  }
   const header = document.querySelector(".site-header");
   if (header) {
     const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 8);

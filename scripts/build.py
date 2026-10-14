@@ -7,6 +7,14 @@ def run(*a):
     if r.returncode: sys.exit(r.returncode)
 py=sys.executable
 run(py,'scripts/build-shop.py'); run(py,'scripts/build-pages.py',pricing.SITE_URL); run(py,'scripts/build-search.py')
+# Cache busting: every page asks for the current CSS/JS (assets are cached for an hour by Cloudflare and browsers).
+import hashlib,re
+D=ROOT/'dist'
+ver={p:hashlib.sha1((D/p.lstrip('/')).read_bytes()).hexdigest()[:10] for p in ['/assets/css/style.css']+[f'/assets/js/{n}' for n in ('content.js','script.js','shop.js','payments-config.js','chat.js','account.js')] if (D/p.lstrip('/')).exists()}
+for f in D.rglob('*.html'):
+    s=f.read_text(encoding='utf-8')
+    s2=re.sub(r'(?<=["(])(/assets/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[0-9a-f]+)?(?=[")])',lambda m:m.group(1)+('?v='+ver[m.group(1)] if m.group(1) in ver else ''),s)
+    if s2!=s: f.write_text(s2,encoding='utf-8')
 if shutil.which('node'):
     for f in ('content','script','shop','payments-config','chat','account'): run('node','--check',f'dist/assets/js/{f}.js')
     run('node','--check','dist/_worker.js')
