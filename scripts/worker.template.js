@@ -286,7 +286,18 @@ async function orders(env, url) {
 const CHAT_MAX_TURNS = 16;
 const chatHits = new Map();
 
-function chatEnabled(env) { return Boolean(secret(env, 'ANTHROPIC_API_KEY').trim() && env.CHAT_ENABLED !== 'off'); }
+/* AI provider: OpenAI if OPENAI_API_KEY is set (CHAT_PROVIDER = openai, the default when only that key exists),
+   otherwise Anthropic if ANTHROPIC_API_KEY is set. Set CHAT_PROVIDER = anthropic or openai to force one. */
+function chatProvider(env) {
+  const want = String(env.CHAT_PROVIDER || '').trim().toLowerCase();
+  const hasOpenAI = Boolean(secret(env, 'OPENAI_API_KEY').trim()), hasAnthropic = Boolean(secret(env, 'ANTHROPIC_API_KEY').trim());
+  if (want === 'openai' && hasOpenAI) return 'openai';
+  if (want === 'anthropic' && hasAnthropic) return 'anthropic';
+  if (hasOpenAI && !hasAnthropic) return 'openai';
+  if (hasAnthropic) return 'anthropic';
+  return hasOpenAI ? 'openai' : '';
+}
+function chatEnabled(env) { return Boolean(chatProvider(env) && env.CHAT_ENABLED !== 'off'); }
 
 function chatSystem(lang) {
   const language = { ka: 'Georgian', en: 'English', ru: 'Russian' }[lang] || 'Georgian';
@@ -355,17 +366,30 @@ async function chat(request, env, url) {
 
 async function aiReply(env, lang, messages) {
   const learned = await learnText(env);
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-api-key': secret(env, 'ANTHROPIC_API_KEY').trim(), 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({ model: env.CHAT_MODEL || 'claude-haiku-5-5', max_tokens: 700, system: chatSystem(lang) + (learned ? `\n\nANSWERS GIVEN BY THE PDG TEAM (trusted, newest first; they override KNOWLEDGE when they differ; reuse them for similar questions, but do not mention other customers):\n${learned}` : ''), messages })
-  });
+  const system = chatSystem(lang) + (learned ? `\n\nANSWERS GIVEN BY THE PDG TEAM (trusted, newest first; they override KNOWLEDGE when they differ; reuse them for similar questions, but do not mention other customers):\n${learned}` : '');
+  const provider = chatProvider(env);
+  let res;
+  if (provider === 'openai') {
+    res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: 'Bearer ' + secret(env, 'OPENAI_API_KEY').trim() },
+      body: JSON.stringify({ model: env.CHAT_MODEL || 'gpt-5-mini', max_completion_tokens: 900, messages: [{ role: 'system', content: system }, ...messages] })
+    });
+  } else {
+    res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-api-key': secret(env, 'ANTHROPIC_API_KEY').trim(), 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: env.CHAT_MODEL || 'claude-haiku-5-5', max_tokens: 700, system, messages })
+    });
+  }
   if (!res.ok) {
-    console.error('chat api', res.status, (await res.text()).slice(0, 500));
+    console.error('chat api', provider, res.status, (await res.text()).slice(0, 500));
     return { error: res.status === 429 || res.status === 529 ? 'busy' : 'ai_error' };
   }
   const data = await res.json();
-  const reply = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+  const reply = provider === 'openai'
+    ? String((data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '').trim()
+    : (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
   return reply ? { reply: reply.slice(0, 4000) } : { error: 'ai_error' };
 }
 
