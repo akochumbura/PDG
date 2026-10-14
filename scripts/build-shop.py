@@ -167,7 +167,22 @@ import json, site_config
 cat = {r['sku']: [r['name'], price(r, r['group'] == 'kit')] for r in rows}
 tpl = (ROOT / 'scripts/worker.template.js').read_text(encoding='utf-8')
 rules = {'threshold': site_config.PAYMENTS['threshold'], 'depositPercent': site_config.PAYMENTS['deposit_percent']}
-for marker, value in (('__CATALOG__', json.dumps(cat, ensure_ascii=False)), ('__RULES__', json.dumps(rules))):
+# Knowledge for the AI chat: business facts (llms.txt), every product with its price, payment rules, terms, FAQ.
+CATN = {'kit': 'P150 MAX package', 'power': 'batteries and charging', 'spray': 'spraying and spreading', 'control': 'control and RTK',
+        'acc': 'accessories', 'spare': 'spare parts'}
+cdata = json.loads((ROOT / 'dist/assets/js/content.js').read_text(encoding='utf-8').split('=', 1)[1].strip().removesuffix(';'))['en']
+know = [(ROOT / 'dist/llms.txt').read_text(encoding='utf-8').strip(), '', '## All products in stock (prices in GEL, from the website shop)']
+for r in rows:
+    extra = ', '.join(f"{r[c]} {c}" for c in ('drones', 'batteries', 'chargers', 'rtk', 'generators') if (r.get(c) or '').strip())
+    know.append(f"- {r['name']} (code {r['sku']}, {CATN[r['group']]}): {price(r, r['group'] == 'kit'):,} GEL" + (f" — contains {extra}" if extra else ''))
+know += ['', '## Buying and payment',
+         f"Online payment (card, Apple Pay, Google Pay via Bank of Georgia) is being set up and may not be live yet. Planned rule: orders under {rules['threshold']:,} GEL are paid in full online; from {rules['threshold']:,} GEL the customer pays a {rules['depositPercent']}% deposit online and the rest by bank transfer.",
+         'Today orders are placed from the cart by WhatsApp or email; PDG confirms stock and delivery.', '', '## Terms']
+know += [f"- {cdata[f'terms_h{i}']}: {cdata[f'terms_p{i}']}" for i in range(1, 8)]
+know += ['', '## FAQ'] + [f"Q: {cdata[f'faq_q{i}']}\nA: {cdata[f'faq_a{i}']}" for i in range(1, 5)]
+know += ['', '## PDG Academy', cdata['academy_description'], cdata['academy_section_text'], '', '## Service', cdata['service_page_p1'], cdata['service_page_p2']]
+knowledge = '\n'.join(know)
+for marker, value in (('__CATALOG__', json.dumps(cat, ensure_ascii=False)), ('__RULES__', json.dumps(rules)), ('__KNOWLEDGE__', json.dumps(knowledge, ensure_ascii=False))):
     if tpl.count(marker) != 1:
         raise SystemExit('worker template marker missing: ' + marker)
     tpl = tpl.replace(marker, value)
