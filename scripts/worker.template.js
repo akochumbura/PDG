@@ -286,6 +286,7 @@ async function orders(env, url) {
 const CHAT_MAX_TURNS = 16;
 const chatHits = new Map();
 
+/* OpenAI settings: CHAT_MODEL (default gpt-6-astra), CHAT_EFFORT (low | medium | high | xhigh | max; e.g. medium). */
 /* AI provider: OpenAI if OPENAI_API_KEY is set (CHAT_PROVIDER = openai, the default when only that key exists),
    otherwise Anthropic if ANTHROPIC_API_KEY is set. Set CHAT_PROVIDER = anthropic or openai to force one. */
 function chatProvider(env) {
@@ -373,7 +374,12 @@ async function aiReply(env, lang, messages) {
     res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: { 'content-type': 'application/json', authorization: 'Bearer ' + secret(env, 'OPENAI_API_KEY').trim() },
-      body: JSON.stringify({ model: env.CHAT_MODEL || 'gpt-5-mini', max_completion_tokens: 900, messages: [{ role: 'system', content: system }, ...messages] })
+      body: JSON.stringify({
+        model: env.CHAT_MODEL || 'gpt-6-astra',
+        ...(env.CHAT_EFFORT ? { reasoning_effort: String(env.CHAT_EFFORT).trim() } : {}),
+        max_completion_tokens: 4000,
+        messages: [{ role: 'system', content: system }, ...messages]
+      })
     });
   } else {
     res = await fetch('https://api.anthropic.com/v1/messages', {
