@@ -27,6 +27,7 @@ T = {'pd_more': ('მახასიათებლები', 'Specifications',
      'pd_ask': ('კითხვა WhatsApp-ით', 'Ask on WhatsApp', 'Вопрос в WhatsApp'),
      'pd_back': ('← მაღაზია', '← Shop', '← Магазин'),
      'pd_fits': ('XAG P150 MAX-ის ენერგოსისტემა', 'XAG P150 MAX power system', 'Система питания XAG P150 MAX'),
+     'pd_fits_control': ('XAG P150 MAX-ის მართვა და კავშირი', 'XAG P150 MAX control and communication', 'Управление и связь XAG P150 MAX'),
      'pd_vat': ('ფასი დღგ-ს ჩათვლით', 'Price incl. VAT', 'Цена с НДС'),
      'cfg_tower': ('გამაგრილებელი კოშკი', 'Cooling tower', 'Охлаждающая башня'),
      'pd_pk_more': ('შემადგენლობა და ფოტოები', 'Contents and photos', 'Состав и фото'),
@@ -69,7 +70,7 @@ def value(key, v):
     return '<dd>' + ''.join(label('span', f'{key}_{i}', ln, ' class="spec-line"') for i, ln in enumerate(lines)) + '</dd>'
 
 
-power = next(g for g in S.SPECS if g['id'] == 'power')['blocks']
+GROUPS = {g['id']: g['blocks'] for g in S.SPECS}
 rows = {r['sku']: r for r in csv.DictReader(open(ROOT / 'scripts/catalog.csv', encoding='utf-8'))}
 PHOTOS = ROOT / 'dist/assets/img/products'
 out = []
@@ -78,7 +79,7 @@ for p in P.PAGES:
     if not r or not (r.get('gel') or '').strip() or (r.get('avail') or '') == 'quote':
         raise SystemExit(f'product page {p["slug"]}: {p["sku"]} is not a priced price-list item in catalog.csv')
     sku, pid = p['sku'], p['slug'].replace('-', '_')
-    head, specs = power[p['block']]
+    head, specs = GROUPS[p.get('specs', 'power')][p['block']]
     name_en = html.escape(r['name'], quote=True)
     gel = int(r['gel'])
     for k in ('title', 'intro'):
@@ -98,7 +99,7 @@ for p in P.PAGES:
     out.append(
         f'<template data-page="{p["slug"]}.html" data-ka-title="{title_ka}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro">\n'
         f'  <section class="page-hero pd-hero"><div class="container"><a class="back-link" href="/shop.html#parts" data-local data-i18n="pd_back">← მაღაზია</a>'
-        f'<p class="eyebrow" data-i18n="pd_fits">XAG P150 MAX-ის ენერგოსისტემა</p>'
+        + (f'<p class="eyebrow" data-i18n="pd_fits_control">{T["pd_fits_control"][0]}</p>' if p.get('specs') == 'control' else f'<p class="eyebrow" data-i18n="pd_fits">{T["pd_fits"][0]}</p>') +
         f'<h1 data-i18n="{pn}">{html.escape(r["name_ka"])}</h1><p class="product-orig">{html.escape(r["name"])}</p>'
         f'<p class="page-intro" data-i18n="pd_{pid}_intro">{html.escape(p["intro"][0])}</p></div></section>\n'
         f'  <section class="section pd-main"><div class="container pd-grid">{pic}'
@@ -123,7 +124,7 @@ for p in P.PAGES:
 CONTENTS = [  # same order and labels as build-shop.py CONTENTS (Georgian label from content.js kit_* keys)
     ('drones', 'kit_drone'), ('remotes', 'kit_remote'), ('batteries', 'kit_batteries'), ('chargers', 'kit_chargers'),
     ('towers', 'kit_towers'), ('rtk', 'kit_rtk'), ('generators', 'kit_generators')]
-LINK = {'batteries': '09-017-00073', 'chargers': '09-017-00069', 'generators': '09-017-00109'}
+LINK = {'remotes': '05-002-02725', 'batteries': '09-017-00073', 'chargers': '09-017-00069', 'towers': '09-017-00065', 'rtk': '09-016-00083', 'generators': '09-017-00109'}
 KIT_INTRO = {
     'p150-max-starter': ('საბაზისო კომპლექტი: დრონი, მართვის პულტი, 4 აკუმულატორი, 2 დამტენი და 2 გამაგრილებელი კოშკი.',
                          'Base package: drone, remote controller, 4 batteries, 2 chargers and 2 cooling towers.',
@@ -150,7 +151,9 @@ for sku, slug in P.KITS.items():
         if not n:
             continue
         lab = f'<span data-i18n="{key}">{html.escape(c["ka"][key])}</span>'
-        if col in LINK:
+        if col == 'drones':  # the drone itself: the P150 MAX page (description and full specifications)
+            lab = f'<a href="/p150-max.html" data-local>{lab}</a>'
+        elif col in LINK:
             lab = f'<a href="{P.url(LINK[col])}" data-local>{lab}</a>'
         items.append(f'<li><span class="pk-qty">{n} ×</span> {lab}</li>')
     pics = [(f'/assets/img/products/{sku}.webp', f'/assets/img/packages/{sku}-t.webp', f'pd_{pid}_alt', c['ka'][f'pd_{pid}_alt'])]

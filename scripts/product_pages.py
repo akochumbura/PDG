@@ -1,5 +1,5 @@
 """Product pages for the energy system (owner, 14 Oct 2026: batteries and generators need their own page with specs).
-Only products whose specs are on the official XAG P150 MAX spec page (scripts/p150_specs.py, 'power' group) get a page;
+Only products whose specs are on the official XAG P150 MAX spec page (scripts/p150_specs.py: 'specs' group, 'block' index) get a page;
 do not add a page with unverified specs. Used by build-shop.py (links on cards) and build-products.py (the pages).
 """
 
@@ -20,6 +20,21 @@ PAGES = [
      'intro': ('XAG P150 MAX-ის აკუმულატორების საველე დამუხტვის სადგური (გენერატორი). ოფიციალური მახასიათებლები, ფასი და შეკვეთა.',
                'Field charging station (generator) for XAG P150 MAX batteries. Official specifications, price and ordering.',
                'Полевая зарядная станция (генератор) для аккумуляторов XAG P150 MAX. Официальные характеристики, цена и заказ.')},
+    {'sku': '09-017-00065', 'slug': 'battery-cooling-tower', 'block': 3,
+     'title': ('XAG აკუმულატორის გამაგრილებელი კოშკი — ფასი და მახასიათებლები', 'XAG battery cooling tower — price and specifications', 'Охлаждающая башня XAG для аккумуляторов — цена и характеристики'),
+     'intro': ('XAG P150 MAX-ის აკუმულატორების წყლით გამაგრილებელი კოშკი: დატენვის წინ აგრილებს აკუმულატორს. ოფიციალური მახასიათებლები, ფასი და შეკვეთა.',
+               'Water cooling tower for XAG P150 MAX batteries: cools the battery before charging. Official specifications, price and ordering.',
+               'Водяная охлаждающая башня для аккумуляторов XAG P150 MAX: охлаждает аккумулятор перед зарядкой. Официальные характеристики, цена и заказ.')},
+    {'sku': '05-002-02725', 'slug': 'src5-remote-controller', 'specs': 'control', 'block': 1,
+     'title': ('XAG SRC5 ჭკვიანი მართვის პულტი — ფასი და მახასიათებლები', 'XAG SRC5 smart remote controller — price and specifications', 'Умный пульт XAG SRC5 — цена и характеристики'),
+     'intro': ('XAG P150 MAX-ის ჭკვიანი მართვის პულტი ეკრანით. ოფიციალური მახასიათებლები, ფასი და შეკვეთა.',
+               'Smart remote controller with screen for the XAG P150 MAX. Official specifications, price and ordering.',
+               'Умный пульт управления с экраном для XAG P150 MAX. Официальные характеристики, цена и заказ.')},
+    {'sku': '09-016-00083', 'slug': 'xrtk7-rtk-station', 'specs': 'control', 'block': 2,
+     'title': ('XAG XRTK7 მობილური RTK სადგური — ფასი და მახასიათებლები', 'XAG XRTK7 mobile RTK station — price and specifications', 'Мобильная RTK-станция XAG XRTK7 — цена и характеристики'),
+     'intro': ('მობილური RTK სადგური სანტიმეტრული სიზუსტის ფრენისა და ნაკვეთის აზომვისთვის. ოფიციალური მახასიათებლები, ფასი და შეკვეთა.',
+               'Mobile RTK station for centimetre-accurate flight and field mapping. Official specifications, price and ordering.',
+               'Мобильная RTK-станция для полётов и съёмки участков с сантиметровой точностью. Официальные характеристики, цена и заказ.')},
 ]
 BY_SKU = {p['sku']: p for p in PAGES}
 

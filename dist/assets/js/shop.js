@@ -289,14 +289,33 @@
   if (!search) return;
   var chips = document.querySelectorAll("#partChips .chip"), cards = document.querySelectorAll("#partsGrid .product"), cat = "all";
   var none = document.getElementById("partsNone");
+  /* Sorting and min / max price (parts without a price are left out when a price range is set and go last when sorting by price). */
+  var sortSel = document.getElementById("partSort"), pMin = document.getElementById("priceMin"), pMax = document.getElementById("priceMax");
+  var grid = document.getElementById("partsGrid"), list = Array.prototype.slice.call(cards);
+  function cardPrice(r) { var b = r.querySelector(".add-btn[data-price]"); return b ? Number(b.dataset.price) : null; }
+  function cardName(r) { var h = r.querySelector("h3"); return h ? h.textContent.trim() : ""; }
+  list.forEach(function (r, i) { r._i = i; r._p = cardPrice(r); r._n = cardName(r); });
+  function num(el) { var v = el && el.value.trim(); return v === "" || v == null || isNaN(Number(v)) ? null : Number(v); }
   function run() {
-    var s = search.value.trim().toLowerCase(), shown = 0;
+    var s = search.value.trim().toLowerCase(), shown = 0, lo = num(pMin), hi = num(pMax);
     cards.forEach(function (r) {
       var ok = (cat === "all" || r.dataset.cat === cat) && (!s || r.textContent.toLowerCase().indexOf(s) > -1);
+      if (ok && (lo !== null || hi !== null)) ok = r._p !== null && (lo === null || r._p >= lo) && (hi === null || r._p <= hi);
       r.hidden = !ok; if (ok) shown++;
     });
     if (none) none.hidden = shown > 0;
   }
+  function order() {
+    var m = sortSel ? sortSel.value : "", sorted = list.slice();
+    var big = Infinity;
+    if (m === "asc") sorted.sort(function (a, b) { return (a._p === null ? big : a._p) - (b._p === null ? big : b._p) || a._i - b._i; });
+    else if (m === "desc") sorted.sort(function (a, b) { return (b._p === null ? -1 : b._p) - (a._p === null ? -1 : a._p) || a._i - b._i; });
+    else if (m === "name") sorted.sort(function (a, b) { return a._n.localeCompare(b._n, document.documentElement.lang || "ka") || a._i - b._i; });
+    else sorted.sort(function (a, b) { return a._i - b._i; });
+    sorted.forEach(function (r) { grid.appendChild(r); });
+  }
+  if (sortSel) sortSel.addEventListener("change", order);
+  [pMin, pMax].forEach(function (el) { if (el) el.addEventListener("input", run); });
   search.addEventListener("input", run);
   var wanted = new URLSearchParams(location.search).get("cat");
   var askedFor = new URLSearchParams(location.search).get("q");

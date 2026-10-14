@@ -82,7 +82,7 @@ def price(r, kit):
 
 def status(r):
     """in_stock = invoice/price-list item (as shown on the site so far; remaining quantity not verified),
-    quote = part from the XAG parts catalogues without an approved price (availability to be confirmed),
+    quote = part from the XAG parts catalogues, not on the packing list: not in stock, price on request,
     out = previous-generation model (not in stock, consultation only)."""
     if r['group'] == 'legacy':
         return 'out'
@@ -168,7 +168,8 @@ def card(r):
                 + '<p class="product-stock is-out" data-i18n="out_of_stock">არ არის მარაგში</p>'
                 + '<div class="product-buy"><a class="button button-line consult-btn" href="/consultation" data-local><span data-i18n="consult_cta">კონსულტაცია</span></a></div></div></article>\n')
     if st == 'quote':  # no approved price: ask for a quote, never add to the cart at ₾0
-        return (head + '<p class="product-stock is-tbc" data-i18n="stock_tbc">მარაგი დაზუსტდება</p>'
+        # Owner, 14 Oct 2026: a part that is not on the packing list is not in stock.
+        return (head + '<p class="product-stock is-out" data-i18n="out_of_stock">არ არის მარაგში</p>'
                 + '<div class="product-buy"><span class="product-price product-price-quote" data-i18n="price_on_request">ფასი მოთხოვნით</span>'
                 + f'<button type="button" class="quote-btn" data-sku="{s}" data-name="{n}" data-i18n="request_quote">ფასის მოთხოვნა</button></div></div></article>\n')
     return (head + '<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
@@ -313,12 +314,12 @@ CATN = {'kit': 'P150 MAX package', 'drone': 'drone', 'legacy': 'previous-generat
 cdata = json.loads((ROOT / 'dist/assets/js/content.js').read_text(encoding='utf-8').split('=', 1)[1].strip().removesuffix(';'))['en']
 know = [(ROOT / 'dist/llms.txt').read_text(encoding='utf-8').strip(), '',
         '## Website shop (prices in GEL incl. VAT). Availability: "listed in stock" = shown as in stock on the website (the team confirms quantity '
-        'with every order); "price on request" = no listed price, availability to be confirmed by the team; "not in stock" = previous model, consultation only.']
+        'with every order); "not in stock, price on request" = a part we do not have in stock (the team gives the price on request); "not in stock (previous model)" = consultation only.']
 for r in rows:
     extra = ', '.join(f"{r[c]} × {KIT_LABELS[k][0]}" for c, k, _ in CONTENTS if (r.get(c) or '').strip())
     local = f" [ka: {r['name_ka']}]" if (r.get('name_ka') or '').strip() else ''
     p_ = price(r, r['group'] == 'kit'); st_ = status(r)
-    what = f"{p_:,} GEL, listed in stock" if st_ == 'in_stock' else ('price on request, availability to be confirmed' if st_ == 'quote' else 'not in stock (previous model), consultation only')
+    what = f"{p_:,} GEL, listed in stock" if st_ == 'in_stock' else ('not in stock, price on request' if st_ == 'quote' else 'not in stock (previous model), consultation only')
     know.append(f"- {r['name']}{local} (code {r['sku']}, {CATN[r['group']]}): {what}" + (f" — contains {extra}" if extra else ''))
 know += ['', '## Buying and payment',
          f"Online payment (card, Apple Pay, Google Pay via Bank of Georgia) is being set up and may not be live yet. Planned rule: orders under {rules['threshold']:,} GEL are paid in full online; from {rules['threshold']:,} GEL the customer pays a {rules['depositPercent']}% deposit online and the rest by bank transfer.",

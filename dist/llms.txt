@@ -166,7 +166,6 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - P150MAX ESC base seat upper shell: 29 GEL
 - P150MAX Flexible Impeller(grey): 29 GEL
 - P150MAX Lower shell of ESC base: 29 GEL
-- P150MAX Propeller Clamp Bolt: 29 GEL
 - P150MAX Surge Protection Baffle: 29 GEL
 - P150MAX Tube adapter (left): 29 GEL
 - P150MAX Tube adapter (right): 29 GEL
@@ -180,56 +179,12 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - P150MAX Propeller Holder(for arm No.1&2): 19 GEL
 - P150MAX Propeller Holder(for arm No.3&4): 19 GEL
 - P150MAX Skeleton oil seal: 19 GEL
-- 11mm * 4.2mm * 1mm gasket: 15 GEL
 - 60" CCW propeller blade gasket: 15 GEL
 - 60" CW propeller blade gasket: 15 GEL
 - Application System Cable Organizer - P100/Pro: 15 GEL
 - Application system embossed part: 15 GEL
 - Barometer silicone tube transparent adapter: 15 GEL
-- CM2*4 Screw: 15 GEL
-- Flange Anti-loosening Nut: 15 GEL
-- Hex Socket Head Cap Screw Kit: 15 GEL
-- Hexagon Socket Head Shaft Section 3*6 Nylon Insert Screw: 15 GEL
-- Hexagonal Flange Nut: 15 GEL
-- M2*3 Socket Cap Screw: 15 GEL
-- M2*4 Screw: 15 GEL
-- M2*6 Cross groove screw: 15 GEL
-- M2*6 Screws: 15 GEL
-- M2*6*4 Screw: 15 GEL
-- M2.4x6 Open End Flat Round Head Blind Rivet: 15 GEL
-- M2.5*10 Screw: 15 GEL
-- M2.5*10*4.5 Screw Kit: 15 GEL
-- M2.5*25 Screw: 15 GEL
-- M2.5x8x4.5 Hex Socket Head Cap Screw Kit: 15 GEL
-- M2.5×10 Hexagon Socket Head Cap Screw: 15 GEL
-- M3 10 6 Screw Kit: 15 GEL
-- M3 8 6 Screw Kit: 15 GEL
-- M3*14*6 Screw Kit: 15 GEL
-- M3*16*6 Screw Kit: 15 GEL
-- M3*6*6 Screw Kit: 15 GEL
-- M3*6*6 Screw Kit: 15 GEL
-- M3*8*0.5 Gasket: 15 GEL
-- M3×8 Hexagon Socket Countersunk Head Screw: 15 GEL
-- M4 * 14 * 14 hexagonal cylindrical head triple combination screw: 15 GEL
-- M4 10 8 Screw Kit: 15 GEL
-- M4 12 8 Screw Kit: 15 GEL
-- M4 12 Countersunk Screw: 15 GEL
-- M4 16 .8 Screw Kit: 15 GEL
-- M4 8 8 Screw Kit: 15 GEL
-- M4*10 Screw: 15 GEL
-- M4*12 Rivet: 15 GEL
-- M4*6 screws: 15 GEL
-- M4x14x8 Hex Head Cap Screw Kit: 15 GEL
-- M4x23 Customized Hexagon Socket Step Screw: 15 GEL
-- M4x8 Screw: 15 GEL
-- M5 16 10 Screw Kit: 15 GEL
-- M5*12*10 Screw Kit: 15 GEL
-- M5*20*1.2 Gasket: 15 GEL
-- M6 Nut: 15 GEL
-- M6*20*12 Screw Kit: 15 GEL
-- M6*38*12 Screw: 15 GEL
 - Motor screw anti loosening column: 15 GEL
-- Non-metallic Embedded Hexagonal Cap Nut: 15 GEL
 - P100P 55" Foldable Propeller Clamp Pin: 15 GEL
 - P150 MAX Motor three-phase cable protection sleeve: 15 GEL
 - P150MAX 3-phase cable fixing bracket: 15 GEL
@@ -260,7 +215,6 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - P150MAX Large skeleton oil seal: 15 GEL
 - P150MAX Manifold Gasket 01: 15 GEL
 - P150MAX Manifold Gasket 02: 15 GEL
-- P150MAX Motor Circlip: 15 GEL
 - P150MAX Motor Gasket: 15 GEL
 - P150MAX Motor cable clip holder: 15 GEL
 - P150MAX Motor cable holder: 15 GEL
@@ -277,25 +231,71 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - P150MAX Side sealant plug: 15 GEL
 - P150MAX Small Cable Clip: 15 GEL
 - P150MAX Small skeleton oil seal: 15 GEL
-- P150MAX Square Copper Nut: 15 GEL
 - P150MAX T-connector: 15 GEL
 - P150MAX Torsion spring: 15 GEL
 - P150MAX Waterproof Vent Valve: 15 GEL
 - P150MAX Y-Type Connector & Drone Liquid Tube: 15 GEL
 - R-type Cable Clip: 15 GEL
-- Rivet: 15 GEL
-- ST1.7 * 4 self tapping screw: 15 GEL
-- ST2.9*10 Tapping Screw: 15 GEL
-- ST2.9*8 Tapping Screw: 15 GEL
-- ST4.2 14 Tapping Screw: 15 GEL
-- ST4.2*10 Tapping Screw: 15 GEL
-- ST4.2*14 Tapping Screw: 15 GEL
-- ST4.2*8 Tapping Screw: 15 GEL
-- ST4.2.8 Tapping Screw: 15 GEL
 - Spiral Feeder Motor Gear Shaft Seal: 15 GEL
 - Spiral Feeder Motor Rubber Ring: 15 GEL
 - Spreader Baffle - Left: 15 GEL
 - Spreader Baffle - Right: 15 GEL
+- 11mm * 4.2mm * 1mm gasket: 5 GEL
+- CM2*4 Screw: 5 GEL
+- Flange Anti-loosening Nut: 5 GEL
+- Hex Socket Head Cap Screw Kit: 5 GEL
+- Hexagon Socket Head Shaft Section 3*6 Nylon Insert Screw: 5 GEL
+- Hexagonal Flange Nut: 5 GEL
+- M2*3 Socket Cap Screw: 5 GEL
+- M2*4 Screw: 5 GEL
+- M2*6 Cross groove screw: 5 GEL
+- M2*6 Screws: 5 GEL
+- M2*6*4 Screw: 5 GEL
+- M2.4x6 Open End Flat Round Head Blind Rivet: 5 GEL
+- M2.5*10 Screw: 5 GEL
+- M2.5*10*4.5 Screw Kit: 5 GEL
+- M2.5*25 Screw: 5 GEL
+- M2.5x8x4.5 Hex Socket Head Cap Screw Kit: 5 GEL
+- M2.5×10 Hexagon Socket Head Cap Screw: 5 GEL
+- M3 10 6 Screw Kit: 5 GEL
+- M3 8 6 Screw Kit: 5 GEL
+- M3*14*6 Screw Kit: 5 GEL
+- M3*16*6 Screw Kit: 5 GEL
+- M3*6*6 Screw Kit: 5 GEL
+- M3*6*6 Screw Kit: 5 GEL
+- M3*8*0.5 Gasket: 5 GEL
+- M3×8 Hexagon Socket Countersunk Head Screw: 5 GEL
+- M4 * 14 * 14 hexagonal cylindrical head triple combination screw: 5 GEL
+- M4 10 8 Screw Kit: 5 GEL
+- M4 12 8 Screw Kit: 5 GEL
+- M4 12 Countersunk Screw: 5 GEL
+- M4 16 .8 Screw Kit: 5 GEL
+- M4 8 8 Screw Kit: 5 GEL
+- M4*10 Screw: 5 GEL
+- M4*12 Rivet: 5 GEL
+- M4*6 screws: 5 GEL
+- M4x14x8 Hex Head Cap Screw Kit: 5 GEL
+- M4x23 Customized Hexagon Socket Step Screw: 5 GEL
+- M4x8 Screw: 5 GEL
+- M5 16 10 Screw Kit: 5 GEL
+- M5*12*10 Screw Kit: 5 GEL
+- M5*20*1.2 Gasket: 5 GEL
+- M6 Nut: 5 GEL
+- M6*20*12 Screw Kit: 5 GEL
+- M6*38*12 Screw: 5 GEL
+- Non-metallic Embedded Hexagonal Cap Nut: 5 GEL
+- P150MAX Motor Circlip: 5 GEL
+- P150MAX Propeller Clamp Bolt: 5 GEL
+- P150MAX Square Copper Nut: 5 GEL
+- Rivet: 5 GEL
+- ST1.7 * 4 self tapping screw: 5 GEL
+- ST2.9*10 Tapping Screw: 5 GEL
+- ST2.9*8 Tapping Screw: 5 GEL
+- ST4.2 14 Tapping Screw: 5 GEL
+- ST4.2*10 Tapping Screw: 5 GEL
+- ST4.2*14 Tapping Screw: 5 GEL
+- ST4.2*8 Tapping Screw: 5 GEL
+- ST4.2.8 Tapping Screw: 5 GEL
 
 ## Social
 - Facebook: https://www.facebook.com/PremiumDronesGeorgia/

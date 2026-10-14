@@ -23,6 +23,15 @@ GROUP = {'Battery': 'power', 'Charging': 'power',
          'Spare part': 'spare', 'Cable': 'spare', 'Motor': 'spare', 'Propeller': 'spare'}
 
 
+# Owner, 14 Oct 2026: screws and similar small fasteners cost 5 GEL each (overrides the price list).
+# = the XAG standard-fastener family 02-004-* (screws, nuts, rivets, flat gaskets) and any nut / bolt / circlip / M-size gasket.
+FASTENER_GEL = 5
+
+
+def fastener(sku, en):
+    return sku.startswith('02-004-') or bool(re.search(r'\b(nut|bolt|circlip)\b|^M[\d.]+\*[\d.*]+ ?gasket', en, re.I))
+
+
 def clean(s):
     s = str(s or '').replace('（', '(').replace('）', ')').replace('，', ', ').replace('；', '; ')
     s = re.sub(r'\s+', ' ', s).strip()
@@ -64,7 +73,8 @@ def main(path):
         if not group:
             raise SystemExit(f'Unknown category {cat!r} for {sku}: add it to GROUP')
         row = {f: '' for f in fields}
-        row.update(group=group, name=en, name_ka=ka, sku=sku, gel=str(int(round(float(r[col['Retail incl. VAT GEL']])))))
+        gel = FASTENER_GEL if fastener(sku, en) else int(round(float(r[col['Retail incl. VAT GEL']])))
+        row.update(group=group, name=en, name_ka=ka, sku=sku, gel=str(gel))
         out.append(row)
     out += [r for r in extra if r['sku'] not in seen]
     with open(CATALOG, 'w', encoding='utf-8', newline='') as f:
