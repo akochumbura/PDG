@@ -34,7 +34,8 @@ for path,doc in documents.items():
         if not parts.scheme and not parts.netloc and parts.path.endswith('.html'):errors.append(f'{relative}: link uses .html URL {href} (use the clean URL)')
     for card in doc.xpath('//article[contains(@class,"product") and @data-cat!="kit"]'):
         for src in card.xpath('.//img/@src'):
-            if not src.startswith('/assets/img/products/'):errors.append(f'{relative}: part card shows another product photo {src}')
+            # Own product photo, or the XAG brand logo until the owner's photos arrive (never a photo of another product).
+            if not src.startswith(('/assets/img/products/','/assets/img/xag-logo')):errors.append(f'{relative}: part card shows another product photo {src}')
     for node in doc.xpath('//*[@data-i18n] | //*[@data-i18n-aria] | //*[@data-i18n-alt] | //*[@data-i18n-content] | //*[@data-i18n-placeholder]'):
         for attr in ['data-i18n','data-i18n-aria','data-i18n-alt','data-i18n-content','data-i18n-placeholder']:
             key=node.get(attr)

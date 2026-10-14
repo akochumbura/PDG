@@ -28,10 +28,275 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 ## Packages (prices in GEL)
 - XAG P150 MAX Starter: 75,999 GEL (4 batteries, 2 chargers)
 - XAG P150 MAX Pro: 85,999 GEL (6 batteries, 2 chargers, 1 RTK station)
-- XAG P150 MAX Business: 104,999 GEL (8 batteries, 2 chargers, 2 generators)
+- XAG P150 MAX Business: 104,999 GEL (8 batteries, 4 chargers, 1 RTK station)
+- XAG P150 Max Agricultural Drone (with RevoSpray 5): 41,999 GEL
 - XAG B141050 Smart Super Charge Battery: 5,999 GEL
-- XAG CM13600S Power Supply (without power cord): 3,499 GEL
-- XAG GC4000+ Gen 3 Generator: 5,899 GEL
+- XAG GC4000+ Super Charging Station (Gen III): 5,899 GEL
+- XAG B13970S Smart Battery: 5,799 GEL
+- XAG CM13600S Charger: 3,499 GEL
+- XAG 6kW Parallel Charging Kit: 1,099 GEL
+- XAG 2024 Battery Cooling Tower(INTL): 799 GEL
+- B141050 Battery Mainboard: 649 GEL
+- XAG Parallel Charging Bracket: 199 GEL
+- XAG Plug Power Cord-EU(for CM13600 Charger): 99 GEL
+- P series Battery Socket: 79 GEL
+- P150MAX Battery socket copper bar - double: 29 GEL
+- P150MAX Battery socket rear case: 29 GEL
+- P150MAX Battery socket copper bar (single): 19 GEL
+- P150MAX Battery socket front case: 15 GEL
+- V40EN,P100 Battery Guide Rubber Buffer: 15 GEL
+- XAG SRC5 Smart remote controller: 4,999 GEL
+- XAG XRTK7 Mobile Station(INTL): 3,999 GEL
+- P150MAX Radar module: 1,799 GEL
+- P150MAX FPV driver motherboard components: 849 GEL
+- P150MAX Fisheye lens module: 549 GEL
+- Omnidirectional antenna-Left (P150MAX): 349 GEL
+- Omnidirectional antenna-Right (P150MAX): 349 GEL
+- P150MAX Distribution board (Headlight): 199 GEL
+- P150MAX FPV control board mounting bracket assembly: 149 GEL
+- P150MAX Radar casing: 149 GEL
+- P150MAX Flight Controller Feeder - (grey, G type): 69 GEL
+- P150MAX 4G Antenna: 59 GEL
+- P150MAX FPV board cover assembly: 59 GEL
+- P150MAX Flight Controller Feeder - (black, A type): 59 GEL
+- P150MAX Left antenna pedestal: 29 GEL
+- P150MAX Right antenna pedestal: 29 GEL
+- P150MAX Radar shell waterproof ring: 15 GEL
+- P150MAX Waterproof ring for control board cover plate: 15 GEL
+- XAG P150 Max RevoCast 5(Screw Feeder L): 8,999 GEL
+- XAG 4-Nozzle Upgrade Kit(INTL)(P150MAX): 2,699 GEL
+- XAG RevoSling(INTL): 2,199 GEL
+- P150MAX 75L- Smart Liquid Tank: 699 GEL
+- P150MAX Nozzle: 599 GEL
+- P150MAX Revocast Level Sensor: 399 GEL
+- P150MAX Nozzle ESC board: 249 GEL
+- P150MAX Flexible Impeller Pump Body: 199 GEL
+- P100P Liquid Tank Lid - Duckbill Valve: 99 GEL
+- P150MAX Nozzle Signal Cable: 99 GEL
+- P150MAX Landing Gear Pipe for Revospray: 69 GEL
+- P150MAX Flexible Impeller Pump Body: 59 GEL
+- P150MAX Landing Gear Crossbar for RevoSpray: 59 GEL
+- P150MAX Nozzle Extension Rod: 59 GEL
+- P150MAX Air pressure sensor cable (Revospray): 49 GEL
+- P150MAX Liquid Tank Filter Assembly: 49 GEL
+- P150MAX RevoCast Landing Gear Crossbar: 49 GEL
+- P150MAX Nozzle Extension Rod Release Knob: 39 GEL
+- Impeller Pump & Y-Type Connector Liquid Tube(Upgrade): 29 GEL
+- P150MAX Liquid Tank Embedded Parts (2 Holes): 29 GEL
+- P150MAX Nozzle Extension Rod Bracket (Left): 19 GEL
+- P150MAX Nozzle Extension Rod Bracket (Right): 19 GEL
+- P150MAX Pump to Y-Type Connector Liquid Tube: 19 GEL
+- P150MAX Tank & Impeller Pump Liquid Tube(Upgrade): 19 GEL
+- Pump Bracket: 19 GEL
+- Nozzle Extension Rod Clip (for Folded Position): 15 GEL
+- P150MAX Female Seat Granule Container Lid Hasp: 15 GEL
+- P150MAX Foam insert of spray rod: 15 GEL
+- P150MAX Granule Container Interior Bracket: 15 GEL
+- P150MAX Granule Container Lid Soft Tape: 15 GEL
+- P150MAX Male Seat Granule Container Lid Hasp: 15 GEL
+- P150MAX Nozzle Disc: 15 GEL
+- P150MAX One-way valve & nozzle liquid tube: 15 GEL
+- P150MAX Tank to Pump Liquid Tube: 15 GEL
+- XAG 90W LED Headlight: 1,499 GEL
+- Landing Gear(INTL): 1,299 GEL
+- P150MAX Searchlight component: 299 GEL
+- P150MAX Left material box cover: 149 GEL
+- P150MAX Right material box cover: 149 GEL
+- P150MAX Searchlight Mounting Bracket: 149 GEL
+- Ground touching assembly of landing gear No.1: 79 GEL
+- Ground touching assembly of landing gear No.2: 79 GEL
+- P150MAX Rear bracket of searchlight: 29 GEL
+- P150MAX T-Connector for Landing Skid 1 - P150MAX Т: 29 GEL
+- P150MAX T-Connector for Landing Skid 2: 29 GEL
+- P150MAX Front wire cover: 19 GEL
+- P150MAX Arm decorative cover: 15 GEL
+- P150MAX Fixed cover front cover sealing ring: 15 GEL
+- P150MAX Front bracket of searchlight: 15 GEL
+- P150MAX Manifold Waterproof Cover: 15 GEL
+- P150MAX Rear wire cover: 15 GEL
+- P150MAX Tee clamp assembly for landing gear: 15 GEL
+- Motor: 1,399 GEL
+- P150MAX ESC: 849 GEL
+- P150MAX Central Cable Hub: 799 GEL
+- P150MAX Flexible Impeller Pump Motor: 449 GEL
+- P150MAX 63 inch CCW propeller blades: 399 GEL
+- P150MAX 63 inch CW propeller blade: 399 GEL
+- P150MAX Application System Cable Hub: 249 GEL
+- P150MAX Arm (Fuselage Side): 249 GEL
+- P150MAX Fuselage side beam: 249 GEL
+- P150MAX Application System Quick-release Hook: 199 GEL
+- P150MAX Propeller Clamp: 199 GEL
+- P150MAX Stretching spring component: 199 GEL
+- P150 MAX Motor shaft: 149 GEL
+- P150MAX Application system tube connector assembly: 149 GEL
+- P150MAX ESC lower shell: 149 GEL
+- P150MAX Flexible Impeller(black): 149 GEL
+- P150MAX Nose Mount: 149 GEL
+- Cable hub power cord (P150MAX): 99 GEL
+- P150MAX 1&2 ESC signal cable: 99 GEL
+- P150MAX Application System Main Connect Cable: 99 GEL
+- P150MAX Disc swinging component: 99 GEL
+- Sensing System Diagnostic Cable: 99 GEL
+- Application System Cable Hub Signal Cable: 89 GEL
+- P150MAX 3&4 ESC signal cable: 89 GEL
+- P150MAX Arm Clamp Handle: 89 GEL
+- P150MAX Flight Control & Cable Hub Communication Cable: 89 GEL
+- P150MAX Long Application System tube: 89 GEL
+- P150MAX Pressure Gauge & Cable Hub: 89 GEL
+- Arm split flange - lateral fixing component: 79 GEL
+- P150MAX Propeller Clamp Fixing Base: 79 GEL
+- P100P Arm Joint Pin Kit: 69 GEL
+- P150MAX Arm Clamp Clip Kit: 69 GEL
+- P150MAX Execute system power supply cable: 69 GEL
+- P150MAX Sensing system communication cable(Vehicle FPV cable): 69 GEL
+- P150MAX Short Application System tube: 69 GEL
+- P150MAX Spread Disc Motor Cable: 69 GEL
+- SuperX5 Pro Diagnostic Cable: 69 GEL
+- Swing arm joystick: 69 GEL
+- P150MAX Forward looking searchlight power supply cable: 59 GEL
+- P150MAX Anti-drip valve: 49 GEL
+- P150MAX Liquid Container Filter: 49 GEL
+- P150MAX Liquid tube for arm: 49 GEL
+- P150MAX Pump & Cable Hub-Connection Cable: 49 GEL
+- P150MAX Front Hood: 39 GEL
+- Arm support foot: 29 GEL
+- Front shell of busbar: 29 GEL
+- L-Type Connector & Drone Curved Tube Liquid Tube(Upgrade): 29 GEL
+- P150MAX Application System hook: 29 GEL
+- P150MAX Barometer Base: 29 GEL
+- P150MAX ESC base seat upper shell: 29 GEL
+- P150MAX Flexible Impeller(grey): 29 GEL
+- P150MAX Lower shell of ESC base: 29 GEL
+- P150MAX Propeller Clamp Bolt: 29 GEL
+- P150MAX Surge Protection Baffle: 29 GEL
+- P150MAX Tube adapter (left): 29 GEL
+- P150MAX Tube adapter (right): 29 GEL
+- Y-Type Connector & L-Type Connector Liquid Tube(Upgrade): 29 GEL
+- P150MAX Arm Folding Bracket: 19 GEL
+- P150MAX Gear lever component: 19 GEL
+- P150MAX Hopper Mount Fixed Insert: 19 GEL
+- P150MAX Motor Anti-Loosening Cover: 19 GEL
+- P150MAX Motor heat dissipation cover: 19 GEL
+- P150MAX Motor lower retainer: 19 GEL
+- P150MAX Propeller Holder(for arm No.1&2): 19 GEL
+- P150MAX Propeller Holder(for arm No.3&4): 19 GEL
+- P150MAX Skeleton oil seal: 19 GEL
+- 11mm * 4.2mm * 1mm gasket: 15 GEL
+- 60" CCW propeller blade gasket: 15 GEL
+- 60" CW propeller blade gasket: 15 GEL
+- Application System Cable Organizer - P100/Pro: 15 GEL
+- Application system embossed part: 15 GEL
+- Barometer silicone tube transparent adapter: 15 GEL
+- CM2*4 Screw: 15 GEL
+- Flange Anti-loosening Nut: 15 GEL
+- Hex Socket Head Cap Screw Kit: 15 GEL
+- Hexagon Socket Head Shaft Section 3*6 Nylon Insert Screw: 15 GEL
+- Hexagonal Flange Nut: 15 GEL
+- M2*3 Socket Cap Screw: 15 GEL
+- M2*4 Screw: 15 GEL
+- M2*6 Cross groove screw: 15 GEL
+- M2*6 Screws: 15 GEL
+- M2*6*4 Screw: 15 GEL
+- M2.4x6 Open End Flat Round Head Blind Rivet: 15 GEL
+- M2.5*10 Screw: 15 GEL
+- M2.5*10*4.5 Screw Kit: 15 GEL
+- M2.5*25 Screw: 15 GEL
+- M2.5x8x4.5 Hex Socket Head Cap Screw Kit: 15 GEL
+- M2.5×10 Hexagon Socket Head Cap Screw: 15 GEL
+- M3 10 6 Screw Kit: 15 GEL
+- M3 8 6 Screw Kit: 15 GEL
+- M3*14*6 Screw Kit: 15 GEL
+- M3*16*6 Screw Kit: 15 GEL
+- M3*6*6 Screw Kit: 15 GEL
+- M3*6*6 Screw Kit: 15 GEL
+- M3*8*0.5 Gasket: 15 GEL
+- M3×8 Hexagon Socket Countersunk Head Screw: 15 GEL
+- M4 * 14 * 14 hexagonal cylindrical head triple combination screw: 15 GEL
+- M4 10 8 Screw Kit: 15 GEL
+- M4 12 8 Screw Kit: 15 GEL
+- M4 12 Countersunk Screw: 15 GEL
+- M4 16 .8 Screw Kit: 15 GEL
+- M4 8 8 Screw Kit: 15 GEL
+- M4*10 Screw: 15 GEL
+- M4*12 Rivet: 15 GEL
+- M4*6 screws: 15 GEL
+- M4x14x8 Hex Head Cap Screw Kit: 15 GEL
+- M4x23 Customized Hexagon Socket Step Screw: 15 GEL
+- M4x8 Screw: 15 GEL
+- M5 16 10 Screw Kit: 15 GEL
+- M5*12*10 Screw Kit: 15 GEL
+- M5*20*1.2 Gasket: 15 GEL
+- M6 Nut: 15 GEL
+- M6*20*12 Screw Kit: 15 GEL
+- M6*38*12 Screw: 15 GEL
+- Motor screw anti loosening column: 15 GEL
+- Non-metallic Embedded Hexagonal Cap Nut: 15 GEL
+- P100P 55" Foldable Propeller Clamp Pin: 15 GEL
+- P150 MAX Motor three-phase cable protection sleeve: 15 GEL
+- P150MAX 3-phase cable fixing bracket: 15 GEL
+- P150MAX Application system support components: 15 GEL
+- P150MAX Application system support rubber: 15 GEL
+- P150MAX Arm Clamp Pin: 15 GEL
+- P150MAX Arm clamp base: 15 GEL
+- P150MAX Bottom mounting bracket for container - P150MAX: 15 GEL
+- P150MAX Brass Hex Standoff: 15 GEL
+- P150MAX Cable alignment trunking: 15 GEL
+- P150MAX Capillary hose on barometer: 15 GEL
+- P150MAX Capillary hose under barometer: 15 GEL
+- P150MAX ESC cable trunking: 15 GEL
+- P150MAX ESC hole anti-wear component: 15 GEL
+- P150MAX ESC light housing: 15 GEL
+- P150MAX Fixed inserts for motor base: 15 GEL
+- P150MAX Flat pin shaft: 15 GEL
+- P150MAX Floating connector waterproof ring: 15 GEL
+- P150MAX Front Cable Organizer (Small): 15 GEL
+- P150MAX Gearbox Silicone O-Ring: 15 GEL
+- P150MAX Handle front shell rubber plug: 15 GEL
+- P150MAX Head card holder: 15 GEL
+- P150MAX Hose on barometer: 15 GEL
+- P150MAX Hose under barometer: 15 GEL
+- P150MAX L-Type Connector(left): 15 GEL
+- P150MAX L-Type Connector(right): 15 GEL
+- P150MAX L-shaped tube adapter (motor side): 15 GEL
+- P150MAX Large skeleton oil seal: 15 GEL
+- P150MAX Manifold Gasket 01: 15 GEL
+- P150MAX Manifold Gasket 02: 15 GEL
+- P150MAX Motor Circlip: 15 GEL
+- P150MAX Motor Gasket: 15 GEL
+- P150MAX Motor cable clip holder: 15 GEL
+- P150MAX Motor cable holder: 15 GEL
+- P150MAX Motor sealing ring: 15 GEL
+- P150MAX Motor side & one-way valve liquid tube: 15 GEL
+- P150MAX O-Ring: 15 GEL
+- P150MAX Power cord limit device: 15 GEL
+- P150MAX Propeller Clamp Bushing: 15 GEL
+- P150MAX Rear shell of busbar: 15 GEL
+- P150MAX Rubber plug handle rear shell: 15 GEL
+- P150MAX Screw Feeder Motor & Main Frame Seal Ring: 15 GEL
+- P150MAX Screw Feeder Shaft Seal Ring: 15 GEL
+- P150MAX Sealing ring of barometer: 15 GEL
+- P150MAX Side sealant plug: 15 GEL
+- P150MAX Small Cable Clip: 15 GEL
+- P150MAX Small skeleton oil seal: 15 GEL
+- P150MAX Square Copper Nut: 15 GEL
+- P150MAX T-connector: 15 GEL
+- P150MAX Torsion spring: 15 GEL
+- P150MAX Waterproof Vent Valve: 15 GEL
+- P150MAX Y-Type Connector & Drone Liquid Tube: 15 GEL
+- R-type Cable Clip: 15 GEL
+- Rivet: 15 GEL
+- ST1.7 * 4 self tapping screw: 15 GEL
+- ST2.9*10 Tapping Screw: 15 GEL
+- ST2.9*8 Tapping Screw: 15 GEL
+- ST4.2 14 Tapping Screw: 15 GEL
+- ST4.2*10 Tapping Screw: 15 GEL
+- ST4.2*14 Tapping Screw: 15 GEL
+- ST4.2*8 Tapping Screw: 15 GEL
+- ST4.2.8 Tapping Screw: 15 GEL
+- Spiral Feeder Motor Gear Shaft Seal: 15 GEL
+- Spiral Feeder Motor Rubber Ring: 15 GEL
+- Spreader Baffle - Left: 15 GEL
+- Spreader Baffle - Right: 15 GEL
 
 ## Social
 - Facebook: https://www.facebook.com/PremiumDronesGeorgia/

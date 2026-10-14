@@ -34,16 +34,19 @@ ICON = {
     'spray': '<path d="M20 7h8v8l4 6H16l4-6z"/><path d="M18 29l-2 4M24 29v5M30 29l2 4M15 37l-1 3M24 38v3M33 37l1 3"/>',
     'control': '<rect x="9" y="18" width="30" height="20" rx="4"/><circle cx="18" cy="28" r="3"/><circle cx="30" cy="28" r="3"/><path d="M15 18l-3-9M33 18l3-9"/>',
     'acc': '<path d="M24 7l14 8v17l-14 8-14-8V15z"/><path d="M10 15l14 8 14-8M24 23v17"/>',
+    'drone': '<path d="M24 20v8M14 24h20"/><circle cx="10" cy="14" r="5"/><circle cx="38" cy="14" r="5"/><circle cx="10" cy="34" r="5"/><circle cx="38" cy="34" r="5"/>',
     'spare': '<path d="M31 9a8 8 0 0 0-9.5 10.5L10 31a3 3 0 0 0 4.2 4.2l11.5-11.5A8 8 0 0 0 36 14l-5 5-4.5-1.2L25.3 13z"/>',
 }
 CAT_KEY = {'power': ('cat_power', 'აკუმულატორები და დატენვა'), 'spray': ('cat_spray', 'შეწამვლა და გაფანტვა'),
-           'control': ('cat_control', 'მართვა და RTK'), 'acc': ('cat_acc', 'აქსესუარები'), 'spare': ('cat_spare', 'სათადარიგო ნაწილები')}
+           'control': ('cat_control', 'მართვა და RTK'), 'acc': ('cat_acc', 'აქსესუარები'), 'spare': ('cat_spare', 'სათადარიგო ნაწილები'),
+           'drone': ('cat_drone', 'დრონები')}
 
 
 CONTENTS = [('drones', 'kit_drone', 'დრონი P150 MAX'), ('batteries', 'kit_batteries', 'აკუმულატორები'),
             ('chargers', 'kit_chargers', 'დამტენები'), ('rtk', 'kit_rtk', 'RTK სადგური'),
             ('generators', 'kit_generators', 'გენერატორები')]
-HOME_PARTS = ['09-017-00083', 'XAG-GC4000P-G3', '09-017-00069', '05-002-02311', '09-017-00065', '09-016-00083']
+# Home page 'Parts and energy system': B141050 battery, GC4000+, CM13600S charger, 6 kW parallel charging kit, cooling tower, XRTK7.
+HOME_PARTS = ['P000088274', 'P000089806', 'P000087889', 'P000088239', 'P000087484', 'P000088079']
 
 
 def contents(r, cls='kit-contents'):
@@ -71,11 +74,10 @@ def photo(r, kit):
         except Exception:
             w, h = 1200, 900
         return f'<div class="product-photo"><img src="/assets/img/products/{s}.webp" width="{w}" height="{h}" alt="{n}" loading="lazy" decoding="async"></div>'
-    if kit:
-        fb, w, h, pos = KIT_IMG[r.get('image') or 'flight']
-        return (f'<div class="product-photo"><img src="/assets/img/{fb}" width="{w}" height="{h}" alt="{n}" '
-                f'style="object-position:{pos}" loading="lazy" decoding="async"></div>')
-    return ''  # no photo yet: the card is text only (owner: no grey placeholders)
+    # Owner, 14 Oct 2026: until his product photos arrive, every product (packages too) shows the XAG logo.
+    return ('<div class="product-photo product-logo">'
+            '<img class="logo-light" src="/assets/img/xag-logo.svg" alt="XAG" width="69" height="25" loading="lazy">'
+            '<img class="logo-dark" src="/assets/img/xag-logo-white.svg" alt="" width="69" height="25" loading="lazy"></div>')
 
 
 def cat(r):
@@ -143,6 +145,9 @@ for r in rows:
 _cj.write_text('window.PDG_CONTENT = ' + _json.dumps(_c, ensure_ascii=False, indent=2) + ';\n', encoding='utf-8')
 kits = [r for r in rows if r['group'] == 'kit']
 parts = [r for r in rows if r['group'] != 'kit']
+# Shop order: drone, energy, control/RTK, spraying/spreading, accessories, spare parts; most expensive first in each group.
+ORDER = ['drone', 'power', 'control', 'spray', 'acc', 'spare']
+parts.sort(key=lambda r: (ORDER.index(r['group']) if r['group'] in ORDER else 99, -price(r, False), r['name']))
 for r in rows:
     if r['group'] not in {'kit', *ICON}:
         raise SystemExit(f'Unknown group {r["group"]!r} for {r["sku"]}')
@@ -191,7 +196,7 @@ cat = {r['sku']: [r['name'], price(r, r['group'] == 'kit')] for r in rows}
 tpl = (ROOT / 'scripts/worker.template.js').read_text(encoding='utf-8')
 rules = {'threshold': site_config.PAYMENTS['threshold'], 'depositPercent': site_config.PAYMENTS['deposit_percent']}
 # Knowledge for the AI chat: business facts (llms.txt), every product with its price, payment rules, terms, FAQ.
-CATN = {'kit': 'P150 MAX package', 'power': 'batteries and charging', 'spray': 'spraying and spreading', 'control': 'control and RTK',
+CATN = {'kit': 'P150 MAX package', 'drone': 'drone', 'power': 'batteries and charging', 'spray': 'spraying and spreading', 'control': 'control and RTK',
         'acc': 'accessories', 'spare': 'spare parts'}
 cdata = json.loads((ROOT / 'dist/assets/js/content.js').read_text(encoding='utf-8').split('=', 1)[1].strip().removesuffix(';'))['en']
 know = [(ROOT / 'dist/llms.txt').read_text(encoding='utf-8').strip(), '', '## All products in stock (prices in GEL, from the website shop)']

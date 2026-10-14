@@ -32,7 +32,9 @@
     panel.setAttribute("role", "dialog"); panel.setAttribute("aria-label", t("chat_title"));
     var head = el("div", "chat-head");
     var titles = el("div", "chat-titles");
-    titles.append(el("p", "chat-title", t("chat_title")), el("p", "chat-sub", t(ai ? "chat_sub" : live ? "chat_sub_live" : "chat_sub_off")));
+    titles.append(el("p", "chat-title", t("chat_title")));
+    // Owner: no subtitle in the chat header; only when the website chat is off, say where we reply instead.
+    if (!live) titles.append(el("p", "chat-sub", t("chat_sub_off")));
     var close = el("button", "chat-icon-btn", "×"); close.type = "button"; close.setAttribute("aria-label", t("chat_close"));
     head.append(titles, close);
     var log = el("div", "chat-log"); log.setAttribute("role", "log"); log.setAttribute("aria-live", "polite");

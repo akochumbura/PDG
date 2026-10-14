@@ -15,10 +15,12 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - Hosting is Cloudflare Pages: it serves /shop.html as /shop. The build writes clean URLs (no .html) in links,
   canonicals and the sitemap; verify fails on any internal .html link. 404.html exists per language (noindex).
   Local preview that behaves the same: `python scripts/serve.py`.
-- Prices: a fixed GEL price in the catalog `gel` column wins (packages, B141050 battery 5999, XAG generator 5899).
-  Otherwise shop price = Agrifuture USD x markup x RATE (parts x1.70). Change only scripts/pricing.py or scripts/catalog.csv.
-- Packages (owner, 14 Oct 2026): only three - Starter 75,999 (drone, 4 batteries, 2 chargers), Pro 85,999 (drone, 6 batteries,
-  2 chargers, RTK station), Business 104,999 (drone, 8 batteries, 2 chargers, 2 generators). Contents = catalog columns.
+- Prices (owner, 14 Oct 2026): the shop = the owner's price list PDG_XAG_Complete_Item_Price_List_With_Margins.xlsx (268 items,
+  sheet "Full Item Price List", Retail incl. VAT GEL) imported into scripts/catalog.csv by scripts/import-price-list.py (SKU = invoice Code
+  P0000xxxxx, name = Original item, name_ka = Georgian item). Cost/margin columns are internal and never published. A new list: rerun the import.
+  Prices show only the ₾ sign; no "prices in GEL / ლარში / в лари" texts anywhere (owner).
+- Packages (owner, 14 Oct 2026, prices unchanged): Starter 75,999 (drone, 4 batteries, 2 chargers), Pro 85,999 (drone, 6 batteries,
+  2 chargers, RTK), Business 104,999 (drone, 8 batteries, 4 chargers, RTK). Contents = catalog columns.
 - Spraying (owner brief 14 Oct 2026): headings use შესხურება, explanatory text uses შეწამვლა; combined line
   "ზუსტი შესხურება / შეწამვლა რეალურ საველე პირობებში." Experience: "thousands of hectares in real field conditions"
   (optional quiet "2,900+ ha in the 2026 season"); never "1000+ ha". Worked with XAG V40, P100, P100 Pro; focus P150 MAX.
@@ -26,12 +28,13 @@ as a server inbox. The separately referenced FastAPI project was not included.
   Lagodekhi = warehouse and field operations. No hidden SEO text; model names only in meta/structured data/llms.txt.
 - Model range on home: P150 MAX available; P100 Pro 72,500 / P100 70,220 (drone + 4 batteries), V40 38,500 (drone + 2)
   are out of stock and show "Last package price".
-- Product photos: dist/assets/img/products/<SKU>.webp is picked up at build time. Parts without their own photo show a
-  text-only card (no grey placeholder). Never show a photo of a different product on a part card (verify enforces this).
+- Product photos: dist/assets/img/products/<SKU>.webp is picked up at build time. Until then EVERY product card (packages too)
+  shows the official XAG logo (owner, 14 Oct 2026). Never show a photo of a different product on a part card (verify enforces this).
 - No people or faces in any photo, no founder name, no CEO, no personal biography (verify blocks technical-service.webp,
   'founder', 'CEO', '1000+'). Product and equipment photos only; no DJI images in XAG sections; no AI images.
 - No negative letter-spacing anywhere (verify enforces); no decorative gradients; no loud badges.
 - P150 MAX specs on the site are from xa.com/en/p150max/p150maxspecs (Oct 2026). Do not add unverified specs.
+  Full spec table ("მახასიათებლები", 109 rows, ka/en/ru) lives in scripts/p150_specs.py, built by scripts/build-specs.py.
 - Every new UI string needs ka (in the HTML), en and ru keys in dist/assets/js/content.js.
 - Payments: Bank of Georgia via dist/_worker.js, PAUSED and not live (see docs/07-payments.md). Never claim a payment succeeded
   unless the bank receipt says completed. Under 20,000 GEL full payment, from 20,000 GEL deposit + bank transfer.
@@ -40,6 +43,7 @@ as a server inbox. The separately referenced FastAPI project was not included.
   Cloudflare secret/binding exists. Header: Home + Products/Services/Media (blog, gallery) mega menu, search (scripts/build-search.py), account, cart.
 - Home page must stay short and simple (owner): hero, dealer line, key specs, ecosystem, packages, contact. Detail lives on other pages.
 - Fonts: D-DIN (Latin, like xa.com), Noto Sans Georgian, IBM Plex Sans (Cyrillic). Keep font licences in dist/assets/fonts.
+  Header logo = "XAG – PDG" lockup: official XAG vector logo (dist/assets/img/xag-logo.svg / xag-logo-white.svg, from xa.com) + dash + PDG logo.
   Logo: pdg-logo-light.png / pdg-logo-dark.png are transparent cut-outs of the supplied logo (owner asked for this);
   header, footer and logo follow the light/dark theme (default = phone setting).
 - Dealer claim, exact owner wording only: "Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus
@@ -54,7 +58,9 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - Farmer search words (შეწამვლა, აგროდრონი, აგრო დრონი, შესაწამლი დრონი…) live only in meta keywords, search synonyms (scripts/build-search.py) and FAQ wording — never as visible keyword lists.
 - P150 MAX positioning: world-class flagship agricultural platform for spraying, granule spreading and cargo transport.
 - Header: language dropdown (#langBtn/#langList), About us in the top menu, light theme by default.
-- Chat = website conversation first (stored in PDG_DATA, team answers at /api/chat/inbox?key=ADMIN_KEY; AI answers when ANTHROPIC_API_KEY is set until the team replies). WhatsApp / Messenger / Call are secondary, shown after the first message. Keep the small "replies are generated by AI" note when AI is on.
+- Chat = website conversation first (stored in PDG_DATA, team answers at /api/chat/inbox). AI: OpenAI (OPENAI_API_KEY, CHAT_MODEL gpt-6-luna,
+  CHAT_EFFORT medium in Cloudflare) or Anthropic; answers every message, pauses 30 min after a team reply, learns from team replies. No subtitle in
+  the chat header (owner). AI explains why PDG chose XAG (since 2007, global leader, No.1 patent holder per XAG, next-gen; comparative part = "we believe"). WhatsApp / Messenger / Call are secondary, shown after the first message. Keep the small "replies are generated by AI" note when AI is on.
 - P150 MAX: 80 L tank, 32 L/min (two pumps), 46 L/min with the XAG 4-Nozzle Upgrade Kit (orchards and vineyards), 120 L spreader, 80 kg payload.
 - No calculator page (removed on request).
 - Site is published by pushing to GitHub akochumbura/PDG (main); Cloudflare Pages project "pdg" builds with `pip install lxml && python3 scripts/build.py`, output `dist`.

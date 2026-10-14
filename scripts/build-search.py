@@ -22,8 +22,10 @@ SYN = {
     'kit': {'ka': 'დრონი დრონები კომპლექტი კომპლექტაცია პაკეტი სასოფლო-სამეურნეო დრონი შესაწამლი დრონი შეწამვლა დრონით შეწამვლა შეწამვლა აგროდრონი აგრო დრონი გრანულების გაფანტვა სასუქის გაფანტვა ტვირთის გადატანა ფასი',
             'en': 'drone kit package agricultural drone ag drone spraying drone crop spraying sprayer spreading granules cargo price',
             'ru': 'дрон комплект пакет сельскохозяйственный дрон агродрон сельхоз дрон опрыскивание разбрасывание гранул удобрения перевозка груза цена'},
+    'drone': {'ka': 'დრონი დრონები სასოფლო-სამეურნეო დრონი შესაწამლი დრონი აგროდრონი აგრო დრონი შეწამვლა ფასი',
+              'en': 'drone agricultural drone ag drone spraying drone price', 'ru': 'дрон сельскохозяйственный дрон агродрон опрыскивание цена'},
 }
-CAT = {'power': 'cat_power', 'spray': 'cat_spray', 'control': 'cat_control', 'acc': 'cat_acc', 'spare': 'cat_spare', 'kit': 'packages_title'}
+CAT = {'power': 'cat_power', 'spray': 'cat_spray', 'control': 'cat_control', 'acc': 'cat_acc', 'spare': 'cat_spare', 'kit': 'packages_title', 'drone': 'cat_drone'}
 
 
 def page_url(rel):
