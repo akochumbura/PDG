@@ -137,7 +137,7 @@ by_sku = {r['sku']: r for r in rows}
 for pattern, body in [(r'(<div class="shop-grid kit-grid" id="homePackages">).*?(</div>\s*<!--/homePackages-->)', '\n' + ''.join(card(r) for r in kits)),
                       (r'(<ul class="part-list" id="homeParts">).*?(</ul>\s*<!--/homeParts-->)', '\n' + ''.join(part_row(by_sku[s]) for s in HOME_PARTS if s in by_sku))]:
     ht, n = re.subn(pattern, lambda m: m.group(1) + body + m.group(2), ht, count=1, flags=re.S)
-    if n != 1:
+    if n != 1 and 'homePackages' in pattern:
         raise SystemExit('Home page marker not found: ' + pattern[:50])
 home.write_text(ht, encoding='utf-8')
 for pattern, body in subs:

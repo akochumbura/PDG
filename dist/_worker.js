@@ -218,9 +218,11 @@ async function status(env, url) {
   if (!r) return json({ status: 'unknown' }, 404);
   await remember(env, r);
   const pu = r.purchase_units || {};
+  const items = Array.isArray(pu.items) ? pu.items : [];
   return json({
     status: r.order_status && r.order_status.key || 'unknown',
     ref: r.external_order_id || '',
+    deposit: items.some(i => i && (i.product_id === 'DEPOSIT' || i.external_item_id === 'DEPOSIT')),
     amount: Number(pu.transfer_amount || pu.request_amount) || 0,
     currency: pu.currency_code || 'GEL'
   });

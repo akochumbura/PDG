@@ -1,5 +1,7 @@
-/* PDG shop: cart (kept in this browser), order by WhatsApp or e-mail, optional payment hook.
-   Payments are NOT connected until payments-config.js has an endpoint (see docs/07-payments.md). */
+/* PDG shop: cart (kept in this browser), order by WhatsApp or e-mail, and online payment through
+   Bank of Georgia (card, Apple Pay, Google Pay). The Pay button appears only when /api/payments/config
+   says the bank keys are set (docs/07-payments.md). Orders under the threshold are paid in full,
+   larger ones pay a deposit online. The payment page (payment.html) shows only what the bank confirms. */
 (function () {
   "use strict";
   var KEY = "pdg_cart", WHATSAPP = "995550004333", EMAIL = "info@premium-drones.ge";
@@ -18,6 +20,8 @@
   Object.keys(cart).forEach(function (k) { var it = cart[k]; if (!it || !(it.q > 0) || !(it.p >= 0)) delete cart[k]; });
   save();
 
+  var PAY = window.PDG_PAY || {}, payReady = false, paying = false;
+  function payAmount(t) { return t >= PAY.threshold ? Math.min(Math.ceil(t * PAY.depositPercent / 100), PAY.threshold - 1) : t; }
   var badge = document.getElementById("cartCount"), dlg = document.getElementById("cart");
   var form = document.getElementById("cartForm");
 
@@ -55,7 +59,18 @@
     });
     document.getElementById("cartTotal").textContent = fmt(T[0]);
     var pay = document.getElementById("cartPay");
-    if (pay) pay.hidden = !(window.PDG_PAY && window.PDG_PAY.endpoint);
+    if (pay) {
+      var amount = payAmount(T[0]), dep = T[0] >= PAY.threshold;
+      pay.hidden = !payReady;
+      pay.querySelector("span").textContent = label(dep ? "lbPayDeposit" : "lbPayFull") + " · " + fmt(amount);
+      var dn = document.getElementById("cartDeposit");
+      dn.hidden = !(payReady && dep);
+      if (dep) dn.textContent = label("lbDeposit").replace("{pct}", PAY.depositPercent).replace("{deposit}", fmt(amount)).replace("{rest}", fmt(T[0] - amount));
+      var wa = document.getElementById("cartWa");
+      wa.classList.toggle("button-red", !payReady); wa.classList.toggle("button-line", payReady);
+      document.getElementById("cartNote").hidden = payReady;
+      document.getElementById("cartPayNote").hidden = !payReady;
+    }
   }
   function change(k, d) { if (!cart[k]) return; cart[k].q += d; if (cart[k].q < 1) delete cart[k]; save(); render(); }
   function openCart() { if (dlg && dlg.showModal && !dlg.open) { dlg.showModal(); document.body.classList.add("modal-open"); } }
@@ -95,21 +110,90 @@
       if (!Object.keys(cart).length || !valid()) return;
       location.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent("Premium Drones Georgia — " + label("lbOrder")) + "&body=" + encodeURIComponent(orderText());
     });
-    document.getElementById("cartPay").addEventListener("click", function () {
-      if (!valid()) return;
+    var payBtn = document.getElementById("cartPay"), payErr = document.getElementById("cartPayError");
+    payBtn.addEventListener("click", function () {
+      if (paying || !payReady || !Object.keys(cart).length || !valid()) return;
+      paying = true; payBtn.disabled = true; payErr.hidden = true;
       var order = {
-        items: Object.keys(cart).map(function (k) { return { sku: k, name: cart[k].n, qty: cart[k].q, price: cart[k].p }; }),
-        total: totals()[0], currency: "GEL", lang: document.documentElement.lang,
+        items: Object.keys(cart).map(function (k) { return { sku: k, qty: cart[k].q }; }),
+        lang: document.documentElement.lang,
         customer: { name: form.elements.name.value.trim(), phone: form.elements.phone.value.trim(), address: form.elements.address.value.trim() }
       };
-      fetch(window.PDG_PAY.endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(order) })
-        .then(function (r) { return r.json(); })
-        .then(function (d) { if (d && d.url) location.href = d.url; else throw new Error("no url"); })
-        .catch(function () { error.hidden = false; });
+      fetch(PAY.endpoint + "/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(order) })
+        .then(function (r) { return r.json().then(function (d) { return [r.ok, d]; }); })
+        .then(function (x) {
+          var d = x[1];
+          if (!x[0] || !d || !d.url) throw new Error("checkout");
+          try { localStorage.setItem("pdg_pay", JSON.stringify({ id: d.id, ref: d.ref, mode: d.mode, total: d.total, amount: d.amount, t: Date.now() })); } catch (e) { /* private mode */ }
+          location.href = d.url;
+        })
+        .catch(function () { paying = false; payBtn.disabled = false; payErr.hidden = false; });
     });
+    window.addEventListener("pageshow", function () { paying = false; payBtn.disabled = false; });
   }
   if (location.hash === "#cart") openCart();
   render();
+
+  /* Online payment switches itself on when the server has the bank keys. */
+  if (PAY.endpoint && dlg) {
+    fetch(PAY.endpoint + "/payments/config", { headers: { Accept: "application/json" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (c) {
+        if (!c || !c.enabled) return;
+        if (c.threshold) PAY.threshold = c.threshold;
+        if (c.depositPercent) PAY.depositPercent = c.depositPercent;
+        payReady = true; render();
+      })
+      .catch(function () { /* static preview or payments off */ });
+  }
+
+  /* Payment status page: show only what the bank confirms. */
+  var ps = document.getElementById("payStatus");
+  if (ps) {
+    var qs = new URLSearchParams(location.search), ref = qs.get("ref") || "", saved = {};
+    try { saved = JSON.parse(localStorage.getItem("pdg_pay") || "{}") || {}; } catch (e) { saved = {}; }
+    if (saved.ref !== ref) saved = {};
+    var okRef = /^PDG-\d{6}-[A-Z0-9]{6}$/.test(ref);
+    if (okRef) {
+      document.getElementById("payRefNo").textContent = ref;
+      document.getElementById("payRef").hidden = false;
+      document.getElementById("payWa").href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(label("lb_pay_wa_text").replace("{ref}", ref));
+    }
+    var show = function (state, title, text) {
+      ps.setAttribute("data-state", state);
+      document.getElementById("payTitle").textContent = label(title);
+      document.getElementById("payText").textContent = text;
+      document.getElementById("payRetry").hidden = state !== "failed";
+    };
+    var tries = 0;
+    var check = function () {
+      fetch(PAY.endpoint + "/payments/status?" + (saved.id ? "id=" + encodeURIComponent(saved.id) : "ref=" + encodeURIComponent(ref)), { headers: { Accept: "application/json" } })
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error("status")); })
+        .then(function (d) {
+          if (d.ref && d.ref !== ref) throw new Error("ref");
+          var s = d.status;
+          if (s === "completed") {
+            if (d.deposit || saved.mode === "deposit") {
+              var t = label("lb_pay_dep_text").replace("{deposit}", fmt(d.amount));
+              if (saved.total > d.amount) t += " " + label("lb_pay_rest").replace("{rest}", fmt(saved.total - d.amount));
+              show("paid", "lb_pay_dep_done", t);
+            } else show("paid", "lb_pay_done", label("lb_pay_done_text"));
+            cart = {}; save(); render();
+            try { localStorage.removeItem("pdg_pay"); } catch (e) { /* ignore */ }
+          } else if (s === "rejected") {
+            show("failed", "lb_pay_failed", label("lb_pay_failed_text"));
+          } else if (["created", "processing", "auth_requested", "blocked", "partial_completed"].indexOf(s) > -1) {
+            show("pending", "lb_pay_pending", label("lb_pay_pending_text"));
+            if (tries++ < 6) setTimeout(check, 4000);
+          } else show("unknown", "lb_pay_unknown", label("lb_pay_unknown_text"));
+        })
+        .catch(function () {
+          if (qs.get("r") === "fail") show("failed", "lb_pay_failed", label("lb_pay_failed_text"));
+          else show("unknown", "lb_pay_unknown", label("lb_pay_unknown_text"));
+        });
+    };
+    if (okRef && PAY.endpoint) check(); else show("unknown", "lb_pay_unknown", label("lb_pay_unknown_text"));
+  }
 
   /* Parts filter */
   var search = document.getElementById("partSearch");

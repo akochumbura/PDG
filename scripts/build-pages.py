@@ -107,8 +107,10 @@ def render(page_source, language, filename):
     doc_head=doc.find('head')
     path=page_path(filename)
     canonical=BASE_URL+prefix+path
-    if filename=='404.html':
+    if filename in ('404.html','payment.html'):
         etree.SubElement(doc_head,'meta',name='robots',content='noindex')
+    if filename=='404.html':
+        pass
     else:
         etree.SubElement(doc_head,'link',rel='canonical',href=canonical)
         for target in ['ka','en','ru','x-default']:
@@ -130,6 +132,7 @@ def render(page_source, language, filename):
         org['areaServed']={"@type":"Country","name":"Georgia"}
         org['knowsAbout']=["agricultural drones","crop spraying drones","drone crop spraying","drone spreading","drone operator training","drone repair","agricultural drone batteries and parts","XAG P150 MAX","XAG P150","XAG P100 Pro","XAG V40","XAG V50 Pro","DJI Agras T100","DJI Agras T70P","DJI Agras T50","DJI Agras T40","DJI Agras T25"]
         org.pop('@context',None); graph.append(org)
+    if True:
         faq=[{"@type":"Question","name":d.findtext('summary').strip(),"acceptedAnswer":{"@type":"Answer","text":d.findtext('p').strip()}} for d in doc.xpath('//details[contains(@class,"faq-item")]')]
         if faq: graph.append({"@type":"FAQPage","mainEntity":faq})
     kits=doc.xpath('//article[contains(@class,"product-kit")]') if filename=='shop.html' else []
@@ -154,7 +157,7 @@ import datetime
 today=datetime.date.today().isoformat()
 urls=[]
 for filename in pages:
-    if filename=='404.html':continue
+    if filename in ('404.html','payment.html'):continue
     path=page_path(filename)
     alts=''.join(f'<xhtml:link rel="alternate" hreflang="{l}" href="{BASE_URL}{"" if l in ("ka","x-default") else "/"+l}{path}"/>' for l in ['ka','en','ru','x-default'])
     for language in ['ka','en','ru']:

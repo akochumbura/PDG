@@ -33,7 +33,9 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - No negative letter-spacing anywhere (verify enforces); no decorative gradients; no loud badges.
 - P150 MAX specs on the site are from xa.com/en/p150max/p150maxspecs (Oct 2026). Do not add unverified specs.
 - Every new UI string needs ka (in the HTML), en and ru keys in dist/assets/js/content.js.
-- Payments are NOT connected; never claim a payment succeeded. Orders go by WhatsApp/e-mail. See docs/07-payments.md.
+- Payments: Bank of Georgia via dist/_worker.js, PAUSED and not live (see docs/07-payments.md). Never claim a payment succeeded
+  unless the bank receipt says completed. Under 20,000 GEL full payment, from 20,000 GEL deposit + bank transfer.
+- Home page must stay short and simple (owner): hero, dealer line, key specs, ecosystem, packages, contact. Detail lives on other pages.
 - Fonts: D-DIN (Latin, like xa.com), Noto Sans Georgian, IBM Plex Sans (Cyrillic). Keep font licences in dist/assets/fonts.
   Logo: pdg-logo-light.png / pdg-logo-dark.png are transparent cut-outs of the supplied logo (owner asked for this);
   header, footer and logo follow the light/dark theme (default = phone setting).

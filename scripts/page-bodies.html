@@ -147,7 +147,7 @@
 <article class="product" data-cat="spare"><div class="product-body"><p class="product-cat" data-i18n="cat_spare">სათადარიგო ნაწილები</p><p class="product-sku">02-001-11270</p><h3>XAG Front Wire Cover for P150</h3><p class="product-stock" data-i18n="in_stock">საწყობშია</p><div class="product-buy"><span class="product-price">₾21</span><button type="button" class="add-btn" data-sku="02-001-11270" data-name="XAG Front Wire Cover for P150" data-price="21" data-i18n="add_to_cart">კალათაში</button></div></div></article>
 <article class="product" data-cat="spare"><div class="product-body"><p class="product-cat" data-i18n="cat_spare">სათადარიგო ნაწილები</p><p class="product-sku">14-007-00203</p><h3>XAG Fuselage Side &amp; Motor Side Liquid Tube for P150</h3><p class="product-stock" data-i18n="in_stock">საწყობშია</p><div class="product-buy"><span class="product-price">₾76</span><button type="button" class="add-btn" data-sku="14-007-00203" data-name="XAG Fuselage Side &amp; Motor Side Liquid Tube for P150" data-price="76" data-i18n="add_to_cart">კალათაში</button></div></div></article>
 </div></div></section>
-  <dialog class="cart" id="cart" aria-label="კალათა" data-i18n-aria="cart_title"><div class="cart-head"><h2 data-i18n="cart_title">კალათა</h2><button type="button" class="cart-close" id="cartClose" aria-label="დახურვა" data-i18n-aria="close_label">×</button></div><p class="cart-empty" id="cartEmpty" data-i18n="cart_empty">კალათა ცარიელია.</p><ul class="cart-list" id="cartList"></ul><div class="cart-foot" id="cartFoot" hidden><p class="cart-total"><span data-i18n="cart_total">ჯამი</span><strong id="cartTotal"></strong></p><form class="cart-form" id="cartForm" novalidate><label><span data-i18n="co_name">სახელი</span><input name="name" autocomplete="name" required></label><label><span data-i18n="co_phone">ტელეფონი</span><input name="phone" type="tel" autocomplete="tel" required></label><label><span data-i18n="co_address">ქალაქი / მისამართი</span><input name="address" autocomplete="street-address"></label><p class="cart-error" id="cartError" role="alert" hidden data-i18n="co_error">მიუთითეთ სახელი და ტელეფონი.</p><button class="button button-red" type="submit" id="cartWa"><span data-i18n="order_whatsapp">შეკვეთა WhatsApp-ით</span></button><button class="button button-red" type="button" id="cartPay" hidden><span data-i18n="pay_online">გადახდა ონლაინ</span></button><a class="button button-line" id="cartMail"><span data-i18n="order_email">შეკვეთა ელფოსტით</span></a></form><p class="cart-note" data-i18n="cart_note">ონლაინ გადახდა არ ხდება: PDG დაადასტურებს ფასს, ხელმისაწვდომობას და მიწოდებას.</p></div><p hidden id="lbRemove" data-i18n="cart_remove">წაშლა</p><p hidden id="lbOrder" data-i18n="order_label">შეკვეთა</p><p hidden id="lbTotal" data-i18n="cart_total">ჯამი</p><p hidden id="lbLess" data-i18n="qty_less">რაოდენობის შემცირება</p><p hidden id="lbMore" data-i18n="qty_more">რაოდენობის გაზრდა</p></dialog>
+  <dialog class="cart" id="cart" aria-label="კალათა" data-i18n-aria="cart_title"><div class="cart-head"><h2 data-i18n="cart_title">კალათა</h2><button type="button" class="cart-close" id="cartClose" aria-label="დახურვა" data-i18n-aria="close_label">×</button></div><p class="cart-empty" id="cartEmpty" data-i18n="cart_empty">კალათა ცარიელია.</p><ul class="cart-list" id="cartList"></ul><div class="cart-foot" id="cartFoot" hidden><p class="cart-total"><span data-i18n="cart_total">ჯამი</span><strong id="cartTotal"></strong></p><form class="cart-form" id="cartForm" novalidate><label><span data-i18n="co_name">სახელი</span><input name="name" autocomplete="name" required></label><label><span data-i18n="co_phone">ტელეფონი</span><input name="phone" type="tel" autocomplete="tel" required></label><label><span data-i18n="co_address">ქალაქი / მისამართი</span><input name="address" autocomplete="street-address"></label><p class="cart-error" id="cartError" role="alert" hidden data-i18n="co_error">მიუთითეთ სახელი და ტელეფონი.</p><p class="cart-deposit" id="cartDeposit" hidden></p><button class="button button-red" type="button" id="cartPay" hidden><span data-i18n="pay_full">ონლაინ გადახდა</span></button><p class="cart-error" id="cartPayError" role="alert" hidden data-i18n="cart_pay_error">გადახდის გვერდი ვერ გაიხსნა. სცადეთ ხელახლა ან შეუკვეთეთ WhatsApp-ით.</p><button class="button button-red" type="submit" id="cartWa"><span data-i18n="order_whatsapp">შეკვეთა WhatsApp-ით</span></button><a class="button button-line" id="cartMail"><span data-i18n="order_email">შეკვეთა ელფოსტით</span></a></form><p class="cart-note" id="cartNote" data-i18n="cart_note">ონლაინ გადახდა არ ხდება: PDG დაადასტურებს ფასს, ხელმისაწვდომობას და მიწოდებას.</p><p class="cart-note" id="cartPayNote" hidden data-i18n="cart_pay_note">ბარათი (Visa, Mastercard), Apple Pay ან Google Pay — საქართველოს ბანკის დაცულ გვერდზე. ბარათის მონაცემებს ჩვენ ვერ ვხედავთ.</p><p class="cart-note"><a class="text-link" href="/terms.html" data-local><span data-i18n="terms_link">მიწოდების, დაბრუნებისა და გადახდის პირობები</span><span aria-hidden="true">→</span></a></p></div><p hidden id="lbPayFull" data-i18n="pay_full">ონლაინ გადახდა</p><p hidden id="lbPayDeposit" data-i18n="pay_deposit">დეპოზიტის გადახდა ონლაინ</p><p hidden id="lbDeposit" data-i18n="cart_deposit_note">₾20,000-დან შეკვეთაზე ონლაინ იხდით {pct}% დეპოზიტს ({deposit}). დარჩენილ თანხას ({rest}) იხდით საბანკო გადარიცხვით — ინვოისს გამოგიგზავნით.</p><p hidden id="lbRemove" data-i18n="cart_remove">წაშლა</p><p hidden id="lbOrder" data-i18n="order_label">შეკვეთა</p><p hidden id="lbTotal" data-i18n="cart_total">ჯამი</p><p hidden id="lbLess" data-i18n="qty_less">რაოდენობის შემცირება</p><p hidden id="lbMore" data-i18n="qty_more">რაოდენობის გაზრდა</p></dialog>
 </template>
 <template data-page="404.html" data-title="nf_page_title" data-description="nf_intro">
   <section class="page-hero not-found"><div class="container"><p class="eyebrow">404</p><h1 data-i18n="nf_title">გვერდი ვერ მოიძებნა</h1><p class="page-intro" data-i18n="nf_intro">ბმული შესაძლოა მოძველებულია. გადადით მთავარ გვერდზე ან მაღაზიაში.</p>
@@ -167,12 +167,92 @@
       <div class="social-links" aria-label="სოციალური ქსელები" data-i18n-aria="social_label"></div>
     </div>
   </div></section>
+    <section class="section models-section" id="models" aria-labelledby="models-title">
+      <div class="container">
+        <div class="models-head">
+          <p class="eyebrow" data-i18n="models_eyebrow">V40 · P100 · P100 Pro · P150 MAX</p>
+          <h2 id="models-title" data-i18n="models_title">XAG მოდელების ხაზი</h2>
+          <p class="section-intro" data-i18n="experience_text">PDG-ს გამოცდილება დაიწყო რეალური საველე სამუშაოდან. ჩვენ ვიმუშავეთ XAG V40, P100 და P100 Pro პლატფორმებთან ქართულ პირობებში და პრაქტიკაში გავიარეთ ბატარეების, დამუხტვის, ნაწილების, სერვისისა და ოპერატორის მომზადების ყველა მთავარი საკითხი. დღეს ჩვენი მიზანია XAG ეკოსისტემის განვითარება საქართველოში და კავკასიის რეგიონში.</p>
+        </div>
+        <article class="model-feature">
+          <div class="model-feature-photo"><img src="/assets/img/p150-max-flight-1200.webp" width="1200" height="500" alt="XAG P150 MAX ფრენისას" data-i18n-alt="hero_alt" loading="lazy" decoding="async"></div>
+          <div class="model-feature-text">
+            <p class="model-status is-available"><span data-i18n="model_available">ხელმისაწვდომია</span> · <span data-i18n="model_new_gen">ახალი თაობა</span></p>
+            <h3 class="model-name">XAG P150 MAX</h3>
+            <p class="model-text" data-i18n="model_p150_text">დღეს ჩვენი მთავარი ფოკუსია XAG P150 MAX — ახალი თაობის სამუშაო პლატფორმა დიდი დატვირთვისთვის.</p>
+            <div class="model-links">
+<a class="button button-red" href="/#packages"><span data-i18n="hero_packages">კომპლექტაციები</span><span class="arrow" aria-hidden="true">→</span></a><a class="text-link" href="/p150-max" data-local><span data-i18n="spec_all">ყველა მახასიათებელი</span><span aria-hidden="true">→</span></a>
+</div>
+          </div>
+        </article>
+        <div class="model-grid">
+          <article class="model-card">
+            <h3 class="model-name">XAG P100 Pro</h3>
+            <p class="model-status" data-i18n="model_out">მარაგში არ არის</p>
+            <p class="model-text" data-i18n="model_p100pro_text">გამოცდილი პროფესიონალური პლატფორმა, რომელიც უკვე მუშაობდა ქართულ საველე პირობებში.</p>
+            <dl class="model-price">
+<dt data-i18n="model_last_price">ბოლო პაკეტის ფასი</dt>
+<dd>
+<span class="model-amount">₾72,500</span> <span data-i18n="model_pack_4">დრონი + 4 ბატარეა</span>
+</dd>
+</dl>
+          </article>
+          <article class="model-card">
+            <h3 class="model-name">XAG P100</h3>
+            <p class="model-status" data-i18n="model_out">მარაგში არ არის</p>
+            <p class="model-text" data-i18n="model_p100_text">ძლიერი სამუშაო დრონი დიდი ფართობებისა და მომსახურე გუნდებისთვის.</p>
+            <dl class="model-price">
+<dt data-i18n="model_last_price">ბოლო პაკეტის ფასი</dt>
+<dd>
+<span class="model-amount">₾70,220</span> <span data-i18n="model_pack_4">დრონი + 4 ბატარეა</span>
+</dd>
+</dl>
+          </article>
+          <article class="model-card">
+            <h3 class="model-name">XAG V40</h3>
+            <p class="model-status" data-i18n="model_out">მარაგში არ არის</p>
+            <p class="model-text" data-i18n="model_v40_text">კომპაქტური XAG პლატფორმა, რომელმაც PDG-ს პირველი რეალური საველე გამოცდილება მისცა.</p>
+            <dl class="model-price">
+<dt data-i18n="model_last_price">ბოლო პაკეტის ფასი</dt>
+<dd>
+<span class="model-amount">₾38,500</span> <span data-i18n="model_pack_2">დრონი + 2 ბატარეა</span>
+</dd>
+</dl>
+          </article>
+        </div>
+        <dl class="facts-row">
+          <div>
+<dt data-i18n="proof_title">ათასობით ჰექტარი რეალურ სამუშაო პირობებში</dt>
+<dd data-i18n="proof_note">2,900+ ჰა 2026 წლის სეზონში</dd>
+</div>
+          <div>
+<dt data-i18n="loc_tbilisi">თბილისი</dt>
+<dd data-i18n="loc_tbilisi_role">საწყობი და სერვისი</dd>
+</div>
+          <div>
+<dt data-i18n="loc_lagodekhi">ლაგოდეხი</dt>
+<dd data-i18n="loc_lagodekhi_role">საველე ოპერაციები</dd>
+</div>
+        </dl>
+      </div>
+    </section>
+    <section class="section faq-section" id="faq" aria-labelledby="faq-title">
+      <div class="container faq-layout">
+        <h2 id="faq-title" data-i18n="faq_title">ხშირი კითხვები</h2>
+        <div class="faq-list">
+          <details class="faq-item"><summary data-i18n="faq_q1">სად შევიძინო XAG P150 MAX საქართველოში?</summary><p data-i18n="faq_a1">საქართველოს პრემიუმ დრონებიში — XAG-ის ოფიციალურ დილერთან კავკასიის რეგიონში. P150 MAX და კომპლექტები საწყობშია, ფასები ლარში ჩანს ჩვენს მაღაზიაში. შეკვეთა შეგიძლიათ WhatsApp-ით ან ელფოსტით.</p></details>
+          <details class="faq-item"><summary data-i18n="faq_q2">აკეთებთ ნაკვეთების დრონით დამუშავებას?</summary><p data-i18n="faq_a2">დიახ. ვამუშავებთ ნაკვეთებს დრონით — შეწამვლა და გაფანტვა. მოგვწერეთ ფართობი და კულტურა, და შევთანხმდებით დროზე.</p></details>
+          <details class="faq-item"><summary data-i18n="faq_q3">სად ვიყიდო P150 MAX-ის ნაწილები და აკუმულატორები?</summary><p data-i18n="faq_a3">P150 MAX-ის ორიგინალი ნაწილები, აკუმულატორები და დამტენები ჩვენს საწყობშია საქართველოში. ფასები იხილეთ მაღაზიაში.</p></details>
+          <details class="faq-item"><summary data-i18n="faq_q4">ასწავლით დრონის მართვას?</summary><p data-i18n="faq_a4">დიახ. PDG აკადემიაში ვასწავლით დრონის მართვასა და მოვლას პრაქტიკაში, ველზე. ასევე ვაკეთებთ დიაგნოსტიკასა და შეკეთებას.</p></details>
+        </div>
+      </div>
+    </section>
   <section class="section about-do"><div class="container">
     <h2 data-i18n="about_do_title">რას ვაკეთებთ</h2>
     <div class="about-do-grid">
       <a class="about-do-item" href="/p150-max.html" data-local><h3 data-i18n="about_do_1_title">დრონები და კომპლექტები</h3><p data-i18n="about_do_1_text">XAG P150 MAX და სრული კომპლექტები, საწყობიდან.</p><span class="arrow" aria-hidden="true">→</span></a>
       <a class="about-do-item" href="/consultation.html?topic=spraying" data-local><h3 data-i18n="about_do_2_title">ნაკვეთების დამუშავება</h3><p data-i18n="about_do_2_text">დრონით შესხურება და გაფანტვა თქვენს ნაკვეთზე.</p><span class="arrow" aria-hidden="true">→</span></a>
-      <a class="about-do-item" href="/consultation.html?topic=academy" data-local><h3 data-i18n="academy_title">PDG აკადემია</h3><p data-i18n="academy_description">პრაქტიკული სწავლება ოპერატორებისთვის: უსაფრთხოება, მისიის დაგეგმვა, მოწყობილობის მოვლა და პირველი სამუშაო დღე.</p><span class="arrow" aria-hidden="true">→</span></a>
+      <a class="about-do-item" id="academy" href="/consultation.html?topic=academy" data-local><h3 data-i18n="academy_title">PDG აკადემია</h3><p data-i18n="academy_description">პრაქტიკული სწავლება ოპერატორებისთვის: უსაფრთხოება, მისიის დაგეგმვა, მოწყობილობის მოვლა და პირველი სამუშაო დღე.</p><span class="arrow" aria-hidden="true">→</span></a>
       <a class="about-do-item" href="/shop.html#parts" data-local><h3 data-i18n="about_do_4_title">სერვისი და ნაწილები</h3><p data-i18n="about_do_4_text">დიაგნოსტიკა, შეკეთება და ორიგინალი ნაწილები.</p><span class="arrow" aria-hidden="true">→</span></a>
     </div>
   </div></section>
@@ -190,4 +270,25 @@
     <h2 data-i18n="article_4_h1">სეზონამდე შემოწმება</h2><p data-i18n="article_4_p1">სეზონის დაწყებამდე შეამოწმეთ ძრავები, პროპელერები, ტუმბოები, საქშენები და კაბელები. დროულად აღმოჩენილი მცირე ხარვეზი ველზე დიდ გაჩერებას გადაგარჩენთ.</p><h2 data-i18n="article_4_h2">ორიგინალი ნაწილები</h2><p data-i18n="article_4_p2">არაორიგინალმა ნაწილმა შეიძლება შეცვალოს დრონის მუშაობა და უსაფრთხოება. P150 MAX-ისთვის XAG-ის ორიგინალი ნაწილები ჩვენს საწყობშია საქართველოში.</p><h2 data-i18n="article_4_h3">რეგულარული მოვლა</h2><p data-i18n="article_4_p3">ყოველი სამუშაო დღის შემდეგ გარეცხეთ შეწამვლის სისტემა და დაათვალიერეთ დრონი. მოვლის წესები იხილეთ მწარმოებლის სახელმძღვანელოში ან ჰკითხეთ ჩვენს გუნდს.</p><h2 data-i18n="article_4_h4">როცა რამე არასწორად მუშაობს</h2><p data-i18n="article_4_p4">თუ დრონი გაფრთხილებას აჩვენებს ან უცნაურად იქცევა, შეწყვიტეთ ფრენა და დაგვიკავშირდით. დიაგნოსტიკასა და შეკეთებას თავად ვაკეთებთ.</p>
     <a class="text-link" href="/consultation.html?topic=service" data-local><span data-i18n="service_cta">სერვისის მოთხოვნა</span><span aria-hidden="true">→</span></a>
   </div></article>
+</template>
+<template data-page="payment.html" data-ka-title="გადახდის სტატუსი — საქართველოს პრემიუმ დრონები" data-title="pay_page_title" data-description="pay_page_intro">
+  <section class="page-hero"><div class="container"><h1 data-i18n="pay_heading">გადახდის სტატუსი</h1><p class="page-intro" data-i18n="pay_page_intro">ონლაინ გადახდის შედეგი.</p></div></section>
+  <section class="section"><div class="container pay-status" id="payStatus" data-state="checking">
+    <p class="pay-ref" id="payRef" hidden><span data-i18n="pay_order">შეკვეთა</span> <strong id="payRefNo"></strong></p>
+    <div aria-live="polite"><h2 id="payTitle" data-i18n="pay_checking">ვამოწმებთ გადახდას ბანკში…</h2><p class="pay-text" id="payText"></p></div>
+    <div class="pay-actions"><a class="button button-red" id="payWa" href="https://wa.me/995550004333" target="_blank" rel="noopener noreferrer"><span>WhatsApp</span><span class="arrow" aria-hidden="true">↗</span></a><a class="contact-phone-link" href="tel:+995550004333">+995 550 00 43 33</a><a class="text-link" id="payRetry" href="/shop.html#cart" data-local hidden><span data-i18n="pay_retry">კალათაში დაბრუნება</span><span aria-hidden="true">→</span></a></div>
+    <p hidden id="lb_pay_checking" data-i18n="pay_checking">ვამოწმებთ გადახდას ბანკში…</p><p hidden id="lb_pay_done" data-i18n="pay_done">გადახდა მიღებულია.</p><p hidden id="lb_pay_done_text" data-i18n="pay_done_text">გმადლობთ. დაგიკავშირდებით მიწოდების დასაზუსტებლად. შეგიძლიათ მოგვწეროთ WhatsApp-ზეც, შეკვეთის ნომრით.</p><p hidden id="lb_pay_dep_done" data-i18n="pay_dep_done">დეპოზიტი მიღებულია.</p><p hidden id="lb_pay_dep_text" data-i18n="pay_dep_text">მიღებულია {deposit}. დარჩენილ თანხას გადაიხდით საბანკო გადარიცხვით — ინვოისს გამოგიგზავნით და დაგიკავშირდებით მიწოდების დასაზუსტებლად.</p><p hidden id="lb_pay_rest" data-i18n="pay_rest">დარჩენილი თანხა: {rest}.</p><p hidden id="lb_pay_pending" data-i18n="pay_pending">გადახდა მუშავდება.</p><p hidden id="lb_pay_pending_text" data-i18n="pay_pending_text">ბანკს გადახდა ჯერ არ დაუდასტურებია. გვერდი რამდენიმე წამში თავიდან შეამოწმებს. თუ სტატუსი არ შეიცვალა, დაგვიკავშირდით შეკვეთის ნომრით.</p><p hidden id="lb_pay_failed" data-i18n="pay_failed">გადახდა არ შესრულდა.</p><p hidden id="lb_pay_failed_text" data-i18n="pay_failed_text">ბანკმა გადახდა არ დაადასტურა. კალათა შენახულია: სცადეთ ხელახლა ან შეუკვეთეთ WhatsApp-ით.</p><p hidden id="lb_pay_unknown" data-i18n="pay_unknown">სტატუსის შემოწმება ვერ მოხერხდა.</p><p hidden id="lb_pay_unknown_text" data-i18n="pay_unknown_text">დაგვიკავშირდით შეკვეთის ნომრით და გადავამოწმებთ.</p><p hidden id="lb_pay_wa_text" data-i18n="pay_wa_text">გამარჯობა! შეკვეთა {ref}</p>
+  </div></section>
+</template>
+<template data-page="terms.html" data-ka-title="მიწოდების, დაბრუნებისა და გადახდის პირობები — საქართველოს პრემიუმ დრონები" data-title="terms_page_title" data-description="terms_intro">
+  <section class="page-hero"><div class="container"><a class="back-link" href="/" data-home data-i18n="back_home">← მთავარი გვერდი</a><h1 data-i18n="terms_heading">პირობები</h1><p class="page-intro" data-i18n="terms_intro">როგორ ვყიდით, ვიღებთ გადახდას, ვაწვდით და ვაბრუნებთ თანხას.</p></div></section>
+  <article class="container terms-body">
+    <h2 data-i18n="terms_h1">გამყიდველი</h2><p data-i18n="terms_p1">საქართველოს პრემიუმ დრონები (Premium Drones Georgia LLC). საწყობი და სერვისი: თბილისი, ფანასკერტელ-ციციშვილის ქ. N12 — წინასწარი შეთანხმებით. ტელეფონი და WhatsApp: +995 550 00 43 33. ელფოსტა: info@premium-drones.ge.</p>
+    <h2 data-i18n="terms_h2">ფასები და გადახდა</h2><p data-i18n="terms_p2">ფასები მითითებულია ლარში (GEL). როცა კალათაში ჩანს ონლაინ გადახდა, ₾20,000-მდე შეკვეთას სრულად იხდით ბარათით (Visa, Mastercard), Apple Pay-ით ან Google Pay-ით საქართველოს ბანკის დაცულ გვერდზე. ₾20,000 და მეტი ღირებულების შეკვეთაზე ონლაინ იხდით 10% დეპოზიტს, დარჩენილ თანხას კი — საბანკო გადარიცხვით ჩვენი ინვოისის მიხედვით. შეგიძლიათ შეუკვეთოთ WhatsApp-ით ან ელფოსტითაც და გადაიხადოთ საბანკო გადარიცხვით. ბარათის მონაცემებს ჩვენ ვერ ვხედავთ და არ ვინახავთ.</p>
+    <h2 data-i18n="terms_h3">შეკვეთის დადასტურება</h2><p data-i18n="terms_p3">შეკვეთის შემდეგ ტელეფონით ან WhatsApp-ით გიდასტურებთ მარაგს და მიწოდებას. შეკვეთა გადახდილად ითვლება მხოლოდ მაშინ, როცა გადახდას ბანკი დაადასტურებს.</p>
+    <h2 data-i18n="terms_h4">მიწოდება</h2><p data-i18n="terms_p4">გატანა თბილისის საწყობიდან წინასწარი შეთანხმებით, ან მიწოდება საქართველოს მასშტაბით, თქვენთან შეთანხმებით. მიწოდების ვადასა და ღირებულებას გაგზავნამდე შევათანხმებთ.</p>
+    <h2 data-i18n="terms_h5">დაბრუნება და თანხის დაბრუნება</h2><p data-i18n="terms_p5">ონლაინ ნაყიდი ნივთის დაბრუნება შეგიძლიათ მიღებიდან 14 დღის განმავლობაში, თუ ის გამოუყენებელია, სრული და ორიგინალ შეფუთვაშია. ჯერ დაგვიკავშირდით. თანხას ვაბრუნებთ იმავე ბარათზე ან ანგარიშზე, ნივთის მიღებიდან 14 დღის განმავლობაში. თუ შეკვეთას ვერ მოგაწვდით, დეპოზიტს ან გადახდილ თანხას სრულად დაგიბრუნებთ.</p>
+    <h2 data-i18n="terms_h6">გარანტია</h2><p data-i18n="terms_p6">XAG-ის პროდუქციაზე მოქმედებს მწარმოებლის გარანტია XAG-ის პირობებით. დიაგნოსტიკასა და შეკეთებას საქართველოში ვაკეთებთ.</p>
+    <h2 data-i18n="terms_h7">პერსონალური მონაცემები</h2><p data-i18n="terms_p7">თქვენს სახელს, ტელეფონსა და მისამართს ვიყენებთ მხოლოდ შეკვეთის შესრულებისა და მიწოდებისთვის. ბარათით გადახდას ამუშავებს საქართველოს ბანკი; ბარათის მონაცემები ჩვენამდე არ აღწევს.</p>
+  </article>
 </template>
