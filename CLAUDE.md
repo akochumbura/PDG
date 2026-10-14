@@ -93,9 +93,9 @@ as a server inbox. The separately referenced FastAPI project was not included.
   app icon / favicon were recoloured to exactly these values (dark version: #F4F3EF + #CC0000). pdg-logo.png = untouched original.
 - Header: PDG ~ XAG (literal "~", equal logo heights). Strip below the hero: XAG ~ PDG (literal "~"), then exactly
   "საქართველოს პრემიუმ დრონები არის XAG-ის ოფიციალური და ერთადერთი დილერი კავკასიაში." (key dealer_strip). No extra slogans.
-- Hero (owner, 14 Oct 2026 late): centred like his reference: tagline "სწრაფი, ზუსტი, ყოველთვის საიმედო" (key hero_tagline;
-  en "Fast, precise, always reliable", ru "Быстрый, точный, всегда надёжный") above the bold "XAG P150 MAX", then the sentence and
-  buttons, equal gaps; the whole drone visible below the text.
+- Hero (owner, 14 Oct 2026 final): photo as before, text on the LEFT, centred vertically: small bold tagline
+  "სწრაფი, ზუსტი, ყოველთვის საიმედო" (hero_tagline) above "XAG P150 MAX" in Barlow Bold (OFL, self-hosted), then sentence and buttons.
+  Do not redesign the hero.
 
 ## STATUS — 2026-10-14 (read this first in a new chat)
 Live: premium-drones.ge on Cloudflare Pages project "pdg" (account ako.chumburidze@gmail.com), auto-deploys from GitHub akochumbura/PDG main.

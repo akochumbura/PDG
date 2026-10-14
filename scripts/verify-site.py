@@ -92,7 +92,7 @@ for css in PUBLIC.rglob('*.css'):
     if re.search(r'letter-spacing:\s*-',css.read_text()):errors.append(f'{css.relative_to(PUBLIC)}: negative letter-spacing (owner: none)')
 cyr=TTFont(PUBLIC/'assets/fonts/ibm-plex-sans-cyrillic-400-normal.woff2')
 if not all(i in cyr.getBestCmap() for i in range(0x0410,0x0450)):errors.append('Missing Cyrillic glyphs')
-for license_name in ['OFL-D-DIN.txt','OFL-NotoSansGeorgian.txt','OFL-IBMPlexSans.txt']:
+for license_name in ['OFL-D-DIN.txt','OFL-NotoSansGeorgian.txt','OFL-IBMPlexSans.txt','OFL-Barlow.txt']:
     if not (PUBLIC/'assets/fonts'/license_name).is_file():errors.append('Missing '+license_name)
 if errors:
     print('\n'.join(errors));raise SystemExit(1)
