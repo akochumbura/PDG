@@ -43,7 +43,7 @@ CAT_KEY = {'power': ('cat_power', 'აკუმულატორები დ�
 CONTENTS = [('drones', 'kit_drone', 'დრონი P150 MAX'), ('batteries', 'kit_batteries', 'აკუმულატორები'),
             ('chargers', 'kit_chargers', 'დამტენები'), ('rtk', 'kit_rtk', 'RTK სადგური'),
             ('generators', 'kit_generators', 'გენერატორები')]
-HOME_PARTS = ['09-017-00083', 'XAG-GENERATOR', '09-017-00069', '05-002-02311', '09-017-00065', '09-016-00083']
+HOME_PARTS = ['09-017-00083', 'XAG-GC4000P-G3', '09-017-00069', '05-002-02311', '09-017-00065', '09-016-00083']
 
 
 def contents(r, cls='kit-contents'):
@@ -85,6 +85,18 @@ def cat(r):
     return f'<p class="product-cat" data-i18n="{key}">{ka}</p>'
 
 
+def pkey(sku):
+    return 'pn_' + re.sub(r'[^A-Za-z0-9]', '_', sku)
+
+
+def title(r):
+    """Parts: the Georgian/Russian name first (per language), the original XAG name under it. Kits: the original name."""
+    n = html.escape(r['name'])
+    if not (r.get('name_ka') or '').strip():
+        return f'<h3>{n}</h3>'
+    return f'<h3 data-i18n="{pkey(r["sku"])}">{html.escape(r["name_ka"])}</h3><p class="product-orig">{n}</p>'
+
+
 def part_row(r):
     """Compact row for the home page 'Parts and energy system' list."""
     n = html.escape(r['name'], quote=True)
@@ -101,7 +113,7 @@ def card(r):
     s = r['sku']
     p = price(r, kit)
     return (f'<article class="product{" product-kit" if kit else ""}" data-cat="{r["group"]}">{photo(r, kit)}'
-            f'<div class="product-body">{cat(r)}<p class="product-sku">{s}</p><h3>{n}</h3>{contents(r) if kit else ""}'
+            f'<div class="product-body">{cat(r)}<p class="product-sku">{s}</p>{title(r)}{contents(r) if kit else ""}'
             f'<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
             f'<div class="product-buy"><span class="product-price">₾{p:,}</span>'
             f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></div></div></article>\n')
@@ -118,6 +130,17 @@ def kit_row(r):
 
 
 rows = list(csv.DictReader(open(ROOT / 'scripts/catalog.csv', encoding='utf-8')))
+import json as _json
+_cj = ROOT / 'dist/assets/js/content.js'
+_c = _json.loads(_cj.read_text(encoding='utf-8').split('=', 1)[1].strip().removesuffix(';'))
+for _lang in ('en', 'ru', 'ka'):
+    for _k in [k for k in _c[_lang] if k.startswith('pn_')]:
+        del _c[_lang][_k]
+for r in rows:
+    if (r.get('name_ka') or '').strip():
+        _c['en'][pkey(r['sku'])] = r['name']
+        _c['ru'][pkey(r['sku'])] = (r.get('name_ru') or '').strip() or r['name']
+_cj.write_text('window.PDG_CONTENT = ' + _json.dumps(_c, ensure_ascii=False, indent=2) + ';\n', encoding='utf-8')
 kits = [r for r in rows if r['group'] == 'kit']
 parts = [r for r in rows if r['group'] != 'kit']
 for r in rows:
@@ -174,7 +197,8 @@ cdata = json.loads((ROOT / 'dist/assets/js/content.js').read_text(encoding='utf-
 know = [(ROOT / 'dist/llms.txt').read_text(encoding='utf-8').strip(), '', '## All products in stock (prices in GEL, from the website shop)']
 for r in rows:
     extra = ', '.join(f"{r[c]} {c}" for c in ('drones', 'batteries', 'chargers', 'rtk', 'generators') if (r.get(c) or '').strip())
-    know.append(f"- {r['name']} (code {r['sku']}, {CATN[r['group']]}): {price(r, r['group'] == 'kit'):,} GEL" + (f" — contains {extra}" if extra else ''))
+    local = f" [ka: {r['name_ka']}; ru: {r['name_ru']}]" if (r.get('name_ka') or '').strip() else ''
+    know.append(f"- {r['name']}{local} (code {r['sku']}, {CATN[r['group']]}): {price(r, r['group'] == 'kit'):,} GEL" + (f" — contains {extra}" if extra else ''))
 know += ['', '## Buying and payment',
          f"Online payment (card, Apple Pay, Google Pay via Bank of Georgia) is being set up and may not be live yet. Planned rule: orders under {rules['threshold']:,} GEL are paid in full online; from {rules['threshold']:,} GEL the customer pays a {rules['depositPercent']}% deposit online and the rest by bank transfer.",
          'Today orders are placed from the cart by WhatsApp or email; PDG confirms stock and delivery.', '', '## Terms']

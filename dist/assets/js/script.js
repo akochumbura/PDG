@@ -78,7 +78,7 @@
     const txt = (id) => (document.getElementById(id) || {}).textContent || "";
     const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
     function load() {
-      if (!loading) loading = fetch("/assets/search/" + lang + ".json").then((r) => r.json()).then((d) => {
+      if (!loading) loading = fetch(((document.querySelector('link[href*="assets/css/style.css"]') || {}).href || "/assets/css/style.css").replace(/css\/style\.css.*$/, "search/") + lang + ".json").then((r) => r.json()).then((d) => {
         d.pages.forEach((p) => { p.h = norm(p.t + " " + p.d + " " + p.x); p.ht = norm(p.t); });
         d.products.forEach((p) => { p.h = norm(p.n + " " + p.s + " " + p.c + " " + p.k); p.ht = norm(p.n + " " + p.s); });
         index = d; return d;
@@ -102,7 +102,7 @@
       if (!prods.length && !pages.length) { none.hidden = false; return; }
       let out = "";
       if (prods.length) out += '<p class="search-group">' + esc(txt("lbSearchProducts")) + "</p><ul>" + prods.map((p) =>
-        '<li><a class="search-product" href="' + esc(p.u) + '"><span class="sp-name">' + esc(p.n) + '</span><span class="sp-meta">' + esc(p.s) + " · " + esc(p.c) + '</span><span class="sp-price">₾' + Number(p.p).toLocaleString("en-US") + "</span></a></li>").join("") + "</ul>";
+        '<li><a class="search-product" href="' + esc(p.u) + '"><span class="sp-name">' + esc(p.n) + '</span><span class="sp-meta">' + (p.o ? esc(p.o) + " · " : "") + esc(p.s) + " · " + esc(p.c) + '</span><span class="sp-price">₾' + Number(p.p).toLocaleString("en-US") + "</span></a></li>").join("") + "</ul>";
       if (pages.length) out += '<p class="search-group">' + esc(txt("lbSearchPages")) + "</p><ul>" + pages.map((p) =>
         '<li><a class="search-page" href="' + esc(p.u) + '"><span class="sp-name">' + esc(p.t) + '</span><span class="sp-text">' + esc(snippet(p, terms)) + "</span></a></li>").join("") + "</ul>";
       box.innerHTML = out;

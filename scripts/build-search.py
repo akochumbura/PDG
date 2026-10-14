@@ -70,6 +70,8 @@ for lang in ('ka', 'en', 'ru'):
         key = CAT[g]
         cat = KA.get(key, '') if lang == 'ka' else T[lang].get(key, '')
         url = f'{prefix}/shop#kits' if g == 'kit' else f'{prefix}/shop?q={r["sku"]}#parts'
-        products.append({'n': r['name'], 's': r['sku'], 'p': prices.get(r['sku'], 0), 'c': cat, 'k': SYN[g][lang], 'u': url})
+        local = (r.get('name_' + lang) or '').strip() if lang != 'en' else ''
+        products.append({'n': local or r['name'], 'o': r['name'] if local else '', 's': r['sku'], 'p': prices.get(r['sku'], 0), 'c': cat,
+                         'k': SYN[g][lang] + ' ' + r['name'], 'u': url})
     (out_dir / f'{lang}.json').write_text(json.dumps({'pages': pages, 'products': products}, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
     print(f'search {lang}: {len(pages)} pages, {len(products)} products')
