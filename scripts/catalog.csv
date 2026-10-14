@@ -35,10 +35,10 @@ spare,XAG Front Shell of Busbar for P150,02-001-11028,7.25,
 spare,XAG Front Wire Cover for P150,02-001-11270,4.75,
 spare,XAG Fuselage Side & Motor Side Liquid Tube for P150,14-007-00203,16.95,
 kit,XAG P150 Max Agricultural Drone (with RevoSpray 5),09-007-00158,19990,flight
-kit,XAG P150 Max Independence Kit,XAG-P150MAX-INDEPENDENCE-KIT,17990,flight
-kit,XAG P150 Max Starter 7KW 2B2C Kit,XAG-P150-Max-Starter-7KW-2B2C-Kit,28900,flight
-kit,XAG P150 Max Standard 14KW 4B4C Kit,XAG-P150-Max-Standard-14KW-4B4C,34830,field
-kit,XAG P150 Max Standard 7KW 6B2C Kit,XAG-P150-Max-Standard-7KW-6B2C,35590,field
-kit,XAG P150 Max Ultimate 14KW 6B4C Kit,XAG-P150-Max-Ultimate-14KW-6B4C,40630,detail
+kit,XAG P150 Max Independence Kit,XAG-P150MAX-INDEPENDENCE-KIT,17990,field
+kit,XAG P150 Max Starter 7KW 2B2C Kit,XAG-P150-Max-Starter-7KW-2B2C-Kit,28900,detail
+kit,XAG P150 Max Standard 14KW 4B4C Kit,XAG-P150-Max-Standard-14KW-4B4C,34830,transport
+kit,XAG P150 Max Standard 7KW 6B2C Kit,XAG-P150-Max-Standard-7KW-6B2C,35590,flight
+kit,XAG P150 Max Ultimate 14KW 6B4C Kit,XAG-P150-Max-Ultimate-14KW-6B4C,40630,field
 kit,XAG P150 Max Ultimate 14KW 6B4C Kit without RevoCast,XAG-P150-Max-Ultimate-14KW-6B4C-norev,38210,detail
 kit,XAG P150 Max Swarm 28KW 8B8C Kit,XAG-P150-Max-Swarm-28KW-8B8C,69660,transport

@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-Disallow: /status.html
 Sitemap: https://premium-drones.ge/sitemap.xml

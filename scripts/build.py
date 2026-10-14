@@ -8,5 +8,5 @@ def run(*a):
 py=sys.executable
 run(py,'scripts/build-shop.py'); run(py,'scripts/build-pages.py',pricing.SITE_URL)
 if shutil.which('node'):
-    for f in ('content','script','shop','payments-config','photos'): run('node','--check',f'dist/assets/js/{f}.js')
+    for f in ('content','script','shop','payments-config'): run('node','--check',f'dist/assets/js/{f}.js')
 run(py,'scripts/verify-site.py'); print('BUILD OK')

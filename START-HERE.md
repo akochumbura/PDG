@@ -1,21 +1,21 @@
-# Premium Drones Georgia — website project (premium-drones.ge)
+# Premium Drones Georgia - premium-drones.ge
 
-The public website is the `dist/` folder (plain files, no server software). Everything else is tools to change it.
+The public website is the `dist/` folder: plain files, no server software.
+- Publish: docs/08-go-live-cloudflare.md  (iPhone drag-and-drop or GitHub)
+- E-mail status and DKIM fix: docs/09-email.md
+- Payments (not connected yet): docs/07-payments.md
 
-## Easiest setup: changes go live by themselves
-Follow `docs/08-setup-github-cloudflare.md` once (about 30–45 minutes). After that you just tell Claude what to change.
-
-## Daily use (after setup)
-Open this folder in Claude Code (Claude desktop app, "Code" tab) and say things like:
-- "Remove the Landing Gear from the shop."
-- "Add a part: name, code, Agrifuture price in USD."
-- "The dollar rate is now 2.70 — recalculate prices."
-- "Change the Starter kit markup" / "Change the phone number."
-Claude edits the files, runs `python scripts/build.py`, and saves (commits) the change. Cloudflare publishes it.
+## Change things by asking Claude
+Attach `PDG-Website-Project.zip` (or open this folder in Claude Code) and say what to change, for example:
+- "Remove the Landing Gear from the shop." / "Add a part: name, code, Agrifuture price in USD."
+- "The dollar rate is now 2.70 - recalculate prices." / "Change the kit markup to 12%."
+- "Here are photos named by part code - add them to the shop."
+Claude edits, runs `python scripts/build.py` (rebuild + checks), and gives back a new hosting zip.
 
 ## Where things live
-- Prices and products: `scripts/catalog.csv` (USD base price) + `scripts/pricing.py` (rate, +10% kits, +70% parts)
-- Texts in 3 languages: `scripts/page-bodies.html` (Georgian pages) + `dist/assets/js/content.js` (EN/RU)
-- Product photos: put `<code>.jpg` files in a folder, run `python scripts/import-photos.py <folder>`, then `python scripts/build.py`
-- Online payments: not connected yet — see `docs/07-payments.md`
-- Rebuild + check everything: `pip install -r requirements.txt` once, then `python scripts/build.py`
+- Products and USD base prices: `scripts/catalog.csv` (group: kit|power|spray|control|acc|spare; image = kit photo)
+- Exchange rate and markups (+10% kits, +70% parts): `scripts/pricing.py`
+- Georgian text: `dist/index.html` (home) and `scripts/page-bodies.html` (other pages); English/Russian: `dist/assets/js/content.js`
+- Product photos: `python scripts/import-photos.py <folder>` with files named by part code, then `python scripts/build.py`
+- Preview like Cloudflare: `python scripts/serve.py` then open http://localhost:8000
+- First time on a computer: `pip install -r requirements.txt`

@@ -23,7 +23,18 @@ for path,doc in documents.items():
     if any(n>1 for n in ids.values()):errors.append(f'{relative}: duplicate IDs')
     if len(doc.xpath('//h1'))!=1:errors.append(f'{relative}: expected one h1')
     if not doc.xpath('//meta[@name="description"]/@content'):errors.append(f'{relative}: no description')
-    if len(doc.xpath('//link[@rel="canonical"]'))!=1:errors.append(f'{relative}: canonical missing or duplicated')
+    if path.name=='404.html':
+        if not doc.xpath('//meta[@name="robots" and @content="noindex"]'):errors.append(f'{relative}: 404 page must be noindex')
+    elif len(doc.xpath('//link[@rel="canonical"]'))!=1:errors.append(f'{relative}: canonical missing or duplicated')
+    for script in doc.xpath('//script[@type="application/ld+json"]'):
+        try:json.loads(script.text_content())
+        except ValueError:errors.append(f'{relative}: invalid JSON-LD')
+    for href in doc.xpath('//a/@href'):
+        parts=urlsplit(href)
+        if not parts.scheme and not parts.netloc and parts.path.endswith('.html'):errors.append(f'{relative}: link uses .html URL {href} (use the clean URL)')
+    for card in doc.xpath('//article[contains(@class,"product") and @data-cat!="kit"]'):
+        for src in card.xpath('.//img/@src'):
+            if not src.startswith('/assets/img/products/'):errors.append(f'{relative}: part card shows another product photo {src}')
     for node in doc.xpath('//*[@data-i18n] | //*[@data-i18n-aria] | //*[@data-i18n-alt] | //*[@data-i18n-content] | //*[@data-i18n-placeholder]'):
         for attr in ['data-i18n','data-i18n-aria','data-i18n-alt','data-i18n-content','data-i18n-placeholder']:
             key=node.get(attr)
@@ -43,12 +54,13 @@ for path,doc in documents.items():
             if not parts.path:target=path
             else:target=(PUBLIC/unquote(parts.path).lstrip('/')) if parts.path.startswith('/') else path.parent/unquote(parts.path)
             if target.is_dir():target/= 'index.html'
+            elif not target.is_file() and target.with_name(target.name+'.html').is_file():target=target.with_name(target.name+'.html')
             if not target.is_file():errors.append(f'{relative}: missing {raw}')
             elif parts.fragment and target.suffix=='.html':
                 if not documents[target].xpath('//*[@id=$id]',id=parts.fragment):errors.append(f'{relative}: missing anchor {raw}')
             resources+=1
     if lang=='en' and re.search('[\u10a0-\u10ff]',doc.text_content()):errors.append(f'{relative}: Georgian text leaked into English')
-    for key,label in [('ka','KA'),('en','EN')]:
+    for key,label in [('ka','KA'),('en','EN'),('ru','RU')]:
         if not doc.xpath(f'//a[@data-lang="{key}"]'):errors.append(f'{relative}: missing {label} switch')
 for css in PUBLIC.rglob('*.css'):
     for source in re.findall(r'url\([\'"]?([^\)\'\"]+)',css.read_text()):

@@ -32,6 +32,25 @@ for template in templates.xpath('//template[@data-page]'):
     body = ''.join(etree.tostring(child, encoding='unicode', method='html') for child in template)
     pages[template.get('data-page')] = '<!doctype html><html lang="ka" data-theme="light">'+page_head+'<body>'+skip+header+'<main id="main">'+body+'</main>'+footer+dialog+'</body></html>'
 
+def clean_path(path):
+    """Cloudflare Pages serves /shop.html as /shop (it redirects .html URLs), so link to the clean URL directly."""
+    if path.endswith('/index.html'): return path[:-len('index.html')]
+    if path.endswith('.html'): return path[:-len('.html')]
+    return path
+
+def pretty(href):
+    parts = urlsplit(href)
+    if parts.scheme or parts.netloc or not parts.path.endswith('.html'): return href
+    return urlunsplit(('', '', clean_path(parts.path), parts.query, parts.fragment))
+
+def page_path(filename):
+    return '/' if filename == 'index.html' else '/' + clean_path(filename)
+
+ORG = {"@context": "https://schema.org", "@type": "LocalBusiness", "name": "Premium Drones Georgia",
+       "url": BASE_URL + "/", "logo": BASE_URL + "/assets/img/pdg-logo.png", "image": BASE_URL + "/assets/img/p150-max-flight.webp",
+       "telephone": "+995550004333", "email": "info@premium-drones.ge",
+       "address": {"@type": "PostalAddress", "addressLocality": "Lagodekhi", "addressCountry": "GE"}}
+
 def localized_href(href, language, filename):
     parts = urlsplit(href)
     if parts.scheme or parts.netloc: return href
@@ -65,21 +84,29 @@ def render(page_source, language, filename):
     for element in doc.xpath('//*[@data-lang]'):
         target=element.get('data-lang')
         target_prefix='' if target=='ka' else '/'+target
-        target_path='/' if filename=='index.html' else '/'+filename
+        target_path=page_path(filename)
         element.set('href',target_prefix+target_path)
         if target==language:element.set('aria-current','page')
         else:element.attrib.pop('aria-current',None)
+    for element in doc.xpath('//a[@href]'):
+        element.set('href', pretty(element.get('href')))
     # Remove any prior generated metadata so repeated generation is idempotent.
-    for el in doc.xpath('//link[@rel="canonical" or @rel="alternate"] | //meta[@property="og:url"]'):
+    for el in doc.xpath('//link[@rel="canonical" or @rel="alternate"] | //meta[@property="og:url"] | //meta[@name="robots"] | //script[@type="application/ld+json"]'):
         el.getparent().remove(el)
     doc_head=doc.find('head')
-    path='/' if filename=='index.html' else '/'+filename
+    path=page_path(filename)
     canonical=BASE_URL+prefix+path
-    etree.SubElement(doc_head,'link',rel='canonical',href=canonical)
-    for target in ['ka','en','ru','x-default']:
-        p='' if target in ['ka','x-default'] else '/'+target
-        etree.SubElement(doc_head,'link',rel='alternate',hreflang=target,href=BASE_URL+p+path)
-    etree.SubElement(doc_head,'meta',property='og:url',content=canonical)
+    if filename=='404.html':
+        etree.SubElement(doc_head,'meta',name='robots',content='noindex')
+    else:
+        etree.SubElement(doc_head,'link',rel='canonical',href=canonical)
+        for target in ['ka','en','ru','x-default']:
+            p='' if target in ['ka','x-default'] else '/'+target
+            etree.SubElement(doc_head,'link',rel='alternate',hreflang=target,href=BASE_URL+p+path)
+        etree.SubElement(doc_head,'meta',property='og:url',content=canonical)
+    if filename=='index.html':
+        ld=etree.SubElement(doc_head,'script',type='application/ld+json')
+        ld.text=json.dumps(ORG,ensure_ascii=False)
     for image in doc.xpath('//meta[@property="og:image"]'):image.set('content',BASE_URL+'/assets/img/p150-max-flight.webp')
     return '<!doctype html>\n'+etree.tostring(doc,encoding='unicode',method='html',pretty_print=True)
 
@@ -91,10 +118,11 @@ for filename,page_source in pages.items():
 
 urls=[]
 for filename in pages:
-    path='/' if filename=='index.html' else '/'+filename
+    if filename=='404.html':continue
+    path=page_path(filename)
     for language in ['ka','en','ru']:
         prefix='' if language=='ka' else '/'+language
         urls.append('<url><loc>'+BASE_URL+prefix+path+'</loc></url>')
 (PUBLIC/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(urls)+'</urlset>',encoding='utf-8')
-(PUBLIC/'robots.txt').write_text('User-agent: *\nAllow: /\nDisallow: /status.html\nSitemap: '+BASE_URL+'/sitemap.xml\n',encoding='utf-8')
+(PUBLIC/'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: '+BASE_URL+'/sitemap.xml\n',encoding='utf-8')
 print(f'Generated {len(pages)*3} pages in ka/en/ru, with canonical origin {BASE_URL}.')

@@ -17,7 +17,6 @@
   <script src="/assets/js/content.js" defer></script>
   <script src="/assets/js/script.js" defer></script>
   <script src="/assets/js/payments-config.js" defer></script>
-  <script src="/assets/js/photos.js" defer></script>
   <script src="/assets/js/shop.js" defer></script>
 <link rel="canonical" href="https://premium-drones.ge/ru/">
 <link rel="alternate" hreflang="ka" href="https://premium-drones.ge/">
@@ -25,6 +24,7 @@
 <link rel="alternate" hreflang="ru" href="https://premium-drones.ge/ru/">
 <link rel="alternate" hreflang="x-default" href="https://premium-drones.ge/">
 <meta property="og:url" content="https://premium-drones.ge/ru/">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LocalBusiness", "name": "Premium Drones Georgia", "url": "https://premium-drones.ge/", "logo": "https://premium-drones.ge/assets/img/pdg-logo.png", "image": "https://premium-drones.ge/assets/img/p150-max-flight.webp", "telephone": "+995550004333", "email": "info@premium-drones.ge", "address": {"@type": "PostalAddress", "addressLocality": "Lagodekhi", "addressCountry": "GE"}}</script>
 </head>
 <body>
   <a class="skip-link" href="#main" data-i18n="a11y_skip">Перейти к основному содержимому</a>
@@ -36,17 +36,17 @@
       <nav class="site-nav" id="site-nav" aria-label="Основная навигация" data-i18n-aria="nav_label">
         <a href="#drones" data-i18n="nav_drones">Дроны</a>
         <a href="#services" data-i18n="nav_service">Сервис</a>
-        <a href="/ru/shop.html" data-local data-i18n="nav_shop">Магазин</a>
+        <a href="/ru/shop" data-local data-i18n="nav_shop">Магазин</a>
         <a href="#academy" data-i18n="nav_academy">Академия</a>
         <a href="#gallery" data-i18n="nav_gallery">Галерея</a>
         <a href="#blog" data-i18n="nav_blog">Блог</a>
       </nav>
       <div class="header-actions">
         <nav class="languages" aria-label="Язык" data-i18n-aria="language_label">
-          <a href="/" data-lang="ka">KA</a><span aria-hidden="true">/</span><a href="/en/" data-lang="en">EN</a>
+          <a href="/" data-lang="ka" lang="ka">KA</a><span aria-hidden="true">/</span><a href="/en/" data-lang="en" lang="en">EN</a><span aria-hidden="true">/</span><a href="/ru/" data-lang="ru" lang="ru" aria-current="page">RU</a>
         </nav>
         <a class="header-contact" href="#contact"><span data-i18n="nav_contact">Контакты</span><span aria-hidden="true">↗</span></a>
-        <a class="cart-link" href="/ru/shop.html#cart" data-local aria-label="Корзина" data-i18n-aria="cart_title"><svg width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg><span class="cart-count" id="cartCount" hidden>0</span></a><button class="nav-toggle" id="navToggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Открыть меню" data-i18n-aria="menu_open"><span></span><span></span></button>
+        <a class="cart-link" href="/ru/shop#cart" data-local aria-label="Корзина" data-i18n-aria="cart_title"><svg width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg><span class="cart-count" id="cartCount" hidden>0</span></a><button class="nav-toggle" id="navToggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Открыть меню" data-i18n-aria="menu_open"><span></span><span></span></button>
       </div>
     </div>
   </header>
@@ -62,7 +62,7 @@
         <h1 id="hero-heading">
 <span data-i18n="hero_line_1">Точность</span><span data-i18n="hero_line_2">для вашего</span><span data-i18n="hero_line_3">хозяйства.</span>
 </h1>
-        <a class="button button-red" href="/ru/p150-max.html" data-local><span data-i18n="hero_cta">Откройте P150 MAX</span><span class="arrow" aria-hidden="true">→</span></a>
+        <a class="button button-red" href="/ru/p150-max" data-local><span data-i18n="hero_cta">Откройте P150 MAX</span><span class="arrow" aria-hidden="true">→</span></a>
       </div>
       <a class="hero-scroll" href="#drones"><span data-i18n="scroll_hint">Листайте вниз</span><span aria-hidden="true">↓</span></a>
     </section>
@@ -70,7 +70,31 @@
       <div class="container product-row">
         <p class="product-name">XAG P150 MAX</p>
         <h2 id="product-title" data-i18n="product_title">Выберите свою комплектацию.</h2>
-        <a class="text-link" href="/ru/shop.html#kits" data-local><span data-i18n="packages_link">Смотреть комплектации</span><span aria-hidden="true">→</span></a>
+        <a class="text-link" href="/ru/shop#kits" data-local><span data-i18n="packages_link">Смотреть комплектации</span><span aria-hidden="true">→</span></a>
+      </div>
+      <div class="container">
+        <dl class="spec-strip">
+          <div>
+<dt data-i18n="spec_tank">Бак для раствора</dt>
+<dd>80 <span data-i18n="u_l">л</span>
+</dd>
+</div>
+          <div>
+<dt data-i18n="spec_hopper">Бункер для гранул</dt>
+<dd>115 <span data-i18n="u_l">л</span>
+</dd>
+</div>
+          <div>
+<dt data-i18n="spec_payload">Макс. полезная нагрузка</dt>
+<dd>80 <span data-i18n="u_kg">кг</span>
+</dd>
+</div>
+          <div>
+<dt data-i18n="spec_ip">Класс защиты</dt>
+<dd>IPX6K</dd>
+</div>
+        </dl>
+        <a class="text-link spec-link" href="/ru/p150-max#specs" data-local><span data-i18n="spec_all">Все характеристики</span><span aria-hidden="true">→</span></a>
       </div>
     </section>
     <section class="section offerings-section" aria-label="Сервис и обучение" data-i18n-aria="offerings_label">
@@ -81,7 +105,7 @@
             <p class="eyebrow" data-i18n="service_eyebrow">Техническая поддержка</p>
             <h2 data-i18n="service_title">Сервис</h2>
             <p class="offering-description" data-i18n="service_description">Диагностика и ремонт силами специалистов, которые работают с этими дронами в поле.</p>
-            <a class="text-link" href="/ru/consultation.html?topic=service" data-local><span data-i18n="service_cta">Запросить сервис</span><span aria-hidden="true">→</span></a>
+            <a class="text-link" href="/ru/consultation?topic=service" data-local><span data-i18n="service_cta">Запросить сервис</span><span aria-hidden="true">→</span></a>
           </div>
         </article>
         <article id="parts" class="panel">
@@ -90,7 +114,7 @@
             <p class="eyebrow" data-i18n="parts_eyebrow">Оригинальные запчасти</p>
             <h2 data-i18n="parts_title">Аккумуляторы и запчасти</h2>
             <p class="offering-description" data-i18n="parts_description">Аккумуляторы XAG и оригинальные запчасти для P150 MAX.</p>
-            <a class="text-link" href="/ru/shop.html#parts" data-local><span data-i18n="parts_cta">Узнать о запчастях</span><span aria-hidden="true">→</span></a>
+            <a class="text-link" href="/ru/shop#parts" data-local><span data-i18n="parts_cta">Узнать о запчастях</span><span aria-hidden="true">→</span></a>
           </div>
         </article>
         <article id="academy" class="panel">
@@ -99,7 +123,7 @@
             <p class="eyebrow" data-i18n="academy_eyebrow">Практическое обучение</p>
             <h2 data-i18n="academy_title">Академия PDG</h2>
             <p class="offering-description" data-i18n="academy_description">Практическое обучение управлению дроном и его обслуживанию.</p>
-            <a class="text-link" href="/ru/consultation.html?topic=academy" data-local><span data-i18n="academy_cta">Об обучении</span><span aria-hidden="true">→</span></a>
+            <a class="text-link" href="/ru/consultation?topic=academy" data-local><span data-i18n="academy_cta">Об обучении</span><span aria-hidden="true">→</span></a>
           </div>
         </article>
       </div>
@@ -108,7 +132,7 @@
       <div class="container">
         <div class="section-heading">
           <h2 id="gallery-title" data-i18n="gallery_title">Галерея</h2>
-          <a class="text-link" href="/ru/gallery.html" data-local><span data-i18n="gallery_link">Смотреть галерею</span><span aria-hidden="true">→</span></a>
+          <a class="text-link" href="/ru/gallery" data-local><span data-i18n="gallery_link">Смотреть галерею</span><span aria-hidden="true">→</span></a>
         </div>
         <div class="gallery-preview">
           <a class="gallery-photo" href="/assets/img/field-ready.webp" data-lightbox><img src="/assets/img/field-ready.webp" width="1280" height="960" alt="Дрон, подготовленный к работе у кукурузного поля" data-i18n-alt="photo_field" loading="lazy" decoding="async"><span class="photo-expand" aria-hidden="true">↗</span></a>
@@ -121,10 +145,10 @@
       <div class="container">
         <div class="section-heading">
           <h2 id="blog-title" data-i18n="blog_title">Блог</h2>
-          <a class="text-link" href="/ru/blog.html" data-local><span data-i18n="blog_link">Все статьи</span><span aria-hidden="true">→</span></a>
+          <a class="text-link" href="/ru/blog" data-local><span data-i18n="blog_link">Все статьи</span><span aria-hidden="true">→</span></a>
         </div>
         <div class="blog-grid">
-          <a class="article-preview" href="/ru/choosing-a-drone.html" data-local>
+          <a class="article-preview" href="/ru/choosing-a-drone" data-local>
             <img src="/assets/img/p150-max-flight-1200.webp" width="1200" height="500" alt="XAG P150 MAX в полёте" data-i18n-alt="hero_alt" loading="lazy" decoding="async">
             <div>
 <p class="eyebrow muted" data-i18n="article_category_1">Руководство</p>
@@ -132,7 +156,7 @@
 <span class="article-arrow" aria-hidden="true">↗</span>
 </div>
           </a>
-          <a class="article-preview" href="/ru/first-flight.html" data-local>
+          <a class="article-preview" href="/ru/first-flight" data-local>
             <img src="/assets/img/field-ready.webp" width="1280" height="960" alt="Дрон, подготовленный к работе у кукурузного поля" data-i18n-alt="photo_field" loading="lazy" decoding="async">
             <div>
 <p class="eyebrow muted" data-i18n="article_category_2">Практика</p>
@@ -149,7 +173,7 @@
 <p class="eyebrow" data-i18n="contact_eyebrow">Premium Drones Georgia</p>
 <h2 id="contact-title" data-i18n="contact_title">Подберём подходящий дрон для вашего хозяйства.</h2>
 </div>
-        <a class="button button-red" href="/ru/consultation.html" data-local><span data-i18n="contact_cta">Свяжитесь с нами</span><span class="arrow" aria-hidden="true">→</span></a>
+        <a class="button button-red" href="/ru/consultation" data-local><span data-i18n="contact_cta">Свяжитесь с нами</span><span class="arrow" aria-hidden="true">→</span></a>
       </div>
     </section>
   </main>
@@ -157,14 +181,14 @@
     <div class="container footer-main">
       <a class="brand" href="/ru/" data-home aria-label="Premium Drones Georgia"><img src="/assets/img/pdg-logo.png" alt="PDG — Premium Drones Georgia" width="780" height="213" loading="lazy"></a>
       <div class="footer-contact">
-<a href="tel:+995550004333">+995 550 00 43 33</a><a href="mailto:info@premium-drones.ge">info@premium-drones.ge</a>
+<a href="tel:+995550004333">+995 550 00 43 33</a><a href="mailto:info@premium-drones.ge">info@premium-drones.ge</a><a href="https://wa.me/995550004333" target="_blank" rel="noopener noreferrer">WhatsApp</a>
 </div>
       <p class="footer-place" data-i18n="address">Лагодехи, Грузия</p>
     </div>
     <div class="container footer-bottom">
 <p>© 2026 Premium Drones Georgia</p>
 <div>
-<a href="/ru/calculator.html" data-local data-i18n="calculator_link">Калькулятор</a><button type="button" class="theme-toggle" id="themeToggle" data-i18n="theme_button">Сменить тему</button><a href="/ru/" data-lang="ru" lang="ru" aria-current="page">RU</a><span>premium-drones.ge</span>
+<a href="/ru/calculator" data-local data-i18n="calculator_link">Калькулятор</a><button type="button" class="theme-toggle" id="themeToggle" data-i18n="theme_button">Сменить тему</button><span>premium-drones.ge</span>
 </div>
 </div>
   </footer>
