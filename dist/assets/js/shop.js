@@ -269,7 +269,7 @@
     cfgBox.addEventListener("change", function (e) { if (e.target.name === "cfgPreset") applyPreset(); });
     cfgBox.addEventListener("input", function (e) { if (e.target.classList.contains("qty-input")) show(); });
     document.getElementById("cfgWa").addEventListener("click", function () {
-      var c = calc(), lines = [tx("cfg_msg_title"), tx("cfg_msg_base") + ": " + c.p.name + " (" + fmt(c.p.price) + ")", "- " + tx("kit_drone") + " × 1"];
+      var c = calc(), lines = [tx("cfg_msg_title"), tx("cfg_msg_base") + ": " + c.p.name + " (" + fmt(c.p.price) + ")", "- " + tx("kit_drone") + " × 1", "- " + tx("kit_remote") + " × 1"];
       cfgRows.forEach(function (r) { var k = r.dataset.key; if (c.q[k] > 0) lines.push("- " + CFG.items[k].name + " (" + CFG.items[k].sku + ") × " + c.q[k]); });
       lines.push(tx("cfg_total") + ": " + (c.total === null ? tx("price_on_request") : fmt(c.total)));
       openWa(lines.join("\n"));

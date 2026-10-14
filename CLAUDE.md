@@ -20,8 +20,12 @@ as a server inbox. The separately referenced FastAPI project was not included.
   "მწარმოებლის კოდი" e.g. 09-017-00073, looked up from the invoice Code P0000… in scripts/supplier-code-map.csv, made from
   PDG_Invoice_Packing_List_Georgian.xlsx; never show the P0000 codes; name = Original item, name_ka = Georgian item). Cost/margin columns are internal and never published. A new list: rerun the import.
   Prices show only the ₾ sign; no "prices in GEL / ლარში / в лари" texts anywhere (owner).
-- Packages (owner, 14 Oct 2026, prices unchanged, LATEST APPROVED): Starter 75,999 (drone, 4 batteries, 2 chargers), Pro 85,999 (drone, 6 batteries,
-  2 chargers, RTK), Business 104,999 (drone, 8 batteries, 4 chargers, RTK). Contents = catalog columns. Do not change RTK inclusion.
+- Packages (owner, 14 Oct 2026 night, LATEST APPROVED, exact contents): Starter 75,999 = drone (RevoSpray 5), SRC5 remote,
+  4 B141050 batteries, 2 CM13600S chargers, 2 battery cooling towers ("charging towers"). Pro 87,999 = Starter + 2 batteries (6) + XRTK7.
+  Business 104,999 = Pro with 8 batteries and 4 chargers. Contents = catalog columns (drones, remotes, batteries, chargers, towers, rtk).
+  No ACS4 control stick in any package (the handheld item in the XAG combo picture is the XRTK7).
+  Each package has its own page (/p150-max-starter, -pro, -business): first picture = combo picture with exactly those contents
+  (dist/assets/img/products/PDG-P150MAX-*.webp, made by scripts/tools/package-pictures.py), then the P150 MAX gallery.
 - Spraying (owner brief 14 Oct 2026): headings use შესხურება, explanatory text uses შეწამვლა; combined line
   "ზუსტი შესხურება / შეწამვლა რეალურ საველე პირობებში." Experience: "thousands of hectares in real field conditions"
   (optional quiet "2,900+ ha in the 2026 season"); never "1000+ ha". Worked with XAG V40, P100, P100 Pro; focus P150 MAX.
@@ -44,7 +48,7 @@ as a server inbox. The separately referenced FastAPI project was not included.
   Cloudflare secret/binding exists. Header: Home + Products/Services/Media (blog, gallery) mega menu, search (scripts/build-search.py), account, cart.
 - Home page must stay short and simple (owner): hero, dealer line, key specs, ecosystem, packages, contact. Detail lives on other pages.
 - Fonts: D-DIN (Latin, like xa.com), Noto Sans Georgian, IBM Plex Sans (Cyrillic). Keep font licences in dist/assets/fonts.
-  Header logo = "XAG – PDG" lockup: official XAG vector logo (dist/assets/img/xag-logo.svg / xag-logo-white.svg, from xa.com) + dash + PDG logo.
+  Header logo = "PDG ~ XAG" lockup: official XAG vector logo (dist/assets/img/xag-logo.svg / xag-logo-white.svg, from xa.com) + dash + PDG logo.
   Logo: pdg-logo-light.png / pdg-logo-dark.png are transparent cut-outs of the supplied logo (owner asked for this);
   header, footer and logo follow the light/dark theme (default = phone setting).
 - Dealer claim, exact owner wording only: "Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus
@@ -87,7 +91,7 @@ as a server inbox. The separately referenced FastAPI project was not included.
 ## Logos and home hero (owner, 14 Oct 2026, late)
 - Logo colours = official XAG file (xa.com xag-icon.svg): black #3D3C38, red #CC0000. pdg-logo-light.png / pdg-logo-dark.png and the
   app icon / favicon were recoloured to exactly these values (dark version: #F4F3EF + #CC0000). pdg-logo.png = untouched original.
-- Header: PDG – XAG (equal containers). Strip below the hero: XAG ~ PDG (literal "~"), then exactly
+- Header: PDG ~ XAG (literal "~", equal logo heights). Strip below the hero: XAG ~ PDG (literal "~"), then exactly
   "საქართველოს პრემიუმ დრონები არის XAG-ის ოფიციალური და ერთადერთი დილერი კავკასიაში." (key dealer_strip). No extra slogans.
 - Hero: heading "XAG P150 MAX" only; no brand lines above it.
 
@@ -120,5 +124,5 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - Product pages (scripts/product_pages.py → build-products.py): /b141050-battery, /cm13600s-charger, /gc4000-plus-generator,
   specs from p150_specs.py 'power'. Cards, home part list and search open them. Only items with verified xa.com specs get a page
   (B13970S: no verified specs, no page).
-- Logo lockups: XAG letters are exactly the PDG letter height (181/212 of the PDG image = 0.8538) with the same top line;
-  dash / tilde in --xag-black. build.py adds ?v=hash to /assets/img URLs so changed logos/photos reach visitors at once.
+- Logo lockups (owner, 14 Oct 2026 night): the XAG logo is exactly the height of the whole PDG logo (incl. the PREMIUM DRONES
+  GEORGIA line), aspect ratios kept, centred; header = PDG ~ XAG with a literal "~", strip = XAG ~ PDG; "~" in --xag-black. build.py adds ?v=hash to /assets/img URLs so changed logos/photos reach visitors at once.

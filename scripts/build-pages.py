@@ -164,12 +164,12 @@ def render(page_source, language, filename):
         img=(doc.xpath('//div[contains(@class,"pd-photo")]//img/@src') or [''])[0]
         btn=box.xpath('.//button[contains(@class,"add-btn")]')[0]
         if img.startswith('/assets/img/products/'):
-            d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),img,box.get('data-avail'),False,canonical)
+            d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),img,box.get('data-avail'),box.get('data-cat')=='kit',canonical)
             if d: d['@id']=canonical+'#product'; d['description']=desc; graph.append(d)
     if filename=='p150-max.html':
         for row in doc.xpath('//li[contains(@class,"kit-row")]'):
             btn=row.xpath('.//button[contains(@class,"add-btn")]')[0]
-            d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),'/assets/img/xag-logo.svg','in_stock',True,canonical+'#kits')
+            d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),'/assets/img/products/'+btn.get('data-sku')+'.webp','in_stock',True,canonical+'#kits')
             if d: graph.append(d)
     if graph:
         ld=etree.SubElement(doc_head,'script',type='application/ld+json')

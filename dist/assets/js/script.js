@@ -211,3 +211,20 @@
     });
   }
 })();
+
+/* P150 MAX package pages: thumbnails switch the main picture (the first one shows exactly the package contents). */
+(function () {
+  "use strict";
+  var main = document.getElementById("pkMain");
+  if (!main) return;
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest(".pk-thumb") : null;
+    if (!b) return;
+    main.src = b.getAttribute("data-full");
+    main.alt = b.getAttribute("aria-label") || "";
+    Array.prototype.forEach.call(document.querySelectorAll(".pk-thumb"), function (x) {
+      var on = x === b; x.classList.toggle("is-on", on);
+      if (on) x.setAttribute("aria-current", "true"); else x.removeAttribute("aria-current");
+    });
+  });
+})();

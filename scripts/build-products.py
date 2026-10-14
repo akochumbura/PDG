@@ -27,7 +27,17 @@ T = {'pd_more': ('მახასიათებლები', 'Specifications',
      'pd_ask': ('კითხვა WhatsApp-ით', 'Ask on WhatsApp', 'Вопрос в WhatsApp'),
      'pd_back': ('← მაღაზია', '← Shop', '← Магазин'),
      'pd_fits': ('XAG P150 MAX-ის ენერგოსისტემა', 'XAG P150 MAX power system', 'Система питания XAG P150 MAX'),
-     'pd_vat': ('ფასი დღგ-ს ჩათვლით', 'Price incl. VAT', 'Цена с НДС')}
+     'pd_vat': ('ფასი დღგ-ს ჩათვლით', 'Price incl. VAT', 'Цена с НДС'),
+     'cfg_tower': ('გამაგრილებელი კოშკი', 'Cooling tower', 'Охлаждающая башня'),
+     'pd_pk_more': ('შემადგენლობა და ფოტოები', 'Contents and photos', 'Состав и фото'),
+     'pd_pk_in': ('კომპლექტში შედის', 'The package includes', 'В комплект входит'),
+     'pd_pk_back': ('← კომპლექტები', '← Packages', '← Комплекты'),
+     'pd_pk_photo_note': ('პირველი ფოტო ზუსტად აჩვენებს კომპლექტის შემადგენლობას; დანარჩენი ფოტოები — XAG P150 MAX.',
+                          'The first photo shows exactly what the package contains; the other photos show the XAG P150 MAX.',
+                          'Первое фото точно показывает состав комплекта; остальные фото — XAG P150 MAX.'),
+     'pd_pk_specs': ('P150 MAX-ის სრული მახასიათებლები', 'Full P150 MAX specifications', 'Полные характеристики P150 MAX'),
+     'pd_pk_cfg': ('კომპლექტის შეცვლა კონფიგურატორში', 'Change the package in the configurator', 'Изменить комплект в конфигураторе'),
+     'pd_pk_photo': ('ფოტო', 'Photo', 'Фото')}
 
 
 def tri(v):
@@ -108,6 +118,68 @@ for p in P.PAGES:
         f'<p class="small-note"><a href="https://www.xa.com/en/p150max/p150maxspecs" target="_blank" rel="noopener noreferrer" data-i18n="pd_source">{html.escape(T["pd_source"][0])}</a></p>'
         f'</div></section>\n</template>\n')
 
+
+# ---- P150 MAX package pages (gallery + exact contents) ----
+CONTENTS = [  # same order and labels as build-shop.py CONTENTS (Georgian label from content.js kit_* keys)
+    ('drones', 'kit_drone'), ('remotes', 'kit_remote'), ('batteries', 'kit_batteries'), ('chargers', 'kit_chargers'),
+    ('towers', 'kit_towers'), ('rtk', 'kit_rtk'), ('generators', 'kit_generators')]
+LINK = {'batteries': '09-017-00073', 'chargers': '09-017-00069', 'generators': '09-017-00109'}
+KIT_INTRO = {
+    'p150-max-starter': ('საბაზისო კომპლექტი: დრონი, მართვის პულტი, 4 აკუმულატორი, 2 დამტენი და 2 გამაგრილებელი კოშკი.',
+                         'Base package: drone, remote controller, 4 batteries, 2 chargers and 2 cooling towers.',
+                         'Базовый комплект: дрон, пульт, 4 аккумулятора, 2 зарядных устройства и 2 охлаждающие башни.'),
+    'p150-max-pro': ('Starter-ის შემადგენლობა, დამატებით 2 აკუმულატორი და XRTK7 მობილური RTK სადგური.',
+                     'Everything in Starter plus 2 more batteries and the XRTK7 mobile RTK station.',
+                     'Всё из Starter, плюс 2 аккумулятора и мобильная RTK-станция XRTK7.'),
+    'p150-max-business': ('Pro-ს შემადგენლობა, სულ 8 აკუმულატორით და 4 დამტენით — დიდი ფართობებისთვის.',
+                          'Everything in Pro with 8 batteries and 4 chargers in total, for large areas.',
+                          'Всё из Pro, всего 8 аккумуляторов и 4 зарядных устройства — для больших площадей.')}
+for i, (f, ka, en, ru) in enumerate(P.GALLERY, 1):
+    put(f'pd_g{i}', (ka, en, ru))
+for sku, slug in P.KITS.items():
+    r = rows[sku]
+    pid = slug.replace('-', '_')
+    gel = int(r['gel'])
+    name = html.escape(r['name'], quote=True)
+    put(f'pd_{pid}_intro', KIT_INTRO[slug])
+    put(f'pd_{pid}_title', (f'{r["name"]} — კომპლექტი, შემადგენლობა და ფასი', f'{r["name"]} — package contents and price', f'{r["name"]} — состав комплекта и цена'))
+    put(f'pd_{pid}_alt', (f'{r["name"]} — კომპლექტის შემადგენლობა', f'{r["name"]} — package contents', f'{r["name"]} — состав комплекта'))
+    items = []
+    for col, key in CONTENTS:
+        n = (r.get(col) or '').strip()
+        if not n:
+            continue
+        lab = f'<span data-i18n="{key}">{html.escape(c["ka"][key])}</span>'
+        if col in LINK:
+            lab = f'<a href="{P.url(LINK[col])}" data-local>{lab}</a>'
+        items.append(f'<li><span class="pk-qty">{n} ×</span> {lab}</li>')
+    pics = [(f'/assets/img/products/{sku}.webp', f'/assets/img/packages/{sku}-t.webp', f'pd_{pid}_alt', c['ka'][f'pd_{pid}_alt'])]
+    pics += [(f'/assets/img/packages/{f}', f'/assets/img/packages/{f.replace(".webp", "-t.webp")}', f'pd_g{i}', ka) for i, (f, ka, en, ru) in enumerate(P.GALLERY, 1)]
+    thumbs = ''.join(f'<button type="button" class="pk-thumb{" is-on" if j == 0 else ""}" data-full="{full}" aria-label="{html.escape(alt, quote=True)}" data-i18n-aria="{key}"{" aria-current=\"true\"" if j == 0 else ""}>'
+                     f'<img src="{th}" width="240" height="180" alt="" loading="lazy" decoding="async"></button>'
+                     for j, (full, th, key, alt) in enumerate(pics))
+    wa = 'https://wa.me/995550004333?text=' + quote(f'გამარჯობა! მაინტერესებს {r["name"]} ({gel:,} ₾).')
+    out.append(
+        f'<template data-page="{slug}.html" data-ka-title="{html.escape(r["name"] + " — კომპლექტის შემადგენლობა და ფასი | საქართველოს პრემიუმ დრონები", quote=True)}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro">\n'
+        f'  <section class="page-hero pd-hero"><div class="container"><a class="back-link" href="/shop.html#kits" data-local data-i18n="pd_pk_back">← კომპლექტები</a>'
+        f'<p class="eyebrow">XAG P150 MAX</p><h1>{html.escape(r["name"])}</h1>'
+        f'<p class="page-intro" data-i18n="pd_{pid}_intro">{html.escape(KIT_INTRO[slug][0])}</p></div></section>\n'
+        f'  <section class="section pd-main"><div class="container pd-grid">'
+        f'<div class="pk-gallery"><div class="product-photo pd-photo pk-main"><img id="pkMain" src="{pics[0][0]}" width="1200" height="900" alt="{html.escape(pics[0][3], quote=True)}" data-i18n-alt="{pics[0][2]}" decoding="async"></div>'
+        f'<div class="pk-thumbs" aria-label="ფოტო" data-i18n-aria="pd_pk_photo">{thumbs}</div>'
+        f'<p class="small-note" data-i18n="pd_pk_photo_note">{html.escape(T["pd_pk_photo_note"][0])}</p></div>'
+        f'<article class="product product-kit pd-buybox" data-cat="kit" data-avail="in_stock">'
+        f'<p class="pd-price"><span class="product-price">₾{gel:,}</span> <span class="pd-vat" data-i18n="pd_vat">ფასი დღგ-ს ჩათვლით</span></p>'
+        f'<h2 class="pk-in-title" data-i18n="pd_pk_in">კომპლექტში შედის</h2><ul class="pk-in">{"".join(items)}</ul>'
+        f'<div class="buy-actions"><div class="qty-stepper" data-for="{sku}"><button type="button" class="qty-btn" data-step="-1" aria-label="რაოდენობის შემცირება" data-i18n-aria="qty_less">−</button>'
+        f'<input class="qty-input" type="number" inputmode="numeric" min="1" step="1" value="1" aria-label="რაოდენობა" data-i18n-aria="qty_label">'
+        f'<button type="button" class="qty-btn" data-step="1" aria-label="რაოდენობის გაზრდა" data-i18n-aria="qty_more">+</button></div>'
+        f'<button type="button" class="add-btn" data-sku="{sku}" data-name="{name}" data-price="{gel}" data-i18n="add_to_cart">კალათაში</button></div>'
+        f'<a class="button button-line pd-ask" href="{html.escape(wa, quote=True)}" target="_blank" rel="noopener noreferrer"><span data-i18n="pd_ask">კითხვა WhatsApp-ით</span></a>'
+        f'<p class="pk-links"><a class="text-link" href="/p150-max.html#specifications" data-local><span data-i18n="pd_pk_specs">P150 MAX-ის სრული მახასიათებლები</span><span aria-hidden="true">→</span></a>'
+        f'<a class="text-link" href="/p150-max.html#configurator" data-local><span data-i18n="pd_pk_cfg">კომპლექტის შეცვლა კონფიგურატორში</span><span aria-hidden="true">→</span></a></p>'
+        f'</article></div></section>\n</template>\n')
+
 pb = ROOT / 'scripts/page-bodies.html'
 t = pb.read_text(encoding='utf-8')
 if '<!--product-pages-->' not in t:
@@ -115,4 +187,4 @@ if '<!--product-pages-->' not in t:
 t = re.sub(r'<!--product-pages-->\n.*?<!--/product-pages-->', lambda m: '<!--product-pages-->\n' + ''.join(out) + '<!--/product-pages-->', t, count=1, flags=re.S)
 pb.write_text(t, encoding='utf-8')
 cj.write_text('window.PDG_CONTENT = ' + json.dumps(c, ensure_ascii=False, indent=2) + ';\n', encoding='utf-8')
-print(f'product pages: {len(out)} ({", ".join(p["slug"] for p in P.PAGES)})')
+print(f'product pages: {len(out)} ({", ".join([p["slug"] for p in P.PAGES] + list(P.KITS.values()))})')

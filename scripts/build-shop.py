@@ -43,9 +43,21 @@ CAT_KEY = {'power': ('cat_power', 'აკუმულატორები დ�
            'drone': ('cat_drone', 'დრონები'), 'legacy': ('cat_legacy', 'წინა თაობის მოდელი')}
 
 
-CONTENTS = [('drones', 'kit_drone', 'დრონი P150 MAX'), ('batteries', 'kit_batteries', 'აკუმულატორები'),
-            ('chargers', 'kit_chargers', 'დამტენები'), ('rtk', 'kit_rtk', 'RTK სადგური'),
-            ('generators', 'kit_generators', 'გენერატორები')]
+# Package contents (owner, 14 Oct 2026, exact): catalog column, content key, Georgian label. en/ru labels in KIT_LABELS.
+CONTENTS = [('drones', 'kit_drone', 'XAG P150 MAX სასოფლო-სამეურნეო დრონი (RevoSpray 5)'),
+            ('remotes', 'kit_remote', 'XAG SRC5 ჭკვიანი მართვის პულტი'),
+            ('batteries', 'kit_batteries', 'XAG B141050 ჭკვიანი აკუმულატორი'),
+            ('chargers', 'kit_chargers', 'XAG CM13600S დამტენი'),
+            ('towers', 'kit_towers', 'XAG აკუმულატორის გამაგრილებელი კოშკი'),
+            ('rtk', 'kit_rtk', 'XAG XRTK7 მობილური RTK სადგური'),
+            ('generators', 'kit_generators', 'XAG GC4000+ დამუხტვის სადგური')]
+KIT_LABELS = {'kit_drone': ('XAG P150 MAX agricultural drone (RevoSpray 5)', 'Сельскохозяйственный дрон XAG P150 MAX (RevoSpray 5)'),
+              'kit_remote': ('XAG SRC5 smart remote controller', 'Умный пульт управления XAG SRC5'),
+              'kit_batteries': ('XAG B141050 smart battery', 'Умный аккумулятор XAG B141050'),
+              'kit_chargers': ('XAG CM13600S charger', 'Зарядное устройство XAG CM13600S'),
+              'kit_towers': ('XAG battery cooling tower', 'Охлаждающая башня для аккумуляторов XAG'),
+              'kit_rtk': ('XAG XRTK7 mobile RTK station', 'Мобильная RTK-станция XAG XRTK7'),
+              'kit_generators': ('XAG GC4000+ charging station', 'Зарядная станция XAG GC4000+')}
 # Home page 'Parts and energy system': B141050 battery, GC4000+, CM13600S charger, 6 kW parallel charging kit, cooling tower, XRTK7.
 import product_pages
 HOME_PARTS = ['09-017-00073', '09-017-00109', '09-017-00069', '05-002-02311', '09-017-00065', '09-016-00083']
@@ -146,7 +158,8 @@ def card(r):
     if page:  # own product page with the official specs: the photo and the name open it
         pic = f'<a class="product-link" href="{page}" data-local>{pic}</a>'
         ttl = f'<a class="product-link" href="{page}" data-local>{ttl}</a>'
-        more = f'<a class="text-link product-more" href="{page}" data-local><span data-i18n="pd_more">მახასიათებლები</span><span aria-hidden="true">→</span></a>'
+        mk, mt = ('pd_pk_more', 'შემადგენლობა და ფოტოები') if kit else ('pd_more', 'მახასიათებლები')
+        more = f'<a class="text-link product-more" href="{page}" data-local><span data-i18n="{mk}">{mt}</span><span aria-hidden="true">→</span></a>'
     head = (f'<article class="product{" product-kit" if kit else ""}{" product-out" if st == "out" else ""}" data-cat="{r["group"]}" data-avail="{st}">{pic}'
             f'<div class="product-body">{cat(r)}<p class="product-sku">{s}</p>{ttl}{contents(r) if kit else ""}{more}')
     if st == 'out':  # previous-generation model: no price, no purchase, consultation instead
@@ -168,7 +181,7 @@ def kit_row(r):
     s = r['sku']
     p = price(r, True)
     short = re.sub(r'^XAG P150 Max\s*', '', r['name']).strip() or r['name']
-    return (f'<li class="kit-row"><div class="kit-row-name"><span class="kit-row-title">{html.escape(short)}</span>{contents(r, "kit-contents kit-contents-inline")}</div>'
+    return (f'<li class="kit-row"><div class="kit-row-name"><span class="kit-row-title"><a href="{product_pages.url(s)}" data-local>{html.escape(short)}</a></span>{contents(r, "kit-contents kit-contents-inline")}</div>'
             f'<span class="kit-row-price">₾{p:,}</span><div class="buy-actions">{stepper(s, n)}'
             f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></div></li>\n')
 
@@ -188,6 +201,9 @@ for r in rows:
     if (r.get('name_ka') or '').strip():
         _c['en'][pkey(r['sku'])] = r['name']
         _c['ru'][pkey(r['sku'])] = (r.get('name_ru') or '').strip() or r['name']
+for _k, _ka, in [(k, ka) for _c_, k, ka in CONTENTS]:
+    _c['ka'][_k] = _ka
+    _c['en'][_k], _c['ru'][_k] = KIT_LABELS[_k]
 for _s, (_ka, _en, _ru) in LEGACY_SPECS.items():
     _c['en'][pkey(_s) + '_spec'], _c['ru'][pkey(_s) + '_spec'] = _en, _ru
 _cj.write_text('window.PDG_CONTENT = ' + _json.dumps(_c, ensure_ascii=False, indent=2) + ';\n', encoding='utf-8')
@@ -206,6 +222,7 @@ for r in rows:
 # Price rule: the preset's approved package price + extra components at their approved shop price.
 # Fewer components than the preset = no approved rule -> "ფასი მოთხოვნით" (quote), never an invented discount.
 CFG_ITEMS = [('batteries', '09-017-00073', 'cfg_battery', 'ბატარეა B141050', 12), ('chargers', '09-017-00069', 'cfg_charger', 'დამტენი CM13600S', 6),
+             ('towers', '09-017-00065', 'cfg_tower', 'გამაგრილებელი კოშკი', 4),
              ('rtk', '09-016-00083', 'cfg_rtk', 'RTK სადგური XRTK7', 1), ('generators', '09-017-00109', 'cfg_generator', 'დამუხტვის სადგური GC4000+', 2)]
 
 
@@ -233,7 +250,8 @@ def configurator():
             '<p class="page-intro" data-i18n="cfg_intro">აირჩიეთ საბაზისო კომპლექტი და საჭიროებისამებრ დაამატეთ ბატარეები, დამტენები, RTK ან დამუხტვის სადგური.</p>'
             f'<div class="cfg" id="kitConfig" data-config="{data}">'
             f'<fieldset class="cfg-presets"><legend data-i18n="cfg_base">საბაზისო კომპლექტი</legend>{radios}</fieldset>'
-            '<div class="cfg-items"><div class="cfg-row cfg-fixed"><div class="cfg-row-name"><span data-i18n="kit_drone">დრონი P150 MAX</span></div><output class="cfg-fixed-qty">1</output></div>'
+            '<div class="cfg-items"><div class="cfg-row cfg-fixed"><div class="cfg-row-name"><span data-i18n="kit_drone">XAG P150 MAX სასოფლო-სამეურნეო დრონი (RevoSpray 5)</span></div><output class="cfg-fixed-qty">1</output></div>'
+            '<div class="cfg-row cfg-fixed"><div class="cfg-row-name"><span data-i18n="kit_remote">XAG SRC5 ჭკვიანი მართვის პულტი</span></div><output class="cfg-fixed-qty">1</output></div>'
             f'{rows_}</div>'
             '<div class="cfg-summary"><p class="cfg-total-label" data-i18n="cfg_total">ჯამი, დღგ-ს ჩათვლით</p><p class="cfg-total" id="cfgTotal" aria-live="polite"></p>'
             '<p class="cfg-note" id="cfgNote" hidden data-i18n="cfg_quote_note">კომპლექტზე ნაკლები კომპონენტით ფასს ინდივიდუალურად დაგითვლით — ფასი მოთხოვნით.</p>'
@@ -274,7 +292,7 @@ print(f'shop: {len(rows)} products ({len(kits)} kits), {own} with their own phot
 llms = ROOT / 'dist/llms.txt'
 if llms.is_file():
     def line(r):
-        what = ', '.join(f"{r[c]} {'RTK station' if c == 'rtk' else c}" for c in ('batteries', 'chargers', 'rtk', 'generators') if (r.get(c) or '').strip())
+        what = ', '.join(f"{r[c]} × {KIT_LABELS[k][0]}" for c, k, _ in CONTENTS if (r.get(c) or '').strip())
         return f"- {r['name']}: {price(r, True):,} GEL" + (f" ({what})" if what else '')
     extra = [r for r in parts if (r.get('gel') or '').strip()]
     block = '## Packages (prices in GEL)\n' + '\n'.join(line(r) for r in kits) + '\n' + \
@@ -297,7 +315,7 @@ know = [(ROOT / 'dist/llms.txt').read_text(encoding='utf-8').strip(), '',
         '## Website shop (prices in GEL incl. VAT). Availability: "listed in stock" = shown as in stock on the website (the team confirms quantity '
         'with every order); "price on request" = no listed price, availability to be confirmed by the team; "not in stock" = previous model, consultation only.']
 for r in rows:
-    extra = ', '.join(f"{r[c]} {c}" for c in ('drones', 'batteries', 'chargers', 'rtk', 'generators') if (r.get(c) or '').strip())
+    extra = ', '.join(f"{r[c]} × {KIT_LABELS[k][0]}" for c, k, _ in CONTENTS if (r.get(c) or '').strip())
     local = f" [ka: {r['name_ka']}]" if (r.get('name_ka') or '').strip() else ''
     p_ = price(r, r['group'] == 'kit'); st_ = status(r)
     what = f"{p_:,} GEL, listed in stock" if st_ == 'in_stock' else ('price on request, availability to be confirmed' if st_ == 'quote' else 'not in stock (previous model), consultation only')

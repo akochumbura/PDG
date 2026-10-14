@@ -23,8 +23,25 @@ PAGES = [
 ]
 BY_SKU = {p['sku']: p for p in PAGES}
 
+# P150 MAX package pages (owner, 14 Oct 2026): first picture = the package's own combo picture (exactly its contents),
+# then the P150 MAX gallery (dist/assets/img/packages/p150-max-1..9.webp). Contents = catalog columns (see build-shop CONTENTS).
+KITS = {'PDG-P150MAX-STARTER': 'p150-max-starter', 'PDG-P150MAX-PRO': 'p150-max-pro', 'PDG-P150MAX-BUSINESS': 'p150-max-business'}
+GALLERY = [  # (file, ka alt, en alt, ru alt)
+    ('p150-max-1.webp', 'XAG P150 MAX — სამი მეოთხედის ხედი', 'XAG P150 MAX — three-quarter view', 'XAG P150 MAX — вид в три четверти'),
+    ('p150-max-2.webp', 'XAG P150 MAX — გვერდითი ხედი', 'XAG P150 MAX — side view', 'XAG P150 MAX — вид сбоку'),
+    ('p150-max-3.webp', 'XAG RevoCast — გრანულების გამფანტველი სისტემა (ცალკე)', 'XAG RevoCast granule spreading system (sold separately)', 'Система разбрасывания гранул XAG RevoCast (отдельно)'),
+    ('p150-max-4.webp', 'XAG SRC5 ჭკვიანი მართვის პულტი', 'XAG SRC5 smart remote controller', 'Умный пульт управления XAG SRC5'),
+    ('p150-max-5.webp', 'XAG B141050 ჭკვიანი აკუმულატორი', 'XAG B141050 smart battery', 'Умный аккумулятор XAG B141050'),
+    ('p150-max-6.webp', 'XAG P150 MAX გრანულების გაფანტვისას', 'XAG P150 MAX spreading granules', 'XAG P150 MAX при разбрасывании гранул'),
+    ('p150-max-7.webp', 'XAG P150 MAX ტვირთის გადატანისას', 'XAG P150 MAX carrying cargo', 'XAG P150 MAX при перевозке груза'),
+    ('p150-max-8.webp', 'XAG P150 MAX შეწამვლისას', 'XAG P150 MAX spraying', 'XAG P150 MAX при опрыскивании'),
+    ('p150-max-9.webp', 'XAG P150 MAX ბაღის შეწამვლისას', 'XAG P150 MAX spraying an orchard', 'XAG P150 MAX при опрыскивании сада'),
+]
+
 
 def url(sku):
-    """Clean URL of the product page (Cloudflare Pages serves /x.html as /x), or None."""
+    """Clean URL of the product or package page (Cloudflare Pages serves /x.html as /x), or None."""
+    if sku in KITS:
+        return '/' + KITS[sku]
     p = BY_SKU.get(sku)
     return f"/{p['slug']}" if p else None
