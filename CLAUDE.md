@@ -68,8 +68,10 @@ www → root: Redirect Rule must match only hostname www.premium-drones.ge (a ru
 Owner is non-technical, works from iPhone/Windows; wants Claude to do Cloudflare steps for him (use the desktop-app browser when available).
 
 TODO in Cloudflare (dashboard, owner's account):
-1. Website chat storage: Storage & Databases → KV → create namespace "pdg-data"; pdg → Settings → Bindings → Add → KV namespace, variable name PDG_DATA → pdg-data (Production).
-2. pdg → Settings → Variables and secrets → Secret ADMIN_KEY (16+ chars). Team inbox: https://premium-drones.ge/api/chat/inbox?key=ADMIN_KEY
+1. DONE 14 Oct 2026: KV namespace is named "PDG" (not pdg-data) and bound to pdg Production as variable PDG_DATA.
+   Note: "Retry deployment" did not pick up the renamed binding; a fresh deployment (new push to main) was needed.
+2. DONE: Secret ADMIN_KEY exists (owner set the value). Team inbox: https://premium-drones.ge/api/chat/inbox?key=ADMIN_KEY
+   Check: https://premium-drones.ge/api/chat/config must show "live":true.
 3. Optional WhatsApp alert (CallMeBot): secrets WHATSAPP_ALERT_PHONE (+995550004333) and WHATSAPP_ALERT_KEY (from CallMeBot after sending "I allow callmebot to send me messages").
 4. After adding bindings/secrets: Deployments → ⋯ → Retry deployment.
 5. Later: Bank of Georgia e-commerce agreement → secrets BOG_CLIENT_ID, BOG_CLIENT_SECRET (payments). Optional ANTHROPIC_API_KEY for AI replies in chat.
