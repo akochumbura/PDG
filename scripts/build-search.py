@@ -19,7 +19,9 @@ SYN = {
     'control': {'ka': 'პულტი მართვა RTK ანტენა', 'en': 'remote controller RTK antenna', 'ru': 'пульт управление RTK антенна'},
     'acc': {'ka': 'აქსესუარი', 'en': 'accessory accessories', 'ru': 'аксессуар'},
     'spare': {'ka': 'ნაწილი სათადარიგო ძრავა პროპელერი', 'en': 'part spare motor propeller', 'ru': 'запчасть мотор пропеллер'},
-    'kit': {'ka': 'დრონი კომპლექტი კომპლექტაცია პაკეტი', 'en': 'drone kit package', 'ru': 'дрон комплект пакет'},
+    'kit': {'ka': 'დრონი დრონები კომპლექტი კომპლექტაცია პაკეტი სასოფლო-სამეურნეო დრონი შესაწამლი დრონი შეწამვლა დრონით შეწამვლა შესხურება აგროდრონი აგრო დრონი გრანულების გაფანტვა სასუქის გაფანტვა ტვირთის გადატანა ფასი',
+            'en': 'drone kit package agricultural drone ag drone spraying drone crop spraying sprayer spreading granules cargo price',
+            'ru': 'дрон комплект пакет сельскохозяйственный дрон агродрон сельхоз дрон опрыскивание разбрасывание гранул удобрения перевозка груза цена'},
 }
 CAT = {'power': 'cat_power', 'spray': 'cat_spray', 'control': 'cat_control', 'acc': 'cat_acc', 'spare': 'cat_spare', 'kit': 'packages_title'}
 
@@ -62,7 +64,10 @@ for lang in ('ka', 'en', 'ru'):
         desc = (doc.xpath('//meta[@name="description"]/@content') or [''])[0]
         text = ' '.join(' '.join(e.text_content().split()) for e in main[0].xpath('.//h2|.//h3|.//p|.//summary|.//dt|.//li'))
         rel = f.relative_to(DIST)
-        pages.append({'u': page_url(rel), 't': h1 or f.stem, 'd': desc[:200], 'x': text[:1500]})
+        entry = {'u': page_url(rel), 't': h1 or f.stem, 'd': desc[:200], 'x': text[:1500]}
+        if f.name in ('index.html', 'p150-max.html'):  # farmer search words (not shown on the page)
+            entry['k'] = (doc.xpath('//meta[@name="keywords"]/@content') or [''])[0]
+        pages.append(entry)
     products = []
     prefix = '' if lang == 'ka' else '/' + lang
     for r in rows:

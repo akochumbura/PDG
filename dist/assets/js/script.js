@@ -22,7 +22,7 @@
     const toggle = document.getElementById("themeToggle");
     if (toggle) toggle.setAttribute("aria-pressed", String(root.dataset.theme === "dark"));
   }
-  setTheme(storage.get("pdge-theme") || (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+  setTheme(storage.get("pdge-theme") || "light");
   document.getElementById("themeToggle")?.addEventListener("click", () => {
     setTheme(root.dataset.theme === "dark" ? "light" : "dark");
     storage.set("pdge-theme", root.dataset.theme);
@@ -37,6 +37,13 @@
     if (targetLanguage === lang) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
   });
+  const langBtn = document.getElementById("langBtn"), langList = document.getElementById("langList");
+  if (langBtn && langList) {
+    const setLang = (open) => { langList.hidden = !open; langBtn.setAttribute("aria-expanded", String(open)); };
+    langBtn.addEventListener("click", (e) => { e.stopPropagation(); setLang(langList.hidden); });
+    document.addEventListener("click", (e) => { if (!langList.hidden && !e.target.closest(".lang-menu")) setLang(false); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !langList.hidden) { setLang(false); langBtn.focus(); } });
+  }
   const header = document.querySelector(".site-header");
   if (header) {
     const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 8);
@@ -79,7 +86,7 @@
     const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
     function load() {
       if (!loading) loading = fetch(((document.querySelector('link[href*="assets/css/style.css"]') || {}).href || "/assets/css/style.css").replace(/css\/style\.css.*$/, "search/") + lang + ".json").then((r) => r.json()).then((d) => {
-        d.pages.forEach((p) => { p.h = norm(p.t + " " + p.d + " " + p.x); p.ht = norm(p.t); });
+        d.pages.forEach((p) => { p.h = norm(p.t + " " + p.d + " " + p.x + " " + (p.k || "")); p.ht = norm(p.t); });
         d.products.forEach((p) => { p.h = norm(p.n + " " + p.s + " " + p.c + " " + p.k); p.ht = norm(p.n + " " + p.s); });
         index = d; return d;
       }).catch(() => { loading = null; });

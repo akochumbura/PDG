@@ -714,3 +714,27 @@ html[lang=en] .product-orig{display:none}
 @media(min-width:901px) and (max-width:1360px){.site-nav{gap:clamp(18px,2vw,30px)}.header-inner{gap:20px}.header-actions{gap:16px}.brand{width:150px}}
 @media(min-width:901px) and (max-width:1120px){.brand{width:128px}.site-nav{gap:16px}.site-nav>a,.nav-group-btn{font-size:13px}.languages{font-size:12px;gap:4px}.header-actions{gap:12px}}
 [hidden]{display:none!important}
+
+/* Language dropdown */
+.lang-menu{position:relative}
+.lang-btn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 4px;background:none;border:0;color:var(--dark);font:500 13px/1 var(--font-latin);letter-spacing:.06em;cursor:pointer}
+.lang-btn:hover,.lang-btn[aria-expanded=true]{color:var(--accent)}
+.lang-chev{transition:transform .2s}.lang-btn[aria-expanded=true] .lang-chev{transform:rotate(180deg)}
+.lang-list{position:absolute;right:-8px;top:calc(100% + 8px);min-width:168px;margin:0;padding:6px;list-style:none;background:var(--white);border:1px solid var(--border);box-shadow:0 18px 40px rgba(0,0,0,.12);z-index:60}
+.lang-list a{display:block;padding:11px 14px;color:var(--dark);font-size:15px}
+.lang-list a:hover{background:rgba(0,0,0,.04)}
+.lang-list a[aria-current=page]{font-weight:600;box-shadow:inset 2px 0 0 var(--accent)}
+html[data-theme=dark] .lang-btn,html[data-theme=dark] .lang-list a{color:#fff}
+html[data-theme=dark] .lang-list{background:#191918;border-color:#333}
+html[data-theme=dark] .lang-list a:hover{background:rgba(255,255,255,.06)}
+@media(max-width:480px){.lang-btn svg:first-child{display:none}.lang-btn{gap:4px;font-size:12px}}
+
+/* Chat: reach a person */
+.chat-human-box{display:flex;flex-direction:column;gap:6px;padding-top:2px}
+.chat-human{font-size:12px;color:var(--muted);text-decoration:none}
+.chat-contacts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.chat-contact{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:0 8px;border:1px solid var(--border);color:var(--dark);font-size:13px;text-decoration:none;white-space:nowrap}
+.chat-contact:hover{border-color:var(--dark)}
+.chat-wa svg{color:#128c4b}.chat-ms svg{color:#0a66e0}
+html[data-theme=dark] .chat-contact{color:#fff;border-color:#3a3a38}
+html[data-theme=dark] .chat-human{color:#a9a9a4}
