@@ -32,3 +32,15 @@ The chat button ("მოგვწერეთ") opens a chat that stays on the w
 - **Team inbox:** open `https://premium-drones.ge/api/chat/inbox?key=YOUR_ADMIN_KEY` on your phone (bookmark it). New chats are marked NEW. Type a reply and tap "Send reply": the visitor sees it in the website chat within seconds, or when they come back. After the team replies, the AI stops answering that chat.
 - WhatsApp, Messenger and phone are shown as "other options" only after the visitor's first message.
 - Optional alert on a new chat: create a Telegram bot with @BotFather, then add `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` as secrets in Cloudflare.
+
+
+## WhatsApp alert for new chat messages
+1. Save the CallMeBot WhatsApp number (shown on callmebot.com, WhatsApp API page) in your phone contacts.
+2. Send it the WhatsApp message: I allow callmebot to send me messages
+3. You get a reply with your apikey.
+4. Cloudflare → Workers & Pages → pdg → Settings → Variables and secrets → add two Secrets:
+   WHATSAPP_ALERT_PHONE = your number with country code, e.g. +995550004333
+   WHATSAPP_ALERT_KEY = the apikey
+5. Deployments → ⋯ → Retry deployment.
+The alert comes once per conversation when a visitor writes after you last read it; the key is never in the alert.
+CallMeBot is a free third-party service for personal alerts (no guarantee); the official alternative is Meta's WhatsApp Business Cloud API.

@@ -515,7 +515,7 @@ async function adminReset(env, url) {
    Threads in KV (PDG_DATA): thread:<id> {id, created, updated, lang, page, contact, human, unread, msgs:[{r:'v'|'ai'|'team', t, at}]}.
    The visitor's id is 32 random hex characters made in the browser and kept there; it is the key to that conversation.
    The AI answers when ANTHROPIC_API_KEY is set, until the team replies (then the team has the thread).
-   Team inbox: /api/chat/inbox?key=ADMIN_KEY (works on a phone). Optional alert to Telegram: TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID. */
+   Team inbox: /api/chat/inbox?key=ADMIN_KEY (works on a phone). Optional alerts: WhatsApp (WHATSAPP_ALERT_PHONE + WHATSAPP_ALERT_KEY, via CallMeBot) and/or Telegram (TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID). */
 const liveHits = new Map();
 function liveOn(env) { return Boolean(kv(env) && env.LIVECHAT_ENABLED !== 'off'); }
 const okId = id => /^[a-f0-9]{32}$/.test(String(id || ''));
@@ -542,14 +542,20 @@ async function liveInput(request, url) {
   try { return await request.json(); } catch { throw new UserError('bad_json'); }
 }
 async function notifyTeam(env, url, th, text) {
-  if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) return;
   const msg = `PDG website chat (${th.lang})${th.contact ? ' · ' + th.contact : ''}\n\n${text.slice(0, 600)}\n\nReply: ${url.origin}/api/chat/inbox`;
-  try {
-    await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+  const jobs = [];
+  if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
+    jobs.push(fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, text: msg, disable_web_page_preview: true })
-    });
-  } catch (err) { console.error('telegram', err); }
+    }).catch(err => console.error('telegram', err)));
+  }
+  // WhatsApp alert to the owner's own number via CallMeBot (free; activate once, see docs/10-ai-chat.md).
+  if (env.WHATSAPP_ALERT_PHONE && env.WHATSAPP_ALERT_KEY) {
+    const q = new URLSearchParams({ phone: String(env.WHATSAPP_ALERT_PHONE).replace(/[^\d+]/g, ''), text: msg, apikey: env.WHATSAPP_ALERT_KEY });
+    jobs.push(fetch('https://api.callmebot.com/whatsapp.php?' + q).catch(err => console.error('whatsapp alert', err)));
+  }
+  await Promise.all(jobs);
 }
 async function liveSend(request, env, url) {
   if (!liveOn(env)) return json({ error: 'live_off' }, 503);
