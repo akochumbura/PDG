@@ -25,7 +25,16 @@ const BOG_API = 'https://api.bog.ge/payments/v1';
 const LANGS = ['ka', 'en', 'ru'];
 let cachedToken = null;
 
-function kv(env) { return env.PDG_DATA || env.ORDERS || null; }
+/* KV storage: PDG_DATA (or ORDERS). Tolerates a dashboard name typed with spaces or another case (e.g. "PDG_DATA ", "PDG"):
+   falls back to any binding that behaves like a KV namespace (get/put/list). ASSETS is a fetcher, so it never matches. */
+function kv(env) {
+  if (env.PDG_DATA || env.ORDERS) return env.PDG_DATA || env.ORDERS;
+  for (const name of Object.keys(env || {})) {
+    const b = env[name];
+    if (b && typeof b.get === 'function' && typeof b.put === 'function' && typeof b.list === 'function') return b;
+  }
+  return null;
+}
 
 export default {
   async fetch(request, env) {
