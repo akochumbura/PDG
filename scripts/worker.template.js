@@ -263,7 +263,7 @@ function esc(s) {
 
 async function orders(env, url) {
   const key = url.searchParams.get('key') || '';
-  if (!env.ADMIN_KEY || !kv(env) || key.length < 16 || key !== env.ADMIN_KEY) return json({ error: 'not_found' }, 404);
+  if (!adminOk(env, key)) return json({ error: 'not_found' }, 404);
   const list = await kv(env).list({ prefix: 'order:', limit: 200 });
   const recs = (await Promise.all(list.keys.map(k => kv(env).get(k.name, 'json')))).filter(Boolean)
     .sort((a, b) => String(b.created).localeCompare(String(a.created)));
@@ -286,7 +286,7 @@ async function orders(env, url) {
 const CHAT_MAX_TURNS = 16;
 const chatHits = new Map();
 
-function chatEnabled(env) { return Boolean(env.ANTHROPIC_API_KEY && env.CHAT_ENABLED !== 'off'); }
+function chatEnabled(env) { return Boolean(secret(env, 'ANTHROPIC_API_KEY').trim() && env.CHAT_ENABLED !== 'off'); }
 
 function chatSystem(lang) {
   const language = { ka: 'Georgian', en: 'English', ru: 'Russian' }[lang] || 'Georgian';
@@ -357,7 +357,7 @@ async function aiReply(env, lang, messages) {
   const learned = await learnText(env);
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-api-key': env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+    headers: { 'content-type': 'application/json', 'x-api-key': secret(env, 'ANTHROPIC_API_KEY').trim(), 'anthropic-version': '2023-06-01' },
     body: JSON.stringify({ model: env.CHAT_MODEL || 'claude-haiku-5-5', max_tokens: 700, system: chatSystem(lang) + (learned ? `\n\nANSWERS GIVEN BY THE PDG TEAM (trusted, newest first; they override KNOWLEDGE when they differ; reuse them for similar questions, but do not mention other customers):\n${learned}` : ''), messages })
   });
   if (!res.ok) {
@@ -503,7 +503,7 @@ async function account(route, request, env, url) {
 
 async function adminReset(env, url) {
   const key = url.searchParams.get('key') || '';
-  if (!env.ADMIN_KEY || !kv(env) || key.length < 16 || key !== env.ADMIN_KEY) return json({ error: 'not_found' }, 404);
+  if (!adminOk(env, key)) return json({ error: 'not_found' }, 404);
   const email = clean(url.searchParams.get('email'), 254).toLowerCase();
   const u = await kv(env).get('user:' + email, 'json');
   if (!u) return new Response('No account with that e-mail.', { status: 404, headers: { 'Content-Type': 'text/plain; charset=utf-8', 'X-Robots-Tag': 'noindex' } });
@@ -626,14 +626,20 @@ async function liveContact(request, env, url) {
   await putThread(env, th);
   return json({ ok: true });
 }
+/* Secret by name, tolerating spaces or case typed into the Cloudflare name field (e.g. "ADMIN_KEY "). */
+function secret(env, name) {
+  if (typeof env[name] === 'string') return env[name];
+  for (const k of Object.keys(env || {})) if (typeof env[k] === 'string' && k.trim().toUpperCase() === name) return env[k];
+  return '';
+}
 /* Key check ignores spaces around the key (easy to add by accident when pasting into Cloudflare or a phone). */
 function adminOk(env, key) {
-  const want = String(env.ADMIN_KEY || '').trim(), got = String(key || '').trim();
+  const want = String(secret(env, 'ADMIN_KEY')).trim(), got = String(key || '').trim();
   return Boolean(want && kv(env) && got.length >= 16 && got === want);
 }
 /* Sign-in page for the inbox: the browser encodes the key correctly, so keys with + # & or spaces work. */
 function inboxLogin(env, wrong) {
-  const note = !kv(env) ? 'Chat storage (KV binding) is not connected.' : !String(env.ADMIN_KEY || '').trim() ? 'ADMIN_KEY is not set in Cloudflare.' : wrong ? 'Wrong key. Check it in Cloudflare → pdg → Settings → Variables and secrets (ADMIN_KEY, 16+ characters).' : '';
+  const note = !kv(env) ? 'Chat storage (KV binding) is not connected.' : !String(secret(env, 'ADMIN_KEY')).trim() ? 'ADMIN_KEY is not set in Cloudflare.' : wrong ? 'Wrong key. Check it in Cloudflare → pdg → Settings → Variables and secrets (ADMIN_KEY, 16+ characters).' : '';
   const page = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <title>PDG chat inbox</title><style>body{font:16px/1.45 system-ui,sans-serif;margin:0 auto;max-width:420px;padding:24px 16px;color:#1c1c1c}
 input,button{font:inherit;width:100%;box-sizing:border-box;padding:12px;margin-top:10px}.err{color:#b3261e}</style>
