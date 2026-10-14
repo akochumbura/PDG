@@ -15,9 +15,12 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - Hosting is Cloudflare Pages: it serves /shop.html as /shop. The build writes clean URLs (no .html) in links,
   canonicals and the sitemap; verify fails on any internal .html link. 404.html exists per language (noindex).
   Local preview that behaves the same: `python scripts/serve.py`.
-- Prices: shop price = Agrifuture USD base x markup x RATE, rounded to whole GEL. Kits/drones x1.10, parts x1.70.
-  Change only scripts/pricing.py or scripts/catalog.csv. Kit contents (batteries/chargers) come from the
-  "NB" / "NC" part of the kit name (XAG naming: B = batteries, C = chargers). Do not invent other kit contents.
+- Prices: a fixed GEL price in the catalog `gel` column wins (packages, B141050 battery 5999, XAG generator 5899).
+  Otherwise shop price = Agrifuture USD x markup x RATE (parts x1.70). Change only scripts/pricing.py or scripts/catalog.csv.
+- Packages (owner, 14 Oct 2026): only three - Starter 75,999 (drone, 4 batteries, 2 chargers), Pro 85,999 (drone, 6 batteries,
+  2 chargers, RTK station), Business 104,999 (drone, 8 batteries, 2 chargers, 2 generators). Contents = catalog columns.
+- Georgian word for spraying is შეწამვლა (not შესხურება). Experience: since 2023, thousands of ha, mainly Kakheti and Kartli.
+  Addresses: Tbilisi, Panaskerteli-Tsitsishvili St 12; Lagodekhi. No hidden SEO text; model names only in meta/structured data/llms.txt.
 - Product photos: dist/assets/img/products/<SKU>.webp is picked up at build time. Parts without their own photo show a
   category tile. Never show a photo of a different product on a part card (verify enforces this).
 - P150 MAX specs on the site are from xa.com/en/p150max/p150maxspecs (Oct 2026). Do not add unverified specs.

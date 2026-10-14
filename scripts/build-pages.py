@@ -52,7 +52,8 @@ def page_path(filename):
 ORG = {"@context": "https://schema.org", "@type": "LocalBusiness", "name": "Premium Drones Georgia",
        "url": BASE_URL + "/", "logo": BASE_URL + "/assets/img/pdg-logo-light.png", "image": BASE_URL + "/assets/img/og-image.jpg",
        "telephone": "+995550004333", "email": "info@premium-drones.ge",
-       "address": {"@type": "PostalAddress", "addressLocality": "Lagodekhi", "addressCountry": "GE"}}
+       "address": {"@type": "PostalAddress", "streetAddress": "12 Panaskerteli-Tsitsishvili St", "addressLocality": "Tbilisi", "addressCountry": "GE"},
+       "location": [{"@type": "Place", "name": "Premium Drones Georgia, Lagodekhi", "address": {"@type": "PostalAddress", "addressLocality": "Lagodekhi", "addressCountry": "GE"}}]}
 
 def localized_href(href, language, filename):
     parts = urlsplit(href)
@@ -126,7 +127,7 @@ def render(page_source, language, filename):
         org=dict(ORG); org['@id']=BASE_URL+'/#business'
         org['sameAs']=[u for u in SOCIAL.values() if u.strip()]
         org['areaServed']={"@type":"Country","name":"Georgia"}
-        org['knowsAbout']=["agricultural drones","XAG P150 MAX","drone crop spraying","drone spreading","drone operator training","drone repair"]
+        org['knowsAbout']=["agricultural drones","crop spraying drones","drone crop spraying","drone spreading","drone operator training","drone repair","agricultural drone batteries and parts","XAG P150 MAX","XAG P150","XAG P100 Pro","XAG V40","XAG V50 Pro","DJI Agras T100","DJI Agras T70P","DJI Agras T50","DJI Agras T40","DJI Agras T25"]
         org['founder']={"@type":"Person","name":"Aleko Tchumburidze"}
         org.pop('@context',None); graph.append(org)
         faq=[{"@type":"Question","name":d.findtext('summary').strip(),"acceptedAnswer":{"@type":"Answer","text":d.findtext('p').strip()}} for d in doc.xpath('//details[contains(@class,"faq-item")]')]

@@ -334,9 +334,9 @@ dialog.cart[open]{display:flex;flex-direction:column}
 .not-found{min-height:56vh;border-bottom:0}
 .nf-actions{display:flex;flex-wrap:wrap;align-items:center;gap:20px 32px;margin-top:40px}
 @media (max-width:900px){
-  .spec-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .spec-strip>div:nth-child(3){padding-left:0;border-left:0}
-  .spec-strip>div:nth-child(n+3){margin-top:28px}
+  .spec-strip:not(.spec-strip-3){grid-template-columns:repeat(2,minmax(0,1fr))}
+  .spec-strip:not(.spec-strip-3)>div:nth-child(3){padding-left:0;border-left:0}
+  .spec-strip:not(.spec-strip-3)>div:nth-child(n+3){margin-top:28px}
   .spec-sheet{grid-template-columns:1fr;gap:40px}
   .order-steps{grid-template-columns:1fr}
   .order-steps li,.order-steps li+li{padding:16px 0;border-left:0}
@@ -464,4 +464,30 @@ html[data-theme=dark] .site-footer{--muted:#a9a9a3;--border:#34342f;background:v
 @media(max-width:900px){.faq-layout{grid-template-columns:1fr}}
 html[data-theme=dark] .text-link,html[data-theme=dark] .article-arrow,html[data-theme=dark] .about-do-item .arrow{color:#f07a6d;border-color:#f07a6d}
 html[data-theme=dark] .text-link:hover{color:#ff9488}
+/* Home page to the Oct 2026 brief: hero, system, ecosystem, packages, parts, academy */
+.brand{width:188px}
+.hero h1{font-size:clamp(46px,6.4vw,104px);line-height:1.02;max-width:12ch;margin-bottom:24px;text-wrap:balance}
+.hero-sub{font-size:clamp(17px,1.5vw,21px);line-height:1.55;max-width:46ch;color:rgba(255,255,255,.88);margin-bottom:36px}
+.system-intro{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,96px);align-items:end;margin-bottom:56px}
+.system-intro h2{font-size:clamp(30px,3.2vw,48px);line-height:1.15;text-wrap:balance}
+.system-intro p{color:var(--muted);font-size:17px;line-height:1.7;max-width:52ch}
+.spec-strip-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.spec-foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 32px;margin-top:28px}
+.spec-foot .small-note{margin:0}.spec-foot .spec-link{margin-top:0}
+.eco-title{font-size:clamp(30px,3.2vw,48px);line-height:1.15;margin-bottom:40px;max-width:20ch}
+.offerings-4{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.offerings-4 .panel{min-height:540px}
+.offerings-4 .panel-text{padding:28px}
+.panel h3{font-size:clamp(22px,1.9vw,28px);margin-bottom:10px;color:#fff}
+.section-intro{color:var(--muted);font-size:17px;max-width:60ch;margin:-12px 0 36px}
+.packages-section{background:var(--bg-alt)}
+.packages-section .kit-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.home-parts{grid-template-columns:repeat(5,minmax(0,1fr))}
+.academy-section .about-story img{aspect-ratio:4/3}
+.academy-section .about-text .button{margin-top:12px}
+@media(max-width:1120px){.brand{width:160px}.offerings-4{grid-template-columns:repeat(2,minmax(0,1fr))}.home-parts{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.system-intro{grid-template-columns:1fr;gap:20px}.packages-section .kit-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.brand{width:142px}.hero h1{font-size:46px}.offerings-4{grid-template-columns:1fr}.offerings-4 .panel{min-height:440px}
+  .spec-strip-3>div{padding-right:8px}.spec-strip-3>div+div{padding-left:12px}.spec-strip-3 dd{font-size:32px}.spec-strip-3 dt{font-size:12px}
+  .home-parts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 [hidden]{display:none!important}

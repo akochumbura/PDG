@@ -35,23 +35,28 @@ ICON = {
     'acc': '<path d="M24 7l14 8v17l-14 8-14-8V15z"/><path d="M10 15l14 8 14-8M24 23v17"/>',
     'spare': '<path d="M31 9a8 8 0 0 0-9.5 10.5L10 31a3 3 0 0 0 4.2 4.2l11.5-11.5A8 8 0 0 0 36 14l-5 5-4.5-1.2L25.3 13z"/>',
 }
-CAT_KEY = {'power': ('cat_power', 'აკუმულატორები და დატენვა'), 'spray': ('cat_spray', 'შესხურება და გაფანტვა'),
+CAT_KEY = {'power': ('cat_power', 'აკუმულატორები და დატენვა'), 'spray': ('cat_spray', 'შეწამვლა და გაფანტვა'),
            'control': ('cat_control', 'მართვა და RTK'), 'acc': ('cat_acc', 'აქსესუარები'), 'spare': ('cat_spare', 'სათადარიგო ნაწილები')}
 
 
-def kit_counts(r):
-    """'XAG P150 Max Standard 14KW 4B4C Kit' -> (4, 4): B = batteries, C = chargers (XAG kit naming)."""
-    m = re.search(r'(\d+)B(\d+)C', r['sku'] + ' ' + r['name'])
-    return (int(m.group(1)), int(m.group(2))) if m else None
+CONTENTS = [('drones', 'kit_drone', 'დრონი P150 MAX'), ('batteries', 'kit_batteries', 'აკუმულატორები'),
+            ('chargers', 'kit_chargers', 'დამტენები'), ('rtk', 'kit_rtk', 'RTK სადგური'),
+            ('generators', 'kit_generators', 'გენერატორები')]
+HOME_PARTS = ['09-017-00083', '09-017-00069', '09-017-00065', '05-002-02311', '09-016-00083']
 
 
 def contents(r, cls='kit-contents'):
-    counts = kit_counts(r)
-    if not counts:
-        return ''
-    b, c = counts
-    return (f'<dl class="{cls}"><div><dt data-i18n="kit_batteries">აკუმულატორები</dt><dd>{b}</dd></div>'
-            f'<div><dt data-i18n="kit_chargers">დამტენები</dt><dd>{c}</dd></div></dl>')
+    """Package contents from the catalog columns batteries / chargers / generators (empty = not shown)."""
+    parts = [f'<div><dt data-i18n="{key}">{ka}</dt><dd>{r.get(col, "").strip()}</dd></div>'
+             for col, key, ka in CONTENTS if (r.get(col) or '').strip()]
+    return f'<dl class="{cls}">{"".join(parts)}</dl>' if parts else ''
+
+
+def price(r, kit):
+    """A fixed GEL price in the catalog wins; otherwise Agrifuture USD x markup x rate."""
+    if (r.get('gel') or '').strip():
+        return int(Decimal(r['gel'].strip()))
+    return gel(r['usd'], pricing.MARKUP_KITS if kit else pricing.MARKUP_PARTS)
 
 
 def photo(r, kit):
@@ -79,7 +84,7 @@ def card(r):
     kit = r['group'] == 'kit'
     n = html.escape(r['name'], quote=True)
     s = r['sku']
-    p = gel(r['usd'], pricing.MARKUP_KITS if kit else pricing.MARKUP_PARTS)
+    p = price(r, kit)
     return (f'<article class="product{" product-kit" if kit else ""}" data-cat="{r["group"]}">{photo(r, kit)}'
             f'<div class="product-body"><p class="product-sku">{s}</p><h3>{n}</h3>{contents(r) if kit else ""}'
             f'<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
@@ -90,7 +95,7 @@ def card(r):
 def kit_row(r):
     n = html.escape(r['name'], quote=True)
     s = r['sku']
-    p = gel(r['usd'], pricing.MARKUP_KITS)
+    p = price(r, True)
     short = re.sub(r'^XAG P150 Max\s*', '', r['name']).strip() or r['name']
     return (f'<li class="kit-row"><div class="kit-row-name"><span class="kit-row-title">{html.escape(short)}</span>{contents(r, "kit-contents kit-contents-inline")}</div>'
             f'<span class="kit-row-price">₾{p:,}</span>'
@@ -111,6 +116,15 @@ subs = [
     (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in parts)),
     (r'(<ul class="kit-table">\n).*?(</ul>)', ''.join(kit_row(r) for r in kits)),
 ]
+home = ROOT / 'dist/index.html'
+ht = home.read_text(encoding='utf-8')
+by_sku = {r['sku']: r for r in rows}
+for pattern, body in [(r'(<div class="shop-grid kit-grid" id="homePackages">).*?(</div>\s*<!--/homePackages-->)', '\n' + ''.join(card(r) for r in kits)),
+                      (r'(<div class="shop-grid home-parts" id="homeParts">).*?(</div>\s*<!--/homeParts-->)', '\n' + ''.join(card(by_sku[s]) for s in HOME_PARTS if s in by_sku))]:
+    ht, n = re.subn(pattern, lambda m: m.group(1) + body + m.group(2), ht, count=1, flags=re.S)
+    if n != 1:
+        raise SystemExit('Home page marker not found: ' + pattern[:50])
+home.write_text(ht, encoding='utf-8')
 for pattern, body in subs:
     t, n = re.subn(pattern, lambda m: m.group(1) + body + m.group(2), t, count=1, flags=re.S)
     if n != 1:
@@ -118,3 +132,16 @@ for pattern, body in subs:
 pb.write_text(t, encoding='utf-8')
 own = sum((PHOTOS / f'{r["sku"]}.webp').is_file() for r in rows)
 print(f'shop: {len(rows)} products ({len(kits)} kits), {own} with their own photo')
+
+# Keep the AI summary (dist/llms.txt) in step with the catalog prices.
+llms = ROOT / 'dist/llms.txt'
+if llms.is_file():
+    def line(r):
+        what = ', '.join(f"{r[c]} {'RTK station' if c == 'rtk' else c}" for c in ('batteries', 'chargers', 'rtk', 'generators') if (r.get(c) or '').strip())
+        return f"- {r['name']}: {price(r, True):,} GEL" + (f" ({what})" if what else '')
+    extra = [r for r in parts if (r.get('gel') or '').strip()]
+    block = '## Packages (prices in GEL)\n' + '\n'.join(line(r) for r in kits) + '\n' + \
+            '\n'.join(f"- {r['name']}: {price(r, False):,} GEL" for r in extra) + '\n\n'
+    text = llms.read_text(encoding='utf-8')
+    text = re.sub(r'## Packages \(prices in GEL\)\n.*?\n\n', lambda m: block, text, flags=re.S)
+    llms.write_text(text, encoding='utf-8')
