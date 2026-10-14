@@ -27,7 +27,8 @@ pages = {'index.html': source}
 for template in templates.xpath('//template[@data-page]'):
     title_key = template.get('data-title')
     desc_key = template.get('data-description')
-    page_head = re.sub(r'(<title data-i18n=")[^"]+(">).*?</title>', r'\g<1>'+title_key+r'\g<2>'+escape(template.xpath('.//h1')[0].text_content())+' — Premium Drones Georgia</title>', head)
+    ka_title = template.get('data-ka-title') or template.xpath('.//h1')[0].text_content()+' — Premium Drones Georgia'
+    page_head = re.sub(r'(<title data-i18n=")[^"]+(">).*?</title>', lambda m: m.group(1)+title_key+m.group(2)+escape(ka_title)+'</title>', head)
     intro = template.xpath('.//p[contains(@class,"page-intro")]')[0].text_content()
     page_head = re.sub(r'<meta name="description"[^>]+>', '<meta name="description" content="'+escape(intro,quote=True)+'" data-i18n-content="'+desc_key+'">', page_head)
     page_head = re.sub(r'\s*<link rel="preload"[^>]*as="image"[^>]*>', '', page_head)
@@ -49,7 +50,7 @@ def page_path(filename):
     return '/' if filename == 'index.html' else '/' + clean_path(filename)
 
 ORG = {"@context": "https://schema.org", "@type": "LocalBusiness", "name": "Premium Drones Georgia",
-       "url": BASE_URL + "/", "logo": BASE_URL + "/assets/img/pdg-logo.png", "image": BASE_URL + "/assets/img/p150-max-flight.webp",
+       "url": BASE_URL + "/", "logo": BASE_URL + "/assets/img/pdg-logo-light.png", "image": BASE_URL + "/assets/img/og-image.jpg",
        "telephone": "+995550004333", "email": "info@premium-drones.ge",
        "address": {"@type": "PostalAddress", "addressLocality": "Lagodekhi", "addressCountry": "GE"}}
 
@@ -90,7 +91,7 @@ def render(page_source, language, filename):
         element.set('href',target_prefix+target_path)
         if target==language:element.set('aria-current','page')
         else:element.attrib.pop('aria-current',None)
-    for slot in doc.xpath('//div[@class="footer-social"]'):
+    for slot in doc.xpath('//div[contains(concat(" ",@class," ")," social-links ")]'):
         for child in list(slot): slot.remove(child)
         slot.text=None
         for name,url in SOCIAL.items():
@@ -112,10 +113,34 @@ def render(page_source, language, filename):
             p='' if target in ['ka','x-default'] else '/'+target
             etree.SubElement(doc_head,'link',rel='alternate',hreflang=target,href=BASE_URL+p+path)
         etree.SubElement(doc_head,'meta',property='og:url',content=canonical)
+    # Per-page share text (Facebook, WhatsApp, Telegram previews) = the page's own title and description.
+    title_text=doc.findtext('.//title') or ''
+    desc=(doc.xpath('//meta[@name="description"]/@content') or [''])[0]
+    for m in doc.xpath('//meta[@property="og:title"]'): m.set('content',title_text); m.attrib.pop('data-i18n-content',None)
+    for m in doc.xpath('//meta[@property="og:description"]'): m.set('content',desc); m.attrib.pop('data-i18n-content',None)
+    for m in doc.xpath('//meta[@property="og:locale"]'): m.getparent().remove(m)
+    etree.SubElement(doc_head,'meta',property='og:locale',content={'ka':'ka_GE','en':'en_US','ru':'ru_RU'}[language])
+    for image in doc.xpath('//meta[@property="og:image"]'):image.set('content',BASE_URL+'/assets/img/og-image.jpg')
+    graph=[]
     if filename=='index.html':
+        org=dict(ORG); org['@id']=BASE_URL+'/#business'
+        org['sameAs']=[u for u in SOCIAL.values() if u.strip()]
+        org['areaServed']={"@type":"Country","name":"Georgia"}
+        org['knowsAbout']=["agricultural drones","XAG P150 MAX","drone crop spraying","drone spreading","drone operator training","drone repair"]
+        org['founder']={"@type":"Person","name":"Aleko Tchumburidze"}
+        org.pop('@context',None); graph.append(org)
+        faq=[{"@type":"Question","name":d.findtext('summary').strip(),"acceptedAnswer":{"@type":"Answer","text":d.findtext('p').strip()}} for d in doc.xpath('//details[contains(@class,"faq-item")]')]
+        if faq: graph.append({"@type":"FAQPage","mainEntity":faq})
+    kits=doc.xpath('//article[contains(@class,"product-kit")]') if filename=='shop.html' else []
+    for k in kits:
+        btn=k.xpath('.//button[@data-sku]')[0]; img=(k.xpath('.//img/@src') or [''])[0]
+        graph.append({"@type":"Product","name":btn.get('data-name'),"sku":btn.get('data-sku'),"brand":{"@type":"Brand","name":"XAG"},
+            "image":BASE_URL+img if img.startswith('/') else img,
+            "offers":{"@type":"Offer","price":btn.get('data-price'),"priceCurrency":"GEL","availability":"https://schema.org/InStock",
+                      "url":canonical+'#kits',"seller":{"@id":BASE_URL+'/#business'}}})
+    if graph:
         ld=etree.SubElement(doc_head,'script',type='application/ld+json')
-        ld.text=json.dumps(ORG,ensure_ascii=False)
-    for image in doc.xpath('//meta[@property="og:image"]'):image.set('content',BASE_URL+'/assets/img/p150-max-flight.webp')
+        ld.text=json.dumps({"@context":"https://schema.org","@graph":graph},ensure_ascii=False)
     return '<!doctype html>\n'+etree.tostring(doc,encoding='unicode',method='html',pretty_print=True)
 
 for filename,page_source in pages.items():
@@ -124,13 +149,16 @@ for filename,page_source in pages.items():
         target.mkdir(exist_ok=True)
         (target/filename).write_text(render(page_source,language,filename),encoding='utf-8')
 
+import datetime
+today=datetime.date.today().isoformat()
 urls=[]
 for filename in pages:
     if filename=='404.html':continue
     path=page_path(filename)
+    alts=''.join(f'<xhtml:link rel="alternate" hreflang="{l}" href="{BASE_URL}{"" if l in ("ka","x-default") else "/"+l}{path}"/>' for l in ['ka','en','ru','x-default'])
     for language in ['ka','en','ru']:
         prefix='' if language=='ka' else '/'+language
-        urls.append('<url><loc>'+BASE_URL+prefix+path+'</loc></url>')
-(PUBLIC/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(urls)+'</urlset>',encoding='utf-8')
+        urls.append(f'<url><loc>{BASE_URL}{prefix}{path}</loc><lastmod>{today}</lastmod>{alts}</url>')
+(PUBLIC/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">'+''.join(urls)+'</urlset>',encoding='utf-8')
 (PUBLIC/'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: '+BASE_URL+'/sitemap.xml\n',encoding='utf-8')
 print(f'Generated {len(pages)*3} pages in ka/en/ru, with canonical origin {BASE_URL}.')

@@ -22,7 +22,7 @@
     const toggle = document.getElementById("themeToggle");
     if (toggle) toggle.setAttribute("aria-pressed", String(root.dataset.theme === "dark"));
   }
-  setTheme(storage.get("pdge-theme"));
+  setTheme(storage.get("pdge-theme") || (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
   document.getElementById("themeToggle")?.addEventListener("click", () => {
     setTheme(root.dataset.theme === "dark" ? "light" : "dark");
     storage.set("pdge-theme", root.dataset.theme);

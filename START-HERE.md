@@ -4,6 +4,7 @@ The public website is the `dist/` folder: plain files, no server software.
 - Publish: docs/08-go-live-cloudflare.md  (iPhone drag-and-drop or GitHub)
 - E-mail status and DKIM fix: docs/09-email.md
 - Payments (not connected yet): docs/07-payments.md
+- SEO and social: titles, structured data, FAQ, share image and llms.txt are built in. Setup steps and post templates are in the "PDG SEO & Social Playbook" doc.
 
 ## Change things by asking Claude
 Attach `PDG-Website-Project.zip` (or open this folder in Claude Code) and say what to change, for example:

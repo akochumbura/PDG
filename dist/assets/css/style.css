@@ -223,7 +223,6 @@ input[aria-invalid=true]{border-color:var(--accent)}
 /* ===== Premium refinement ===== */
 :root{--section-space:112px;--radius:4px;--ease:260ms cubic-bezier(.2,.6,.2,1)}
 .site-header{background:rgba(255,255,255,.88);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px)}
-/* The header stays white in both themes: the supplied PDG logo is black and must not be altered. */
 .hero{max-height:none;min-height:720px}
 .hero h1{font-size:clamp(52px,8vw,128px);line-height:1.02;letter-spacing:-.045em;font-weight:var(--title-weight)}
 .hero h1 span{display:block}
@@ -438,4 +437,31 @@ h2{letter-spacing:-.03em}
 @media (max-width:1120px){.site-nav{gap:16px}}
 @media (max-width:900px){.about-story{grid-template-columns:1fr}.about-story img{aspect-ratio:4/3;max-height:520px}.about-do-grid{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){.about-do-grid{grid-template-columns:1fr}.hero-actions{flex-direction:column;align-items:flex-start}.hero-actions .button{max-width:100%}}
+/* Logo and chrome follow the theme (transparent logo, light and dark versions) */
+.brand .logo-dark{display:none}
+html[data-theme=dark] .brand .logo-light{display:none}
+html[data-theme=dark] .brand .logo-dark{display:block}
+html[data-theme=dark] .site-header{--muted:#a9a9a3;--border:#34342f;background:rgba(25,25,24,.86);color:#f5f5f2}
+html[data-theme=dark] .site-header.is-scrolled{box-shadow:0 10px 30px rgba(0,0,0,.4)}
+html[data-theme=dark] .languages a[aria-current=page]{color:#fff}
+html[data-theme=dark] .nav-toggle span{background:#f5f5f2}
+html[data-theme=dark] .site-footer{--muted:#a9a9a3;--border:#34342f;background:var(--bg);color:var(--text)}
+@media(max-width:900px){html[data-theme=dark] .site-nav{background:#191918}}
+.faq-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:clamp(32px,6vw,96px);align-items:start}
+.faq-layout h2{font-size:clamp(30px,3.2vw,48px);line-height:1.15}
+.faq-list{border-top:1px solid var(--text)}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:24px;padding:22px 0;font-size:18px;line-height:1.4}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary:after{content:'+';font:300 26px/1 var(--font-latin);color:var(--accent);transition:transform var(--ease)}
+.faq-item[open] summary:after{transform:rotate(45deg)}
+.faq-item p{color:var(--muted);padding:0 40px 24px 0;max-width:62ch}
+.social-links{display:flex;flex-wrap:wrap;gap:8px 18px}
+.social-links:empty{display:none}
+.contact-options .social-links,.about-text .social-links{margin-top:20px;font-size:15px}
+.social-links a{border-bottom:1px solid var(--border)}
+.social-links a:hover{color:var(--accent);border-color:var(--accent)}
+@media(max-width:900px){.faq-layout{grid-template-columns:1fr}}
+html[data-theme=dark] .text-link,html[data-theme=dark] .article-arrow,html[data-theme=dark] .about-do-item .arrow{color:#f07a6d;border-color:#f07a6d}
+html[data-theme=dark] .text-link:hover{color:#ff9488}
 [hidden]{display:none!important}
