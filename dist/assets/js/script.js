@@ -55,6 +55,15 @@
   });
   nav?.addEventListener("click", (event) => { if (event.target.closest("a")) closeNav(); });
   document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeNav(); });
+  /* Products / Services submenus: click or keyboard opens, outside click or Escape closes. */
+  const groups = Array.from(document.querySelectorAll(".nav-group-btn"));
+  function closeGroups(except) { groups.forEach((b) => { if (b !== except) b.setAttribute("aria-expanded", "false"); }); }
+  groups.forEach((b) => b.addEventListener("click", () => {
+    const open = b.getAttribute("aria-expanded") !== "true";
+    closeGroups(b); b.setAttribute("aria-expanded", String(open));
+  }));
+  document.addEventListener("click", (event) => { if (!event.target.closest(".nav-group")) closeGroups(); });
+  document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeGroups(); });
   const desktop = window.matchMedia("(min-width: 901px)");
   desktop.addEventListener?.("change", (event) => { if (event.matches) closeNav(); });
 

@@ -209,11 +209,13 @@
     if (none) none.hidden = shown > 0;
   }
   search.addEventListener("input", run);
+  var wanted = new URLSearchParams(location.search).get("cat");
   chips.forEach(function (c) {
     c.addEventListener("click", function () {
       cat = c.dataset.filter;
       chips.forEach(function (o) { var on = o === c; o.classList.toggle("is-on", on); o.setAttribute("aria-pressed", String(on)); });
       run();
     });
+    if (wanted && c.dataset.filter === wanted) c.click();
   });
 })();

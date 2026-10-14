@@ -49,7 +49,7 @@ def pretty(href):
 def page_path(filename):
     return '/' if filename == 'index.html' else '/' + clean_path(filename)
 
-ORG = {"@context": "https://schema.org", "@type": "LocalBusiness", "name": "Premium Drones Georgia", "alternateName": ["საქართველოს პრემიუმ დრონები", "PDG"],
+ORG = {"@context": "https://schema.org", "@type": "LocalBusiness", "name": "Premium Drones Georgia", "alternateName": ["საქართველოს პრემიუმ დრონები", "Премиум Дроны Грузии", "PDG"],
        "description": "Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus region: XAG drones, batteries, chargers, generators, parts, service and training.",
        "url": BASE_URL + "/", "logo": BASE_URL + "/assets/img/pdg-logo-light.png", "image": BASE_URL + "/assets/img/og-image.jpg",
        "telephone": "+995550004333", "email": "info@premium-drones.ge",
