@@ -27,7 +27,7 @@ pages = {'index.html': source}
 for template in templates.xpath('//template[@data-page]'):
     title_key = template.get('data-title')
     desc_key = template.get('data-description')
-    ka_title = template.get('data-ka-title') or template.xpath('.//h1')[0].text_content()+' — Premium Drones Georgia'
+    ka_title = template.get('data-ka-title') or template.xpath('.//h1')[0].text_content()+' — საქართველოს პრემიუმ დრონები'
     page_head = re.sub(r'(<title data-i18n=")[^"]+(">).*?</title>', lambda m: m.group(1)+title_key+m.group(2)+escape(ka_title)+'</title>', head)
     intro = template.xpath('.//p[contains(@class,"page-intro")]')[0].text_content()
     page_head = re.sub(r'<meta name="description"[^>]+>', '<meta name="description" content="'+escape(intro,quote=True)+'" data-i18n-content="'+desc_key+'">', page_head)
@@ -49,7 +49,7 @@ def pretty(href):
 def page_path(filename):
     return '/' if filename == 'index.html' else '/' + clean_path(filename)
 
-ORG = {"@context": "https://schema.org", "@type": "LocalBusiness", "name": "Premium Drones Georgia",
+ORG = {"@context": "https://schema.org", "@type": "LocalBusiness", "name": "Premium Drones Georgia", "alternateName": ["საქართველოს პრემიუმ დრონები", "PDG"],
        "description": "Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus region: XAG drones, batteries, chargers, generators, parts, service and training.",
        "url": BASE_URL + "/", "logo": BASE_URL + "/assets/img/pdg-logo-light.png", "image": BASE_URL + "/assets/img/og-image.jpg",
        "telephone": "+995550004333", "email": "info@premium-drones.ge",

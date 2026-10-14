@@ -34,7 +34,7 @@ window.PDG_CONTENT = {
     "cart_remove": "წაშლა",
     "shop_cta": "გადასვლა მაღაზიაში",
     "nav_shop": "მაღაზია",
-    "shop_page_title": "მაღაზია — Premium Drones Georgia",
+    "shop_page_title": "მაღაზია — საქართველოს პრემიუმ დრონები",
     "co_name": "სახელი",
     "co_phone": "ტელეფონი",
     "co_address": "ქალაქი / მისამართი",
@@ -42,7 +42,7 @@ window.PDG_CONTENT = {
     "pay_online": "გადახდა ონლაინ",
     "kit_batteries": "აკუმულატორები",
     "kit_chargers": "დამტენები",
-    "nf_page_title": "გვერდი ვერ მოიძებნა — Premium Drones Georgia",
+    "nf_page_title": "გვერდი ვერ მოიძებნა — საქართველოს პრემიუმ დრონები",
     "kit_generators": "გენერატორები"
   },
   "en": {
@@ -324,7 +324,8 @@ window.PDG_CONTENT = {
     "loc_lagodekhi_role": "Field operations",
     "loc_long": "Storage and service support in Tbilisi. Field experience and operations from Lagodekhi.",
     "loc_footer_tbilisi": "Tbilisi — storage and service",
-    "home_parts_intro": "Original XAG batteries, chargers, generator and RTK — from stock, at a fixed price in lari."
+    "home_parts_intro": "Original XAG batteries, chargers, generator and RTK — from stock, at a fixed price in lari.",
+    "footer_copy": "© 2026 Premium Drones Georgia"
   },
   "ru": {
     "page_title": "Агродроны XAG в Грузии — Premium Drones Georgia",
@@ -605,6 +606,7 @@ window.PDG_CONTENT = {
     "loc_lagodekhi_role": "Полевые операции",
     "loc_long": "Склад и сервисная поддержка в Тбилиси. Полевой опыт и операции из Лагодехи.",
     "loc_footer_tbilisi": "Тбилиси — склад и сервис",
-    "home_parts_intro": "Оригинальные батареи XAG, зарядные устройства, генератор и RTK — со склада, по фиксированной цене в лари."
+    "home_parts_intro": "Оригинальные батареи XAG, зарядные устройства, генератор и RTK — со склада, по фиксированной цене в лари.",
+    "footer_copy": "© 2026 Premium Drones Georgia"
   }
 };

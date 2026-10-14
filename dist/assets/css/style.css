@@ -499,7 +499,7 @@ html[data-theme=dark] .text-link:hover{color:#ff9488}
 .dealer-band{border-bottom:1px solid var(--border);background:var(--bg)}
 .dealer-inner{display:flex;align-items:center;gap:clamp(16px,3vw,40px);padding-block:clamp(22px,2.6vw,34px)}
 .dealer-mark{flex-shrink:0;font-family:var(--font-latin);font-weight:700;font-size:15px;letter-spacing:.18em;color:var(--text);padding:8px 14px;border:1px solid var(--text);line-height:1}
-.dealer-line{font-size:clamp(17px,1.6vw,22px);line-height:1.45;max-width:60ch}
+.dealer-line{font-size:clamp(17px,1.6vw,22px);line-height:1.45;max-width:80ch}
 .system-intro{display:block;margin-bottom:48px}
 .system-intro h2{max-width:24ch}
 .eco-head,.models-head{max-width:860px;margin-bottom:44px}

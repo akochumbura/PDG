@@ -40,4 +40,6 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - Dealer claim, exact owner wording only: "Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus
   region." (ka/en/ru key dealer_line). Make no other official claims.
 - E-mail on the site: only info@premium-drones.ge.
+- Company name in Georgian text is "საქართველოს პრემიუმ დრონები" (owner, 14 Oct 2026); Latin "Premium Drones Georgia" in en/ru,
+  the logo and structured data (with alternateName).
 - E-mail DNS records in Cloudflare must not be removed (docs/09-email.md).
