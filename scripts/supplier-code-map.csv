@@ -1,0 +1,270 @@
+supplier_code,manufacturer_code,name,method
+P000088793,01-003-00482,P150MAX 4G Antenna,order+name 0.91
+P000088470,01-027-02690,P150MAX 1&2 ESC signal cable,order+name 0.94
+P000088471,01-027-02692,P150MAX 3&4 ESC signal cable,order+name 0.94
+P000088430,01-027-02703,P150MAX Sensing system communication cable（Vehicle FPV cable),order+name 0.97
+P000088796,01-027-02778,Sensing System Diagnostic Cable,order+name 1.00
+P000088795,01-027-02779,SuperX5 Pro Diagnostic Cable,order+name 0.94
+P000088422,01-027-02780,Cable hub power cord (P150MAX),order+name 0.94
+P000088429,01-027-02862,P150MAX Flight Control & Cable Hub Communication Cable,order+name 0.97
+P000088468,01-027-02866,P150MAX Nozzle Signal Cable,order+name 0.94
+P000088424,01-027-02867,P150MAX Application System Main Connect Cable,order+name 1.00
+P000088803,01-027-02868,Application System Cable Hub Signal Cable,order+name 0.99
+P000088871,01-027-02874,P150MAX Pump & Cable Hub-Connection Cable,order+name 0.96
+P000088888,01-027-02879,P150MAX Spread Disc Motor Cable,order+name 1.00
+P000088886,01-027-02881,P150MAX Pressure Gauge & Cable Hub,order+name 0.95
+P000088868,01-027-03035,P150MAX Air pressure sensor cable (Revospray),order+name 1.00
+P000088962,01-027-03056,P150MAX Execute system power supply cable,order+name 1.00
+P000088961,01-027-03057,P150MAX Forward looking searchlight power supply cable,order+name 0.97
+P000088426,01-027-03110,"P150MAX Flight Controller Feeder - (grey, G type)",order+name 0.96
+P000088427,01-027-03111,"P150MAX Flight Controller Feeder - (black, A type)",order+name 0.96
+P000088436,02-001-07221,P150 MAX Motor three-phase cable protection sleeve,order+name 0.99
+P000088435,02-001-07222,P150MAX Motor cable holder,order+name 0.94
+P000088918,02-001-07784,P150MAX Gearbox Silicone O-Ring,order+name 0.95
+P000087058,02-001-07801,Spiral Feeder Motor Rubber Ring,order+name 1.00
+P000088434,02-001-07849,P150MAX Motor cable clip holder,order+name 0.95
+P000087045,02-001-08068,Spiral Feeder Motor Gear Shaft Seal,order+name 1.00
+P000082306,02-001-08078,"V40EN,P100 Battery Guide Rubber Buffer",order+name 1.00
+P000087469,02-001-08200,R-type Cable Clip,order+name 0.97
+P000084854,02-001-09608,Nozzle Extension Rod Clip (for Folded Position),order+name 1.00
+P000088867,02-001-09889,P150MAX O-Ring,order+name 0.96
+P000088433,02-001-09961,P150MAX Motor lower retainer,order+name 0.94
+P000088998,02-001-10385,Application system embossed part,order+name 1.00
+P000088859,02-001-10399,P150MAX T-connector,order+name 0.92
+P000088877,02-001-10449,P150MAX Screw Feeder Shaft Seal Ring,order+name 0.95
+P000088934,02-001-10480,P150MAX L-Type Connector(left）,order+name 0.94
+P000088935,02-001-10481,P150MAX L-Type Connector(right),order+name 0.95
+P000087131,02-001-10529,Application System Cable Organizer - P100/Pro,order+name 1.00
+P000088878,02-001-10574,P150MAX Screw Feeder Motor & Main Frame Seal Ring,order+name 0.96
+P000088444,02-001-10577,Motor screw anti loosening column,order+name 1.00
+P000088482,02-001-10708,P150MAX Application system support rubber,order+name 1.00
+P000088483,02-001-10709,P150MAX Cable alignment trunking,order+name 0.95
+P000088494,02-001-10739,P150MAX Rear shell of busbar,order+name 1.00
+P000088506,02-001-10796,P150MAX Arm clamp base,order+name 0.93
+P000088450,02-001-10870,P150MAX ESC light housing,order+name 0.94
+P000088514,02-001-10871,P150MAX ESC cable trunking,order+name 0.94
+P000088452,02-001-10899,P150MAX Power cord limit device,order+name 0.95
+P000089298,02-001-10913,Front shell of busbar,order+name 1.00
+P000088902,02-001-10931,P150MAX Granule Container Lid Soft Tape,order+name 0.96
+P000088521,02-001-10954,P150MAX L-shaped tube adapter (motor side),order+name 0.96
+P000087891,02-001-11012,"60"" CW propeller blade gasket",order+name 0.94
+P000087890,02-001-11013,"60"" CCW propeller blade gasket",order+name 0.94
+P000088507,02-001-11016,P150MAX Lower shell of ESC base,order+name 0.95
+P000088849,02-001-11083,P150MAX Small Cable Clip,order+name 0.93
+P000088831,02-001-11098,P150MAX Liquid Tank Embedded Parts (2 Holes),order+name 1.00
+P000088512,02-001-11172,P150MAX Nozzle Extension Rod Bracket (Left),order+name 1.00
+P000088513,02-001-11173,P150MAX Nozzle Extension Rod Bracket (Right),order+name 1.00
+P000088765,02-001-11174,P150MAX Nozzle Extension Rod,order+name 0.94
+P000088491,02-001-11192,P150MAX Battery socket front case,order+name 1.00
+P000088492,02-001-11193,P150MAX Battery socket rear case,order+name 0.95
+P000088810,02-001-11194,P150MAX T-Connector for Landing Skid 1 - P150MAX Т,order+name 0.90
+P000088812,02-001-11195,P150MAX T-Connector for Landing Skid 2,order+name 1.00
+P000088869,02-001-11200,P150MAX Surge Protection Baffle,order+name 0.95
+P000088456,02-001-11247,P150MAX Nozzle Disc,order+name 0.92
+P000088478,02-001-11270,P150MAX Front wire cover,order+name 0.93
+P000088479,02-001-11271,P150MAX Rear wire cover,order+name 1.00
+P000088830,02-001-11273,P150MAX Bottom mounting bracket for container - P150MAX,order+name 1.00
+P000088836,02-001-11341,P150MAX Flexible Impeller(grey),order+name 0.95
+P000088505,02-001-11472,P150MAX ESC base seat upper shell,order+name 0.95
+P000088508,02-001-11502,P150MAX Fixed inserts for motor base,order+name 0.95
+P000088785,02-001-11558,P150MAX Head card holder,order+name 0.93
+P000088776,02-001-11591,P150MAX Radar shell waterproof ring,order+name 0.95
+P000088782,02-001-11592,P150MAX Floating connector waterproof ring,order+name 0.96
+P000088772,02-001-11593,P150MAX Waterproof ring for control board cover plate,order+name 0.89
+P000088913,02-001-11621,P150MAX Motor sealing ring,order+name 0.94
+P000088784,02-001-11709,P150MAX Front Cable Organizer (Small),order+name 1.00
+P000088846,02-001-11721,P150MAX Sealing ring of barometer,order+name 0.95
+P000088915,02-001-11854,P150MAX Fixed cover front cover sealing ring,order+name 0.96
+P000088489,02-001-11921,P150MAX Handle front shell rubber plug,order+name 0.88
+P000088490,02-001-11922,P150MAX Rubber plug handle rear shell,order+name 1.00
+P000088783,02-001-11925,P150MAX ESC hole anti-wear component,order+name 0.95
+P000088914,02-001-11937,P150MAX Side sealant plug,order+name 0.94
+P000088833,02-001-11944,P150MAX Liquid Container Filter,order+name 0.95
+P000088972,02-001-12049,P150MAX Skeleton oil seal,order+name 0.94
+P000088477,02-001-12089,P150MAX Arm Folding Bracket,order+name 0.94
+P000088956,02-001-12105,P150MAX Front bracket of searchlight,order+name 1.00
+P000088958,02-001-12107,P150MAX Rear bracket of searchlight,order+name 1.00
+P000088481,02-001-12148,P150MAX Application system support components,order+name 1.00
+P000088911,02-001-12149,P150MAX Large skeleton oil seal,order+name 0.95
+P000088453,02-001-12187,P150MAX 3-phase cable fixing bracket,order+name 1.00
+P000088497,02-001-12188,P150MAX Nose Mount,order+name 0.91
+P000089061,02-001-12251,Swing arm joystick,order+name 1.00
+P000088937,02-001-12273,P150MAX Flexible Impeller(black),order+name 0.95
+P000088498,02-001-12286,P150MAX Front Hood,order+name 0.91
+P000088441,02-001-12323,P150MAX Motor heat dissipation cover,order+name 0.96
+P000088800,02-001-12329,Barometer silicone tube transparent adapter,order+name 1.00
+P000088789,02-001-12369,P150MAX Arm decorative cover,order+name 0.94
+P000088794,02-001-12373,Arm support foot,order+name 1.00
+P000088519,02-001-12408,P150MAX Propeller Holder（for arm No.1&2）,order+name 0.96
+P000088924,02-001-12424,P150MAX Granule Container Interior Bracket,order+name 1.00
+P000088520,02-001-12489,P150MAX Propeller Holder（for arm No.3&4),order+name 0.97
+P000088879,02-001-12538,P150MAX Male Seat Granule Container Lid Hasp,order+name 0.96
+P000088880,02-001-12539,P150MAX Female Seat Granule Container Lid Hasp,order+name 0.96
+P000088781,02-001-12551,P150MAX Radar casing,order+name 0.92
+P000088893,02-001-12552,P150MAX Hopper Mount Fixed Insert,order+name 0.95
+P000088873,02-001-12566,Pump Bracket,order+name 1.00
+P000088900,02-001-12571,P150MAX Left material box cover,order+name 0.95
+P000088901,02-001-12572,P150MAX Right material box cover,order+name 0.95
+P000088909,02-001-12575,P150MAX Small skeleton oil seal,order+name 0.95
+P000088787,02-001-13222,P150MAX Left antenna pedestal,order+name 1.00
+P000088788,02-001-13223,P150MAX Right antenna pedestal,order+name 0.95
+P000088786,02-002-09959,P150MAX Waterproof Vent Valve,order+name 0.95
+P000086580,02-002-10222,M3*8*0.5 Gasket,order+name 0.88
+P000086571,02-002-12169,"P100P 55"" Foldable Propeller Clamp Pin",order+name 0.96
+P000088440,02-002-13257,P150MAX Motor Anti-Loosening Cover,order+name 0.95
+P000088495,02-002-13612,P150MAX Battery socket copper bar (single),order+name 1.00
+P000088496,02-002-13613,P150MAX Battery socket copper bar - double,order+name 1.00
+P000088432,02-002-13824,P150 MAX Motor shaft,order+name 0.92
+P000088442,02-002-13892,P150MAX Motor Circlip,order+name 0.93
+P000088891,02-002-13934,P150MAX RevoCast Landing Gear Crossbar,order+name 0.96
+P000088837,02-002-13935,P150MAX Landing Gear Crossbar for RevoSpray,order+name 1.00
+P000088832,02-002-13943,P150MAX Landing Gear Pipe for Revospray,order+name 0.96
+P000088847,02-002-14194,P150MAX Brass Hex Standoff,order+name 0.94
+P000088848,02-002-14197,P150MAX Square Copper Nut,order+name 0.94
+P000088904,02-002-14225,M5*20*1.2 Gasket,order+name 0.89
+P000088863,02-002-14300,P150MAX Long Application System tube,order+name 1.00
+P000088864,02-002-14301,P150MAX Short Application System tube,order+name 1.00
+P000088896,02-002-15103,P150MAX Flat pin shaft,order+name 1.00
+P000088529,02-002-15210,P150MAX Propeller Clamp Bushing,order+name 0.95
+P000088528,02-002-15212,P150MAX Propeller Clamp Bolt,order+name 0.94
+P000088933,02-002-15325,P150MAX Torsion spring,order+name 0.93
+P000088807,02-002-15563,P150MAX Application System hook,order+name 0.95
+P000088443,02-002-15593,P150MAX Motor Gasket,order+name 0.92
+P000088527,02-002-15711,P150MAX Propeller Clamp Fixing Base,order+name 0.95
+P000088963,02-002-16185,P150MAX Searchlight Mounting Bracket,order+name 0.96
+P000088870,02-004-00318,Hexagonal Flange Nut,order+name 1.00
+P000088448,02-004-00424,M4*10 Screw,order+name 0.86
+P000079144,02-004-00493,M2.4x6 Open End Flat Round Head Blind Rivet,order+name 1.00
+P000088861,02-004-00522,M2*6*4 Screw,order+name 0.86
+P000079180,02-004-00523,M2.5x8x4.5 Hex Socket Head Cap Screw Kit,order+name 1.00
+P000088855,02-004-00553,CM2*4 Screw,order+name 0.86
+P000082336,02-004-00618,M4 8 8 Screw Kit,order+name 0.89
+P000082337,02-004-00624,M3 10 6 Screw Kit,order+name 0.90
+P000084863,02-004-00670,M5*12*10 Screw Kit,order+name 0.90
+P000088446,02-004-00673,M2*6 Screws,order+name 1.00
+P000088903,02-004-00703,Flange Anti-loosening Nut,order+name 1.00
+P000079151,02-004-00747,M4x23 Customized Hexagon Socket Step Screw,order+name 0.96
+P000088921,02-004-00750,M2.5*10*4.5 Screw Kit,order+name 0.91
+P000084857,02-004-00777,M3*14*6 Screw Kit,order+name 0.90
+P000086578,02-004-00778,M6 Nut,order+name 0.91
+P000082341,02-004-00833,M4 10 8 Screw Kit,order+name 0.90
+P000082342,02-004-00834,M4 12 8 Screw Kit,order+name 0.90
+P000079071,02-004-00835,M4x14x8 Hex Head Cap Screw Kit,order+name 1.00
+P000082343,02-004-00836,M4 16 .8 Screw Kit,order+name 0.90
+P000086573,02-004-00890,ST2.9*10 Tapping Screw,order+name 0.92
+P000082345,02-004-00891,ST4.2 14 Tapping Screw,order+name 0.92
+P000088769,02-004-00914,M4*12 Rivet,order+name 0.86
+P000082347,02-004-00918,ST4.2.8 Tapping Screw,order+name 0.92
+P000088447,02-004-00933,M3*6*6 Screw Kit,order+name 0.92
+P000086581,02-004-00936,M3*6*6 Screw Kit,order+name 0.89
+P000082348,02-004-00937,M3 8 6 Screw Kit,order+name 0.89
+P000082349,02-004-00939,M5 16 10 Screw Kit,order+name 0.90
+P000088853,02-004-00940,Hex Socket Head Cap Screw Kit,order+name 1.00
+P000086564,02-004-00942,ST2.9*8 Tapping Screw,order+name 0.92
+P000082351,02-004-00994,M4 12 Countersunk Screw,order+name 0.93
+P000088925,02-004-01024,ST4.2*10 Tapping Screw,order+name 0.92
+P000086584,02-004-01031,M4x8 Screw,order+name 0.86
+P000086591,02-004-01075,M3*16*6 Screw Kit,order+name 0.90
+P000088905,02-004-01087,Rivet,order+name 1.00
+P000088983,02-004-01135,M3×8 Hexagon Socket Countersunk Head Screw,order+name 0.97
+P000086590,02-004-01189,M6*20*12 Screw Kit,order+name 0.90
+P000088445,02-004-01274,M2*3 Socket Cap Screw,order+name 1.00
+P000088852,02-004-01277,M4*6 screws,order+name 0.86
+P000088922,02-004-01301,M2.5×10 Hexagon Socket Head Cap Screw,order+name 0.95
+P000088857,02-004-01309,M6*38*12 Screw,order+name 0.88
+P000088858,02-004-01319,Non-metallic Embedded Hexagonal Cap Nut,order+name 1.00
+P000088906,02-004-01332,M4 * 14 * 14 hexagonal cylindrical head triple combination screw,order+name 1.00
+P000088856,02-004-01372,M2*4 Screw,order+name 0.89
+P000088875,02-004-01377,M2.5*10 Screw,order+name 0.87
+P000088874,02-004-01378,M2.5*25 Screw,order+name 0.87
+P000088912,02-004-01390,ST4.2*8 Tapping Screw,order+name 0.92
+P000088982,02-004-01396,ST1.7 * 4 self tapping screw,order+name 0.93
+P000088854,02-004-01418,M2*6 Cross groove screw,order+name 0.93
+P000088920,02-004-01428,11mm * 4.2mm * 1mm gasket,order+name 0.92
+P000088919,02-004-01430,ST4.2*14 Tapping Screw,order+name 0.92
+P000088984,02-004-01441,Hexagon Socket Head Shaft Section 3*6 Nylon Insert Screw,order+name 1.00
+P000088522,02-007-00259,P150MAX Foam insert of spray rod,order+name 0.95
+P000088926,02-100-00007,Spreader Baffle - Left,order+name 1.00
+P000088927,02-100-00008,Spreader Baffle - Right,order+name 1.00
+P000088790,02-101-00106,P150MAX Manifold Gasket 01,order+name 1.00
+P000088791,02-101-00107,P150MAX Manifold Gasket 02,order+name 1.00
+P000088792,02-101-00108,P150MAX Manifold Waterproof Cover,order+name 1.00
+P000088979,02-204-00001,P150MAX Gear lever component,order+name 0.94
+P000088523,05-002-02069,P150MAX Anti-drip valve,order+name 0.93
+P000088485,05-002-02153,P150MAX Application System Quick-release Hook,order+name 0.96
+P000089288,05-002-02313,Motor,order+name 1.00
+P000088449,05-002-02334,P150MAX ESC,order+name 0.87
+P000088428,05-002-02348,P150MAX Central Cable Hub,order+name 0.94
+P000088881,05-002-02351,P150MAX Revocast Level Sensor,order+name 0.95
+P000088955,05-002-02418,P150MAX Searchlight component,order+name 0.95
+P000088797,05-002-02420,P150MAX Application System Cable Hub,order+name 0.96
+P000088454,05-002-02622,P150MAX Nozzle,order+name 0.90
+P000088420,05-002-02708,Omnidirectional antenna-Left (P150MAX),order+name 1.00
+P000088421,05-002-02709,Omnidirectional antenna-Right (P150MAX),order+name 1.00
+P000084398,14-006-00028,P100P Arm Joint Pin Kit,order+name 0.93
+P000088510,14-007-00014,P150MAX Nozzle Extension Rod Release Knob,order+name 1.00
+P000088517,14-007-00017,P150MAX Tube adapter (left),order+name 0.94
+P000088518,14-007-00019,P150MAX Tube adapter (right),order+name 0.94
+P000088516,14-007-00022,P series Battery Socket,order+name 0.98
+P000088834,14-007-00042,P150MAX Liquid Tank Filter Assembly,order+name 0.95
+P000088865,14-007-00046,Ground touching assembly of landing gear No.2,order+name 0.96
+P000088866,14-007-00047,Ground touching assembly of landing gear No.1,order+name 0.96
+P000088804,14-007-00050,P150MAX Flexible Impeller Pump Motor,order+name 1.00
+P000088806,14-007-00116,P150MAX Application system tube connector assembly,order+name 1.00
+P000088811,14-007-00132,P150MAX Tee clamp assembly for landing gear,order+name 1.00
+P000088502,14-007-00168,P150MAX Arm Clamp Clip Kit,order+name 0.94
+P000088501,14-007-00169,P150MAX Arm Clamp Handle,order+name 0.93
+P000087951,14-007-00173,P100P Liquid Tank Lid - Duckbill Valve,order+name 0.95
+P000088455,14-007-00191,P150MAX Nozzle ESC board,order+name 0.93
+P000088484,14-007-00192,P150MAX Fuselage side beam,order+name 0.94
+P000088524,14-007-00194,P150MAX 63 inch CCW propeller blades,order+name 0.95
+P000088525,14-007-00195,P150MAX 63 inch CW propeller blade,order+name 0.97
+P000089062,14-007-00198,Arm split flange - lateral fixing component,order+name 1.00
+P000088768,14-007-00203,P150MAX Liquid tube for arm,order+name 0.94
+P000088839,14-007-00205,P150MAX Tank to Pump Liquid Tube,order+name 0.95
+P000088840,14-007-00206,P150MAX Pump to Y-Type Connector Liquid Tube,order+name 0.96
+P000088860,14-007-00207,P150MAX Y-Type Connector & Drone Liquid Tube,order+name 0.81
+P000088897,14-007-00208,P150MAX Disc swinging component,order+name 0.95
+P000088908,14-007-00214,P150MAX Stretching spring component,order+name 0.96
+P000088451,14-007-00218,P150MAX ESC lower shell,order+name 0.93
+P000088841,14-007-00219,P150MAX Hose on barometer,order+name 0.94
+P000088843,14-007-00222,P150MAX Capillary hose on barometer,order+name 0.95
+P000088844,14-007-00223,P150MAX Capillary hose under barometer,order+name 1.00
+P000088805,14-007-00234,P150MAX Flexible Impeller Pump Body,order+name 0.95
+P000088773,14-007-00236,P150MAX FPV board cover assembly,order+name 0.95
+P000088766,14-007-00264,P150MAX One-way valve & nozzle liquid tube,order+name 0.89
+P000088767,14-007-00265,P150MAX Motor side & one-way valve liquid tube,order+name 0.96
+P000088503,14-007-00270,P150MAX Arm Clamp Pin,order+name 0.92
+P000088775,14-007-00271,P150MAX FPV control board mounting bracket assembly,order+name 0.97
+P000088838,14-007-00282,P150MAX Barometer Base,order+name 0.93
+P000088526,14-007-00283,P150MAX Propeller Clamp,order+name 0.93
+P000088835,14-007-00299,P150MAX 75L- Smart Liquid Tank,order+name 0.94
+P000088987,14-007-00306,Impeller Pump & Y-Type Connector Liquid Tube（Upgrade),order+name 0.97
+P000088988,14-007-00307,Y-Type Connector & L-Type Connector Liquid Tube（Upgrade),order+name 0.97
+P000088989,14-007-00308,L-Type Connector & Drone Curved Tube Liquid Tube（Upgrade）,order+name 0.92
+P000088986,14-007-00309,P150MAX Tank & Impeller Pump Liquid Tube（Upgrade),order+name 0.90
+P000088940,14-007-00310,P150MAX Flexible Impeller Pump Body,order+name 0.95
+P000088959,14-007-00319,P150MAX Distribution board (Headlight),order+name 0.96
+P000088842,14-007-00320,P150MAX Hose under barometer,order+name 0.94
+P000088499,14-007-00363,P150MAX Arm (Fuselage Side),order+name 0.94
+P000088770,14-007-00384,P150MAX Fisheye lens module,order+name 0.94
+P000088774,14-007-00385,P150MAX FPV driver motherboard components,order+name 0.96
+P000088777,14-007-00386,P150MAX Radar module,order+name 1.00
+P000088942,14-007-00388,B141050 Battery Mainboard,name 0.94
+P000089082,09-007-00188,XAG P150 Max Agricultural Drone (with RevoSpray 5,order+name 1.00
+P000088822,05-002-02725,XAG SRC5 Smart remote controller,name 0.95
+P000088274,09-017-00073,XAG B141050 Smart Super Charge Battery,order+name 1.00
+P000087889,09-017-00069,XAG CM13600S Charger,order+name 1.00
+P000086027,01-027-02823,XAG Plug Power Cord-EU(for CM13600 Charger),order+name 1.00
+P000087484,09-017-00065,XAG 2024 Battery Cooling Tower(INTL),name 1.00
+P000087484,09-017-00065,XAG 2024 Battery Cooling Tower(INTL),name 1.00
+P000088406,09-023-00145,XAG P150 Max RevoCast 5(Screw Feeder L),name 1.00
+P000089806,09-017-00109,XAG GC4000+ Super Charging Station (Gen III),order+name 1.00
+P000088240,05-002-02460,XAG Parallel Charging Bracket,order+name 0.95
+P000088239,05-002-02311,XAG 6kW Parallel Charging Kit,order+name 0.94
+P000088079,09-016-00083,XAG XRTK7 Mobile Station(INTL),order+name 0.94
+P000089065,05-002-02640,XAG 4-Nozzle Upgrade Kit(INTL)(P150MAX),order+name 1.00
+P000089275,05-002-02682,XAG RevoSling(INTL),order+name 1.00
+P000089276,05-002-02683,Landing Gear(INTL),name 1.00
+P000088262,09-027-00003,XAG 90W LED Headlight,order+name 0.92
+P000087944,09-017-00064,XAG B13970S Smart Battery,name 0.94

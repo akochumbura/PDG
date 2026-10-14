@@ -2,7 +2,10 @@
 
 Usage:  python scripts/import-price-list.py PATH/TO/PDG_XAG_Complete_Item_Price_List_With_Margins.xlsx
 Keeps the three P150 MAX packages (kit rows) and the non-invoice rows (avail=quote / legacy) and replaces the price-list rows:
-SKU = Code, name = Original item (English), name_ka = Georgian item, gel = Retail incl. VAT GEL.
+SKU = the XAG manufacturer code (მწარმოებლის კოდი, e.g. 09-017-00073), looked up from the invoice code (Code, P0000…)
+in scripts/supplier-code-map.csv (made from PDG_Invoice_Packing_List_Georgian.xlsx, owner 14 Oct 2026);
+name = Original item (English), name_ka = Georgian item, gel = Retail incl. VAT GEL.
+The P150 MAX drone itself is sold only in the packages (owner, 14 Oct 2026), so it is not imported as a separate item.
 Cost and margin columns are internal and are NOT copied. Then run: python scripts/build.py
 """
 import csv, re, sys
@@ -12,6 +15,7 @@ import openpyxl
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / 'scripts/catalog.csv'
+CODE_MAP = ROOT / 'scripts/supplier-code-map.csv'
 GROUP = {'Battery': 'power', 'Charging': 'power',
          'Spraying': 'spray', 'Spreading': 'spray', 'Tank': 'spray', 'Pump': 'spray', 'Cargo': 'spray',
          'RTK': 'control', 'Electronics': 'control',
@@ -32,6 +36,7 @@ def main(path):
     head = [c.value for c in ws[6]]
     need = ['Code', 'Category', 'Georgian item', 'Original item', 'Retail incl. VAT GEL']
     col = {h: head.index(h) for h in need}
+    code_map = {r['supplier_code']: r['manufacturer_code'] for r in csv.DictReader(open(CODE_MAP, encoding='utf-8'))}
     rows = list(csv.DictReader(open(CATALOG, encoding='utf-8')))
     fields = list(rows[0].keys())
     if 'avail' not in fields:
@@ -42,15 +47,20 @@ def main(path):
     extra = [r for r in rows if r.get('avail') in ('quote', 'legacy')]
     seen = set()
     for r in ws.iter_rows(min_row=7, values_only=True):
-        sku = clean(r[col['Code']])
-        if not sku or r[col['Retail incl. VAT GEL']] in (None, ''):
+        code = clean(r[col['Code']])
+        if not code or r[col['Retail incl. VAT GEL']] in (None, ''):
             continue
+        if code not in code_map:
+            raise SystemExit(f'No manufacturer code for {code}: add it to scripts/supplier-code-map.csv (packing list)')
+        sku = code_map[code]
         if sku in seen:
             continue  # the same code twice on the invoice = one product
-        seen.add(sku)
         en, ka = clean(r[col['Original item']]), clean(r[col['Georgian item']])
         cat = clean(r[col['Category']])
-        group = 'drone' if re.search(r'Agricultural Drone', en) else GROUP.get(cat)
+        if re.search(r'Agricultural Drone', en):
+            continue  # the drone is sold only in the P150 MAX packages
+        group = GROUP.get(cat)
+        seen.add(sku)
         if not group:
             raise SystemExit(f'Unknown category {cat!r} for {sku}: add it to GROUP')
         row = {f: '' for f in fields}
@@ -61,7 +71,8 @@ def main(path):
         w = csv.DictWriter(f, fieldnames=fields, lineterminator='\n')
         w.writeheader()
         w.writerows(out)
-    print(f'catalog: {len(out)} rows ({len(out) - len(seen)} packages, {len(seen)} items from the price list)')
+    kits = sum(1 for r in out if r['group'] == 'kit')
+    print(f'catalog: {len(out)} rows ({kits} packages, {len(seen)} price-list items, {len(out) - kits - len(seen)} quote-only parts)')
 
 
 if __name__ == '__main__':

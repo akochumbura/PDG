@@ -7,6 +7,7 @@ from lxml import html
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / 'dist'
 sys.path.insert(0, str(ROOT / 'scripts'))
+import product_pages
 
 content = (DIST / 'assets/js/content.js').read_text(encoding='utf-8')
 T = json.loads(content.split('=', 1)[1].strip().removesuffix(';'))
@@ -78,7 +79,7 @@ for lang in ('ka', 'en', 'ru'):
         g = r['group']
         key = CAT[g]
         cat = KA.get(key, '') if lang == 'ka' else T[lang].get(key, '')
-        url = f'{prefix}/shop#kits' if g == 'kit' else f'{prefix}/shop?q={r["sku"]}#parts'
+        url = f'{prefix}/shop#kits' if g == 'kit' else (f'{prefix}{product_pages.url(r["sku"])}' if product_pages.url(r['sku']) else f'{prefix}/shop?q={r["sku"]}#parts')
         local = (r.get('name_' + lang) or '').strip() if lang != 'en' else ''
         products.append({'n': local or r['name'], 'o': r['name'] if local else '', 's': r['sku'], 'p': prices.get(r['sku'], 0), 'q': '' if prices.get(r['sku']) else DICT_Q[lang], 'c': cat,
                          'k': SYN[g][lang] + ' ' + r['name'], 'u': url})

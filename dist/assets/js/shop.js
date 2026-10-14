@@ -8,6 +8,8 @@
   var cart = {};
   try { cart = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { cart = {}; }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch (e) { /* private mode */ } }
+  /* 14 Oct 2026: products now use the XAG manufacturer code (e.g. 09-017-00073); drop items saved under the old invoice codes. */
+  (function () { var old = Object.keys(cart).filter(function (k) { return /^P0\d{8}$/.test(k); }); old.forEach(function (k) { delete cart[k]; }); if (old.length) save(); })();
   function fmt(n) { return "₾" + Number(n).toLocaleString("en-US"); }
   function totals() { var t = 0, c = 0; Object.keys(cart).forEach(function (k) { t += cart[k].p * cart[k].q; c += cart[k].q; }); return [t, c]; }
   function label(id) { var e = document.getElementById(id); return e ? e.textContent.trim() : ""; }

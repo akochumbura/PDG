@@ -47,7 +47,8 @@ CONTENTS = [('drones', 'kit_drone', 'დრონი P150 MAX'), ('batteries', '
             ('chargers', 'kit_chargers', 'დამტენები'), ('rtk', 'kit_rtk', 'RTK სადგური'),
             ('generators', 'kit_generators', 'გენერატორები')]
 # Home page 'Parts and energy system': B141050 battery, GC4000+, CM13600S charger, 6 kW parallel charging kit, cooling tower, XRTK7.
-HOME_PARTS = ['P000088274', 'P000089806', 'P000087889', 'P000088239', 'P000087484', 'P000088079']
+import product_pages
+HOME_PARTS = ['09-017-00073', '09-017-00109', '09-017-00069', '05-002-02311', '09-017-00065', '09-016-00083']
 
 
 def contents(r, cls='kit-contents'):
@@ -124,7 +125,11 @@ def part_row(r):
     n = html.escape(r['name'], quote=True)
     s = r['sku']
     p = price(r, False)
-    return (f'<li class="part-row"><div class="part-row-name"><span class="part-row-title">{html.escape(r["name"])}</span>'
+    page = product_pages.url(s)
+    t = html.escape(r["name"])
+    if page:
+        t = f'<a href="{page}" data-local>{t}</a>'
+    return (f'<li class="part-row"><div class="part-row-name"><span class="part-row-title">{t}</span>'
             f'<span class="product-sku">{s}</span></div><span class="part-row-price">₾{p:,}</span>'
             f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></li>\n')
 
@@ -135,8 +140,15 @@ def card(r):
     s = r['sku']
     p = price(r, kit)
     st = status(r)
-    head = (f'<article class="product{" product-kit" if kit else ""}{" product-out" if st == "out" else ""}" data-cat="{r["group"]}" data-avail="{st}">{photo(r, kit)}'
-            f'<div class="product-body">{cat(r)}<p class="product-sku">{s}</p>{title(r)}{contents(r) if kit else ""}')
+    page = product_pages.url(s)
+    pic, ttl = photo(r, kit), title(r)
+    more = ''
+    if page:  # own product page with the official specs: the photo and the name open it
+        pic = f'<a class="product-link" href="{page}" data-local>{pic}</a>'
+        ttl = f'<a class="product-link" href="{page}" data-local>{ttl}</a>'
+        more = f'<a class="text-link product-more" href="{page}" data-local><span data-i18n="pd_more">მახასიათებლები</span><span aria-hidden="true">→</span></a>'
+    head = (f'<article class="product{" product-kit" if kit else ""}{" product-out" if st == "out" else ""}" data-cat="{r["group"]}" data-avail="{st}">{pic}'
+            f'<div class="product-body">{cat(r)}<p class="product-sku">{s}</p>{ttl}{contents(r) if kit else ""}{more}')
     if st == 'out':  # previous-generation model: no price, no purchase, consultation instead
         spec = LEGACY_SPECS.get(s)
         return (head + (f'<p class="product-specs" data-i18n="{pkey(s)}_spec">{html.escape(spec[0])}</p>' if spec else '')
@@ -193,8 +205,8 @@ for r in rows:
 # P150 MAX on xa.com/en/p150max/p150maxspecs: B141050 battery, CM13600S charger, GC4000+ station, XRTK7 station.
 # Price rule: the preset's approved package price + extra components at their approved shop price.
 # Fewer components than the preset = no approved rule -> "ფასი მოთხოვნით" (quote), never an invented discount.
-CFG_ITEMS = [('batteries', 'P000088274', 'cfg_battery', 'ბატარეა B141050', 12), ('chargers', 'P000087889', 'cfg_charger', 'დამტენი CM13600S', 6),
-             ('rtk', 'P000088079', 'cfg_rtk', 'RTK სადგური XRTK7', 1), ('generators', 'P000089806', 'cfg_generator', 'დამუხტვის სადგური GC4000+', 2)]
+CFG_ITEMS = [('batteries', '09-017-00073', 'cfg_battery', 'ბატარეა B141050', 12), ('chargers', '09-017-00069', 'cfg_charger', 'დამტენი CM13600S', 6),
+             ('rtk', '09-016-00083', 'cfg_rtk', 'RTK სადგური XRTK7', 1), ('generators', '09-017-00109', 'cfg_generator', 'დამუხტვის სადგური GC4000+', 2)]
 
 
 def configurator():

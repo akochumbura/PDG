@@ -29,7 +29,6 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - XAG P150 MAX Starter: 75,999 GEL (4 batteries, 2 chargers)
 - XAG P150 MAX Pro: 85,999 GEL (6 batteries, 2 chargers, 1 RTK station)
 - XAG P150 MAX Business: 104,999 GEL (8 batteries, 4 chargers, 1 RTK station)
-- XAG P150 Max Agricultural Drone (with RevoSpray 5): 41,999 GEL
 - XAG B141050 Smart Super Charge Battery: 5,999 GEL
 - XAG GC4000+ Super Charging Station (Gen III): 5,899 GEL
 - XAG B13970S Smart Battery: 5,799 GEL

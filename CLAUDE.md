@@ -16,8 +16,9 @@ as a server inbox. The separately referenced FastAPI project was not included.
   canonicals and the sitemap; verify fails on any internal .html link. 404.html exists per language (noindex).
   Local preview that behaves the same: `python scripts/serve.py`.
 - Prices (owner, 14 Oct 2026): the shop = the owner's price list PDG_XAG_Complete_Item_Price_List_With_Margins.xlsx (268 items,
-  sheet "Full Item Price List", Retail incl. VAT GEL) imported into scripts/catalog.csv by scripts/import-price-list.py (SKU = invoice Code
-  P0000xxxxx, name = Original item, name_ka = Georgian item). Cost/margin columns are internal and never published. A new list: rerun the import.
+  sheet "Full Item Price List", Retail incl. VAT GEL) imported into scripts/catalog.csv by scripts/import-price-list.py (SKU = XAG manufacturer code
+  "მწარმოებლის კოდი" e.g. 09-017-00073, looked up from the invoice Code P0000… in scripts/supplier-code-map.csv, made from
+  PDG_Invoice_Packing_List_Georgian.xlsx; never show the P0000 codes; name = Original item, name_ka = Georgian item). Cost/margin columns are internal and never published. A new list: rerun the import.
   Prices show only the ₾ sign; no "prices in GEL / ლარში / в лари" texts anywhere (owner).
 - Packages (owner, 14 Oct 2026, prices unchanged, LATEST APPROVED): Starter 75,999 (drone, 4 batteries, 2 chargers), Pro 85,999 (drone, 6 batteries,
   2 chargers, RTK), Business 104,999 (drone, 8 batteries, 4 chargers, RTK). Contents = catalog columns. Do not change RTK inclusion.
@@ -108,3 +109,16 @@ TODO in Cloudflare (dashboard, owner's account):
 7. Inbox: open /api/chat/inbox without ?key — sign-in box.
 5. Later: Bank of Georgia e-commerce agreement → secrets BOG_CLIENT_ID, BOG_CLIENT_SECRET (payments). Optional ANTHROPIC_API_KEY for AI replies in chat.
 Pending from owner: product photos (no people), BOG agreement, deposit % (10% assumed), other payment options (asked: TBC, installments, invoice?).
+
+## Manufacturer codes, photos, product pages (owner, 14 Oct 2026, night)
+- Every SKU on the site = XAG manufacturer code (packing list column "მწარმოებლის კოდი"); 268 invoice codes map one-to-one.
+- The P150 MAX drone (09-007-00188) is NOT sold separately: only inside the packages (importer skips it; no drone filter chip).
+- Product photos = the parts PDFs, matched by EXACT manufacturer code (scripts/pdf-part-matches.csv). A picture shared by
+  different part numbers (screw kits, CW/CCW gaskets, 1&2 / 3&4 cables) is never used; one shared only by versions of the same
+  part (same name) is. Exception: B141050 picture = PDF code 09-017-00083 (INTL) for invoice 09-017-00073 (same model).
+  Many PDF parts have no picture in the PDF (blank lazy-loaded image): those keep the XAG logo.
+- Product pages (scripts/product_pages.py → build-products.py): /b141050-battery, /cm13600s-charger, /gc4000-plus-generator,
+  specs from p150_specs.py 'power'. Cards, home part list and search open them. Only items with verified xa.com specs get a page
+  (B13970S: no verified specs, no page).
+- Logo lockups: XAG letters are exactly the PDG letter height (181/212 of the PDG image = 0.8538) with the same top line;
+  dash / tilde in --xag-black. build.py adds ?v=hash to /assets/img URLs so changed logos/photos reach visitors at once.

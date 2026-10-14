@@ -827,16 +827,21 @@ html[data-theme=dark] .pm-figs{border-top-color:#f4f3ef}
 .spec-block dd{margin:0}
 .spec-line{display:block}
 @media (max-width:760px){.spec-cat-body{grid-template-columns:1fr;gap:0}.spec-block dl>div{grid-template-columns:1fr;gap:2px}}
-/* Header lockup: PDG logo – XAG logo in two equal containers, aspect ratios preserved (owner, 14 Oct 2026) */
-.site-header .brand.brand-duo{display:flex;align-items:center;gap:10px;width:auto}
-.brand-duo .brand-cell{display:flex;align-items:center;justify-content:center;width:var(--logo-w,128px);height:var(--logo-h,40px)}
-.brand-duo .brand-cell img{width:auto;height:auto;max-width:100%;max-height:100%}
-.brand-duo .xag-mark{height:72%}
-.brand-duo .brand-dash{font:300 22px/1 var(--font-latin);color:var(--muted)}
-@media(max-width:1120px){.brand-duo{--logo-w:112px;--logo-h:36px}}
-@media(max-width:600px){.brand-duo{--logo-w:76px;--logo-h:25px;gap:4px}.brand-duo .brand-dash{font-size:16px}}
-@media(max-width:380px){.brand-duo{--logo-w:64px;--logo-h:21px;gap:3px}}
-@media(max-width:350px){.brand-duo{--logo-w:50px;--logo-h:17px;gap:2px}.brand-duo .brand-dash{font-size:13px}}
+/* Header lockup PDG – XAG (owner, 14 Oct 2026): two equal containers. --pdg-h = height of the PDG logo image;
+   the PDG letters fill 181/212 of it (the rest is the "PREMIUM DRONES GEORGIA" line), so the XAG letters are exactly
+   that tall and share the same top line. Separator in the XAG black (#3D3C38; #F4F3EF in the dark theme). */
+:root{--xag-black:#3D3C38;--xag-red:#CC0000}
+html[data-theme=dark]{--xag-black:#F4F3EF}
+.site-header .brand.brand-duo{--pdg-h:35px;display:flex;align-items:flex-start;gap:10px;width:auto}
+.brand-duo .brand-cell{display:flex;align-items:flex-start;width:calc(var(--pdg-h) * 3.6792);height:var(--pdg-h)}
+.brand-duo .brand-cell img{max-width:none;max-height:none}
+.brand-duo .pdg-mark{height:var(--pdg-h);width:auto}
+.brand-duo .xag-mark{height:calc(var(--pdg-h) * 0.8538);width:auto}
+.brand-duo .brand-dash{display:flex;align-items:center;height:calc(var(--pdg-h) * 0.8538);font:300 22px/1 var(--font-latin);color:var(--xag-black)}
+@media(max-width:1120px){.site-header .brand.brand-duo{--pdg-h:30px}}
+@media(max-width:600px){.site-header .brand.brand-duo{--pdg-h:21px;gap:4px}.brand-duo .brand-dash{font-size:16px}}
+@media(max-width:380px){.site-header .brand.brand-duo{--pdg-h:17px;gap:3px}}
+@media(max-width:350px){.site-header .brand.brand-duo{--pdg-h:14px;gap:2px}.brand-duo .brand-dash{font-size:13px}}
 /* Product cards: XAG logo until the owner's product photos arrive */
 .product-logo{display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;background:var(--bg-alt)}
 .product-logo img{width:38%;height:auto}
@@ -921,11 +926,12 @@ html[data-theme=dark] .dealer-logo .logo-dark,html[data-theme=dark] .about-xag-m
 .about-xag-text p{margin:0 0 14px}
 /* Brand strip below the hero: XAG ~ PDG, centred, then the dealer sentence (owner, 14 Oct 2026) */
 .dealer-band .dealer-inner{flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2vw,22px);padding-block:clamp(28px,3.4vw,48px);text-align:center}
-.dealer-logos{display:flex;align-items:center;justify-content:center;gap:clamp(14px,2.4vw,36px)}
-.dealer-cell{display:flex;align-items:center;justify-content:center;width:clamp(128px,20vw,280px);height:clamp(44px,6.4vw,88px)}
-.dealer-cell img{width:auto;height:auto;max-width:100%;max-height:100%}
-.dealer-cell img[src*="xag-logo"]{height:80%}
-.dealer-tilde{font:300 clamp(28px,3.6vw,52px)/1 var(--font-latin);color:var(--muted)}
+.dealer-logos{--pdg-h:clamp(30px,5.4vw,76px);display:flex;align-items:flex-start;justify-content:center;gap:clamp(14px,2.4vw,36px)}
+.dealer-cell{display:flex;align-items:flex-start;width:calc(var(--pdg-h) * 3.6792);height:var(--pdg-h)}
+.dealer-cell img{max-width:none;max-height:none;width:auto}
+.dealer-cell img[src*="pdg-logo"]{height:var(--pdg-h)}
+.dealer-cell img[src*="xag-logo"]{height:calc(var(--pdg-h) * 0.8538)}
+.dealer-tilde{display:flex;align-items:center;height:calc(var(--pdg-h) * 0.8538);font:300 clamp(28px,3.6vw,52px)/1 var(--font-latin);color:var(--xag-black)}
 .dealer-band .dealer-line{margin:0;max-width:60ch;font-size:clamp(15px,1.4vw,19px)}
 .dealer-cell .logo-dark{display:none}
 html[data-theme=dark] .dealer-cell .logo-light{display:none}
@@ -933,3 +939,25 @@ html[data-theme=dark] .dealer-cell .logo-dark{display:block}
 /* Equal containers, logos pulled toward the separator so both gaps are the same */
 .dealer-logos .dealer-cell:first-child,.brand-duo .brand-cell:first-child{justify-content:flex-end}
 .dealer-logos .dealer-cell:last-child,.brand-duo .brand-cell:last-child{justify-content:flex-start}
+/* Product pages for the energy system (battery, charger, charging station) and links to them from the shop */
+.product-link{color:inherit;text-decoration:none;display:block}
+.product-link:hover h3,.product-link:focus-visible h3{text-decoration:underline;text-underline-offset:3px}
+.product-more{margin-top:6px;font-size:14px}
+.part-row-title a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.pd-hero .product-orig{margin:6px 0 0;color:var(--muted)}
+.pd-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start}
+.pd-photo{border:1px solid var(--border);background:#fff}
+.pd-photo img{display:block;width:100%;height:auto}
+.pd-photo.product-logo{background:var(--bg-alt)}
+.pd-photo.product-logo img{width:38%}
+.pd-buybox{display:flex;flex-direction:column;gap:14px;padding:clamp(20px,2.4vw,32px);border:1px solid var(--border)}
+.pd-buybox .product-sku,.pd-buybox .product-stock{margin:0}
+.pd-price{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:10px}
+.pd-price .product-price{font-size:clamp(28px,3vw,40px)}
+.pd-vat{font-size:14px;color:var(--muted)}
+.pd-buybox .buy-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pd-ask{align-self:flex-start}
+.pd-spec-block{max-width:760px}
+.pd-spec-block dl>div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:16px;padding:10px 0;border-bottom:1px solid var(--border)}
+@media(max-width:760px){.pd-grid{grid-template-columns:1fr}.pd-spec-block dl>div{grid-template-columns:1fr;gap:2px}}
+.pd-hero h1{font-size:clamp(26px,4.2vw,48px);overflow-wrap:break-word;hyphens:auto}
