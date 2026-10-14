@@ -7,6 +7,7 @@
      BOG_PAYMENT_METHODS                optional, default "card,google_pay,apple_pay"
      ADMIN_KEY                          optional, opens /api/orders?key=... (needs the ORDERS binding)
      PAYMENTS_ENABLED = "off"           optional emergency switch
+     ACCOUNTS_ENABLED = "off"           optional; customer accounts work as soon as the PDG_DATA binding exists
      ANTHROPIC_API_KEY                  switches the AI chat on (Claude API key from console.anthropic.com)
      CHAT_MODEL                         optional, default "claude-haiku-5-5"; CHAT_ENABLED = "off" to stop the chat
      CHAT_DAILY_LIMIT                   optional, default 400 chat replies per day for the whole site
@@ -38,6 +39,7 @@ export default {
       if (route === 'POST /api/payments/callback') return await callback(request, env);
       if (route === 'GET /api/orders') return await orders(env, url);
       if (route === 'GET /api/chat/config') return json({ enabled: chatEnabled(env) });
+      if (url.pathname.startsWith('/api/account/') || url.pathname.startsWith('/api/admin/')) return await account(route, request, env, url);
       if (route === 'POST /api/chat') return await chat(request, env, url);
       return json({ error: 'not_found' }, 404);
     } catch (err) {
@@ -189,6 +191,7 @@ async function checkout(request, env, url) {
       items: q.lines, customer, status: 'created' };
     await kv(env).put('order:' + ref, JSON.stringify(record), { expirationTtl: 60 * 60 * 24 * 730 });
     await kv(env).put('bog:' + data.id, ref, { expirationTtl: 60 * 60 * 24 * 730 });
+    await linkOrder(env, request, ref);
   }
   return json({ url: href, id: data.id, ref, mode: q.mode, total: q.total, amount: q.amount });
 }
@@ -257,12 +260,14 @@ async function orders(env, url) {
   const list = await kv(env).list({ prefix: 'order:', limit: 200 });
   const recs = (await Promise.all(list.keys.map(k => kv(env).get(k.name, 'json')))).filter(Boolean)
     .sort((a, b) => String(b.created).localeCompare(String(a.created)));
+  const users = (await kv(env).list({ prefix: 'user:', limit: 500 })).keys.length;
   const rows = recs.map(o => `<tr><td>${esc(o.created.slice(0, 16).replace('T', ' '))}</td><td>${esc(o.ref)}</td><td>${esc(o.status)}</td>`
-    + `<td>${o.mode === 'deposit' ? 'deposit ' : ''}₾${esc(o.amount)} / ₾${esc(o.total)}</td><td>${esc(o.customer.name)}<br>${esc(o.customer.phone)}<br>${esc(o.customer.address)}</td>`
+    + `<td>${o.mode === 'deposit' ? 'deposit ' : ''}₾${esc(o.amount)} / ₾${esc(o.total)}</td><td>${esc(o.customer.name)}<br>${esc(o.customer.phone)}<br>${esc(o.customer.address)}${o.account ? '<br>' + esc(o.account) : ''}</td>`
     + `<td>${o.items.map(i => esc(i.qty + ' × ' + i.name)).join('<br>')}</td></tr>`).join('');
   const page = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <title>PDG orders</title><style>body{font:14px/1.45 system-ui,sans-serif;margin:16px;color:#1c1c1c}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}th{font-weight:600}</style>
-<h1>PDG orders (${recs.length})</h1><p>Paid = status "completed". Deposit orders: the rest is paid by bank transfer.</p>
+<h1>PDG orders (${recs.length})</h1><p>Paid = status "completed". Deposit orders: the rest is paid by bank transfer. Status "requested" = sent by WhatsApp or e-mail by a signed-in customer. Customer accounts: ${users}.</p>
+<p>Reset a customer's password: open /api/admin/reset?key=YOUR_KEY&amp;email=CUSTOMER_EMAIL and send them the temporary password.</p>
 <div style="overflow-x:auto"><table><tr><th>Date (UTC)</th><th>Order</th><th>Status</th><th>Paid / total</th><th>Customer</th><th>Items</th></tr>${rows}</table></div>`;
   return new Response(page, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
 }
@@ -347,4 +352,149 @@ async function chat(request, env, url) {
   const reply = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
   if (!reply) return json({ error: 'ai_error' }, 502);
   return json({ reply: reply.slice(0, 4000) });
+}
+
+
+/* ---------------- Customer accounts ----------------
+   Stored in KV (PDG_DATA): user:<email> {name, email, phone, company, address, salt, hash, orders[]},
+   session:<sha256(token)> {email}. Passwords: PBKDF2-SHA256, 100,000 rounds, 16-byte salt. Session cookie: HttpOnly, Secure,
+   SameSite=Lax, 30 days. No e-mail service is connected, so a forgotten password is reset by PDG (/api/admin/reset). */
+const SESSION_DAYS = 30;
+const enc = new TextEncoder();
+const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+const unhex = h => new Uint8Array(h.match(/../g).map(x => parseInt(x, 16)));
+
+function accountsOn(env) { return Boolean(kv(env) && env.ACCOUNTS_ENABLED !== 'off'); }
+
+async function pbkdf2(password, saltHex) {
+  const key = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']);
+  return hex(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: unhex(saltHex), iterations: 100000 }, key, 256));
+}
+function same(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
+  let d = 0; for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i); return d === 0;
+}
+async function sha(text) { return hex(await crypto.subtle.digest('SHA-256', enc.encode(text))); }
+function randomHex(n) { return hex(crypto.getRandomValues(new Uint8Array(n))); }
+function cookie(request, name) {
+  const m = (request.headers.get('Cookie') || '').match(new RegExp('(?:^|;\\s*)' + name + '=([^;]+)'));
+  return m ? m[1] : '';
+}
+function sessionCookie(token, maxAge) {
+  return `pdg_session=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`;
+}
+const emailOk = e => /^[^\s@<>]{1,64}@[^\s@<>]{1,190}\.[a-z]{2,}$/i.test(e);
+
+async function currentUser(env, request) {
+  const store = kv(env); const token = cookie(request, 'pdg_session');
+  if (!store || !/^[a-f0-9]{64}$/.test(token)) return null;
+  const sess = await store.get('session:' + await sha(token), 'json');
+  if (!sess) return null;
+  const user = await store.get('user:' + sess.email, 'json');
+  return user ? { user, token } : null;
+}
+
+async function linkOrder(env, request, ref) {
+  const me = await currentUser(env, request);
+  if (!me) return;
+  const store = kv(env);
+  me.user.orders = [ref, ...(me.user.orders || []).filter(r => r !== ref)].slice(0, 200);
+  await store.put('user:' + me.user.email, JSON.stringify(me.user));
+  const rec = await store.get('order:' + ref, 'json');
+  if (rec) { rec.account = me.user.email; await store.put('order:' + ref, JSON.stringify(rec), { expirationTtl: 60 * 60 * 24 * 730 }); }
+}
+
+function publicUser(u) { return { name: u.name, email: u.email, phone: u.phone, company: u.company || '', address: u.address || '' }; }
+
+async function startSession(env, email) {
+  const token = randomHex(32);
+  await kv(env).put('session:' + await sha(token), JSON.stringify({ email, created: Date.now() }), { expirationTtl: 60 * 60 * 24 * SESSION_DAYS });
+  return token;
+}
+
+async function account(route, request, env, url) {
+  if (route === 'GET /api/account/config') return json({ enabled: accountsOn(env) });
+  if (route.startsWith('GET /api/admin/reset')) return adminReset(env, url);
+  if (!accountsOn(env)) return json({ error: 'accounts_off' }, 503);
+  const store = kv(env);
+  if (request.method === 'POST') {
+    const sentFrom = request.headers.get('Origin');
+    if (sentFrom && sentFrom !== url.origin) return json({ error: 'bad_origin' }, 403);
+    if (Number(request.headers.get('Content-Length') || 0) > 20000) return json({ error: 'too_large' }, 413);
+  }
+  let input = {};
+  if (request.method === 'POST') { try { input = await request.json(); } catch { return json({ error: 'bad_json' }, 400); } }
+
+  if (route === 'POST /api/account/register') {
+    const email = clean(input.email, 254).toLowerCase();
+    const u = { name: clean(input.name, 100), email, phone: clean(input.phone, 30), company: clean(input.company, 120), address: '' };
+    const password = String(input.password || '');
+    if (u.name.length < 2 || !emailOk(email) || u.phone.replace(/\D/g, '').length < 9) return json({ error: 'fields' }, 400);
+    if (password.length < 8 || password.length > 200) return json({ error: 'password' }, 400);
+    if (await store.get('user:' + email)) return json({ error: 'exists' }, 409);
+    u.salt = randomHex(16); u.hash = await pbkdf2(password, u.salt); u.created = new Date().toISOString(); u.orders = [];
+    await store.put('user:' + email, JSON.stringify(u));
+    const token = await startSession(env, email);
+    return json({ user: publicUser(u) }, 200, { 'Set-Cookie': sessionCookie(token, 60 * 60 * 24 * SESSION_DAYS) });
+  }
+  if (route === 'POST /api/account/login') {
+    const email = clean(input.email, 254).toLowerCase();
+    const failKey = 'loginfail:' + email;
+    const fails = Number(await store.get(failKey)) || 0;
+    if (fails >= 8) return json({ error: 'locked' }, 429);
+    const u = emailOk(email) ? await store.get('user:' + email, 'json') : null;
+    const ok = u && same(await pbkdf2(String(input.password || ''), u.salt), u.hash);
+    if (!ok) {
+      await store.put(failKey, String(fails + 1), { expirationTtl: 900 });
+      return json({ error: 'login' }, 401);
+    }
+    await store.delete(failKey);
+    const token = await startSession(env, email);
+    return json({ user: publicUser(u) }, 200, { 'Set-Cookie': sessionCookie(token, 60 * 60 * 24 * SESSION_DAYS) });
+  }
+  const me = await currentUser(env, request);
+  if (route === 'POST /api/account/logout') {
+    if (me) await store.delete('session:' + await sha(me.token));
+    return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie('x', 0) });
+  }
+  if (!me) return json({ error: 'signed_out' }, 401);
+  if (route === 'GET /api/account/me') {
+    const orders = (await Promise.all((me.user.orders || []).slice(0, 20).map(r => store.get('order:' + r, 'json')))).filter(Boolean)
+      .map(o => ({ ref: o.ref, created: o.created, status: o.status, mode: o.mode, total: o.total, amount: o.amount, items: o.items.map(i => ({ name: i.name, qty: i.qty })) }));
+    return json({ user: publicUser(me.user), orders });
+  }
+  if (route === 'POST /api/account/update') {
+    const name = clean(input.name, 100), phone = clean(input.phone, 30);
+    if (name.length < 2 || phone.replace(/\D/g, '').length < 9) return json({ error: 'fields' }, 400);
+    Object.assign(me.user, { name, phone, company: clean(input.company, 120), address: clean(input.address, 200) });
+    await store.put('user:' + me.user.email, JSON.stringify(me.user));
+    return json({ user: publicUser(me.user) });
+  }
+  if (route === 'POST /api/account/order-request') {
+    // A signed-in customer sent the cart by WhatsApp or e-mail: keep it in their order history (server prices).
+    let q;
+    try { q = quote(input.items); } catch (err) { if (err instanceof UserError) return json({ error: err.message }, 400); throw err; }
+    const ref = orderRef();
+    const rec = { ref, created: new Date().toISOString(), lang: LANGS.includes(input.lang) ? input.lang : 'ka', mode: 'request', total: q.total, amount: 0,
+      items: q.lines, customer: { name: me.user.name, phone: me.user.phone, address: me.user.address || '' }, status: 'requested',
+      channel: input.channel === 'email' ? 'email' : 'whatsapp', account: me.user.email };
+    await store.put('order:' + ref, JSON.stringify(rec), { expirationTtl: 60 * 60 * 24 * 730 });
+    me.user.orders = [ref, ...(me.user.orders || [])].slice(0, 200);
+    await store.put('user:' + me.user.email, JSON.stringify(me.user));
+    return json({ ref });
+  }
+  return json({ error: 'not_found' }, 404);
+}
+
+async function adminReset(env, url) {
+  const key = url.searchParams.get('key') || '';
+  if (!env.ADMIN_KEY || !kv(env) || key.length < 16 || key !== env.ADMIN_KEY) return json({ error: 'not_found' }, 404);
+  const email = clean(url.searchParams.get('email'), 254).toLowerCase();
+  const u = await kv(env).get('user:' + email, 'json');
+  if (!u) return new Response('No account with that e-mail.', { status: 404, headers: { 'Content-Type': 'text/plain; charset=utf-8', 'X-Robots-Tag': 'noindex' } });
+  const temp = randomHex(5);
+  u.salt = randomHex(16); u.hash = await pbkdf2(temp, u.salt);
+  await kv(env).put('user:' + email, JSON.stringify(u));
+  return new Response(`Temporary password for ${email}: ${temp}\nSend it to the customer; they can sign in and keep using it.`,
+    { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
 }

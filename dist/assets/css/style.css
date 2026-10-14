@@ -329,7 +329,7 @@ dialog.cart[open]{display:flex;flex-direction:column}
 .cart-form label{display:grid;gap:6px;font-size:13px;color:var(--muted)}
 .cart-form input{min-height:48px;padding:0 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font:inherit;font-size:16px}
 .cart-form button.button,.cart-form a.button{border:0;cursor:pointer;width:100%;justify-content:center}
-.cart-form a.button-line{border:1px solid var(--text)}
+.cart-form a.button-line,.cart-form button.button-line{border:1px solid var(--text);background:transparent;color:var(--text)}
 .cart-error{margin:0;font-size:13px;color:var(--accent)}
 .not-found{min-height:56vh;border-bottom:0}
 .nf-actions{display:flex;flex-wrap:wrap;align-items:center;gap:20px 32px;margin-top:40px}
@@ -673,4 +673,35 @@ html[data-theme=dark] .chat-msg a,html[data-theme=dark] .chat-human,html[data-th
 html[data-theme=dark] .chat-user{background:#3a3a37}
 @media(max-width:600px){.chat-fab-label{display:none}.chat-fab{padding:0;width:56px;justify-content:center}
   .chat-panel{inset:0;width:auto;height:auto;border-radius:0;border:0}}
+/* Accounts */
+.account-link{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;margin:0 -8px}
+.account-link:hover{color:var(--accent)}
+.acc-off{padding:18px 20px;border-left:3px solid var(--accent);background:var(--bg-alt);margin-bottom:32px;max-width:760px}
+.acc-guest,.acc-user-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,3vw,40px);align-items:start}
+.acc-card{display:flex;flex-direction:column;gap:16px;padding:clamp(24px,3vw,40px);border:1px solid var(--border);background:var(--bg)}
+.acc-card h2{font-size:clamp(26px,2.4vw,36px)}
+.acc-card h3{font-size:22px}
+.acc-field{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.acc-field input{min-height:48px;padding:10px 14px;border:1px solid var(--border);background:var(--bg);color:var(--text);font:inherit;font-size:16px}
+.acc-field input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.acc-field small{color:var(--muted);font-size:12px}
+.acc-check{display:flex;align-items:center;gap:10px;font-size:14px}
+.acc-check input{width:20px;height:20px;accent-color:var(--accent)}
+.acc-check a,.acc-small a{text-decoration:underline;text-underline-offset:2px}
+.acc-small{font-size:13px;color:var(--muted)}
+.acc-msg{font-size:14px;color:var(--accent)}
+.acc-msg.is-ok{color:#2f7d4f}
+.acc-card .button{align-self:flex-start}
+.acc-card input:disabled,.acc-card button:disabled{opacity:.55}
+.acc-user-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}
+.acc-user-head h2{font-size:clamp(28px,3vw,44px)}
+.acc-orders{list-style:none;margin:0;padding:0}
+.acc-orders li{padding:16px 0;border-bottom:1px solid var(--border)}
+.acc-order-top{display:flex;justify-content:space-between;gap:12px;font-family:var(--font-latin)}
+.acc-status{font-family:var(--font-body);font-size:12px;padding:3px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted)}
+.acc-status.acc-completed{color:#2f7d4f;border-color:#2f7d4f}
+.acc-order-meta,.acc-order-items,.acc-empty{font-size:14px;color:var(--muted);margin-top:4px}
+html[data-theme=dark] .acc-msg{color:#f07a6d}
+html[data-theme=dark] .acc-msg.is-ok,html[data-theme=dark] .acc-status.acc-completed{color:#7fd1a2;border-color:#7fd1a2}
+@media(max-width:800px){.acc-guest,.acc-user-grid{grid-template-columns:1fr}}
 [hidden]{display:none!important}

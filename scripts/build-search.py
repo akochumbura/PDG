@@ -10,7 +10,7 @@ sys.path.insert(0, str(ROOT / 'scripts'))
 
 content = (DIST / 'assets/js/content.js').read_text(encoding='utf-8')
 T = json.loads(content.split('=', 1)[1].strip().removesuffix(';'))
-SKIP = {'404.html', 'payment.html'}
+SKIP = {'404.html', 'payment.html', 'account.html', 'terms.html'}
 # Words people type that the (English) product names do not contain.
 SYN = {
     'power': {'ka': 'ბატარეა ბატარეები აკუმულატორი დამტენი დატენვა გენერატორი ენერგია', 'en': 'battery batteries charger charging generator power',

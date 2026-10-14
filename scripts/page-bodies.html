@@ -313,3 +313,47 @@
     </div>
   </div></section>
 </template>
+<template data-page="account.html" data-ka-title="ანგარიში — საქართველოს პრემიუმ დრონები" data-title="acc_page_title" data-description="acc_intro">
+  <section class="page-hero"><div class="container"><a class="back-link" href="/" data-home data-i18n="back_home">← მთავარი გვერდი</a><h1 data-i18n="acc_heading">ანგარიში</h1><p class="page-intro" data-i18n="acc_intro">შედით ან შექმენით ანგარიში: შენახული მონაცემები შეკვეთისთვის და შეკვეთების ისტორია.</p></div></section>
+  <section class="section"><div class="container account" id="account" data-state="loading">
+    <p class="acc-off" id="accOff" hidden data-i18n="acc_off">ანგარიშები მალე ჩაირთვება. მანამდე შეუკვეთეთ კალათიდან WhatsApp-ით ან ელფოსტით.</p>
+    <div class="acc-guest" id="accGuest">
+      <form class="acc-card" id="loginForm" novalidate>
+        <h2 data-i18n="acc_login_title">შესვლა</h2>
+        <label class="acc-field"><span data-i18n="acc_email">ელფოსტა</span><input id="login_email" name="email" type="email" autocomplete="email" required></label>
+        <label class="acc-field"><span data-i18n="acc_password">პაროლი</span><input id="login_password" name="password" type="password" autocomplete="current-password" required></label>
+        <p class="acc-msg" role="alert" hidden></p>
+        <button class="button button-red" type="submit"><span data-i18n="acc_login_btn">შესვლა</span><span class="arrow" aria-hidden="true">→</span></button>
+        <p class="acc-small"><a href="https://wa.me/995550004333" target="_blank" rel="noopener noreferrer" data-i18n="acc_forgot">დაგავიწყდათ პაროლი? მოგვწერეთ WhatsApp-ზე და აღგიდგენთ.</a></p>
+      </form>
+      <form class="acc-card" id="registerForm" novalidate>
+        <h2 data-i18n="acc_register_title">რეგისტრაცია</h2>
+        <label class="acc-field"><span data-i18n="co_name">სახელი</span><input id="reg_name" name="name" type="text" autocomplete="name" required maxlength="100"></label>
+        <label class="acc-field"><span data-i18n="acc_email">ელფოსტა</span><input id="reg_email" name="email" type="email" autocomplete="email" required maxlength="254"></label>
+        <label class="acc-field"><span data-i18n="co_phone">ტელეფონი</span><input id="reg_phone" name="phone" type="tel" autocomplete="tel" required maxlength="30"></label>
+        <label class="acc-field"><span data-i18n="acc_company">კომპანია (არასავალდებულო)</span><input id="reg_company" name="company" type="text" autocomplete="organization" maxlength="120"></label>
+        <label class="acc-field"><span data-i18n="acc_password">პაროლი</span><input id="reg_password" name="password" type="password" autocomplete="new-password" required minlength="8" aria-describedby="regPwHint"><small id="regPwHint" data-i18n="acc_password_hint">მინიმუმ 8 სიმბოლო</small></label>
+        <label class="acc-check"><input id="reg_terms" type="checkbox" required> <span><a href="/terms.html" data-local data-i18n="acc_terms_ok">ვეთანხმები პირობებს</a></span></label>
+        <p class="acc-msg" role="alert" hidden></p>
+        <button class="button button-red" type="submit"><span data-i18n="acc_register_btn">ანგარიშის შექმნა</span><span class="arrow" aria-hidden="true">→</span></button>
+      </form>
+    </div>
+    <div class="acc-user" id="accUser" hidden>
+      <div class="acc-user-head"><h2 id="accHello"></h2><button class="button button-line" type="button" id="accLogout"><span data-i18n="acc_logout">გასვლა</span></button></div>
+      <div class="acc-user-grid">
+        <form class="acc-card" id="profileForm" novalidate>
+          <h3 data-i18n="acc_profile">ჩემი მონაცემები</h3>
+          <p class="acc-small" data-i18n="acc_profile_note">ეს მონაცემები კალათაში ავტომატურად შეივსება.</p>
+          <label class="acc-field"><span data-i18n="co_name">სახელი</span><input id="pf_name" name="name" type="text" autocomplete="name" required maxlength="100"></label>
+          <label class="acc-field"><span data-i18n="co_phone">ტელეფონი</span><input id="pf_phone" name="phone" type="tel" autocomplete="tel" required maxlength="30"></label>
+          <label class="acc-field"><span data-i18n="acc_company">კომპანია (არასავალდებულო)</span><input id="pf_company" name="company" type="text" autocomplete="organization" maxlength="120"></label>
+          <label class="acc-field"><span data-i18n="co_address">ქალაქი / მისამართი</span><input id="pf_address" name="address" type="text" autocomplete="street-address" maxlength="200"></label>
+          <p class="acc-msg" role="status" hidden></p>
+          <button class="button button-red" type="submit"><span data-i18n="acc_save">შენახვა</span></button>
+        </form>
+        <div class="acc-card"><h3 data-i18n="acc_orders">ჩემი შეკვეთები</h3><ul class="acc-orders" id="accOrders"></ul></div>
+      </div>
+    </div>
+    <p hidden id="lb_acc_hello" data-i18n="acc_hello">გამარჯობა, {name}</p><p hidden id="lb_acc_saved" data-i18n="acc_saved">შენახულია.</p><p hidden id="lb_acc_err_exists" data-i18n="acc_err_exists">ამ ელფოსტით ანგარიში უკვე არსებობს. შედით.</p><p hidden id="lb_acc_err_login" data-i18n="acc_err_login">ელფოსტა ან პაროლი არასწორია.</p><p hidden id="lb_acc_err_fields" data-i18n="acc_err_fields">შეავსეთ სახელი, სწორი ელფოსტა და ტელეფონი.</p><p hidden id="lb_acc_err_password" data-i18n="acc_err_password">პაროლი უნდა იყოს მინიმუმ 8 სიმბოლო.</p><p hidden id="lb_acc_err_locked" data-i18n="acc_err_locked">ძალიან ბევრი მცდელობა. სცადეთ 15 წუთში.</p><p hidden id="lb_acc_err_terms" data-i18n="acc_err_terms">დაეთანხმეთ პირობებს.</p><p hidden id="lb_acc_err_server" data-i18n="acc_err_server">ვერ მოხერხდა. სცადეთ ხელახლა.</p><p hidden id="lb_acc_st_requested" data-i18n="acc_st_requested">გაგზავნილია</p><p hidden id="lb_acc_st_completed" data-i18n="acc_st_completed">გადახდილია</p><p hidden id="lb_acc_st_pending" data-i18n="acc_st_pending">გადახდა არ დასრულებულა</p><p hidden id="lb_acc_st_rejected" data-i18n="acc_st_rejected">გადახდა უარყოფილია</p><p hidden id="lb_acc_deposit" data-i18n="acc_deposit">დეპოზიტი</p><p hidden id="lb_acc_no_orders" data-i18n="acc_no_orders">შეკვეთები ჯერ არ არის. დაამატეთ პროდუქცია კალათაში და შეუკვეთეთ.</p>
+  </div></section>
+</template>

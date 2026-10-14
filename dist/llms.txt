@@ -7,10 +7,13 @@ Georgian name: საქართველოს პრემიუმ დრო
 Contact: +995 550 00 43 33 (phone and WhatsApp), info@premium-drones.ge. Languages: Georgian, English, Russian.
 
 ## Main pages
-- [Home](https://premium-drones.ge/): overview, P150 MAX key specifications, services, FAQ
+- [Home](https://premium-drones.ge/): overview, P150 MAX key specifications, XAG ecosystem, packages
 - [XAG P150 MAX](https://premium-drones.ge/p150-max): official specifications and all kits with prices in GEL
 - [Shop](https://premium-drones.ge/shop): P150 MAX kits, batteries, chargers and spare parts; order by WhatsApp or e-mail
-- [About](https://premium-drones.ge/about): official XAG dealer, field experience, locations and services
+- [About](https://premium-drones.ge/about): official XAG dealer, field experience, XAG model range, locations, FAQ
+- [Service](https://premium-drones.ge/service): diagnostics, repair, original parts (Tbilisi, by appointment)
+- [PDG Academy](https://premium-drones.ge/academy): practical drone operator training
+- [Terms](https://premium-drones.ge/terms): delivery, returns and payment terms
 - [Contact](https://premium-drones.ge/consultation): drone selection, spraying service, training, repair
 - English versions: https://premium-drones.ge/en/ ; Russian versions: https://premium-drones.ge/ru/
 

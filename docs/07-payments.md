@@ -1,6 +1,7 @@
 # Online payments: Bank of Georgia (card, Apple Pay, Google Pay)
 
-Status (14 Oct 2026): PAUSED by the owner, about 80% built and NOT yet tested end to end.
+Status (14 Oct 2026): built and tested end to end with a simulated Bank of Georgia (full payment, 10% deposit,
+failed payment, price tampering refused). Paused by the owner before connecting the real bank.
 Nothing shows on the site: the Pay button appears only when the bank keys are saved in Cloudflare.
 
 Owner rules:
@@ -15,9 +16,8 @@ Built so far:
 - Cart: Pay button + deposit note (shop.js), payment status page /payment (noindex), terms page /terms.
 
 Still to do before going live:
-1. Finish the end-to-end test with the simulated bank (scratch harness), incl. deposit and failed payments.
 2. Owner: sign the BOG e-commerce agreement (businessmanager.bog.ge), activate Apple Pay and Google Pay there,
    get client_id and client_secret. Confirm the deposit %. Review the terms page text (returns/delivery) with an accountant/lawyer.
 3. Cloudflare Pages > Settings > Variables and Secrets: BOG_CLIENT_ID, BOG_CLIENT_SECRET (encrypted), optional ADMIN_KEY;
-   optional KV namespace bound as ORDERS. Upload the site again after saving them.
+   optional KV namespace bound as PDG_DATA (also used by accounts and chat). Upload the site again after saving them.
 4. One small real payment, then refund it, before announcing.
