@@ -60,3 +60,17 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - Site is published by pushing to GitHub akochumbura/PDG (main); Cloudflare Pages project "pdg" builds with `pip install lxml && python3 scripts/build.py`, output `dist`.
 - P150 MAX facts (owner + xa.com/en/p150max): 80 L tank, 32 L/min (2 pumps), 46 L/min with the 4-Nozzle Upgrade Kit (recommended for orchards and vineyards), granule container 115 L (owner confirmed; not 120), 300 kg/min, 9 m spread width, 80 kg payload, 20 m/s, RealTerra mapping up to 20 ha/flight, 4D radar 1.5–100 m, B141050 1050 Wh / 1500 cycles, IPX6K.
 - No calculator page (removed by owner request).
+
+## STATUS — 2026-10-14 (read this first in a new chat)
+Live: premium-drones.ge on Cloudflare Pages project "pdg" (account ako.chumburidze@gmail.com), auto-deploys from GitHub akochumbura/PDG main.
+Build: dist/ is built locally with `python3 scripts/build.py` and COMMITTED; on Cloudflare (CF_PAGES set) build.py exits at once and dist/ is published as is.
+www → root: Redirect Rule must match only hostname www.premium-drones.ge (a rule on "All incoming requests" caused a redirect loop).
+Owner is non-technical, works from iPhone/Windows; wants Claude to do Cloudflare steps for him (use the desktop-app browser when available).
+
+TODO in Cloudflare (dashboard, owner's account):
+1. Website chat storage: Storage & Databases → KV → create namespace "pdg-data"; pdg → Settings → Bindings → Add → KV namespace, variable name PDG_DATA → pdg-data (Production).
+2. pdg → Settings → Variables and secrets → Secret ADMIN_KEY (16+ chars). Team inbox: https://premium-drones.ge/api/chat/inbox?key=ADMIN_KEY
+3. Optional WhatsApp alert (CallMeBot): secrets WHATSAPP_ALERT_PHONE (+995550004333) and WHATSAPP_ALERT_KEY (from CallMeBot after sending "I allow callmebot to send me messages").
+4. After adding bindings/secrets: Deployments → ⋯ → Retry deployment.
+5. Later: Bank of Georgia e-commerce agreement → secrets BOG_CLIENT_ID, BOG_CLIENT_SECRET (payments). Optional ANTHROPIC_API_KEY for AI replies in chat.
+Pending from owner: product photos (no people), BOG agreement, deposit % (10% assumed), other payment options (asked: TBC, installments, invoice?).
