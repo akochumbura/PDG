@@ -827,16 +827,95 @@ html[data-theme=dark] .pm-figs{border-top-color:#f4f3ef}
 .spec-block dd{margin:0}
 .spec-line{display:block}
 @media (max-width:760px){.spec-cat-body{grid-template-columns:1fr;gap:0}.spec-block dl>div{grid-template-columns:1fr;gap:2px}}
-/* Header lockup: XAG logo – PDG logo (owner, 14 Oct 2026) */
+/* Header lockup: PDG logo – XAG logo in two equal containers, aspect ratios preserved (owner, 14 Oct 2026) */
 .site-header .brand.brand-duo{display:flex;align-items:center;gap:10px;width:auto}
-.brand-duo img{width:auto}
-.brand-duo .xag-mark{height:clamp(19px,2vw,29px)}
-.brand-duo .pdg-mark{height:clamp(30px,3vw,46px)}
-.brand-duo .brand-dash{font:300 clamp(18px,1.8vw,26px)/1 var(--font-latin);color:var(--muted)}
-@media(max-width:400px){.brand-duo{gap:6px}.brand-duo .xag-mark{height:17px}.brand-duo .pdg-mark{height:27px}}
+.brand-duo .brand-cell{display:flex;align-items:center;justify-content:center;width:var(--logo-w,128px);height:var(--logo-h,40px)}
+.brand-duo .brand-cell img{width:auto;height:auto;max-width:100%;max-height:100%}
+.brand-duo .xag-mark{height:72%}
+.brand-duo .brand-dash{font:300 22px/1 var(--font-latin);color:var(--muted)}
+@media(max-width:1120px){.brand-duo{--logo-w:112px;--logo-h:36px}}
+@media(max-width:600px){.brand-duo{--logo-w:76px;--logo-h:25px;gap:4px}.brand-duo .brand-dash{font-size:16px}}
+@media(max-width:380px){.brand-duo{--logo-w:64px;--logo-h:21px;gap:3px}}
+@media(max-width:350px){.brand-duo{--logo-w:50px;--logo-h:17px;gap:2px}.brand-duo .brand-dash{font-size:13px}}
 /* Product cards: XAG logo until the owner's product photos arrive */
 .product-logo{display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;background:var(--bg-alt)}
 .product-logo img{width:38%;height:auto}
 .product-logo .logo-dark{display:none}
 html[data-theme=dark] .product-logo .logo-light{display:none}
 html[data-theme=dark] .product-logo .logo-dark{display:block}
+
+/* Home dealer line: the real XAG logo instead of a text box */
+.dealer-mark.dealer-logo{border:0;padding:0;letter-spacing:0;line-height:0}
+.dealer-logo img{height:26px;width:auto}
+.dealer-logo .logo-dark,.about-xag-mark .logo-dark{display:none}
+html[data-theme=dark] .dealer-logo .logo-light,html[data-theme=dark] .about-xag-mark .logo-light{display:none}
+html[data-theme=dark] .dealer-logo .logo-dark,html[data-theme=dark] .about-xag-mark .logo-dark{display:block}
+
+/* About page: XAG section */
+.about-xag-inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:48px;align-items:start;border-top:1px solid var(--border);padding-top:48px}
+.about-xag-mark img{width:min(220px,60%);height:auto}
+.about-xag-text h2{margin-top:0}
+.about-xag-text p{max-width:680px}
+@media(max-width:760px){.about-xag-inner{grid-template-columns:1fr;gap:24px;padding-top:32px}.about-xag-mark img{width:140px}}
+
+/* Quantity selectors (product cards, P150 MAX kit table, configurator) */
+.buy-actions{display:flex;align-items:center;gap:8px}
+.qty-stepper{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:var(--radius);height:46px}
+.qty-btn{width:36px;height:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:18px;cursor:pointer}
+.qty-btn:hover{background:var(--bg-alt)}
+.qty-input{width:44px;height:100%;border:0;border-left:1px solid var(--border);border-right:1px solid var(--border);background:transparent;color:var(--text);text-align:center;font:inherit;font-family:var(--font-latin);-moz-appearance:textfield;appearance:textfield}
+.qty-input::-webkit-outer-spin-button,.qty-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.qty-input:focus-visible,.qty-btn:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+.kit-row .buy-actions .qty-stepper{height:44px}
+.product-buy{flex-wrap:wrap}
+@media(max-width:900px){.product:not(.product-kit) .buy-actions{width:100%}.product:not(.product-kit) .buy-actions .add-btn{flex:1}}
+@media(max-width:600px){.product-kit .buy-actions{width:100%}.product-kit .buy-actions .add-btn{flex:1}.kit-row .buy-actions{grid-column:1/-1}.kit-row .buy-actions .add-btn{flex:1}}
+
+/* Quote-only parts and previous-generation models */
+.product-stock.is-tbc{color:var(--muted)}
+.product-stock.is-out{color:var(--accent)}
+.product-price-quote{font-size:15px;color:var(--muted)}
+.quote-btn{min-height:46px;padding:0 16px;border:1px solid var(--text);border-radius:var(--radius);background:transparent;color:var(--text);font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
+.quote-btn:hover{background:var(--text);color:var(--bg)}
+.product-specs{margin:4px 0 0;font-size:13px;line-height:1.5;color:var(--muted)}
+.product-out .product-photo{opacity:.85}
+.consult-btn{min-height:46px}
+#previous-models{border-top:1px solid var(--border)}
+#previous-models .section-intro{max-width:680px;margin:0 0 28px;color:var(--muted)}
+@media(max-width:900px){.product:not(.product-kit) .quote-btn{width:100%}}
+
+/* P150 MAX kit configurator */
+.cfg{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:32px 48px;align-items:start}
+.cfg-presets{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:12px;border:0;margin:0;padding:0}
+.cfg-presets legend{width:100%;margin-bottom:12px;font-size:14px;color:var(--muted)}
+.cfg-preset{display:flex;align-items:center;gap:10px;padding:14px 18px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer}
+.cfg-preset:has(input:checked){border-color:var(--text)}
+.cfg-preset input{accent-color:var(--accent)}
+.cfg-preset-price{font-family:var(--font-latin);color:var(--muted)}
+.cfg-items{border-top:1px solid var(--text)}
+.cfg-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--border)}
+.cfg-row-name{display:flex;flex-direction:column;gap:2px}
+.cfg-unit{font-size:13px;color:var(--muted);font-family:var(--font-latin)}
+.cfg-fixed-qty{min-width:44px;text-align:center;font-family:var(--font-latin)}
+.cfg-summary{padding:24px;background:var(--bg-alt);border-radius:var(--radius)}
+.cfg-total-label{margin:0;font-size:14px;color:var(--muted)}
+.cfg-total{margin:6px 0 12px;font:400 36px/1.1 var(--font-latin)}
+.cfg-note{font-size:14px;color:var(--muted)}
+.cfg-actions{display:flex;flex-direction:column;gap:10px;margin:16px 0 8px}
+.cfg-actions .button{width:100%;justify-content:center}
+.cfg-actions .button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:860px){.cfg{grid-template-columns:1fr;gap:24px}}
+
+/* Mobile action bar (up to 768px): call, WhatsApp, consultation */
+.mobile-bar{display:none}
+@media(max-width:768px){
+  .mobile-bar{position:fixed;left:0;right:0;bottom:0;z-index:55;display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:8px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--border);box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+  .mobile-bar-btn{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;padding:0 4px;min-height:46px;border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px;text-decoration:none}
+  .mobile-bar-main{background:var(--accent);border-color:var(--accent);color:#fff}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+  .chat-fab{bottom:calc(76px + env(safe-area-inset-bottom))}
+  body.chat-open .mobile-bar,body.modal-open .mobile-bar{display:none}
+}
+@media(max-width:360px){.mobile-bar{gap:6px;padding-left:8px;padding-right:8px}.mobile-bar-btn{font-size:13px}.mobile-bar-btn svg{display:none}}
+.kit-config .page-intro{margin-bottom:28px}
+.about-xag-text p{margin:0 0 14px}

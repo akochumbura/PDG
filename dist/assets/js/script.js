@@ -115,7 +115,7 @@
       if (!prods.length && !pages.length) { none.hidden = false; return; }
       let out = "";
       if (prods.length) out += '<p class="search-group">' + esc(txt("lbSearchProducts")) + "</p><ul>" + prods.map((p) =>
-        '<li><a class="search-product" href="' + esc(p.u) + '"><span class="sp-name">' + esc(p.n) + '</span><span class="sp-meta">' + (p.o ? esc(p.o) + " · " : "") + esc(p.s) + " · " + esc(p.c) + '</span><span class="sp-price">₾' + Number(p.p).toLocaleString("en-US") + "</span></a></li>").join("") + "</ul>";
+        '<li><a class="search-product" href="' + esc(p.u) + '"><span class="sp-name">' + esc(p.n) + '</span><span class="sp-meta">' + (p.o ? esc(p.o) + " · " : "") + esc(p.s) + " · " + esc(p.c) + '</span><span class="sp-price">' + (p.p > 0 ? "₾" + Number(p.p).toLocaleString("en-US") : esc(p.q || "")) + "</span></a></li>").join("") + "</ul>";
       if (pages.length) out += '<p class="search-group">' + esc(txt("lbSearchPages")) + "</p><ul>" + pages.map((p) =>
         '<li><a class="search-page" href="' + esc(p.u) + '"><span class="sp-name">' + esc(p.t) + '</span><span class="sp-text">' + esc(snippet(p, terms)) + "</span></a></li>").join("") + "</ul>";
       box.innerHTML = out;

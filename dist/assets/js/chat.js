@@ -39,9 +39,14 @@
     head.append(titles, close);
     var log = el("div", "chat-log"); log.setAttribute("role", "log"); log.setAttribute("aria-live", "polite");
     var chips = el("div", "chat-suggest");
-    ["chat_s1", "chat_s2", "chat_s3"].forEach(function (k) {
-      var b = el("button", "chat-chip", t(k)); b.type = "button";
-      b.addEventListener("click", function () { send(t(k)); }); chips.appendChild(b);
+    // Four quick actions: price, packages and service ask a short question; "contact us" shows phone and WhatsApp at once.
+    [["chat_q1", "chat_q1_text"], ["chat_q2", "chat_q2_text"], ["chat_q3", "chat_q3_text"], ["chat_q4", ""]].forEach(function (q) {
+      var b = el("button", "chat-chip", t(q[0])); b.type = "button";
+      b.addEventListener("click", function () {
+        if (q[1]) { send(t(q[1])); return; }
+        bubble("ai", t("chat_contact_text")); other.hidden = false; log.scrollTop = log.scrollHeight;
+      });
+      chips.appendChild(b);
     });
     var form = el("form", "chat-form");
     var box = el("textarea"); box.rows = 1; box.maxLength = 1200; box.placeholder = t("chat_placeholder"); box.setAttribute("aria-label", t("chat_placeholder"));

@@ -64,6 +64,18 @@ for path,doc in documents.items():
     page=path.read_text(encoding='utf-8')
     for banned in ['technical-service.webp','founder','Tchumburidze','ჭუმბურიძე','1000+','product-tile','CEO']:
         if banned in page:errors.append(f'{relative}: contains {banned!r} (not allowed by owner brief)')
+    # Phone links: only tel:+995550004333; never sanitized/invalid URLs.
+    for href in doc.xpath('//a/@href'):
+        if href.startswith('tel:') and href!='tel:+995550004333':errors.append(f'{relative}: malformed phone link {href}')
+        if href.startswith('about:'):errors.append(f'{relative}: invalid link {href}')
+    # Never sell at ₾0: every add-to-cart button needs a positive price; quote-only/out-of-stock cards have no add button.
+    for btn in doc.xpath('//button[contains(@class,"add-btn")]'):
+        if not (btn.get('data-price') or '').isdigit() or int(btn.get('data-price'))<=0:errors.append(f'{relative}: add-to-cart without a price ({btn.get("data-sku")})')
+    for card in doc.xpath('//article[@data-avail="quote" or @data-avail="out"]'):
+        if card.xpath('.//button[contains(@class,"add-btn")]'):errors.append(f'{relative}: unavailable product can be added to cart')
+    # Internal commercial data must never be published.
+    for word in ('Landed unit cost','Gross margin','Gross profit','Revenue ex VAT','Unit EUR','invoice_'):
+        if word in page:errors.append(f'{relative}: internal commercial data {word!r}')
     if not doc.xpath('//*[@data-i18n="dealer_rest" or @data-i18n="about_intro"]') and path.name=='index.html':errors.append(f'{relative}: dealer line missing')
     if lang=='en' and re.search('[\u10a0-\u10ff]',' '.join(t for t in doc.xpath('//body//text()[not(ancestor::script)][not(ancestor::*[@lang="ka"])]'))):errors.append(f'{relative}: Georgian text leaked into English')
     for key,label in [('ka','KA'),('en','EN'),('ru','RU')]:

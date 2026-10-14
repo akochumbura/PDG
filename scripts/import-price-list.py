@@ -1,7 +1,7 @@
 """Import the owner's XAG price list (xlsx, sheet "Full Item Price List") into scripts/catalog.csv.
 
 Usage:  python scripts/import-price-list.py PATH/TO/PDG_XAG_Complete_Item_Price_List_With_Margins.xlsx
-Keeps the three P150 MAX packages (kit rows) as they are and replaces every other row with the price list:
+Keeps the three P150 MAX packages (kit rows) and the non-invoice rows (avail=quote / legacy) and replaces the price-list rows:
 SKU = Code, name = Original item (English), name_ka = Georgian item, gel = Retail incl. VAT GEL.
 Cost and margin columns are internal and are NOT copied. Then run: python scripts/build.py
 """
@@ -34,7 +34,12 @@ def main(path):
     col = {h: head.index(h) for h in need}
     rows = list(csv.DictReader(open(CATALOG, encoding='utf-8')))
     fields = list(rows[0].keys())
+    if 'avail' not in fields:
+        fields.append('avail')
+    # Keep the packages and every row that does not come from the price list: quote-only parts from the XAG parts
+    # catalogues (avail=quote) and previous-generation models (avail=legacy). See scripts/pdf-part-matches.csv.
     out = [r for r in rows if r['group'] == 'kit']
+    extra = [r for r in rows if r.get('avail') in ('quote', 'legacy')]
     seen = set()
     for r in ws.iter_rows(min_row=7, values_only=True):
         sku = clean(r[col['Code']])
@@ -51,6 +56,7 @@ def main(path):
         row = {f: '' for f in fields}
         row.update(group=group, name=en, name_ka=ka, sku=sku, gel=str(int(round(float(r[col['Retail incl. VAT GEL']])))))
         out.append(row)
+    out += [r for r in extra if r['sku'] not in seen]
     with open(CATALOG, 'w', encoding='utf-8', newline='') as f:
         w = csv.DictWriter(f, fieldnames=fields, lineterminator='\n')
         w.writeheader()

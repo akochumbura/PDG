@@ -35,11 +35,12 @@ ICON = {
     'control': '<rect x="9" y="18" width="30" height="20" rx="4"/><circle cx="18" cy="28" r="3"/><circle cx="30" cy="28" r="3"/><path d="M15 18l-3-9M33 18l3-9"/>',
     'acc': '<path d="M24 7l14 8v17l-14 8-14-8V15z"/><path d="M10 15l14 8 14-8M24 23v17"/>',
     'drone': '<path d="M24 20v8M14 24h20"/><circle cx="10" cy="14" r="5"/><circle cx="38" cy="14" r="5"/><circle cx="10" cy="34" r="5"/><circle cx="38" cy="34" r="5"/>',
+    'legacy': '<path d="M24 20v8M14 24h20"/>',
     'spare': '<path d="M31 9a8 8 0 0 0-9.5 10.5L10 31a3 3 0 0 0 4.2 4.2l11.5-11.5A8 8 0 0 0 36 14l-5 5-4.5-1.2L25.3 13z"/>',
 }
 CAT_KEY = {'power': ('cat_power', 'აკუმულატორები და დატენვა'), 'spray': ('cat_spray', 'შეწამვლა და გაფანტვა'),
            'control': ('cat_control', 'მართვა და RTK'), 'acc': ('cat_acc', 'აქსესუარები'), 'spare': ('cat_spare', 'სათადარიგო ნაწილები'),
-           'drone': ('cat_drone', 'დრონები')}
+           'drone': ('cat_drone', 'დრონები'), 'legacy': ('cat_legacy', 'წინა თაობის მოდელი')}
 
 
 CONTENTS = [('drones', 'kit_drone', 'დრონი P150 MAX'), ('batteries', 'kit_batteries', 'აკუმულატორები'),
@@ -57,10 +58,29 @@ def contents(r, cls='kit-contents'):
 
 
 def price(r, kit):
-    """A fixed GEL price in the catalog wins; otherwise Agrifuture USD x markup x rate."""
+    """A fixed GEL price in the catalog wins; otherwise Agrifuture USD x markup x rate.
+    None = no approved price (quote-only part or previous-generation model): never sold at ₾0."""
     if (r.get('gel') or '').strip():
         return int(Decimal(r['gel'].strip()))
-    return gel(r['usd'], pricing.MARKUP_KITS if kit else pricing.MARKUP_PARTS)
+    if (r.get('usd') or '').strip():
+        return gel(r['usd'], pricing.MARKUP_KITS if kit else pricing.MARKUP_PARTS)
+    return None
+
+
+def status(r):
+    """in_stock = invoice/price-list item (as shown on the site so far; remaining quantity not verified),
+    quote = part from the XAG parts catalogues without an approved price (availability to be confirmed),
+    out = previous-generation model (not in stock, consultation only)."""
+    if r['group'] == 'legacy':
+        return 'out'
+    return 'in_stock' if price(r, r['group'] == 'kit') is not None and (r.get('avail') or '') != 'quote' else 'quote'
+
+
+def stepper(s, n):
+    """Quantity selector (positive whole numbers). data-max is set only when a verified stock limit exists."""
+    return (f'<div class="qty-stepper" data-for="{s}"><button type="button" class="qty-btn" data-step="-1" aria-label="რაოდენობის შემცირება" data-i18n-aria="qty_less">−</button>'
+            f'<input class="qty-input" type="number" inputmode="numeric" min="1" step="1" value="1" aria-label="რაოდენობა" data-i18n-aria="qty_label">'
+            f'<button type="button" class="qty-btn" data-step="1" aria-label="რაოდენობის გაზრდა" data-i18n-aria="qty_more">+</button></div>')
 
 
 def photo(r, kit):
@@ -114,11 +134,21 @@ def card(r):
     n = html.escape(r['name'], quote=True)
     s = r['sku']
     p = price(r, kit)
-    return (f'<article class="product{" product-kit" if kit else ""}" data-cat="{r["group"]}">{photo(r, kit)}'
-            f'<div class="product-body">{cat(r)}<p class="product-sku">{s}</p>{title(r)}{contents(r) if kit else ""}'
-            f'<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
-            f'<div class="product-buy"><span class="product-price">₾{p:,}</span>'
-            f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></div></div></article>\n')
+    st = status(r)
+    head = (f'<article class="product{" product-kit" if kit else ""}{" product-out" if st == "out" else ""}" data-cat="{r["group"]}" data-avail="{st}">{photo(r, kit)}'
+            f'<div class="product-body">{cat(r)}<p class="product-sku">{s}</p>{title(r)}{contents(r) if kit else ""}')
+    if st == 'out':  # previous-generation model: no price, no purchase, consultation instead
+        spec = LEGACY_SPECS.get(s)
+        return (head + (f'<p class="product-specs" data-i18n="{pkey(s)}_spec">{html.escape(spec[0])}</p>' if spec else '')
+                + '<p class="product-stock is-out" data-i18n="out_of_stock">არ არის მარაგში</p>'
+                + '<div class="product-buy"><a class="button button-line consult-btn" href="/consultation" data-local><span data-i18n="consult_cta">კონსულტაცია</span></a></div></div></article>\n')
+    if st == 'quote':  # no approved price: ask for a quote, never add to the cart at ₾0
+        return (head + '<p class="product-stock is-tbc" data-i18n="stock_tbc">მარაგი დაზუსტდება</p>'
+                + '<div class="product-buy"><span class="product-price product-price-quote" data-i18n="price_on_request">ფასი მოთხოვნით</span>'
+                + f'<button type="button" class="quote-btn" data-sku="{s}" data-name="{n}" data-i18n="request_quote">ფასის მოთხოვნა</button></div></div></article>\n')
+    return (head + '<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
+            f'<div class="product-buy"><span class="product-price">₾{p:,}</span><div class="buy-actions">{stepper(s, n)}'
+            f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></div></div></div></article>\n')
 
 
 def kit_row(r):
@@ -127,11 +157,15 @@ def kit_row(r):
     p = price(r, True)
     short = re.sub(r'^XAG P150 Max\s*', '', r['name']).strip() or r['name']
     return (f'<li class="kit-row"><div class="kit-row-name"><span class="kit-row-title">{html.escape(short)}</span>{contents(r, "kit-contents kit-contents-inline")}</div>'
-            f'<span class="kit-row-price">₾{p:,}</span>'
-            f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></li>\n')
+            f'<span class="kit-row-price">₾{p:,}</span><div class="buy-actions">{stepper(s, n)}'
+            f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></div></li>\n')
 
 
 rows = list(csv.DictReader(open(ROOT / 'scripts/catalog.csv', encoding='utf-8')))
+import legacy_models
+LEGACY_SPECS = {m['sku']: m['specs'] for m in legacy_models.MODELS}
+rows += [{'group': 'legacy', 'name': m['name'], 'name_ka': m['name_ka'], 'name_ru': '', 'sku': m['sku'], 'usd': '', 'gel': '',
+          'image': '', 'drones': '', 'batteries': '', 'chargers': '', 'rtk': '', 'generators': '', 'avail': 'legacy'} for m in legacy_models.MODELS]
 import json as _json
 _cj = ROOT / 'dist/assets/js/content.js'
 _c = _json.loads(_cj.read_text(encoding='utf-8').split('=', 1)[1].strip().removesuffix(';'))
@@ -142,22 +176,70 @@ for r in rows:
     if (r.get('name_ka') or '').strip():
         _c['en'][pkey(r['sku'])] = r['name']
         _c['ru'][pkey(r['sku'])] = (r.get('name_ru') or '').strip() or r['name']
+for _s, (_ka, _en, _ru) in LEGACY_SPECS.items():
+    _c['en'][pkey(_s) + '_spec'], _c['ru'][pkey(_s) + '_spec'] = _en, _ru
 _cj.write_text('window.PDG_CONTENT = ' + _json.dumps(_c, ensure_ascii=False, indent=2) + ';\n', encoding='utf-8')
 kits = [r for r in rows if r['group'] == 'kit']
-parts = [r for r in rows if r['group'] != 'kit']
+parts = [r for r in rows if r['group'] not in ('kit', 'legacy')]
+legacy = [r for r in rows if r['group'] == 'legacy']
 # Shop order: drone, energy, control/RTK, spraying/spreading, accessories, spare parts; most expensive first in each group.
 ORDER = ['drone', 'power', 'control', 'spray', 'acc', 'spare']
-parts.sort(key=lambda r: (ORDER.index(r['group']) if r['group'] in ORDER else 99, -price(r, False), r['name']))
+parts.sort(key=lambda r: (ORDER.index(r['group']) if r['group'] in ORDER else 99, price(r, False) is None, -(price(r, False) or 0), r['name']))
 for r in rows:
     if r['group'] not in {'kit', *ICON}:
         raise SystemExit(f'Unknown group {r["group"]!r} for {r["sku"]}')
 
+# P150 MAX kit configurator (P150 MAX page). Compatible components = the power and RTK items listed for the
+# P150 MAX on xa.com/en/p150max/p150maxspecs: B141050 battery, CM13600S charger, GC4000+ station, XRTK7 station.
+# Price rule: the preset's approved package price + extra components at their approved shop price.
+# Fewer components than the preset = no approved rule -> "ფასი მოთხოვნით" (quote), never an invented discount.
+CFG_ITEMS = [('batteries', 'P000088274', 'cfg_battery', 'ბატარეა B141050', 12), ('chargers', 'P000087889', 'cfg_charger', 'დამტენი CM13600S', 6),
+             ('rtk', 'P000088079', 'cfg_rtk', 'RTK სადგური XRTK7', 1), ('generators', 'P000089806', 'cfg_generator', 'დამუხტვის სადგური GC4000+', 2)]
+
+
+def configurator():
+    items = {}
+    for key, sku, lab, ka, mx in CFG_ITEMS:
+        r = by_sku_all[sku]; p = price(r, False)
+        if p is None:
+            raise SystemExit('configurator component without approved price: ' + sku)
+        items[key] = {'sku': sku, 'name': r['name'], 'price': p, 'max': mx}
+    presets = [{'sku': r['sku'], 'name': r['name'], 'price': price(r, True),
+                'q': {k: int((r.get(k) or '0').strip() or 0) for k, *_ in CFG_ITEMS}} for r in kits]
+    data = html.escape(json.dumps({'presets': presets, 'items': items}, ensure_ascii=False), quote=True)
+    radios = ''.join(f'<label class="cfg-preset"><input type="radio" name="cfgPreset" value="{p["sku"]}"{" checked" if i == 0 else ""}>'
+                     f'<span class="cfg-preset-name">{html.escape(re.sub(r"^XAG P150 MAX ", "", p["name"]))}</span><span class="cfg-preset-price">₾{p["price"]:,}</span></label>'
+                     for i, p in enumerate(presets))
+    rows_ = ''.join(f'<div class="cfg-row" data-key="{k}"><div class="cfg-row-name"><span data-i18n="{lab}">{ka}</span>'
+                    f'<span class="cfg-unit">₾{items[k]["price"]:,} <span data-i18n="cfg_each">/ ცალი</span></span></div>'
+                    f'<div class="qty-stepper cfg-stepper"><button type="button" class="qty-btn" data-step="-1" aria-label="რაოდენობის შემცირება" data-i18n-aria="qty_less">−</button>'
+                    f'<input class="qty-input" type="number" inputmode="numeric" min="0" max="{items[k]["max"]}" step="1" value="0" aria-label="{ka}" data-i18n-aria="{lab}">'
+                    f'<button type="button" class="qty-btn" data-step="1" aria-label="რაოდენობის გაზრდა" data-i18n-aria="qty_more">+</button></div></div>'
+                    for k, s_, lab, ka, mx in CFG_ITEMS)
+    return ('<section class="section kit-config" id="configurator" aria-labelledby="cfg-title"><div class="container">'
+            '<div class="section-heading"><h2 id="cfg-title"><span data-i18n="cfg_title">კომპლექტის კონფიგურატორი</span></h2></div>'
+            '<p class="page-intro" data-i18n="cfg_intro">აირჩიეთ საბაზისო კომპლექტი და საჭიროებისამებრ დაამატეთ ბატარეები, დამტენები, RTK ან დამუხტვის სადგური.</p>'
+            f'<div class="cfg" id="kitConfig" data-config="{data}">'
+            f'<fieldset class="cfg-presets"><legend data-i18n="cfg_base">საბაზისო კომპლექტი</legend>{radios}</fieldset>'
+            '<div class="cfg-items"><div class="cfg-row cfg-fixed"><div class="cfg-row-name"><span data-i18n="kit_drone">დრონი P150 MAX</span></div><output class="cfg-fixed-qty">1</output></div>'
+            f'{rows_}</div>'
+            '<div class="cfg-summary"><p class="cfg-total-label" data-i18n="cfg_total">ჯამი, დღგ-ს ჩათვლით</p><p class="cfg-total" id="cfgTotal" aria-live="polite"></p>'
+            '<p class="cfg-note" id="cfgNote" hidden data-i18n="cfg_quote_note">კომპლექტზე ნაკლები კომპონენტით ფასს ინდივიდუალურად დაგითვლით — ფასი მოთხოვნით.</p>'
+            '<div class="cfg-actions"><button class="button button-red" id="cfgWa" type="button"><span data-i18n="cfg_whatsapp">გაგზავნა WhatsApp-ით</span></button>'
+            '<button class="button button-line" id="cfgCart" type="button"><span data-i18n="cfg_cart">კალათაში დამატება</span></button></div>'
+            '<p class="small-note" data-i18n="cfg_rule">ჯამი = კომპლექტის ფასი + დამატებითი კომპონენტები მაღაზიის ფასით.</p></div></div></div></section>')
+
+
+by_sku_all = {r['sku']: r for r in rows}
+import json
 pb = ROOT / 'scripts/page-bodies.html'
 t = pb.read_text(encoding='utf-8')
 subs = [
     (r'(<div class="shop-grid kit-grid">\n).*?(</div></div></section>)', ''.join(card(r) for r in kits)),
     (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in parts)),
     (r'(<ul class="kit-table">\n).*?(</ul>)', ''.join(kit_row(r) for r in kits)),
+    (r'(<div class="shop-grid" id="legacyGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in legacy)),
+    (r'(<!--configurator-->\n).*?(<!--/configurator-->)', configurator() + '\n'),
 ]
 home = ROOT / 'dist/index.html'
 ht = home.read_text(encoding='utf-8')
@@ -192,18 +274,22 @@ if llms.is_file():
 # Payment worker (Cloudflare Pages advanced mode): server-side prices from this same catalog.
 sys.path.insert(0, str(ROOT / 'scripts'))
 import json, site_config
-cat = {r['sku']: [r['name'], price(r, r['group'] == 'kit')] for r in rows}
+cat = {r['sku']: [r['name'], price(r, r['group'] == 'kit')] for r in rows if price(r, r['group'] == 'kit') is not None}
 tpl = (ROOT / 'scripts/worker.template.js').read_text(encoding='utf-8')
 rules = {'threshold': site_config.PAYMENTS['threshold'], 'depositPercent': site_config.PAYMENTS['deposit_percent']}
 # Knowledge for the AI chat: business facts (llms.txt), every product with its price, payment rules, terms, FAQ.
-CATN = {'kit': 'P150 MAX package', 'drone': 'drone', 'power': 'batteries and charging', 'spray': 'spraying and spreading', 'control': 'control and RTK',
+CATN = {'kit': 'P150 MAX package', 'drone': 'drone', 'legacy': 'previous-generation XAG drone', 'power': 'batteries and charging', 'spray': 'spraying and spreading', 'control': 'control and RTK',
         'acc': 'accessories', 'spare': 'spare parts'}
 cdata = json.loads((ROOT / 'dist/assets/js/content.js').read_text(encoding='utf-8').split('=', 1)[1].strip().removesuffix(';'))['en']
-know = [(ROOT / 'dist/llms.txt').read_text(encoding='utf-8').strip(), '', '## All products in stock (prices in GEL, from the website shop)']
+know = [(ROOT / 'dist/llms.txt').read_text(encoding='utf-8').strip(), '',
+        '## Website shop (prices in GEL incl. VAT). Availability: "listed in stock" = shown as in stock on the website (the team confirms quantity '
+        'with every order); "price on request" = no listed price, availability to be confirmed by the team; "not in stock" = previous model, consultation only.']
 for r in rows:
     extra = ', '.join(f"{r[c]} {c}" for c in ('drones', 'batteries', 'chargers', 'rtk', 'generators') if (r.get(c) or '').strip())
-    local = f" [ka: {r['name_ka']}; ru: {r['name_ru']}]" if (r.get('name_ka') or '').strip() else ''
-    know.append(f"- {r['name']}{local} (code {r['sku']}, {CATN[r['group']]}): {price(r, r['group'] == 'kit'):,} GEL" + (f" — contains {extra}" if extra else ''))
+    local = f" [ka: {r['name_ka']}]" if (r.get('name_ka') or '').strip() else ''
+    p_ = price(r, r['group'] == 'kit'); st_ = status(r)
+    what = f"{p_:,} GEL, listed in stock" if st_ == 'in_stock' else ('price on request, availability to be confirmed' if st_ == 'quote' else 'not in stock (previous model), consultation only')
+    know.append(f"- {r['name']}{local} (code {r['sku']}, {CATN[r['group']]}): {what}" + (f" — contains {extra}" if extra else ''))
 know += ['', '## Buying and payment',
          f"Online payment (card, Apple Pay, Google Pay via Bank of Georgia) is being set up and may not be live yet. Planned rule: orders under {rules['threshold']:,} GEL are paid in full online; from {rules['threshold']:,} GEL the customer pays a {rules['depositPercent']}% deposit online and the rest by bank transfer.",
          'Today orders are placed from the cart by WhatsApp or email; PDG confirms stock and delivery.', '', '## Terms']

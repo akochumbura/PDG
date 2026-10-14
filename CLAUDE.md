@@ -19,8 +19,8 @@ as a server inbox. The separately referenced FastAPI project was not included.
   sheet "Full Item Price List", Retail incl. VAT GEL) imported into scripts/catalog.csv by scripts/import-price-list.py (SKU = invoice Code
   P0000xxxxx, name = Original item, name_ka = Georgian item). Cost/margin columns are internal and never published. A new list: rerun the import.
   Prices show only the ₾ sign; no "prices in GEL / ლარში / в лари" texts anywhere (owner).
-- Packages (owner, 14 Oct 2026, prices unchanged): Starter 75,999 (drone, 4 batteries, 2 chargers), Pro 85,999 (drone, 6 batteries,
-  2 chargers, RTK), Business 104,999 (drone, 8 batteries, 4 chargers, RTK). Contents = catalog columns.
+- Packages (owner, 14 Oct 2026, prices unchanged, LATEST APPROVED): Starter 75,999 (drone, 4 batteries, 2 chargers), Pro 85,999 (drone, 6 batteries,
+  2 chargers, RTK), Business 104,999 (drone, 8 batteries, 4 chargers, RTK). Contents = catalog columns. Do not change RTK inclusion.
 - Spraying (owner brief 14 Oct 2026): headings use შესხურება, explanatory text uses შეწამვლა; combined line
   "ზუსტი შესხურება / შეწამვლა რეალურ საველე პირობებში." Experience: "thousands of hectares in real field conditions"
   (optional quiet "2,900+ ha in the 2026 season"); never "1000+ ha". Worked with XAG V40, P100, P100 Pro; focus P150 MAX.
@@ -66,6 +66,22 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - Site is published by pushing to GitHub akochumbura/PDG (main); Cloudflare Pages project "pdg" builds with `pip install lxml && python3 scripts/build.py`, output `dist`.
 - P150 MAX facts (owner + xa.com/en/p150max): 80 L tank, 32 L/min (2 pumps), 46 L/min with the 4-Nozzle Upgrade Kit (recommended for orchards and vineyards), granule container 115 L (owner confirmed; not 120), 300 kg/min, 9 m spread width, 80 kg payload, 20 m/s, RealTerra mapping up to 20 ha/flight, 4D radar 1.5–100 m, B141050 1050 Wh / 1500 cycles, IPX6K.
 - No calculator page (removed by owner request).
+
+## Catalog, stock and shop rules (owner brief 14 Oct 2026, evening)
+- Parts PDFs (AgriFuture XAG P150 Max category pages) use XAG part numbers; the invoice uses P0000… codes: NO exact SKU overlap.
+  scripts/pdf-part-matches.csv records every PDF part: A = identical official name, one-to-one (photo attached to the invoice item),
+  A-model = same model code (CM13600S), B = ambiguous, C = probable duplicate (not added), D = not in invoice (added as quote-only).
+  Never attach a picture shared by several part numbers, placeholders or drawings. Do not match by similar names.
+- catalog.csv column avail: '' = price-list item (shown "საწყობშია"; remaining quantity NOT verified - no inventory/sales records),
+  quote = no approved price ("ფასი მოთხოვნით" + WhatsApp quote, never in cart/checkout), legacy rows come from scripts/legacy_models.py
+  (P100 Pro, P100, V40: "არ არის მარაგში" + consultation, no price, no Offer schema; specs from xa.com spec pages).
+- Quantity steppers on cards, kit table and cart (positive whole numbers; data-max only when a verified stock limit exists).
+- P150 MAX configurator (P150 MAX page, built by build-shop.py): presets = package rows; extras = B141050, CM13600S, XRTK7, GC4000+
+  at their shop price; fewer components than the preset = "ფასი მოთხოვნით". WhatsApp message + add to cart.
+- Header: PDG logo first, then XAG logo, equal containers. Home dealer line uses the XAG logo image. About page has "XAG-ის შესახებ" (xa.com, no claims).
+- Mobile bar (≤768px): call / WhatsApp / consultation, safe-area aware. Chat: one-line welcome, 4 quick actions, 1–3 sentence answers.
+- Schema: Organization with Tbilisi + Lagodekhi locations (no HQ, hours or village address); Product/Offer only for in-stock priced items
+  with own photo + packages; quote-only and previous models have no Offer. verify-site.py blocks ₾0 cart buttons, bad tel links, cost data.
 
 ## STATUS — 2026-10-14 (read this first in a new chat)
 Live: premium-drones.ge on Cloudflare Pages project "pdg" (account ako.chumburidze@gmail.com), auto-deploys from GitHub akochumbura/PDG main.

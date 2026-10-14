@@ -25,6 +25,8 @@ SYN = {
     'drone': {'ka': 'დრონი დრონები სასოფლო-სამეურნეო დრონი შესაწამლი დრონი აგროდრონი აგრო დრონი შეწამვლა ფასი',
               'en': 'drone agricultural drone ag drone spraying drone price', 'ru': 'дрон сельскохозяйственный дрон агродрон опрыскивание цена'},
 }
+# Shown instead of a price for quote-only parts and previous models (never ₾0).
+DICT_Q = {'ka': 'ფასი მოთხოვნით', 'en': 'Price on request', 'ru': 'Цена по запросу'}
 CAT = {'power': 'cat_power', 'spray': 'cat_spray', 'control': 'cat_control', 'acc': 'cat_acc', 'spare': 'cat_spare', 'kit': 'packages_title', 'drone': 'cat_drone'}
 
 
@@ -78,7 +80,7 @@ for lang in ('ka', 'en', 'ru'):
         cat = KA.get(key, '') if lang == 'ka' else T[lang].get(key, '')
         url = f'{prefix}/shop#kits' if g == 'kit' else f'{prefix}/shop?q={r["sku"]}#parts'
         local = (r.get('name_' + lang) or '').strip() if lang != 'en' else ''
-        products.append({'n': local or r['name'], 'o': r['name'] if local else '', 's': r['sku'], 'p': prices.get(r['sku'], 0), 'c': cat,
+        products.append({'n': local or r['name'], 'o': r['name'] if local else '', 's': r['sku'], 'p': prices.get(r['sku'], 0), 'q': '' if prices.get(r['sku']) else DICT_Q[lang], 'c': cat,
                          'k': SYN[g][lang] + ' ' + r['name'], 'u': url})
     (out_dir / f'{lang}.json').write_text(json.dumps({'pages': pages, 'products': products}, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
     print(f'search {lang}: {len(pages)} pages, {len(products)} products')

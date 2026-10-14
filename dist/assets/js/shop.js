@@ -11,6 +11,18 @@
   function fmt(n) { return "₾" + Number(n).toLocaleString("en-US"); }
   function totals() { var t = 0, c = 0; Object.keys(cart).forEach(function (k) { t += cart[k].p * cart[k].q; c += cart[k].q; }); return [t, c]; }
   function label(id) { var e = document.getElementById(id); return e ? e.textContent.trim() : ""; }
+  var LANG = document.documentElement.lang || "ka";
+  var TXT = (window.PDG_CONTENT && window.PDG_CONTENT[LANG]) || {}, TXT_KA = (window.PDG_CONTENT && window.PDG_CONTENT.ka) || {};
+  function tx(k) { return TXT[k] || TXT_KA[k] || ""; }
+  /* Positive whole number within [min, max] (max only when a verified stock limit exists). */
+  function clampInt(v, min, max) {
+    var n = Math.floor(Number(v)); if (!isFinite(n)) n = min;
+    if (n < min) n = min; if (max > 0 && n > max) n = max; return n;
+  }
+  function openWa(text) {
+    var url = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(text);
+    var w = window.open(url, "_blank"); if (w) w.opener = null; else location.href = url;
+  }
 
   /* Keep prices in the cart in step with the current page (prices may have changed since the item was added). */
   document.querySelectorAll(".add-btn[data-sku]").forEach(function (b) {
@@ -72,15 +84,38 @@
       document.getElementById("cartPayNote").hidden = !payReady;
     }
   }
-  function change(k, d) { if (!cart[k]) return; cart[k].q += d; if (cart[k].q < 1) delete cart[k]; save(); render(); }
+  function change(k, d) {
+    if (!cart[k]) return;
+    var q = cart[k].q + d;
+    if (q < 1) delete cart[k]; else cart[k].q = clampInt(q, 1, cart[k].m || 0);
+    save(); render();
+  }
+  function addItem(sku, name, price, q, max) {
+    if (!(price >= 0) || !(q >= 1)) return;
+    cart[sku] = cart[sku] || { n: name, p: price, q: 0 };
+    if (max > 0) cart[sku].m = max;
+    cart[sku].q = clampInt(cart[sku].q + q, 1, cart[sku].m || 0);
+  }
   function openCart() { if (dlg && dlg.showModal && !dlg.open) { dlg.showModal(); document.body.classList.add("modal-open"); } }
 
   document.addEventListener("click", function (e) {
+    var step = e.target.closest(".qty-btn");
+    if (step) {
+      var inp = step.parentNode.querySelector(".qty-input");
+      var min = Number(inp.min) || 0, max = Number(inp.max) || 0;
+      inp.value = clampInt(Number(inp.value) + Number(step.dataset.step), min, max);
+      inp.dispatchEvent(new Event("input", { bubbles: true }));
+      return;
+    }
+    var quote = e.target.closest(".quote-btn");
+    if (quote) { openWa(tx("quote_msg") + "\n" + quote.dataset.name + " (" + quote.dataset.sku + ")"); return; }
     var add = e.target.closest(".add-btn");
     if (add) {
-      var k = add.dataset.sku;
-      cart[k] = cart[k] || { n: add.dataset.name, p: Number(add.dataset.price), q: 0 };
-      cart[k].q += 1; save(); render();
+      var k = add.dataset.sku, box = add.parentNode.querySelector(".qty-input");
+      var q = box ? clampInt(box.value, 1, Number(box.max) || 0) : 1;
+      addItem(k, add.dataset.name, Number(add.dataset.price), q, box ? Number(box.max) || 0 : 0);
+      if (box) box.value = 1;
+      save(); render();
       add.classList.add("is-added");
       setTimeout(function () { add.classList.remove("is-added"); }, 900);
       return;
@@ -193,6 +228,58 @@
         });
     };
     if (okRef && PAY.endpoint) check(); else show("unknown", "lb_pay_unknown", label("lb_pay_unknown_text"));
+  }
+
+  /* Quantity fields: keep them positive whole numbers. */
+  document.addEventListener("change", function (e) {
+    var inp = e.target.closest(".qty-input"); if (!inp) return;
+    inp.value = clampInt(inp.value, Number(inp.min) || 0, Number(inp.max) || 0);
+    inp.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+
+  /* P150 MAX kit configurator (P150 MAX page). Price = preset package price + extra components at their shop price.
+     Fewer components than the preset has no approved price rule, so the total becomes "price on request". */
+  var cfgBox = document.getElementById("kitConfig");
+  if (cfgBox) {
+    var CFG = JSON.parse(cfgBox.dataset.config), cfgRows = cfgBox.querySelectorAll(".cfg-row[data-key]");
+    function preset() { var v = (cfgBox.querySelector('input[name="cfgPreset"]:checked') || {}).value; return CFG.presets.filter(function (p) { return p.sku === v; })[0] || CFG.presets[0]; }
+    function qtys() { var q = {}; cfgRows.forEach(function (r) { var i = r.querySelector(".qty-input"); q[r.dataset.key] = clampInt(i.value, 0, Number(i.max) || 0); }); return q; }
+    function calc() {
+      var p = preset(), q = qtys(), total = p.price, quoteOnly = false, extras = [];
+      Object.keys(CFG.items).forEach(function (k) {
+        var d = q[k] - (p.q[k] || 0);
+        if (d < 0) quoteOnly = true;
+        if (d > 0) { total += d * CFG.items[k].price; extras.push([k, d]); }
+      });
+      return { p: p, q: q, total: quoteOnly ? null : total, extras: extras };
+    }
+    function show() {
+      var c = calc();
+      document.getElementById("cfgTotal").textContent = c.total === null ? tx("price_on_request") : fmt(c.total);
+      document.getElementById("cfgNote").hidden = c.total !== null;
+      document.getElementById("cfgCart").disabled = c.total === null;
+    }
+    function applyPreset() {
+      var p = preset();
+      cfgRows.forEach(function (r) { r.querySelector(".qty-input").value = p.q[r.dataset.key] || 0; });
+      show();
+    }
+    cfgBox.addEventListener("change", function (e) { if (e.target.name === "cfgPreset") applyPreset(); });
+    cfgBox.addEventListener("input", function (e) { if (e.target.classList.contains("qty-input")) show(); });
+    document.getElementById("cfgWa").addEventListener("click", function () {
+      var c = calc(), lines = [tx("cfg_msg_title"), tx("cfg_msg_base") + ": " + c.p.name + " (" + fmt(c.p.price) + ")", "- " + tx("kit_drone") + " × 1"];
+      cfgRows.forEach(function (r) { var k = r.dataset.key; if (c.q[k] > 0) lines.push("- " + CFG.items[k].name + " (" + CFG.items[k].sku + ") × " + c.q[k]); });
+      lines.push(tx("cfg_total") + ": " + (c.total === null ? tx("price_on_request") : fmt(c.total)));
+      openWa(lines.join("\n"));
+    });
+    document.getElementById("cfgCart").addEventListener("click", function () {
+      var c = calc(); if (c.total === null) return;
+      addItem(c.p.sku, c.p.name, c.p.price, 1, 0);
+      c.extras.forEach(function (x) { var it = CFG.items[x[0]]; addItem(it.sku, it.name, it.price, x[1], 0); });
+      save(); render();
+      var b = document.getElementById("cfgCart"); b.classList.add("is-added"); setTimeout(function () { b.classList.remove("is-added"); }, 900);
+    });
+    applyPreset();
   }
 
   /* Parts filter */

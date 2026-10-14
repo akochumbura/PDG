@@ -49,12 +49,16 @@ def pretty(href):
 def page_path(filename):
     return '/' if filename == 'index.html' else '/' + clean_path(filename)
 
-ORG = {"@context": "https://schema.org", "@type": "LocalBusiness", "name": "Premium Drones Georgia", "alternateName": ["საქართველოს პრემიუმ დრონები", "Премиум Дроны Грузии", "PDG"],
+# Owner-verified facts only (14 Oct 2026): Tbilisi = storage and service by appointment (not a showroom, no opening hours);
+# Lagodekhi = warehouse (in a village of the Lagodekhi area; no street address published) and field operations. No HQ claim.
+ORG = {"@context": "https://schema.org", "@type": "Organization", "name": "Premium Drones Georgia", "alternateName": ["საქართველოს პრემიუმ დრონები", "Премиум Дроны Грузии", "PDG"],
        "description": "Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus region: XAG drones, batteries, chargers, generators, parts, service and training.",
        "url": BASE_URL + "/", "logo": BASE_URL + "/assets/img/pdg-logo-light.png", "image": BASE_URL + "/assets/img/og-image.jpg",
        "telephone": "+995550004333", "email": "info@premium-drones.ge",
-       "address": {"@type": "PostalAddress", "streetAddress": "12 Panaskerteli-Tsitsishvili St", "addressLocality": "Tbilisi", "addressCountry": "GE"},
-       "location": [{"@type": "Place", "name": "Premium Drones Georgia, Lagodekhi (warehouse and field operations)", "address": {"@type": "PostalAddress", "addressLocality": "Lagodekhi", "addressCountry": "GE"}}]}
+       "location": [{"@type": "Place", "name": "Premium Drones Georgia, Tbilisi (storage and service, by appointment)",
+                     "address": {"@type": "PostalAddress", "streetAddress": "12 Panaskerteli-Tsitsishvili St", "addressLocality": "Tbilisi", "addressCountry": "GE"}},
+                    {"@type": "Place", "name": "Premium Drones Georgia, Lagodekhi (warehouse and field operations)",
+                     "address": {"@type": "PostalAddress", "addressLocality": "Lagodekhi", "addressCountry": "GE"}}]}
 
 def localized_href(href, language, filename):
     parts = urlsplit(href)
@@ -135,13 +139,31 @@ def render(page_source, language, filename):
     if True:
         faq=[{"@type":"Question","name":d.findtext('summary').strip(),"acceptedAnswer":{"@type":"Answer","text":d.findtext('p').strip()}} for d in doc.xpath('//details[contains(@class,"faq-item")]')]
         if faq: graph.append({"@type":"FAQPage","mainEntity":faq})
-    kits=doc.xpath('//article[contains(@class,"product-kit")]') if filename=='shop.html' else []
-    for k in kits:
-        btn=k.xpath('.//button[@data-sku]')[0]; img=(k.xpath('.//img/@src') or [''])[0]
-        graph.append({"@type":"Product","name":btn.get('data-name'),"sku":btn.get('data-sku'),"brand":{"@type":"Brand","name":"XAG"},"category":"Agricultural drone","description":{"ka":"სასოფლო-სამეურნეო დრონი შეწამვლისთვის, გრანულების გაფანტვისთვის და ტვირთის გადატანისთვის","en":"Agricultural drone for spraying, granule spreading and cargo transport","ru":"Сельскохозяйственный дрон для опрыскивания, разбрасывания гранул и перевозки грузов"}[language],
-            "image":BASE_URL+img if img.startswith('/') else img,
-            "offers":{"@type":"Offer","price":btn.get('data-price'),"priceCurrency":"GEL","availability":"https://schema.org/InStock",
-                      "url":canonical+'#kits',"seller":{"@id":BASE_URL+'/#business'}}})
+    # Product/Offer schema = exactly what the page shows: packages, and shop items that have their own photo.
+    # Availability comes from each card (data-avail); quote-only parts and previous-generation models get no Offer.
+    KIT_DESC={"ka":"სასოფლო-სამეურნეო დრონი შეწამვლისთვის, გრანულების გაფანტვისთვის და ტვირთის გადატანისთვის","en":"Agricultural drone for spraying, granule spreading and cargo transport","ru":"Сельскохозяйственный дрон для опрыскивания, разбрасывания гранул и перевозки грузов"}[language]
+    AVAIL={'in_stock':'https://schema.org/InStock'}
+    def product(sku,name,price,img,avail,kit,url):
+        if avail not in AVAIL or not price: return None
+        d={"@type":"Product","@id":BASE_URL+'/shop#'+sku,"name":name,"sku":sku,"brand":{"@type":"Brand","name":"XAG"},
+           "image":BASE_URL+img if img.startswith('/') else img,
+           "offers":{"@type":"Offer","price":price,"priceCurrency":"GEL","availability":AVAIL[avail],"url":url,"seller":{"@id":BASE_URL+'/#business'}}}
+        if kit: d.update(category="Agricultural drone",description=KIT_DESC)
+        return d
+    if filename=='shop.html':
+        for card in doc.xpath('//article[contains(@class,"product")][@data-avail]'):
+            kit='product-kit' in card.get('class','')
+            img=(card.xpath('.//img/@src') or [''])[0]
+            if not kit and not img.startswith('/assets/img/products/'): continue
+            btn=(card.xpath('.//button[contains(@class,"add-btn")]') or [None])[0]
+            if btn is None: continue
+            d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),img,card.get('data-avail'),kit,canonical+('#kits' if kit else '#parts'))
+            if d: graph.append(d)
+    if filename=='p150-max.html':
+        for row in doc.xpath('//li[contains(@class,"kit-row")]'):
+            btn=row.xpath('.//button[contains(@class,"add-btn")]')[0]
+            d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),'/assets/img/xag-logo.svg','in_stock',True,canonical+'#kits')
+            if d: graph.append(d)
     if graph:
         ld=etree.SubElement(doc_head,'script',type='application/ld+json')
         ld.text=json.dumps({"@context":"https://schema.org","@graph":graph},ensure_ascii=False)
