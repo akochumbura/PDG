@@ -59,6 +59,11 @@ for path,doc in documents.items():
             elif parts.fragment and target.suffix=='.html':
                 if not documents[target].xpath('//*[@id=$id]',id=parts.fragment):errors.append(f'{relative}: missing anchor {raw}')
             resources+=1
+    # Owner rules (brief 14 Oct 2026): no people photos, no founder/biography, no '1000+ ha', no placeholder tiles
+    page=path.read_text(encoding='utf-8')
+    for banned in ['technical-service.webp','founder','Tchumburidze','ჭუმბურიძე','1000+','product-tile','CEO']:
+        if banned in page:errors.append(f'{relative}: contains {banned!r} (not allowed by owner brief)')
+    if not doc.xpath('//*[@data-i18n="dealer_line" or @data-i18n="about_intro"]') and path.name=='index.html':errors.append(f'{relative}: dealer line missing')
     if lang=='en' and re.search('[\u10a0-\u10ff]',doc.text_content()):errors.append(f'{relative}: Georgian text leaked into English')
     for key,label in [('ka','KA'),('en','EN'),('ru','RU')]:
         if not doc.xpath(f'//a[@data-lang="{key}"]'):errors.append(f'{relative}: missing {label} switch')
@@ -70,7 +75,11 @@ font=TTFont(PUBLIC/'assets/fonts/D-DIN.woff')
 if 0x10d0 in font.getBestCmap():errors.append('Unexpected D-DIN glyph coverage')
 georgian=TTFont(PUBLIC/'assets/fonts/NotoSansGeorgian-400.woff2')
 if not all(i in georgian.getBestCmap() for i in range(0x10d0,0x10f1)):errors.append('Missing Georgian glyphs')
-for license_name in ['OFL-D-DIN.txt','OFL-NotoSansGeorgian.txt']:
+for css in PUBLIC.rglob('*.css'):
+    if re.search(r'letter-spacing:\s*-',css.read_text()):errors.append(f'{css.relative_to(PUBLIC)}: negative letter-spacing (owner: none)')
+cyr=TTFont(PUBLIC/'assets/fonts/ibm-plex-sans-cyrillic-400-normal.woff2')
+if not all(i in cyr.getBestCmap() for i in range(0x0410,0x0450)):errors.append('Missing Cyrillic glyphs')
+for license_name in ['OFL-D-DIN.txt','OFL-NotoSansGeorgian.txt','OFL-IBMPlexSans.txt']:
     if not (PUBLIC/'assets/fonts'/license_name).is_file():errors.append('Missing '+license_name)
 if errors:
     print('\n'.join(errors));raise SystemExit(1)

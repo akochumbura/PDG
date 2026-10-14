@@ -1,7 +1,8 @@
 """Regenerate shop cards and the P150 MAX kit table from scripts/catalog.csv and scripts/pricing.py.
 
 Product photos: a file dist/assets/img/products/<SKU>.webp is used automatically when it exists.
-Parts without a photo get a clean category tile (never a photo of a different product).
+Parts without a photo get a text card with their category (never a photo of a different product,
+never a grey placeholder).
 """
 import csv, html, re, sys
 from decimal import Decimal, ROUND_HALF_UP
@@ -22,7 +23,7 @@ def gel(usd, mark):
 # Real PDG photos of the P150 MAX, used for drone kits only (every kit contains the drone).
 KIT_IMG = {
     'flight': ('p150-max-flight-1200.webp', 1200, 500, '50% 62%'),
-    'field': ('field-ready.webp', 1280, 960, '50% 60%'),
+    'field': ('field-ready.webp', 1280, 600, '50% 70%'),
     'detail': ('drone-detail.webp', 1280, 960, '50% 45%'),
     'transport': ('transport.webp', 960, 1280, '50% 55%'),
 }
@@ -35,14 +36,14 @@ ICON = {
     'acc': '<path d="M24 7l14 8v17l-14 8-14-8V15z"/><path d="M10 15l14 8 14-8M24 23v17"/>',
     'spare': '<path d="M31 9a8 8 0 0 0-9.5 10.5L10 31a3 3 0 0 0 4.2 4.2l11.5-11.5A8 8 0 0 0 36 14l-5 5-4.5-1.2L25.3 13z"/>',
 }
-CAT_KEY = {'power': ('cat_power', 'აკუმულატორები და დატენვა'), 'spray': ('cat_spray', 'შეწამვლა და გაფანტვა'),
+CAT_KEY = {'power': ('cat_power', 'აკუმულატორები და დატენვა'), 'spray': ('cat_spray', 'შესხურება და გაფანტვა'),
            'control': ('cat_control', 'მართვა და RTK'), 'acc': ('cat_acc', 'აქსესუარები'), 'spare': ('cat_spare', 'სათადარიგო ნაწილები')}
 
 
 CONTENTS = [('drones', 'kit_drone', 'დრონი P150 MAX'), ('batteries', 'kit_batteries', 'აკუმულატორები'),
             ('chargers', 'kit_chargers', 'დამტენები'), ('rtk', 'kit_rtk', 'RTK სადგური'),
             ('generators', 'kit_generators', 'გენერატორები')]
-HOME_PARTS = ['09-017-00083', '09-017-00069', '09-017-00065', '05-002-02311', '09-016-00083']
+HOME_PARTS = ['09-017-00083', 'XAG-GENERATOR', '09-017-00069', '05-002-02311', '09-017-00065', '09-016-00083']
 
 
 def contents(r, cls='kit-contents'):
@@ -74,10 +75,24 @@ def photo(r, kit):
         fb, w, h, pos = KIT_IMG[r.get('image') or 'flight']
         return (f'<div class="product-photo"><img src="/assets/img/{fb}" width="{w}" height="{h}" alt="{n}" '
                 f'style="object-position:{pos}" loading="lazy" decoding="async"></div>')
+    return ''  # no photo yet: the card is text only (owner: no grey placeholders)
+
+
+def cat(r):
+    if r['group'] == 'kit':
+        return ''
     key, ka = CAT_KEY[r['group']]
-    return (f'<div class="product-photo product-tile tile-{r["group"]}"><svg viewBox="0 0 48 48" width="56" height="56" fill="none" '
-            f'stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{ICON[r["group"]]}</svg>'
-            f'<span class="tile-label" data-i18n="{key}">{ka}</span></div>')
+    return f'<p class="product-cat" data-i18n="{key}">{ka}</p>'
+
+
+def part_row(r):
+    """Compact row for the home page 'Parts and energy system' list."""
+    n = html.escape(r['name'], quote=True)
+    s = r['sku']
+    p = price(r, False)
+    return (f'<li class="part-row"><div class="part-row-name"><span class="part-row-title">{html.escape(r["name"])}</span>'
+            f'<span class="product-sku">{s}</span></div><span class="part-row-price">₾{p:,}</span>'
+            f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></li>\n')
 
 
 def card(r):
@@ -86,7 +101,7 @@ def card(r):
     s = r['sku']
     p = price(r, kit)
     return (f'<article class="product{" product-kit" if kit else ""}" data-cat="{r["group"]}">{photo(r, kit)}'
-            f'<div class="product-body"><p class="product-sku">{s}</p><h3>{n}</h3>{contents(r) if kit else ""}'
+            f'<div class="product-body">{cat(r)}<p class="product-sku">{s}</p><h3>{n}</h3>{contents(r) if kit else ""}'
             f'<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
             f'<div class="product-buy"><span class="product-price">₾{p:,}</span>'
             f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></div></div></article>\n')
@@ -120,7 +135,7 @@ home = ROOT / 'dist/index.html'
 ht = home.read_text(encoding='utf-8')
 by_sku = {r['sku']: r for r in rows}
 for pattern, body in [(r'(<div class="shop-grid kit-grid" id="homePackages">).*?(</div>\s*<!--/homePackages-->)', '\n' + ''.join(card(r) for r in kits)),
-                      (r'(<div class="shop-grid home-parts" id="homeParts">).*?(</div>\s*<!--/homeParts-->)', '\n' + ''.join(card(by_sku[s]) for s in HOME_PARTS if s in by_sku))]:
+                      (r'(<ul class="part-list" id="homeParts">).*?(</ul>\s*<!--/homeParts-->)', '\n' + ''.join(part_row(by_sku[s]) for s in HOME_PARTS if s in by_sku))]:
     ht, n = re.subn(pattern, lambda m: m.group(1) + body + m.group(2), ht, count=1, flags=re.S)
     if n != 1:
         raise SystemExit('Home page marker not found: ' + pattern[:50])
