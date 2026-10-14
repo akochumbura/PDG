@@ -77,7 +77,7 @@
           <a href="/calculator" data-lang="ka" lang="ka">KA</a><span aria-hidden="true">/</span><a href="/en/calculator" data-lang="en" lang="en" aria-current="page">EN</a><span aria-hidden="true">/</span><a href="/ru/calculator" data-lang="ru" lang="ru">RU</a>
         </nav>
         <a class="header-contact" href="/en/#contact"><span data-i18n="nav_contact">Contact</span><span aria-hidden="true">↗</span></a>
-        <a class="cart-link" href="/en/shop#cart" data-local aria-label="Cart" data-i18n-aria="cart_title"><svg width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg><span class="cart-count" id="cartCount" hidden>0</span></a><button class="nav-toggle" id="navToggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Open menu" data-i18n-aria="menu_open"><span></span><span></span></button>
+        <button type="button" class="search-btn" id="searchOpen" aria-label="Search" data-i18n-aria="search_open" aria-haspopup="dialog"><svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button><a class="cart-link" href="/en/shop#cart" data-local aria-label="Cart" data-i18n-aria="cart_title"><svg width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg><span class="cart-count" id="cartCount" hidden>0</span></a><button class="nav-toggle" id="navToggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Open menu" data-i18n-aria="menu_open"><span></span><span></span></button>
       </div>
     </div>
   </header><main id="main"><section class="page-hero"><div class="container">
@@ -132,12 +132,15 @@
 <button type="button" class="theme-toggle" id="themeToggle" data-i18n="theme_button">Change theme</button><span>premium-drones.ge</span>
 </div>
 </div>
-  </footer><dialog class="lightbox" id="lightbox" aria-label="Photo viewer" data-i18n-aria="lightbox_label">
-    <button type="button" class="lightbox-close" aria-label="Close" data-i18n-aria="close_label">×</button>
-    <figure><img id="lightboxImage" alt=""><figcaption id="lightboxCaption"></figcaption></figure>
-    <div class="lightbox-controls">
-<button type="button" data-gallery-step="-1" aria-label="Previous photo" data-i18n-aria="previous_photo">←</button><span id="lightboxCounter"></span><button type="button" data-gallery-step="1" aria-label="Next photo" data-i18n-aria="next_photo">→</button>
+  </footer><dialog class="search-dialog" id="searchDialog" aria-label="Search" data-i18n-aria="search_open"><div class="container search-inner">
+<div class="search-bar">
+<svg width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><input type="search" id="searchInput" autocomplete="off" spellcheck="false" placeholder="Search drones, parts or codes" data-i18n-placeholder="search_placeholder" aria-label="Search" data-i18n-aria="search_open" aria-controls="searchResults"><button type="button" class="search-close" id="searchClose" aria-label="Close" data-i18n-aria="close_label">×</button>
 </div>
-  </dialog>
+<p class="search-hint" id="searchHint" data-i18n="search_hint">For example: P150 MAX, battery, RTK, service</p>
+<p class="search-none" id="searchNone" hidden data-i18n="search_none">Nothing found. Try another word or message us on WhatsApp.</p>
+<div class="search-results" id="searchResults" aria-live="polite"></div>
+<p hidden id="lbSearchPages" data-i18n="search_pages">Pages</p>
+<p hidden id="lbSearchProducts" data-i18n="search_products">Products</p>
+</div></dialog>
 </body>
 </html>

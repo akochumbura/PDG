@@ -67,6 +67,62 @@
   const desktop = window.matchMedia("(min-width: 901px)");
   desktop.addEventListener?.("change", (event) => { if (event.matches) closeNav(); });
 
+  /* Site search: header button (or Ctrl/Cmd+K, or "/") opens the panel; the index loads on first use. */
+  const searchDlg = document.getElementById("searchDialog");
+  if (searchDlg && searchDlg.showModal) {
+    const input = document.getElementById("searchInput"), box = document.getElementById("searchResults");
+    const none = document.getElementById("searchNone"), hint = document.getElementById("searchHint");
+    const lang = document.documentElement.lang || "ka";
+    let index = null, loading = null;
+    const norm = (v) => String(v || "").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "");
+    const txt = (id) => (document.getElementById(id) || {}).textContent || "";
+    const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    function load() {
+      if (!loading) loading = fetch("/assets/search/" + lang + ".json").then((r) => r.json()).then((d) => {
+        d.pages.forEach((p) => { p.h = norm(p.t + " " + p.d + " " + p.x); p.ht = norm(p.t); });
+        d.products.forEach((p) => { p.h = norm(p.n + " " + p.s + " " + p.c + " " + p.k); p.ht = norm(p.n + " " + p.s); });
+        index = d; return d;
+      }).catch(() => { loading = null; });
+      return loading;
+    }
+    function snippet(p, terms) {
+      const x = p.x || p.d; const i = norm(x).indexOf(terms[0]);
+      if (i < 0) return p.d;
+      const s = Math.max(0, i - 50);
+      return (s ? "…" : "") + x.slice(s, s + 150) + "…";
+    }
+    function run() {
+      const q = norm(input.value).trim();
+      hint.hidden = !!q; none.hidden = true; box.textContent = "";
+      if (!q || !index) return;
+      const terms = q.split(/\s+/).filter(Boolean);
+      const score = (it) => terms.every((t) => it.h.includes(t)) ? terms.reduce((s, t) => s + (it.ht.includes(t) ? 3 : 1), 0) : 0;
+      const prods = index.products.map((p) => [score(p), p]).filter((a) => a[0]).sort((a, b) => b[0] - a[0]).slice(0, 8).map((a) => a[1]);
+      const pages = index.pages.map((p) => [score(p), p]).filter((a) => a[0]).sort((a, b) => b[0] - a[0]).slice(0, 6).map((a) => a[1]);
+      if (!prods.length && !pages.length) { none.hidden = false; return; }
+      let out = "";
+      if (prods.length) out += '<p class="search-group">' + esc(txt("lbSearchProducts")) + "</p><ul>" + prods.map((p) =>
+        '<li><a class="search-product" href="' + esc(p.u) + '"><span class="sp-name">' + esc(p.n) + '</span><span class="sp-meta">' + esc(p.s) + " · " + esc(p.c) + '</span><span class="sp-price">₾' + Number(p.p).toLocaleString("en-US") + "</span></a></li>").join("") + "</ul>";
+      if (pages.length) out += '<p class="search-group">' + esc(txt("lbSearchPages")) + "</p><ul>" + pages.map((p) =>
+        '<li><a class="search-page" href="' + esc(p.u) + '"><span class="sp-name">' + esc(p.t) + '</span><span class="sp-text">' + esc(snippet(p, terms)) + "</span></a></li>").join("") + "</ul>";
+      box.innerHTML = out;
+    }
+    function openSearch() {
+      if (searchDlg.open) return;
+      closeNav(); searchDlg.showModal(); document.body.classList.add("modal-open");
+      input.focus(); input.select(); load().then(run);
+    }
+    document.getElementById("searchOpen")?.addEventListener("click", openSearch);
+    document.getElementById("searchClose").addEventListener("click", () => searchDlg.close());
+    searchDlg.addEventListener("click", (e) => { if (e.target === searchDlg) searchDlg.close(); });
+    searchDlg.addEventListener("close", () => document.body.classList.remove("modal-open"));
+    input.addEventListener("input", () => (index ? run() : load().then(run)));
+    document.addEventListener("keydown", (e) => {
+      const typing = /input|textarea|select/i.test((e.target && e.target.tagName) || "") || (e.target && e.target.isContentEditable);
+      if ((e.key === "k" && (e.ctrlKey || e.metaKey)) || (e.key === "/" && !typing)) { e.preventDefault(); openSearch(); }
+    });
+  }
+
   /* Native dialog preserves keyboard focus, Escape and assistive technology semantics. */
   const lightbox = document.getElementById("lightbox");
   const photos = Array.from(document.querySelectorAll("[data-lightbox]"));

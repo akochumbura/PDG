@@ -614,4 +614,25 @@ html[data-theme=dark] .mega-col a:hover{color:#f07a6d}
   .site-nav .mega-feature{display:none}}
 .page-actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;margin-top:24px}
 @media(max-width:1320px){.brand-name{display:none}}
+/* Site search */
+.search-btn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;margin:0 -8px;padding:0;background:none;border:0;color:inherit;cursor:pointer}
+.search-btn:hover{color:var(--accent)}
+.search-dialog{width:100%;max-width:none;height:auto;max-height:100dvh;margin:0;padding:0;border:0;inset:0 0 auto 0;background:var(--bg);color:var(--text);box-shadow:0 24px 60px rgba(0,0,0,.18)}
+.search-dialog::backdrop{background:rgba(12,14,15,.45)}
+.search-inner{padding-block:28px 36px}
+.search-bar{display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--text);padding-bottom:12px}
+.search-bar input{flex:1;min-width:0;border:0;background:none;color:inherit;font:inherit;font-size:clamp(20px,2.4vw,30px);padding:6px 0;outline:none}
+.search-bar input::-webkit-search-cancel-button{display:none}
+.search-close{width:44px;height:44px;border:0;background:none;color:inherit;font-size:30px;line-height:1;cursor:pointer}
+.search-bar:focus-within{border-color:var(--accent)}
+.search-hint,.search-none{margin-top:18px;color:var(--muted);font-size:15px}
+.search-results{max-height:min(62dvh,620px);overflow-y:auto;margin-top:8px}
+.search-results ul{list-style:none;margin:0;padding:0}
+.search-group{margin:22px 0 6px;font-size:12px;letter-spacing:.06em;color:var(--muted)}
+.search-results a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 24px;padding:13px 0;border-bottom:1px solid var(--border)}
+.search-results a:hover .sp-name,.search-results a:focus-visible .sp-name{color:var(--accent)}
+.sp-name{font-size:16px}
+.sp-meta,.sp-text{grid-column:1;font-size:13px;color:var(--muted)}
+.sp-price{grid-column:2;grid-row:1/span 2;align-self:center;font-family:var(--font-latin);font-size:18px}
+html[data-theme=dark] .search-results a:hover .sp-name{color:#f07a6d}
 [hidden]{display:none!important}

@@ -396,7 +396,13 @@ window.PDG_CONTENT = {
     "mm_academy_signup": "Sign up for training",
     "mm_calc": "Field calculator",
     "mm_feature_cta": "See the packages",
-    "mm_service_feature": "Storage and service in Tbilisi, by appointment."
+    "mm_service_feature": "Storage and service in Tbilisi, by appointment.",
+    "search_open": "Search",
+    "search_placeholder": "Search drones, parts or codes",
+    "search_hint": "For example: P150 MAX, battery, RTK, service",
+    "search_none": "Nothing found. Try another word or message us on WhatsApp.",
+    "search_pages": "Pages",
+    "search_products": "Products"
   },
   "ru": {
     "page_title": "Агродроны XAG в Грузии — Premium Drones Georgia",
@@ -749,6 +755,12 @@ window.PDG_CONTENT = {
     "mm_academy_signup": "Записаться на обучение",
     "mm_calc": "Полевой калькулятор",
     "mm_feature_cta": "Смотреть комплектации",
-    "mm_service_feature": "Склад и сервис в Тбилиси, по договорённости."
+    "mm_service_feature": "Склад и сервис в Тбилиси, по договорённости.",
+    "search_open": "Поиск",
+    "search_placeholder": "Поиск: дроны, запчасти, артикулы",
+    "search_hint": "Например: P150 MAX, батарея, RTK, сервис",
+    "search_none": "Ничего не найдено. Попробуйте другое слово или напишите нам в WhatsApp.",
+    "search_pages": "Страницы",
+    "search_products": "Продукция"
   }
 };

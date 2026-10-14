@@ -210,6 +210,7 @@
   }
   search.addEventListener("input", run);
   var wanted = new URLSearchParams(location.search).get("cat");
+  var askedFor = new URLSearchParams(location.search).get("q");
   chips.forEach(function (c) {
     c.addEventListener("click", function () {
       cat = c.dataset.filter;
@@ -218,4 +219,5 @@
     });
     if (wanted && c.dataset.filter === wanted) c.click();
   });
+  if (askedFor) { search.value = askedFor.slice(0, 60); run(); }
 })();
