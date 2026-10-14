@@ -25,16 +25,9 @@ const BOG_API = 'https://api.bog.ge/payments/v1';
 const LANGS = ['ka', 'en', 'ru'];
 let cachedToken = null;
 
-/* KV storage: PDG_DATA (or ORDERS). Tolerates a dashboard name typed with spaces or another case (e.g. "PDG_DATA ", "PDG"):
-   falls back to any binding that behaves like a KV namespace (get/put/list). ASSETS is a fetcher, so it never matches. */
-function kv(env) {
-  if (env.PDG_DATA || env.ORDERS) return env.PDG_DATA || env.ORDERS;
-  for (const name of Object.keys(env || {})) {
-    const b = env[name];
-    if (b && typeof b.get === 'function' && typeof b.put === 'function' && typeof b.list === 'function') return b;
-  }
-  return null;
-}
+/* KV storage binding: variable name PDG_DATA, ORDERS or PDG (live site, Oct 2026: variable "PDG" -> namespace "PDG_DATA").
+   Do not detect bindings by shape: ASSETS is an RPC stub where every property looks like a function. */
+function kv(env) { return env.PDG_DATA || env.ORDERS || env.PDG || null; }
 
 export default {
   async fetch(request, env) {

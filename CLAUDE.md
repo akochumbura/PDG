@@ -68,8 +68,9 @@ www → root: Redirect Rule must match only hostname www.premium-drones.ge (a ru
 Owner is non-technical, works from iPhone/Windows; wants Claude to do Cloudflare steps for him (use the desktop-app browser when available).
 
 TODO in Cloudflare (dashboard, owner's account):
-1. DONE 14 Oct 2026: KV namespace is named "PDG" (not pdg-data) and bound to pdg Production as variable PDG_DATA.
-   Note: "Retry deployment" did not pick up the renamed binding; a fresh deployment (new push to main) was needed.
+1. DONE 14 Oct 2026: KV binding on pdg Production = variable name "PDG" -> KV namespace "PDG_DATA" (id 8cd5cc39…).
+   The worker accepts PDG_DATA, ORDERS or PDG as the variable name (kv() in scripts/worker.template.js).
+   Check bindings per deployment: Deployments → Details → Functions → "KV namespace bindings" (Variable name column).
 2. DONE: Secret ADMIN_KEY exists (owner set the value). Team inbox: https://premium-drones.ge/api/chat/inbox?key=ADMIN_KEY
    Check: https://premium-drones.ge/api/chat/config must show "live":true.
 3. Optional WhatsApp alert (CallMeBot): secrets WHATSAPP_ALERT_PHONE (+995550004333) and WHATSAPP_ALERT_KEY (from CallMeBot after sending "I allow callmebot to send me messages").
