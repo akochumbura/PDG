@@ -27,6 +27,7 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - Every new UI string needs ka (in the HTML), en and ru keys in dist/assets/js/content.js.
 - Payments are NOT connected; never claim a payment succeeded. Orders go by WhatsApp/e-mail. See docs/07-payments.md.
 - Fonts: D-DIN (Latin, like xa.com), Noto Sans Georgian, Roboto Cyrillic. Keep font licences in dist/assets/fonts.
-  The header stays white in dark mode because the supplied logo is black - do not alter the logo.
+  Logo: pdg-logo-light.png / pdg-logo-dark.png are transparent cut-outs of the supplied logo (owner asked for this);
+  header, footer and logo follow the light/dark theme (default = phone setting).
 - Do not mark PDG as an "authorized XAG distributor" on the site unless the owner gives the exact allowed wording.
 - E-mail DNS records in Cloudflare must not be removed (docs/09-email.md).
