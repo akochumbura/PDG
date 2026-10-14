@@ -22,3 +22,13 @@ To stop it at once: add CHAT_ENABLED = off.
 
 Limits built in: 20 replies per visitor per 10 minutes, 16 messages of history, answers up to ~700 tokens.
 Privacy: conversations stay in the visitor's browser tab and go to the AI service only to get an answer; nothing is stored by PDG.
+
+## Website chat first (2026-10-14)
+
+The chat button ("მოგვწერეთ") opens a chat that stays on the website.
+
+- Visitor messages are saved in the PDG_DATA storage. Without PDG_DATA the chat only shows WhatsApp / Messenger / phone.
+- With ANTHROPIC_API_KEY set, the AI answers at once. Without it, the visitor is asked for a phone or email and the team answers.
+- **Team inbox:** open `https://premium-drones.ge/api/chat/inbox?key=YOUR_ADMIN_KEY` on your phone (bookmark it). New chats are marked NEW. Type a reply and tap "Send reply": the visitor sees it in the website chat within seconds, or when they come back. After the team replies, the AI stops answering that chat.
+- WhatsApp, Messenger and phone are shown as "other options" only after the visitor's first message.
+- Optional alert on a new chat: create a Telegram bot with @BotFather, then add `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` as secrets in Cloudflare.

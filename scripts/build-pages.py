@@ -138,7 +138,7 @@ def render(page_source, language, filename):
     kits=doc.xpath('//article[contains(@class,"product-kit")]') if filename=='shop.html' else []
     for k in kits:
         btn=k.xpath('.//button[@data-sku]')[0]; img=(k.xpath('.//img/@src') or [''])[0]
-        graph.append({"@type":"Product","name":btn.get('data-name'),"sku":btn.get('data-sku'),"brand":{"@type":"Brand","name":"XAG"},"category":"Agricultural drone","description":{"ka":"სასოფლო-სამეურნეო დრონი შესხურებისთვის, გრანულების გაფანტვისთვის და ტვირთის გადატანისთვის","en":"Agricultural drone for spraying, granule spreading and cargo transport","ru":"Сельскохозяйственный дрон для опрыскивания, разбрасывания гранул и перевозки грузов"}[language],
+        graph.append({"@type":"Product","name":btn.get('data-name'),"sku":btn.get('data-sku'),"brand":{"@type":"Brand","name":"XAG"},"category":"Agricultural drone","description":{"ka":"სასოფლო-სამეურნეო დრონი შეწამვლისთვის, გრანულების გაფანტვისთვის და ტვირთის გადატანისთვის","en":"Agricultural drone for spraying, granule spreading and cargo transport","ru":"Сельскохозяйственный дрон для опрыскивания, разбрасывания гранул и перевозки грузов"}[language],
             "image":BASE_URL+img if img.startswith('/') else img,
             "offers":{"@type":"Offer","price":btn.get('data-price'),"priceCurrency":"GEL","availability":"https://schema.org/InStock",
                       "url":canonical+'#kits',"seller":{"@id":BASE_URL+'/#business'}}})

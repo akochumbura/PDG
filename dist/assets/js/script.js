@@ -210,24 +210,4 @@
       /* Keep the form values if no mail application is configured. Never claim delivery. */
     });
   }
-  const calc = document.getElementById("calcForm");
-  if (calc) {
-    const area = document.getElementById("calcArea");
-    const rate = document.getElementById("calcRate");
-    const throughput = document.getElementById("calcThroughput");
-    const number = (input) => {
-      const value = Number(input.value);
-      return input.value !== "" && Number.isFinite(value) && value > 0 && input.validity.valid ? value : null;
-    };
-    const formatter = new Intl.NumberFormat(lang === "ka" ? "ka-GE" : lang === "ru" ? "ru-RU" : "en-GB", { maximumFractionDigits: 2 });
-    function calculate() {
-      const a = number(area), r = number(rate), h = number(throughput);
-      document.getElementById("calcVolume").textContent = a && r ? formatter.format(a * r) + " " + t("unit_liter") : "—";
-      document.getElementById("calcTime").textContent = a && h ? formatter.format(a / h) + " " + t("unit_hour") : "—";
-    }
-    calc.addEventListener("input", calculate);
-    calc.addEventListener("change", calculate);
-    calc.addEventListener("submit", (event) => event.preventDefault());
-    calculate();
-  }
 })();
