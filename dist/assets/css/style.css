@@ -975,3 +975,28 @@ html[data-theme=dark] .dealer-cell .logo-dark{display:block}
 /* Package cards: the whole combo picture (drone + every item in the package) must stay visible */
 .product-kit .product-photo{aspect-ratio:4/3;background:#fff}
 .product-kit .product-photo img{object-fit:contain}
+/* Home hero (owner, 14 Oct 2026): heading, sentence and buttons higher up with equal spaces between them,
+   so the whole P150 MAX stays visible beside / below them. */
+.hero-content{justify-content:flex-start;padding-top:clamp(40px,8vh,88px);padding-bottom:0}
+.hero h1{margin:0 0 var(--hero-gap,32px)}
+.hero .hero-sub{margin:0 0 var(--hero-gap,32px)}
+.hero .hero-actions{margin:0}
+@media(min-width:601px){.hero-media img{object-position:16% 100%}}
+@media(max-width:600px){
+  .hero{--hero-gap:24px}
+  .hero-content{padding-top:40px}
+  /* the photo as wide as the screen, so the drone is not cut at the sides; kept above the call / WhatsApp bar */
+  .hero-media{left:0;right:0;height:calc(100vw * .75);bottom:calc(72px + env(safe-area-inset-bottom))}
+  .hero-media img{object-position:55% 100%}
+}
+/* Wide screens: the hero is never taller than 56% of the width, so the drone (right of the text) is never cut off */
+@media(min-width:1241px){.hero{height:clamp(650px,calc(100svh - var(--header-height)),56vw);min-height:0;max-height:none}}
+/* Tablets and small laptops: text on top, the whole photo underneath (as on phones) */
+@media(min-width:601px) and (max-width:1240px){
+  .hero{height:auto;min-height:0;max-height:none;padding-bottom:calc(100vw * .4167)}
+  .hero-content{height:auto;padding-top:56px;padding-bottom:40px}
+  .hero-media{top:auto;bottom:0;left:0;right:0;height:calc(100vw * .4167)}
+  .hero-media img{object-fit:cover;object-position:50% 100%}
+  .hero-media:before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,var(--hero-color),var(--shade-clear) 22%);z-index:1;pointer-events:none}
+  .hero-shade{background:linear-gradient(180deg,var(--shade-middle) 0%,var(--shade-clear) 58%)}
+}

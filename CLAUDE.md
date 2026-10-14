@@ -126,3 +126,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   (B13970S: no verified specs, no page).
 - Logo lockups (owner, 14 Oct 2026 night): the XAG logo is exactly the height of the whole PDG logo (incl. the PREMIUM DRONES
   GEORGIA line), aspect ratios kept, centred; header = PDG ~ XAG with a literal "~", strip = XAG ~ PDG; "~" in --xag-black. build.py adds ?v=hash to /assets/img URLs so changed logos/photos reach visitors at once.
+- Home hero (owner, 14 Oct 2026 night): heading, sentence and buttons at the top with equal gaps (32px desktop, 24px phone);
+  the whole drone must stay visible (wide screens: photo right of the text, hero ≤ 56vw tall; ≤1240px: text above the full photo).
+- Home page <title> starts with "PREMIUM DRONES GEORGIA" (owner: the browser tab must show it), in ka/en/ru.

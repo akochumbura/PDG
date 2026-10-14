@@ -385,7 +385,7 @@ window.PDG_CONTENT = {
     "pd_p150_max_business_alt": "XAG P150 MAX Business — კომპლექტის შემადგენლობა"
   },
   "en": {
-    "page_title": "XAG P150 MAX in Georgia — agricultural spraying drones | Premium Drones Georgia",
+    "page_title": "PREMIUM DRONES GEORGIA — XAG P150 MAX agricultural drones",
     "meta_description": "Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus region. XAG P150 MAX agricultural drones for spraying, granule spreading and cargo transport, plus parts, batteries, generators, service and training in Georgia.",
     "og_title": "XAG Agricultural Drones in Georgia — Premium Drones Georgia",
     "og_description": "P150 MAX kits and parts in stock, drone spraying, training and service.",
@@ -1484,7 +1484,7 @@ window.PDG_CONTENT = {
     "pd_p150_max_business_alt": "XAG P150 MAX Business — package contents"
   },
   "ru": {
-    "page_title": "XAG P150 MAX в Грузии — сельскохозяйственные дроны для опрыскивания | Premium Drones Georgia",
+    "page_title": "PREMIUM DRONES GEORGIA — сельскохозяйственные дроны XAG P150 MAX",
     "meta_description": "Premium Drones Georgia — официальный и эксклюзивный дилер XAG в Кавказском регионе. Сельскохозяйственные дроны XAG P150 MAX для опрыскивания, разбрасывания гранул и перевозки грузов, запчасти, аккумуляторы, генераторы, сервис и обучение в Грузии.",
     "og_title": "Агродроны XAG в Грузии — Premium Drones Georgia",
     "og_description": "Комплекты и запчасти P150 MAX со склада, обработка полей дроном, обучение и сервис.",
