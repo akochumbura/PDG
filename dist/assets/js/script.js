@@ -117,6 +117,7 @@
     searchDlg.addEventListener("click", (e) => { if (e.target === searchDlg) searchDlg.close(); });
     searchDlg.addEventListener("close", () => document.body.classList.remove("modal-open"));
     input.addEventListener("input", () => (index ? run() : load().then(run)));
+    input.addEventListener("keydown", (e) => { if (e.key === "Escape") { e.preventDefault(); searchDlg.close(); } });
     document.addEventListener("keydown", (e) => {
       const typing = /input|textarea|select/i.test((e.target && e.target.tagName) || "") || (e.target && e.target.isContentEditable);
       if ((e.key === "k" && (e.ctrlKey || e.metaKey)) || (e.key === "/" && !typing)) { e.preventDefault(); openSearch(); }
