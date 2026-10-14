@@ -32,3 +32,12 @@ After that, each saved change (commit + push) publishes by itself in a minute or
 | TXT | dkim1._domainkey | v=DKIM1; h=sha256; k=rsa; s=email; p=MIIBIjAN... (2048-bit key, verified valid) |
 | TXT | _dmarc | v=DMARC1; p=none; rua=mailto:info@premium-drones.ge |
 Keep them "DNS only" (grey cloud). See docs/09-email.md.
+
+## www.premium-drones.ge (added 14 Oct 2026)
+The site's main address stays https://premium-drones.ge (canonical links, sitemap). www must work and send visitors there:
+1. Cloudflare -> Workers & Pages -> the site -> Custom domains -> Set up a custom domain -> premium-drones.ge (if not done)
+   and again -> www.premium-drones.ge. DNS is on Cloudflare, so it creates the www record itself.
+2. Cloudflare -> premium-drones.ge -> Rules -> Redirect Rules -> Create rule -> template "Redirect from WWW to root":
+   www.premium-drones.ge/* -> https://premium-drones.ge/${1}, 301, keep query string. Save.
+3. Test on the phone: www.premium-drones.ge and www.premium-drones.ge/shop must open premium-drones.ge.
+Do not touch the MX, SPF, DKIM or DMARC e-mail records while doing this.

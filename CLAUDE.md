@@ -23,7 +23,7 @@ as a server inbox. The separately referenced FastAPI project was not included.
   "ზუსტი შესხურება / შეწამვლა რეალურ საველე პირობებში." Experience: "thousands of hectares in real field conditions"
   (optional quiet "2,900+ ha in the 2026 season"); never "1000+ ha". Worked with XAG V40, P100, P100 Pro; focus P150 MAX.
   Locations: Tbilisi = storage and service (Panaskerteli-Tsitsishvili St 12, by appointment, not a showroom);
-  Lagodekhi = field operations. No hidden SEO text; model names only in meta/structured data/llms.txt.
+  Lagodekhi = warehouse and field operations. No hidden SEO text; model names only in meta/structured data/llms.txt.
 - Model range on home: P150 MAX available; P100 Pro 72,500 / P100 70,220 (drone + 4 batteries), V40 38,500 (drone + 2)
   are out of stock and show "Last package price".
 - Product photos: dist/assets/img/products/<SKU>.webp is picked up at build time. Parts without their own photo show a
@@ -37,7 +37,7 @@ as a server inbox. The separately referenced FastAPI project was not included.
   unless the bank receipt says completed. Under 20,000 GEL full payment, from 20,000 GEL deposit + bank transfer.
 - Server part: dist/_worker.js is GENERATED from scripts/worker.template.js by build-shop.py (prices + chat knowledge
   from the catalog). /api/*: payments (docs/07), AI chat (docs/10), accounts (docs/11). Each stays off until its
-  Cloudflare secret/binding exists. Header: Home + Products/Services mega menu, search (scripts/build-search.py), account, cart.
+  Cloudflare secret/binding exists. Header: Home + Products/Services/Media (blog, gallery) mega menu, search (scripts/build-search.py), account, cart.
 - Home page must stay short and simple (owner): hero, dealer line, key specs, ecosystem, packages, contact. Detail lives on other pages.
 - Fonts: D-DIN (Latin, like xa.com), Noto Sans Georgian, IBM Plex Sans (Cyrillic). Keep font licences in dist/assets/fonts.
   Logo: pdg-logo-light.png / pdg-logo-dark.png are transparent cut-outs of the supplied logo (owner asked for this);

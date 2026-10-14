@@ -54,7 +54,7 @@ ORG = {"@context": "https://schema.org", "@type": "LocalBusiness", "name": "Prem
        "url": BASE_URL + "/", "logo": BASE_URL + "/assets/img/pdg-logo-light.png", "image": BASE_URL + "/assets/img/og-image.jpg",
        "telephone": "+995550004333", "email": "info@premium-drones.ge",
        "address": {"@type": "PostalAddress", "streetAddress": "12 Panaskerteli-Tsitsishvili St", "addressLocality": "Tbilisi", "addressCountry": "GE"},
-       "location": [{"@type": "Place", "name": "Premium Drones Georgia, Lagodekhi (field operations)", "address": {"@type": "PostalAddress", "addressLocality": "Lagodekhi", "addressCountry": "GE"}}]}
+       "location": [{"@type": "Place", "name": "Premium Drones Georgia, Lagodekhi (warehouse and field operations)", "address": {"@type": "PostalAddress", "addressLocality": "Lagodekhi", "addressCountry": "GE"}}]}
 
 def localized_href(href, language, filename):
     parts = urlsplit(href)
