@@ -62,23 +62,44 @@
   const nav = document.getElementById("site-nav");
   const navToggle = document.getElementById("navToggle");
   /* Phone menu: while it is open the page behind it does not scroll (the menu scrolls on its own). */
-  function lockPage(on) { document.body.classList.toggle("nav-lock", !!on); }
+  const pageParts = Array.from(document.querySelectorAll("#main, footer, .mobile-bar, .chat-fab, .chat-panel"));
+  function lockPage(on) {
+    document.body.classList.toggle("nav-lock", !!on);
+    pageParts.forEach((el) => { if (on) el.setAttribute("inert", ""); else el.removeAttribute("inert"); });
+  }
+  /* Current page in the menu: brand red (and its group button) */
+  (function markCurrent() {
+    const clean = (p) => p.replace(/^\/(en|ru)(?=\/|$)/, "").replace(/\.html$/, "").replace(/\/+$/, "") || "/";
+    const here = clean(location.pathname);
+    document.querySelectorAll("#site-nav a[href]").forEach((a) => {
+      const u = new URL(a.getAttribute("href"), location.origin);
+      if (u.origin !== location.origin || u.hash || u.search) return;
+      if (clean(u.pathname) !== here) return;
+      a.setAttribute("aria-current", "page");
+      const g = a.closest(".nav-group"); if (g) g.querySelector(".nav-group-btn")?.classList.add("is-current");
+    });
+  })();
   /* iOS: a swipe on the header must not move the page behind the open menu */
   document.querySelector(".site-header")?.addEventListener("touchmove", (e) => {
     if (document.body.classList.contains("nav-lock") && !e.target.closest("#site-nav")) e.preventDefault();
   }, { passive: false });
-  function closeNav() {
+  function closeNav(restoreFocus) {
+    const wasOpen = nav?.classList.contains("is-open");
     nav?.classList.remove("is-open");
     navToggle?.setAttribute("aria-expanded", "false");
     lockPage(false);
+    closeGroups();
+    if (wasOpen && restoreFocus === true) navToggle?.focus();
   }
   navToggle?.addEventListener("click", () => {
     const open = nav.classList.toggle("is-open");
     navToggle.setAttribute("aria-expanded", String(open));
     lockPage(open);
+    if (open) { const first = nav.querySelector(".nav-search, a, button"); first?.focus({ preventScroll: true }); nav.scrollTop = 0; } else closeGroups();
   });
+  window.addEventListener("pageshow", () => closeNav());
   nav?.addEventListener("click", (event) => { if (event.target.closest("a")) closeNav(); });
-  document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeNav(); });
+  document.addEventListener("keydown", (event) => { if (event.key === "Escape" && nav?.classList.contains("is-open")) closeNav(true); });
   /* Products / Services submenus: click or keyboard opens, outside click or Escape closes. */
   const groups = Array.from(document.querySelectorAll(".nav-group-btn"));
   function closeGroups(except) { groups.forEach((b) => { if (b !== except) b.setAttribute("aria-expanded", "false"); }); }
