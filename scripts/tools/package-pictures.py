@@ -1,5 +1,5 @@
 """One-off (14 Oct 2026): package pictures from the owner-supplied XAG P150 MAX images (chat uploads, not in the repo).
-compose.py part: the Pro picture = XAG combo (6 batteries, 2 chargers, SRC5, XRTK7, 2 cooling towers); Starter removes the XRTK7
+compose.py part: the Pro picture = XAG combo (6 batteries, 2 chargers, SRC5, XRTK7, 2 cooling tanks); Starter removes the XRTK7
 and 2 batteries, Business adds 2 batteries and 2 chargers (battery stack spliced by whole battery periods, charger pair from the
 second XAG combo picture because the first had the shop zoom button over it). gallery.py part: zoom buttons and card borders removed.
 """

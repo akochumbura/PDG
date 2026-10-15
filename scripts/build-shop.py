@@ -48,17 +48,17 @@ CONTENTS = [('drones', 'kit_drone', 'XAG P150 MAX სასოფლო-სა�
             ('remotes', 'kit_remote', 'XAG SRC5 ჭკვიანი მართვის პულტი'),
             ('batteries', 'kit_batteries', 'XAG B141050 ჭკვიანი აკუმულატორი'),
             ('chargers', 'kit_chargers', 'XAG CM13600S დამტენი'),
-            ('towers', 'kit_towers', 'XAG აკუმულატორის გამაგრილებელი კოშკი'),
+            ('towers', 'kit_towers', 'XAG აკუმულატორის გამაგრილებელი ავზი'),
             ('rtk', 'kit_rtk', 'XAG XRTK7 მობილური RTK სადგური'),
             ('generators', 'kit_generators', 'XAG GC4000+ დამუხტვის სადგური')]
 KIT_LABELS = {'kit_drone': ('XAG P150 MAX agricultural drone (RevoSpray 5)', 'Сельскохозяйственный дрон XAG P150 MAX (RevoSpray 5)'),
               'kit_remote': ('XAG SRC5 smart remote controller', 'Умный пульт управления XAG SRC5'),
               'kit_batteries': ('XAG B141050 smart battery', 'Умный аккумулятор XAG B141050'),
               'kit_chargers': ('XAG CM13600S charger', 'Зарядное устройство XAG CM13600S'),
-              'kit_towers': ('XAG battery cooling tower', 'Охлаждающая башня для аккумуляторов XAG'),
+              'kit_towers': ('XAG battery cooling tank', 'Охлаждающий бак для аккумуляторов XAG'),
               'kit_rtk': ('XAG XRTK7 mobile RTK station', 'Мобильная RTK-станция XAG XRTK7'),
               'kit_generators': ('XAG GC4000+ charging station', 'Зарядная станция XAG GC4000+')}
-# Home page 'Parts and energy system': B141050 battery, GC4000+, CM13600S charger, 6 kW parallel charging kit, cooling tower, XRTK7.
+# Home page 'Parts and energy system': B141050 battery, GC4000+, CM13600S charger, 6 kW parallel charging kit, cooling tank, XRTK7.
 import product_pages
 HOME_PARTS = ['09-017-00073', '09-017-00109', '09-017-00069', '05-002-02311', '09-017-00065', '09-016-00083']
 
@@ -222,8 +222,8 @@ for r in rows:
 # P150 MAX on xa.com/en/p150max/p150maxspecs: B141050 battery, CM13600S charger, GC4000+ station, XRTK7 station.
 # Price rule: the preset's approved package price + extra components at their approved shop price.
 # Fewer components than the preset = no approved rule -> "ფასი მოთხოვნით" (quote), never an invented discount.
-CFG_ITEMS = [('batteries', '09-017-00073', 'cfg_battery', 'ბატარეა B141050', 12), ('chargers', '09-017-00069', 'cfg_charger', 'დამტენი CM13600S', 6),
-             ('towers', '09-017-00065', 'cfg_tower', 'გამაგრილებელი კოშკი', 4),
+CFG_ITEMS = [('batteries', '09-017-00073', 'cfg_battery', 'აკუმულატორი B141050', 12), ('chargers', '09-017-00069', 'cfg_charger', 'დამტენი CM13600S', 6),
+             ('towers', '09-017-00065', 'cfg_tower', 'გამაგრილებელი ავზი', 4),
              ('rtk', '09-016-00083', 'cfg_rtk', 'RTK სადგური XRTK7', 1), ('generators', '09-017-00109', 'cfg_generator', 'დამუხტვის სადგური GC4000+', 2)]
 
 

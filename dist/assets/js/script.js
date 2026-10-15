@@ -134,6 +134,13 @@
       input.focus(); input.select(); load().then(run);
     }
     document.getElementById("searchOpen")?.addEventListener("click", openSearch);
+    /* phones: the header has no room for the search icon, so the menu starts with a search row (QA 15 Oct 2026) */
+    if (nav && !nav.querySelector(".nav-search")) {
+      const sb = document.createElement("button"); sb.type = "button"; sb.className = "nav-search";
+      sb.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span></span>';
+      sb.querySelector("span").textContent = document.getElementById("searchOpen")?.getAttribute("aria-label") || "ძიება";
+      sb.addEventListener("click", openSearch); nav.prepend(sb);
+    }
     document.getElementById("searchClose").addEventListener("click", () => searchDlg.close());
     searchDlg.addEventListener("click", (e) => { if (e.target === searchDlg) searchDlg.close(); });
     searchDlg.addEventListener("close", () => document.body.classList.remove("modal-open"));

@@ -29,7 +29,7 @@ T = {'pd_more': ('მახასიათებლები', 'Specifications',
      'pd_fits': ('XAG P150 MAX-ის ენერგოსისტემა', 'XAG P150 MAX power system', 'Система питания XAG P150 MAX'),
      'pd_fits_control': ('XAG P150 MAX-ის მართვა და კავშირი', 'XAG P150 MAX control and communication', 'Управление и связь XAG P150 MAX'),
      'pd_vat': ('ფასი დღგ-ს ჩათვლით', 'Price incl. VAT', 'Цена с НДС'),
-     'cfg_tower': ('გამაგრილებელი კოშკი', 'Cooling tower', 'Охлаждающая башня'),
+     'cfg_tower': ('გამაგრილებელი ავზი', 'Cooling tank', 'Охлаждающий бак'),
      'pd_pk_more': ('შემადგენლობა და ფოტოები', 'Contents and photos', 'Состав и фото'),
      'pd_pk_in': ('კომპლექტში შედის', 'The package includes', 'В комплект входит'),
      'pd_pk_back': ('← კომპლექტები', '← Packages', '← Комплекты'),
@@ -126,9 +126,9 @@ CONTENTS = [  # same order and labels as build-shop.py CONTENTS (Georgian label 
     ('towers', 'kit_towers'), ('rtk', 'kit_rtk'), ('generators', 'kit_generators')]
 LINK = {'remotes': '05-002-02725', 'batteries': '09-017-00073', 'chargers': '09-017-00069', 'towers': '09-017-00065', 'rtk': '09-016-00083', 'generators': '09-017-00109'}
 KIT_INTRO = {
-    'p150-max-starter': ('საბაზისო კომპლექტი: დრონი, მართვის პულტი, 4 აკუმულატორი, 2 დამტენი და 2 გამაგრილებელი კოშკი.',
-                         'Base package: drone, remote controller, 4 batteries, 2 chargers and 2 cooling towers.',
-                         'Базовый комплект: дрон, пульт, 4 аккумулятора, 2 зарядных устройства и 2 охлаждающие башни.'),
+    'p150-max-starter': ('საბაზისო კომპლექტი: დრონი, მართვის პულტი, 4 აკუმულატორი, 2 დამტენი და 2 გამაგრილებელი ავზი.',
+                         'Base package: drone, remote controller, 4 batteries, 2 chargers and 2 cooling tanks.',
+                         'Базовый комплект: дрон, пульт, 4 аккумулятора, 2 зарядных устройства и 2 охлаждающих бака.'),
     'p150-max-pro': ('Starter-ის შემადგენლობა, დამატებით 2 აკუმულატორი და XRTK7 მობილური RTK სადგური.',
                      'Everything in Starter plus 2 more batteries and the XRTK7 mobile RTK station.',
                      'Всё из Starter, плюс 2 аккумулятора и мобильная RTK-станция XRTK7.'),

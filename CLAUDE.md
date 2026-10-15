@@ -21,7 +21,7 @@ as a server inbox. The separately referenced FastAPI project was not included.
   PDG_Invoice_Packing_List_Georgian.xlsx; never show the P0000 codes; name = Original item, name_ka = Georgian item). Cost/margin columns are internal and never published. A new list: rerun the import.
   Prices show only the ₾ sign; no "prices in GEL / ლარში / в лари" texts anywhere (owner).
 - Packages (owner, 14 Oct 2026 night, LATEST APPROVED, exact contents): Starter 75,999 = drone (RevoSpray 5), SRC5 remote,
-  4 B141050 batteries, 2 CM13600S chargers, 2 battery cooling towers ("charging towers"). Pro 87,999 = Starter + 2 batteries (6) + XRTK7.
+  4 B141050 batteries, 2 CM13600S chargers, 2 battery cooling tanks ("cooling tanks"). Pro 87,999 = Starter + 2 batteries (6) + XRTK7.
   Business 104,999 = Pro with 8 batteries and 4 chargers. Contents = catalog columns (drones, remotes, batteries, chargers, towers, rtk).
   No ACS4 control stick in any package (the handheld item in the XAG combo picture is the XRTK7).
   Each package has its own page (/p150-max-starter, -pro, -business): first picture = combo picture with exactly those contents
@@ -136,6 +136,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - Home page <title> starts with "PREMIUM DRONES GEORGIA" (owner: the browser tab must show it), in ka/en/ru.
 - (owner, 14 Oct 2026, 23:15) Parts not on the packing list (avail=quote) = "არ არის მარაგში" + price on request (not "მარაგი დაზუსტდება").
   Screws and similar fasteners = 5-15 GEL by invoice landed cost (cost x 2.5 + 3.5, clamped; import-price-list.py: 02-004-*, nut/bolt/circlip, M-size gaskets).
-  Package contents link to their pages: drone → /p150-max, SRC5, B141050, CM13600S, cooling tower, XRTK7 (product_pages.py).
+  Package contents link to their pages: drone → /p150-max, SRC5, B141050, CM13600S, cooling tank, XRTK7 (product_pages.py).
   Parts list has sorting (recommended / price ↑ / price ↓ / name) and min / max price.
 - Phone menu (owner, 15 Oct 2026): while open, the page behind is locked (html/body.nav-lock) and the menu scrolls by itself; closing restores the scroll position.
