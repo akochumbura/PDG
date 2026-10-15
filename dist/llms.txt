@@ -34,10 +34,10 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - XAG B13970S Smart Battery: 5,799 GEL
 - XAG CM13600S Charger: 3,499 GEL
 - XAG 6kW Parallel Charging Kit: 1,099 GEL
-- XAG 2024 Battery Cooling Tower(INTL): 799 GEL
+- XAG 2024 Battery Cooling Tower (INTL): 799 GEL
 - B141050 Battery Mainboard: 649 GEL
 - XAG Parallel Charging Bracket: 199 GEL
-- XAG Plug Power Cord-EU(for CM13600 Charger): 99 GEL
+- XAG Plug Power Cord-EU (for CM13600 Charger): 99 GEL
 - P series Battery Socket: 79 GEL
 - P150MAX Battery socket copper bar - double: 29 GEL
 - P150MAX Battery socket rear case: 29 GEL
@@ -45,7 +45,7 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - P150MAX Battery socket front case: 15 GEL
 - V40EN,P100 Battery Guide Rubber Buffer: 15 GEL
 - XAG SRC5 Smart remote controller: 4,999 GEL
-- XAG XRTK7 Mobile Station(INTL): 3,999 GEL
+- XAG XRTK7 Mobile Station (INTL): 3,999 GEL
 - P150MAX Radar module: 1,799 GEL
 - P150MAX FPV driver motherboard components: 849 GEL
 - P150MAX Fisheye lens module: 549 GEL
@@ -62,9 +62,9 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - P150MAX Right antenna pedestal: 29 GEL
 - P150MAX Radar shell waterproof ring: 15 GEL
 - P150MAX Waterproof ring for control board cover plate: 15 GEL
-- XAG P150 Max RevoCast 5(Screw Feeder L): 8,999 GEL
+- XAG P150 Max RevoCast 5 (Screw Feeder L): 8,999 GEL
 - XAG RevoSling system (RevoSling + Landing Gear 05-002-02683, INTL): 3,498 GEL
-- XAG 4-Nozzle Upgrade Kit(INTL)(P150MAX): 2,699 GEL
+- XAG 4-Nozzle Upgrade Kit (INTL) (P150MAX): 2,699 GEL
 - P150MAX 75L- Smart Liquid Tank: 699 GEL
 - P150MAX Nozzle: 599 GEL
 - P150MAX Revocast Level Sensor: 399 GEL
@@ -80,12 +80,12 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - P150MAX Liquid Tank Filter Assembly: 49 GEL
 - P150MAX RevoCast Landing Gear Crossbar: 49 GEL
 - P150MAX Nozzle Extension Rod Release Knob: 39 GEL
-- Impeller Pump & Y-Type Connector Liquid Tube(Upgrade): 29 GEL
+- Impeller Pump & Y-Type Connector Liquid Tube (Upgrade): 29 GEL
 - P150MAX Liquid Tank Embedded Parts (2 Holes): 29 GEL
 - P150MAX Nozzle Extension Rod Bracket (Left): 19 GEL
 - P150MAX Nozzle Extension Rod Bracket (Right): 19 GEL
 - P150MAX Pump to Y-Type Connector Liquid Tube: 19 GEL
-- P150MAX Tank & Impeller Pump Liquid Tube(Upgrade): 19 GEL
+- P150MAX Tank & Impeller Pump Liquid Tube (Upgrade): 19 GEL
 - Pump Bracket: 19 GEL
 - Nozzle Extension Rod Clip (for Folded Position): 15 GEL
 - P150MAX Female Seat Granule Container Lid Hasp: 15 GEL
@@ -128,7 +128,7 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - P150 MAX Motor shaft: 149 GEL
 - P150MAX Application system tube connector assembly: 149 GEL
 - P150MAX ESC lower shell: 149 GEL
-- P150MAX Flexible Impeller(black): 149 GEL
+- P150MAX Flexible Impeller (black): 149 GEL
 - P150MAX Nose Mount: 149 GEL
 - Cable hub power cord (P150MAX): 99 GEL
 - P150MAX 1&2 ESC signal cable: 99 GEL
@@ -146,7 +146,7 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - P100P Arm Joint Pin Kit: 69 GEL
 - P150MAX Arm Clamp Clip Kit: 69 GEL
 - P150MAX Execute system power supply cable: 69 GEL
-- P150MAX Sensing system communication cable(Vehicle FPV cable): 69 GEL
+- P150MAX Sensing system communication cable (Vehicle FPV cable): 69 GEL
 - P150MAX Short Application System tube: 69 GEL
 - P150MAX Spread Disc Motor Cable: 69 GEL
 - SuperX5 Pro Diagnostic Cable: 69 GEL
@@ -159,24 +159,24 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - P150MAX Front Hood: 39 GEL
 - Arm support foot: 29 GEL
 - Front shell of busbar: 29 GEL
-- L-Type Connector & Drone Curved Tube Liquid Tube(Upgrade): 29 GEL
+- L-Type Connector & Drone Curved Tube Liquid Tube (Upgrade): 29 GEL
 - P150MAX Application System hook: 29 GEL
 - P150MAX Barometer Base: 29 GEL
 - P150MAX ESC base seat upper shell: 29 GEL
-- P150MAX Flexible Impeller(grey): 29 GEL
+- P150MAX Flexible Impeller (grey): 29 GEL
 - P150MAX Lower shell of ESC base: 29 GEL
 - P150MAX Surge Protection Baffle: 29 GEL
 - P150MAX Tube adapter (left): 29 GEL
 - P150MAX Tube adapter (right): 29 GEL
-- Y-Type Connector & L-Type Connector Liquid Tube(Upgrade): 29 GEL
+- Y-Type Connector & L-Type Connector Liquid Tube (Upgrade): 29 GEL
 - P150MAX Arm Folding Bracket: 19 GEL
 - P150MAX Gear lever component: 19 GEL
 - P150MAX Hopper Mount Fixed Insert: 19 GEL
 - P150MAX Motor Anti-Loosening Cover: 19 GEL
 - P150MAX Motor heat dissipation cover: 19 GEL
 - P150MAX Motor lower retainer: 19 GEL
-- P150MAX Propeller Holder(for arm No.1&2): 19 GEL
-- P150MAX Propeller Holder(for arm No.3&4): 19 GEL
+- P150MAX Propeller Holder (for arm No.1&2): 19 GEL
+- P150MAX Propeller Holder (for arm No.3&4): 19 GEL
 - P150MAX Skeleton oil seal: 19 GEL
 - 60" CCW propeller blade gasket: 15 GEL
 - 60" CW propeller blade gasket: 15 GEL
@@ -209,8 +209,8 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - P150MAX Head card holder: 15 GEL
 - P150MAX Hose on barometer: 15 GEL
 - P150MAX Hose under barometer: 15 GEL
-- P150MAX L-Type Connector(left): 15 GEL
-- P150MAX L-Type Connector(right): 15 GEL
+- P150MAX L-Type Connector (left): 15 GEL
+- P150MAX L-Type Connector (right): 15 GEL
 - P150MAX L-shaped tube adapter (motor side): 15 GEL
 - P150MAX Large skeleton oil seal: 15 GEL
 - P150MAX Manifold Gasket 01: 15 GEL

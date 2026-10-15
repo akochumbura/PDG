@@ -1134,3 +1134,46 @@ h1,h2,h3,h4{overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto}
   .header-actions .lang-btn,.header-actions .cart-btn,.header-actions button{min-width:44px;min-height:44px}
 }
 @media(max-width:900px){.site-nav.is-open>a[aria-current=page]:not(.nav-account-m),.site-nav.is-open .nav-group-btn.is-current{color:var(--accent)}}
+
+/* ===== Final polish (15 Oct 2026, full-site audit) ===== */
+/* Terms page: readable measure and clear section rhythm */
+.terms-body{max-width:74ch;padding-block:clamp(40px,5vw,72px) clamp(56px,6vw,96px)}
+.terms-body h2{font-size:clamp(19px,1.7vw,23px);font-weight:500;line-height:1.3;margin:36px 0 10px}
+.terms-body h2:first-child{margin-top:0}
+.terms-body p{margin:0 0 12px;line-height:1.7}
+/* Payment status page */
+.pay-status{max-width:680px}
+.pay-status h2{margin:0 0 12px}
+.pay-text{margin:0 0 24px;color:var(--muted)}
+.pay-actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px}
+/* Quote-only cards: the "price on request" line and its button wrap inside narrow cards */
+.product .product-price.product-price-quote{font-size:15px;line-height:1.35;white-space:normal;color:var(--muted)}
+.quote-btn{white-space:normal;line-height:1.25;padding:8px 14px}
+/* "Specifications →" link on cards: arrow stays next to the text */
+.product-more{gap:8px}
+/* Package cards: the internal package code is not a manufacturer code, so it is not shown */
+.product-kit .product-sku{display:none}
+/* Home "four jobs": the big numbers line up even when a title wraps */
+@media(min-width:1101px){.app-card h3{min-height:2.5em}}
+/* Touch targets on phones and tablets */
+.back-link{display:inline-flex;align-items:center;min-height:44px;margin-bottom:20px}
+@media(max-width:900px){
+  .back-link{margin-bottom:12px}
+  .header-inner>.brand{padding-block:12px;margin-block:-12px}
+  .footer-col{gap:0}
+  .footer-col a{display:inline-flex;align-items:center;min-height:40px}
+}
+/* Parts filters on phones: sort on its own row, min / max price side by side */
+@media(max-width:600px){.parts-sort-field:first-child{flex:1 1 100%}}
+/* Cart drawer: one scroll for the whole drawer (the list was squeezed by the form on phones),
+   and the terms link may wrap (its max-content width pushed the form past the drawer edge) */
+dialog.cart[open]{overflow-y:auto;overscroll-behavior:contain}
+.cart-list{overflow:visible;flex:none}
+.cart-head,.cart-empty{flex:none}
+.cart-foot{flex:none;grid-template-columns:minmax(0,1fr)}
+.cart-note .text-link{width:auto;white-space:normal;gap:8px}
+/* Consultation page: social links are secondary, not the size of the phone number */
+.contact-options .social-links a{font-size:15px;font-family:var(--font-body)}
+/* Hero: the decorative "scroll" hint sat under the chat button; the page continues visibly below the hero anyway */
+.hero-scroll{display:none}
+@media(max-width:900px){.footer-bottom a,.footer-bottom .theme-toggle,.social-links a{display:inline-flex;align-items:center;min-height:40px}}

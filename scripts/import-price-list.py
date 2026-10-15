@@ -37,6 +37,7 @@ def fastener(sku, en):
 def clean(s):
     s = str(s or '').replace('（', '(').replace('）', ')').replace('，', ', ').replace('；', '; ')
     s = re.sub(r'\s+', ' ', s).strip()
+    s = re.sub(r'(?<=[A-Za-z0-9\u10d0-\u10ff)])\((?=[A-Za-z0-9\u10d0-\u10ff])', ' (', s)  # "Station(INTL)" -> "Station (INTL)"
     if s.count('(') > s.count(')'):
         s += ')'
     return s

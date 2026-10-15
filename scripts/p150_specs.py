@@ -33,7 +33,7 @@ SPECS = [
                 '1799×1808×767 mm (propellers folded, RevoSpray 5)\n1799×1808×989 mm (propellers folded, RevoCast 5)\n1057×1017×817 mm (propellers & arms folded, RevoSpray 5)\n3252×3257×767 mm (propellers & arms unfolded, RevoSpray 5)',
                 '1799×1808×767 мм (винты сложены, RevoSpray 5)\n1799×1808×989 мм (винты сложены, RevoCast 5)\n1057×1017×817 мм (винты и лучи сложены, RevoSpray 5)\n3252×3257×767 мм (винты и лучи разложены, RevoSpray 5)')),
             (('წონა (ცარიელი)', 'Empty weight', 'Масса без нагрузки'), (
-                '56 კგ (RevoSpray სისტემით და B141050 ბატარეებით)\n60 კგ (RevoCast 5-ით და B141050 ბატარეებით, შესხურების ღეროების გარეშე)',
+                '56 კგ (RevoSpray სისტემით და B141050 ბატარეებით)\n60 კგ (RevoCast 5-ით და B141050 ბატარეებით, შეწამვლის ღეროების გარეშე)',
                 '56 kg (with RevoSpray system & B141050 batteries)\n60 kg (with RevoCast 5 & B141050 batteries; no spray rods)',
                 '56 кг (с системой RevoSpray и батареями B141050)\n60 кг (с RevoCast 5 и батареями B141050, без штанг)')),
             (('ძრავების დიაგონალური ღერძთაშორისი', 'Diagonal motor wheelbase', 'Диагональная колесная база моторов'), u(2335, MM)),

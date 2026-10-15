@@ -215,6 +215,7 @@ for _lang in ('en', 'ru', 'ka'):
         del _c[_lang][_k]
 for r in rows:
     if (r.get('name_ka') or '').strip():
+        _c['ka'][pkey(r['sku'])] = r['name_ka'].strip()  # the cart shows the visitor's language (shop.js)
         _c['en'][pkey(r['sku'])] = r['name']
         _c['ru'][pkey(r['sku'])] = (r.get('name_ru') or '').strip() or r['name']
 for _k, _ka, in [(k, ka) for _c_, k, ka in CONTENTS]:

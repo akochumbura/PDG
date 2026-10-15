@@ -84,6 +84,9 @@ for p in P.PAGES:
     gel = int(r['gel'])
     for k in ('title', 'intro'):
         put(f'pd_{pid}_{k}', p[k])
+    # Short product heading (the page title without " — price and specifications"); the long price-list name stays in search and cards.
+    put(f'pd_{pid}_h1', tuple(t.split(' — ')[0] for t in p['title']))
+    stock = {row['sku']: int(row['qty']) for row in csv.DictReader(open(ROOT / 'scripts/stock.csv', encoding='utf-8'))}.get(sku, 0)
     own = PHOTOS / f'{sku}.webp'
     if own.is_file():
         from PIL import Image
@@ -100,7 +103,7 @@ for p in P.PAGES:
         f'<template data-page="{p["slug"]}.html" data-ka-title="{title_ka}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro">\n'
         f'  <section class="page-hero pd-hero"><div class="container"><a class="back-link" href="/shop.html#parts" data-local data-i18n="pd_back">← მაღაზია</a>'
         + (f'<p class="eyebrow" data-i18n="pd_fits_control">{T["pd_fits_control"][0]}</p>' if p.get('specs') == 'control' else f'<p class="eyebrow" data-i18n="pd_fits">{T["pd_fits"][0]}</p>') +
-        f'<h1 data-i18n="{pn}">{html.escape(r["name_ka"])}</h1><p class="product-orig">{html.escape(r["name"])}</p>'
+        f'<h1 data-i18n="pd_{pid}_h1">{html.escape(p["title"][0].split(" — ")[0])}</h1><p class="product-orig">{html.escape(r["name"])}</p>'
         f'<p class="page-intro" data-i18n="pd_{pid}_intro">{html.escape(p["intro"][0])}</p></div></section>\n'
         f'  <section class="section pd-main"><div class="container pd-grid">{pic}'
         f'<article class="product pd-buybox" data-cat="{r["group"]}" data-avail="in_stock">'
@@ -108,7 +111,7 @@ for p in P.PAGES:
         f'<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
         f'<p class="pd-price"><span class="product-price">₾{gel:,}</span> <span class="pd-vat" data-i18n="pd_vat">ფასი დღგ-ს ჩათვლით</span></p>'
         f'<div class="buy-actions"><div class="qty-stepper" data-for="{sku}"><button type="button" class="qty-btn" data-step="-1" aria-label="რაოდენობის შემცირება" data-i18n-aria="qty_less">−</button>'
-        f'<input class="qty-input" type="number" inputmode="numeric" min="1" step="1" value="1" aria-label="რაოდენობა" data-i18n-aria="qty_label">'
+        f'<input class="qty-input" type="number" inputmode="numeric" min="1"' + (f' max="{stock}"' if stock else '') + ' step="1" value="1" aria-label="რაოდენობა" data-i18n-aria="qty_label">'
         f'<button type="button" class="qty-btn" data-step="1" aria-label="რაოდენობის გაზრდა" data-i18n-aria="qty_more">+</button></div>'
         f'<button type="button" class="add-btn" data-sku="{sku}" data-name="{name_en}" data-price="{gel}" data-i18n="add_to_cart">კალათაში</button></div>'
         f'<a class="button button-line pd-ask" href="{html.escape(wa, quote=True)}" target="_blank" rel="noopener noreferrer"><span data-i18n="pd_ask">კითხვა WhatsApp-ით</span></a>'
@@ -162,6 +165,12 @@ for sku, slug in P.KITS.items():
                      f'<img src="{th}" width="240" height="180" alt="" loading="lazy" decoding="async"></button>'
                      for j, (full, th, key, alt) in enumerate(pics))
     wa = 'https://wa.me/995550004333?text=' + quote(f'გამარჯობა! მაინტერესებს {r["name"]} ({gel:,} ₾).')
+    # Stock limit = complete sets the packing-list stock allows (same rule as build-shop.py stock_max).
+    _st = {row['sku']: int(row['qty']) for row in csv.DictReader(open(ROOT / 'scripts/stock.csv', encoding='utf-8'))}
+    _parts = {'drones': '09-007-00188', 'remotes': '05-002-02725', 'batteries': '09-017-00073', 'chargers': '09-017-00069',
+              'towers': '09-017-00065', 'rtk': '09-016-00083', 'generators': '09-017-00109'}
+    _lim = [_st.get(v, 0) // int(r[k]) for k, v in _parts.items() if (r.get(k) or '').strip() and int(r[k])]
+    kit_max = min(_lim) if _lim else 0
     out.append(
         f'<template data-page="{slug}.html" data-ka-title="{html.escape(r["name"] + " — კომპლექტის შემადგენლობა და ფასი | საქართველოს პრემიუმ დრონები", quote=True)}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro">\n'
         f'  <section class="page-hero pd-hero"><div class="container"><a class="back-link" href="/shop.html#kits" data-local data-i18n="pd_pk_back">← კომპლექტები</a>'
@@ -175,7 +184,7 @@ for sku, slug in P.KITS.items():
         f'<p class="pd-price"><span class="product-price">₾{gel:,}</span> <span class="pd-vat" data-i18n="pd_vat">ფასი დღგ-ს ჩათვლით</span></p>'
         f'<h2 class="pk-in-title" data-i18n="pd_pk_in">კომპლექტში შედის</h2><ul class="pk-in">{"".join(items)}</ul>'
         f'<div class="buy-actions"><div class="qty-stepper" data-for="{sku}"><button type="button" class="qty-btn" data-step="-1" aria-label="რაოდენობის შემცირება" data-i18n-aria="qty_less">−</button>'
-        f'<input class="qty-input" type="number" inputmode="numeric" min="1" step="1" value="1" aria-label="რაოდენობა" data-i18n-aria="qty_label">'
+        f'<input class="qty-input" type="number" inputmode="numeric" min="1"' + (f' max="{kit_max}"' if kit_max else '') + ' step="1" value="1" aria-label="რაოდენობა" data-i18n-aria="qty_label">'
         f'<button type="button" class="qty-btn" data-step="1" aria-label="რაოდენობის გაზრდა" data-i18n-aria="qty_more">+</button></div>'
         f'<button type="button" class="add-btn" data-sku="{sku}" data-name="{name}" data-price="{gel}" data-i18n="add_to_cart">კალათაში</button></div>'
         f'<a class="button button-line pd-ask" href="{html.escape(wa, quote=True)}" target="_blank" rel="noopener noreferrer"><span data-i18n="pd_ask">კითხვა WhatsApp-ით</span></a>'

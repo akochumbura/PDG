@@ -142,7 +142,9 @@
       if (!q || !index) return;
       const terms = q.split(/\s+/).filter(Boolean);
       const score = (it) => terms.every((t) => it.h.includes(t)) ? terms.reduce((s, t) => s + (it.ht.includes(t) ? 3 : 1), 0) : 0;
-      const prods = index.products.map((p) => [score(p), p]).filter((a) => a[0]).sort((a, b) => b[0] - a[0]).slice(0, 8).map((a) => a[1]);
+      /* Ties: an item with its own product page first (the B141050 battery before parts that mention B141050), then in-stock priced items. */
+      const rank = (p) => { const s = score(p); return s ? s + (p.u && p.u.indexOf("?q=") < 0 ? 2 : 0) + (p.p > 0 ? 0.5 : 0) : 0; };
+      const prods = index.products.map((p) => [rank(p), p]).filter((a) => a[0]).sort((a, b) => b[0] - a[0]).slice(0, 8).map((a) => a[1]);
       const pages = index.pages.map((p) => [score(p), p]).filter((a) => a[0]).sort((a, b) => b[0] - a[0]).slice(0, 6).map((a) => a[1]);
       if (!prods.length && !pages.length) { none.hidden = false; return; }
       let out = "";

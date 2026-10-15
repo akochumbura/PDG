@@ -29,7 +29,11 @@
   /* Keep prices in the cart in step with the current page (prices may have changed since the item was added). */
   document.querySelectorAll(".add-btn[data-sku]").forEach(function (b) {
     var item = cart[b.dataset.sku];
-    if (item) { item.p = Number(b.dataset.price); item.n = b.dataset.name; }
+    if (item) {
+      item.p = Number(b.dataset.price); item.n = b.dataset.name;
+      var box = b.parentNode.querySelector(".qty-input"), mx = box ? Number(box.max) || 0 : 0;
+      if (mx > 0) { item.m = mx; item.q = clampInt(item.q, 1, mx); }
+    }
   });
   Object.keys(cart).forEach(function (k) { var it = cart[k]; if (!it || !(it.q > 0) || !(it.p >= 0)) delete cart[k]; });
   save();
@@ -63,7 +67,7 @@
     keys.forEach(function (k) {
       var it = cart[k], li = document.createElement("li");
       function btn(txt, fn, aria) { var x = document.createElement("button"); x.type = "button"; x.textContent = txt; x.addEventListener("click", fn); if (aria) x.setAttribute("aria-label", aria); return x; }
-      var name = document.createElement("span"); name.className = "ci-name"; name.textContent = it.n;
+      var name = document.createElement("span"); name.className = "ci-name"; name.textContent = tx("pn_" + k.replace(/[^A-Za-z0-9]/g, "_")) || it.n;
       var qty = document.createElement("span"); qty.className = "ci-qty";
       var count = document.createElement("output"); count.textContent = it.q;
       qty.append(btn("−", function () { change(k, -1); }, label("lbLess")), count, btn("+", function () { change(k, 1); }, label("lbMore")));
