@@ -59,13 +59,11 @@
   const nav = document.getElementById("site-nav");
   const navToggle = document.getElementById("navToggle");
   /* Phone menu: while it is open the page behind it does not scroll (the menu scrolls on its own). */
-  let lockedY = 0;
-  function lockPage(on) {
-    const was = document.body.classList.contains("nav-lock");
-    if (on && !was) lockedY = window.scrollY;
-    document.documentElement.classList.toggle("nav-lock", on); document.body.classList.toggle("nav-lock", on);
-    if (!on && was) window.scrollTo({ top: lockedY, left: 0, behavior: "instant" });
-  }
+  function lockPage(on) { document.body.classList.toggle("nav-lock", !!on); }
+  /* iOS: a swipe on the header must not move the page behind the open menu */
+  document.querySelector(".site-header")?.addEventListener("touchmove", (e) => {
+    if (document.body.classList.contains("nav-lock") && !e.target.closest("#site-nav")) e.preventDefault();
+  }, { passive: false });
   function closeNav() {
     nav?.classList.remove("is-open");
     navToggle?.setAttribute("aria-expanded", "false");
@@ -76,7 +74,6 @@
     navToggle.setAttribute("aria-expanded", String(open));
     lockPage(open);
   });
-  window.addEventListener("resize", () => { if (nav && !nav.classList.contains("is-open")) lockPage(false); });
   nav?.addEventListener("click", (event) => { if (event.target.closest("a")) closeNav(); });
   document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeNav(); });
   /* Products / Services submenus: click or keyboard opens, outside click or Escape closes. */
