@@ -110,7 +110,8 @@ function quote(items) {
     if (!Object.prototype.hasOwnProperty.call(CATALOG, sku) || seen.has(sku)) throw new UserError('bad_items');
     if (!Number.isInteger(qty) || qty < 1 || qty > 100) throw new UserError('bad_items');
     seen.add(sku);
-    const [name, price] = CATALOG[sku];
+    const [name, price, stock] = CATALOG[sku];
+    if (stock && qty > stock) throw new UserError('bad_items');
     lines.push({ sku, name, qty, price });
   }
   const total = lines.reduce((s, l) => s + l.price * l.qty, 0);

@@ -89,10 +89,25 @@ def status(r):
     return 'in_stock' if price(r, r['group'] == 'kit') is not None and (r.get('avail') or '') != 'quote' else 'quote'
 
 
-def stepper(s, n):
+# Stock (owner, 15 Oct 2026): scripts/stock.csv = quantities from the NIK Electronics packing list, nothing sold yet.
+STOCK = {r['sku']: int(r['qty']) for r in csv.DictReader(open(ROOT / 'scripts/stock.csv', encoding='utf-8'))}
+KIT_PARTS = {'drones': '09-007-00188', 'remotes': '05-002-02725', 'batteries': '09-017-00073', 'chargers': '09-017-00069',
+             'towers': '09-017-00065', 'rtk': '09-016-00083', 'generators': '09-017-00109'}
+
+
+def stock_max(r):
+    """Verified stock limit: parts = packing-list quantity; a package = how many complete sets the stock allows."""
+    if r['group'] == 'kit':
+        lim = [STOCK.get(KIT_PARTS[k], 0) // int(r[k]) for k in KIT_PARTS if (r.get(k) or '').strip() and int(r[k])]
+        return min(lim) if lim else 0
+    return STOCK.get(r['sku'], 0)
+
+
+def stepper(s, n, mx=0):
     """Quantity selector (positive whole numbers). data-max is set only when a verified stock limit exists."""
+    mxa = f' max="{mx}"' if mx else ''
     return (f'<div class="qty-stepper" data-for="{s}"><button type="button" class="qty-btn" data-step="-1" aria-label="რაოდენობის შემცირება" data-i18n-aria="qty_less">−</button>'
-            f'<input class="qty-input" type="number" inputmode="numeric" min="1" step="1" value="1" aria-label="რაოდენობა" data-i18n-aria="qty_label">'
+            f'<input class="qty-input" type="number" inputmode="numeric" min="1"{mxa} step="1" value="1" aria-label="რაოდენობა" data-i18n-aria="qty_label">'
             f'<button type="button" class="qty-btn" data-step="1" aria-label="რაოდენობის გაზრდა" data-i18n-aria="qty_more">+</button></div>')
 
 
@@ -173,7 +188,7 @@ def card(r):
                 + '<div class="product-buy"><span class="product-price product-price-quote" data-i18n="price_on_request">ფასი მოთხოვნით</span>'
                 + f'<button type="button" class="quote-btn" data-sku="{s}" data-name="{n}" data-i18n="request_quote">ფასის მოთხოვნა</button></div></div></article>\n')
     return (head + '<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
-            f'<div class="product-buy"><span class="product-price">₾{p:,}</span><div class="buy-actions">{stepper(s, n)}'
+            f'<div class="product-buy"><span class="product-price">₾{p:,}</span><div class="buy-actions">{stepper(s, n, stock_max(r))}'
             f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></div></div></div></article>\n')
 
 
@@ -183,7 +198,7 @@ def kit_row(r):
     p = price(r, True)
     short = re.sub(r'^XAG P150 Max\s*', '', r['name']).strip() or r['name']
     return (f'<li class="kit-row"><div class="kit-row-name"><span class="kit-row-title"><a href="{product_pages.url(s)}" data-local>{html.escape(short)}</a></span>{contents(r, "kit-contents kit-contents-inline")}</div>'
-            f'<span class="kit-row-price">₾{p:,}</span><div class="buy-actions">{stepper(s, n)}'
+            f'<span class="kit-row-price">₾{p:,}</span><div class="buy-actions">{stepper(s, n, stock_max(r))}'
             f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></div></li>\n')
 
 
@@ -235,7 +250,7 @@ def configurator():
         r = by_sku_all[sku]; p = price(r, False)
         if p is None:
             raise SystemExit('configurator component without approved price: ' + sku)
-        items[key] = {'sku': sku, 'name': r['name'], 'price': p, 'max': mx}
+        items[key] = {'sku': sku, 'name': r['name'], 'price': p, 'max': STOCK.get(sku, mx)}
     presets = [{'sku': r['sku'], 'name': r['name'], 'price': price(r, True),
                 'q': {k: int((r.get(k) or '0').strip() or 0) for k, *_ in CFG_ITEMS}} for r in kits]
     data = html.escape(json.dumps({'presets': presets, 'items': items}, ensure_ascii=False), quote=True)
@@ -307,7 +322,7 @@ if llms.is_file():
 # Payment worker (Cloudflare Pages advanced mode): server-side prices from this same catalog.
 sys.path.insert(0, str(ROOT / 'scripts'))
 import json, site_config
-cat = {r['sku']: [r['name'], price(r, r['group'] == 'kit')] for r in rows if price(r, r['group'] == 'kit') is not None}
+cat = {r['sku']: [r['name'], price(r, r['group'] == 'kit'), stock_max(r)] for r in rows if price(r, r['group'] == 'kit') is not None}
 tpl = (ROOT / 'scripts/worker.template.js').read_text(encoding='utf-8')
 rules = {'threshold': site_config.PAYMENTS['threshold'], 'depositPercent': site_config.PAYMENTS['deposit_percent']}
 # Knowledge for the AI chat: business facts (llms.txt), every product with its price, payment rules, terms, FAQ.
