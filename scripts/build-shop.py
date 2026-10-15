@@ -315,7 +315,7 @@ CATN = {'kit': 'P150 MAX package', 'drone': 'drone', 'legacy': 'previous-generat
         'acc': 'accessories', 'spare': 'spare parts'}
 cdata = json.loads((ROOT / 'dist/assets/js/content.js').read_text(encoding='utf-8').split('=', 1)[1].strip().removesuffix(';'))['en']
 know = [(ROOT / 'dist/llms.txt').read_text(encoding='utf-8').strip(), '',
-        '## Website shop (prices in GEL incl. VAT). Availability: "listed in stock" = shown as in stock on the website (the team confirms quantity '
+        '## Website shop (prices in GEL incl. VAT). Availability: "listed in stock" = in stock (owner, 15 Oct 2026: nothing from the price list has been sold yet; the team still confirms the exact quantity '
         'with every order); "not in stock, price on request" = a part we do not have in stock (the team gives the price on request); "not in stock (previous model)" = consultation only.']
 for r in rows:
     extra = ', '.join(f"{r[c]} × {KIT_LABELS[k][0]}" for c, k, _ in CONTENTS if (r.get(c) or '').strip())
