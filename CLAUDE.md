@@ -61,7 +61,9 @@ as a server inbox. The separately referenced FastAPI project was not included.
 ## Wording and SEO (2026-10-14)
 - Visible Georgian wording: "სასოფლო-სამეურნეო დრონი/პლატფორმა", "შეწამვლა" (never "შესხურება"), "გრანულების გაფანტვა", "ტვირთის გადატანა". Do not show "აგრო დრონი" on pages.
 - Farmer search words (შეწამვლა, აგროდრონი, აგრო დრონი, შესაწამლი დრონი…) live only in meta keywords, search synonyms (scripts/build-search.py) and FAQ wording — never as visible keyword lists.
-- P150 MAX positioning: world-class flagship agricultural platform for spraying, granule spreading and cargo transport.
+- P150 MAX positioning: world-class flagship agricultural platform for spraying, granule spreading, cargo transport and field mapping
+  (owner, 15 Oct 2026: mapping must be visible — home 4th card 'რუკის შედგენა' 20 ha per flight; maps by itself with its camera, built-in AI recognises obstacles).
+- GC4000+ photo = owner-supplied render (09-017-00109.webp). The dimension drawing he sent (RevoSpray 4 / RevoCast 4 / RealTerra 3, 3118×3110 mm) is the P100 Pro, NOT the P150 MAX: not used on P150 MAX pages.
 - Header: language dropdown (#langBtn/#langList), About us in the top menu, light theme by default.
 - Chat = website conversation first (stored in PDG_DATA, team answers at /api/chat/inbox). AI: OpenAI (OPENAI_API_KEY, CHAT_MODEL gpt-6-luna,
   CHAT_EFFORT medium in Cloudflare) or Anthropic; answers every message, pauses 30 min after a team reply, learns from team replies. No subtitle in
@@ -133,6 +135,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   the whole drone must stay visible (wide screens: photo right of the text, hero ≤ 56vw tall; ≤1240px: text above the full photo).
 - Home page <title> starts with "PREMIUM DRONES GEORGIA" (owner: the browser tab must show it), in ka/en/ru.
 - (owner, 14 Oct 2026, 23:15) Parts not on the packing list (avail=quote) = "არ არის მარაგში" + price on request (not "მარაგი დაზუსტდება").
-  Screws and similar fasteners = 5 GEL (import-price-list.py FASTENER rule: 02-004-*, nut/bolt/circlip, M-size gaskets).
+  Screws and similar fasteners = 5-15 GEL by invoice landed cost (cost x 2.5 + 3.5, clamped; import-price-list.py: 02-004-*, nut/bolt/circlip, M-size gaskets).
   Package contents link to their pages: drone → /p150-max, SRC5, B141050, CM13600S, cooling tower, XRTK7 (product_pages.py).
   Parts list has sorting (recommended / price ↑ / price ↓ / name) and min / max price.

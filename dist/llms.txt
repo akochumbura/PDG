@@ -184,6 +184,7 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - Application System Cable Organizer - P100/Pro: 15 GEL
 - Application system embossed part: 15 GEL
 - Barometer silicone tube transparent adapter: 15 GEL
+- Flange Anti-loosening Nut: 15 GEL
 - Motor screw anti loosening column: 15 GEL
 - P100P 55" Foldable Propeller Clamp Pin: 15 GEL
 - P150 MAX Motor three-phase cable protection sleeve: 15 GEL
@@ -222,6 +223,7 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - P150MAX Motor side & one-way valve liquid tube: 15 GEL
 - P150MAX O-Ring: 15 GEL
 - P150MAX Power cord limit device: 15 GEL
+- P150MAX Propeller Clamp Bolt: 15 GEL
 - P150MAX Propeller Clamp Bushing: 15 GEL
 - P150MAX Rear shell of busbar: 15 GEL
 - P150MAX Rubber plug handle rear shell: 15 GEL
@@ -240,60 +242,58 @@ Farmers in Georgia comparing spray drones (XAG P150 MAX, P150, P100 Pro, V40, V5
 - Spiral Feeder Motor Rubber Ring: 15 GEL
 - Spreader Baffle - Left: 15 GEL
 - Spreader Baffle - Right: 15 GEL
+- Rivet: 11 GEL
+- P150MAX Motor Circlip: 10 GEL
+- M6*38*12 Screw: 9 GEL
+- ST4.2*14 Tapping Screw: 8 GEL
+- CM2*4 Screw: 7 GEL
+- Hexagon Socket Head Shaft Section 3*6 Nylon Insert Screw: 7 GEL
+- Hexagonal Flange Nut: 7 GEL
+- M2*6 Screws: 7 GEL
+- M2.4x6 Open End Flat Round Head Blind Rivet: 7 GEL
+- M2.5*10 Screw: 7 GEL
+- M2.5*25 Screw: 7 GEL
+- M2.5x8x4.5 Hex Socket Head Cap Screw Kit: 7 GEL
+- M3 10 6 Screw Kit: 7 GEL
+- M3 8 6 Screw Kit: 7 GEL
+- M3*6*6 Screw Kit: 7 GEL
+- M4 * 14 * 14 hexagonal cylindrical head triple combination screw: 7 GEL
+- M4 10 8 Screw Kit: 7 GEL
+- M4 12 8 Screw Kit: 7 GEL
+- M4 12 Countersunk Screw: 7 GEL
+- M4 16 .8 Screw Kit: 7 GEL
+- M4 8 8 Screw Kit: 7 GEL
+- M4*12 Rivet: 7 GEL
+- M4x14x8 Hex Head Cap Screw Kit: 7 GEL
+- M4x23 Customized Hexagon Socket Step Screw: 7 GEL
+- M4x8 Screw: 7 GEL
+- M5*12*10 Screw Kit: 7 GEL
+- M6 Nut: 7 GEL
+- M6*20*12 Screw Kit: 7 GEL
+- Non-metallic Embedded Hexagonal Cap Nut: 7 GEL
+- P150MAX Square Copper Nut: 7 GEL
+- ST2.9*8 Tapping Screw: 7 GEL
+- ST4.2*10 Tapping Screw: 7 GEL
+- Hex Socket Head Cap Screw Kit: 6 GEL
+- M2*6*4 Screw: 6 GEL
+- M3*16*6 Screw Kit: 6 GEL
+- M3*8*0.5 Gasket: 6 GEL
+- M4*6 screws: 6 GEL
+- M5 16 10 Screw Kit: 6 GEL
+- M5*20*1.2 Gasket: 6 GEL
+- ST1.7 * 4 self tapping screw: 6 GEL
 - 11mm * 4.2mm * 1mm gasket: 5 GEL
-- CM2*4 Screw: 5 GEL
-- Flange Anti-loosening Nut: 5 GEL
-- Hex Socket Head Cap Screw Kit: 5 GEL
-- Hexagon Socket Head Shaft Section 3*6 Nylon Insert Screw: 5 GEL
-- Hexagonal Flange Nut: 5 GEL
 - M2*3 Socket Cap Screw: 5 GEL
 - M2*4 Screw: 5 GEL
 - M2*6 Cross groove screw: 5 GEL
-- M2*6 Screws: 5 GEL
-- M2*6*4 Screw: 5 GEL
-- M2.4x6 Open End Flat Round Head Blind Rivet: 5 GEL
-- M2.5*10 Screw: 5 GEL
 - M2.5*10*4.5 Screw Kit: 5 GEL
-- M2.5*25 Screw: 5 GEL
-- M2.5x8x4.5 Hex Socket Head Cap Screw Kit: 5 GEL
 - M2.5×10 Hexagon Socket Head Cap Screw: 5 GEL
-- M3 10 6 Screw Kit: 5 GEL
-- M3 8 6 Screw Kit: 5 GEL
 - M3*14*6 Screw Kit: 5 GEL
-- M3*16*6 Screw Kit: 5 GEL
 - M3*6*6 Screw Kit: 5 GEL
-- M3*6*6 Screw Kit: 5 GEL
-- M3*8*0.5 Gasket: 5 GEL
 - M3×8 Hexagon Socket Countersunk Head Screw: 5 GEL
-- M4 * 14 * 14 hexagonal cylindrical head triple combination screw: 5 GEL
-- M4 10 8 Screw Kit: 5 GEL
-- M4 12 8 Screw Kit: 5 GEL
-- M4 12 Countersunk Screw: 5 GEL
-- M4 16 .8 Screw Kit: 5 GEL
-- M4 8 8 Screw Kit: 5 GEL
 - M4*10 Screw: 5 GEL
-- M4*12 Rivet: 5 GEL
-- M4*6 screws: 5 GEL
-- M4x14x8 Hex Head Cap Screw Kit: 5 GEL
-- M4x23 Customized Hexagon Socket Step Screw: 5 GEL
-- M4x8 Screw: 5 GEL
-- M5 16 10 Screw Kit: 5 GEL
-- M5*12*10 Screw Kit: 5 GEL
-- M5*20*1.2 Gasket: 5 GEL
-- M6 Nut: 5 GEL
-- M6*20*12 Screw Kit: 5 GEL
-- M6*38*12 Screw: 5 GEL
-- Non-metallic Embedded Hexagonal Cap Nut: 5 GEL
-- P150MAX Motor Circlip: 5 GEL
-- P150MAX Propeller Clamp Bolt: 5 GEL
-- P150MAX Square Copper Nut: 5 GEL
-- Rivet: 5 GEL
-- ST1.7 * 4 self tapping screw: 5 GEL
 - ST2.9*10 Tapping Screw: 5 GEL
-- ST2.9*8 Tapping Screw: 5 GEL
 - ST4.2 14 Tapping Screw: 5 GEL
-- ST4.2*10 Tapping Screw: 5 GEL
-- ST4.2*14 Tapping Screw: 5 GEL
 - ST4.2*8 Tapping Screw: 5 GEL
 - ST4.2.8 Tapping Screw: 5 GEL
 

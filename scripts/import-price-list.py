@@ -6,7 +6,7 @@ SKU = the XAG manufacturer code (მწარმოებლის კოდი,
 in scripts/supplier-code-map.csv (made from PDG_Invoice_Packing_List_Georgian.xlsx, owner 14 Oct 2026);
 name = Original item (English), name_ka = Georgian item, gel = Retail incl. VAT GEL.
 The P150 MAX drone itself is sold only in the packages (owner, 14 Oct 2026), so it is not imported as a separate item.
-Cost and margin columns are internal and are NOT copied. Then run: python scripts/build.py
+Cost and margin columns are internal and are NOT copied (the landed cost only sets the 5-15 GEL fastener price). Then run: python scripts/build.py
 """
 import csv, re, sys
 from pathlib import Path
@@ -23,9 +23,11 @@ GROUP = {'Battery': 'power', 'Charging': 'power',
          'Spare part': 'spare', 'Cable': 'spare', 'Motor': 'spare', 'Propeller': 'spare'}
 
 
-# Owner, 14 Oct 2026: screws and similar small fasteners cost 5 GEL each (overrides the price list).
-# = the XAG standard-fastener family 02-004-* (screws, nuts, rivets, flat gaskets) and any nut / bolt / circlip / M-size gasket.
-FASTENER_GEL = 5
+# Owner, 14 Oct 2026: screws and similar small fasteners cost 5-15 GEL, by their invoice cost (overrides the price list):
+# price = landed unit cost x 2.5 + 3.5, rounded, kept between 5 and 15 GEL (cheapest screws 5, dearest bolts 15).
+# Fasteners = the XAG standard-fastener family 02-004-* (screws, nuts, rivets, flat gaskets) and any nut / bolt / circlip / M-size gasket.
+def fastener_gel(cost):
+    return max(5, min(15, int(round(float(cost) * 2.5 + 3.5))))
 
 
 def fastener(sku, en):
@@ -43,7 +45,7 @@ def clean(s):
 def main(path):
     ws = openpyxl.load_workbook(path, data_only=True)['Full Item Price List']
     head = [c.value for c in ws[6]]
-    need = ['Code', 'Category', 'Georgian item', 'Original item', 'Retail incl. VAT GEL']
+    need = ['Code', 'Category', 'Georgian item', 'Original item', 'Retail incl. VAT GEL', 'Landed unit cost GEL']
     col = {h: head.index(h) for h in need}
     code_map = {r['supplier_code']: r['manufacturer_code'] for r in csv.DictReader(open(CODE_MAP, encoding='utf-8'))}
     rows = list(csv.DictReader(open(CATALOG, encoding='utf-8')))
@@ -73,7 +75,7 @@ def main(path):
         if not group:
             raise SystemExit(f'Unknown category {cat!r} for {sku}: add it to GROUP')
         row = {f: '' for f in fields}
-        gel = FASTENER_GEL if fastener(sku, en) else int(round(float(r[col['Retail incl. VAT GEL']])))
+        gel = fastener_gel(r[col['Landed unit cost GEL']]) if fastener(sku, en) else int(round(float(r[col['Retail incl. VAT GEL']])))
         row.update(group=group, name=en, name_ka=ka, sku=sku, gel=str(gel))
         out.append(row)
     out += [r for r in extra if r['sku'] not in seen]
