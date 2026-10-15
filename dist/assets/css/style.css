@@ -1032,3 +1032,14 @@ html[data-theme=dark] .dealer-cell .logo-dark{display:block}
   .site-nav.is-open>*{flex:0 0 auto}
   body.nav-lock .mobile-bar,body.nav-lock .chat-fab{display:none}
 }
+
+/* Phone header like xa.com (owner, 15 Oct 2026): menu button left, logo centred, language / search / cart right */
+@media(max-width:900px){
+  .header-inner{position:relative;justify-content:center}
+  .header-actions{position:absolute;top:0;bottom:0;left:var(--gutter);right:var(--gutter);display:flex;align-items:center;justify-content:flex-end;pointer-events:none}
+  .header-actions>*{pointer-events:auto}
+  .header-actions .nav-toggle{position:absolute;left:-4px;top:50%;transform:translateY(-50%)}
+  .header-actions .account-link,.header-actions .header-contact{display:none}
+}
+@media(max-width:380px){.header-actions .search-btn{display:none}}
+@media(max-width:900px){.header-actions .search-btn{display:none}.header-inner>.brand{margin:0 auto;flex:0 0 auto}}
