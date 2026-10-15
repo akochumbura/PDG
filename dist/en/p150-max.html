@@ -20,7 +20,7 @@
   <script>try{var t=localStorage.getItem("pdge-theme")||"light";document.documentElement.dataset.theme=t}catch(e){}</script>
   <link rel="preload" href="/assets/fonts/D-DIN.woff" as="font" type="font/woff" crossorigin>
   <link rel="stylesheet" href="/assets/css/style.css?v=c31a98b05b">
-  <script src="/assets/js/content.js?v=624ab4c8bb" defer></script>
+  <script src="/assets/js/content.js?v=e7baee7d6f" defer></script>
   <script src="/assets/js/script.js?v=78f962fb67" defer></script>
   <script src="/assets/js/payments-config.js?v=45d65658ec" defer></script>
   <script src="/assets/js/shop.js?v=9a109eb8e3" defer></script>
@@ -1095,8 +1095,8 @@
 <!--configurator-->
 <section class="section kit-config" id="configurator" aria-labelledby="cfg-title"><div class="container">
 <div class="section-heading"><h2 id="cfg-title"><span data-i18n="cfg_title">Package configurator</span></h2></div>
-<p class="page-intro" data-i18n="cfg_intro">Choose a base package and add batteries, chargers, RTK or a charging station as needed.</p>
-<div class="cfg" id="kitConfig" data-config='{"presets": [{"sku": "PDG-P150MAX-STARTER", "name": "XAG P150 MAX Starter", "price": 75999, "q": {"batteries": 4, "chargers": 2, "towers": 2, "rtk": 0, "generators": 0}}, {"sku": "PDG-P150MAX-PRO", "name": "XAG P150 MAX Pro", "price": 87999, "q": {"batteries": 6, "chargers": 2, "towers": 2, "rtk": 1, "generators": 0}}, {"sku": "PDG-P150MAX-BUSINESS", "name": "XAG P150 MAX Business", "price": 104999, "q": {"batteries": 8, "chargers": 4, "towers": 2, "rtk": 1, "generators": 0}}], "items": {"batteries": {"sku": "09-017-00073", "name": "XAG B141050 Smart Super Charge Battery", "price": 5999, "max": 12}, "chargers": {"sku": "09-017-00069", "name": "XAG CM13600S Charger", "price": 3499, "max": 6}, "towers": {"sku": "09-017-00065", "name": "XAG 2024 Battery Cooling Tower(INTL)", "price": 799, "max": 4}, "rtk": {"sku": "09-016-00083", "name": "XAG XRTK7 Mobile Station(INTL)", "price": 3999, "max": 1}, "generators": {"sku": "09-017-00109", "name": "XAG GC4000+ Super Charging Station (Gen III)", "price": 5899, "max": 2}}}'>
+<p class="page-intro" data-i18n="cfg_intro">Choose a base package and add batteries, chargers, RTK, a charging station, the granule spreader or the cargo sling as needed.</p>
+<div class="cfg" id="kitConfig" data-config='{"presets": [{"sku": "PDG-P150MAX-STARTER", "name": "XAG P150 MAX Starter", "price": 75999, "q": {"batteries": 4, "chargers": 2, "towers": 2, "rtk": 0, "generators": 0, "spreader": 0, "sling": 0}}, {"sku": "PDG-P150MAX-PRO", "name": "XAG P150 MAX Pro", "price": 87999, "q": {"batteries": 6, "chargers": 2, "towers": 2, "rtk": 1, "generators": 0, "spreader": 0, "sling": 0}}, {"sku": "PDG-P150MAX-BUSINESS", "name": "XAG P150 MAX Business", "price": 104999, "q": {"batteries": 8, "chargers": 4, "towers": 2, "rtk": 1, "generators": 0, "spreader": 0, "sling": 0}}], "items": {"batteries": {"sku": "09-017-00073", "name": "XAG B141050 Smart Super Charge Battery", "price": 5999, "max": 12}, "chargers": {"sku": "09-017-00069", "name": "XAG CM13600S Charger", "price": 3499, "max": 6}, "towers": {"sku": "09-017-00065", "name": "XAG 2024 Battery Cooling Tower(INTL)", "price": 799, "max": 4}, "rtk": {"sku": "09-016-00083", "name": "XAG XRTK7 Mobile Station(INTL)", "price": 3999, "max": 1}, "generators": {"sku": "09-017-00109", "name": "XAG GC4000+ Super Charging Station (Gen III)", "price": 5899, "max": 2}, "spreader": {"sku": "09-023-00145", "name": "XAG P150 Max RevoCast 5(Screw Feeder L)", "price": 8999, "max": 1}, "sling": {"sku": "05-002-02682", "name": "XAG RevoSling system (RevoSling + Landing Gear 05-002-02683, INTL)", "price": 3498, "max": 1}}}'>
 <fieldset class="cfg-presets">
 <legend data-i18n="cfg_base">Base package</legend>
 <label class="cfg-preset"><input type="radio" name="cfgPreset" value="PDG-P150MAX-STARTER" checked><span class="cfg-preset-name">Starter</span><span class="cfg-preset-price">₾75,999</span></label><label class="cfg-preset"><input type="radio" name="cfgPreset" value="PDG-P150MAX-PRO"><span class="cfg-preset-name">Pro</span><span class="cfg-preset-price">₾87,999</span></label><label class="cfg-preset"><input type="radio" name="cfgPreset" value="PDG-P150MAX-BUSINESS"><span class="cfg-preset-name">Business</span><span class="cfg-preset-price">₾104,999</span></label>
@@ -1148,6 +1148,22 @@
 </div>
 <div class="qty-stepper cfg-stepper">
 <button type="button" class="qty-btn" data-step="-1" aria-label="Decrease quantity" data-i18n-aria="qty_less">−</button><input class="qty-input" type="number" inputmode="numeric" min="0" max="2" step="1" value="0" aria-label="GC4000+ charging station" data-i18n-aria="cfg_generator"><button type="button" class="qty-btn" data-step="1" aria-label="Increase quantity" data-i18n-aria="qty_more">+</button>
+</div>
+</div>
+<div class="cfg-row" data-key="spreader">
+<div class="cfg-row-name">
+<span data-i18n="cfg_revocast">RevoCast 5 granule spreader</span><span class="cfg-unit">₾8,999 <span data-i18n="cfg_each">/ each</span></span>
+</div>
+<div class="qty-stepper cfg-stepper">
+<button type="button" class="qty-btn" data-step="-1" aria-label="Decrease quantity" data-i18n-aria="qty_less">−</button><input class="qty-input" type="number" inputmode="numeric" min="0" max="1" step="1" value="0" aria-label="RevoCast 5 granule spreader" data-i18n-aria="cfg_revocast"><button type="button" class="qty-btn" data-step="1" aria-label="Increase quantity" data-i18n-aria="qty_more">+</button>
+</div>
+</div>
+<div class="cfg-row" data-key="sling">
+<div class="cfg-row-name">
+<span data-i18n="cfg_revosling">RevoSling cargo system (with landing gear)</span><span class="cfg-unit">₾3,498 <span data-i18n="cfg_each">/ each</span></span>
+</div>
+<div class="qty-stepper cfg-stepper">
+<button type="button" class="qty-btn" data-step="-1" aria-label="Decrease quantity" data-i18n-aria="qty_less">−</button><input class="qty-input" type="number" inputmode="numeric" min="0" max="1" step="1" value="0" aria-label="RevoSling cargo system (with landing gear)" data-i18n-aria="cfg_revosling"><button type="button" class="qty-btn" data-step="1" aria-label="Increase quantity" data-i18n-aria="qty_more">+</button>
 </div>
 </div>
 </div>

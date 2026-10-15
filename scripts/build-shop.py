@@ -224,7 +224,9 @@ for r in rows:
 # Fewer components than the preset = no approved rule -> "ფასი მოთხოვნით" (quote), never an invented discount.
 CFG_ITEMS = [('batteries', '09-017-00073', 'cfg_battery', 'აკუმულატორი B141050', 12), ('chargers', '09-017-00069', 'cfg_charger', 'დამტენი CM13600S', 6),
              ('towers', '09-017-00065', 'cfg_tower', 'გამაგრილებელი ავზი', 4),
-             ('rtk', '09-016-00083', 'cfg_rtk', 'RTK სადგური XRTK7', 1), ('generators', '09-017-00109', 'cfg_generator', 'დამუხტვის სადგური GC4000+', 2)]
+             ('rtk', '09-016-00083', 'cfg_rtk', 'RTK სადგური XRTK7', 1), ('generators', '09-017-00109', 'cfg_generator', 'დამუხტვის სადგური GC4000+', 2),
+             ('spreader', '09-023-00145', 'cfg_revocast', 'გრანულების გამფანტველი RevoCast 5', 1),
+             ('sling', '05-002-02682', 'cfg_revosling', 'ტვირთის საკიდი სისტემა RevoSling (შასით)', 1)]
 
 
 def configurator():
@@ -248,7 +250,7 @@ def configurator():
                     for k, s_, lab, ka, mx in CFG_ITEMS)
     return ('<section class="section kit-config" id="configurator" aria-labelledby="cfg-title"><div class="container">'
             '<div class="section-heading"><h2 id="cfg-title"><span data-i18n="cfg_title">კომპლექტის კონფიგურატორი</span></h2></div>'
-            '<p class="page-intro" data-i18n="cfg_intro">აირჩიეთ საბაზისო კომპლექტი და საჭიროებისამებრ დაამატეთ ბატარეები, დამტენები, RTK ან დამუხტვის სადგური.</p>'
+            '<p class="page-intro" data-i18n="cfg_intro">აირჩიეთ საბაზისო კომპლექტი და საჭიროებისამებრ დაამატეთ აკუმულატორები, დამტენები, RTK, დამუხტვის სადგური, გრანულების გამფანტველი ან ტვირთის საკიდი სისტემა.</p>'
             f'<div class="cfg" id="kitConfig" data-config="{data}">'
             f'<fieldset class="cfg-presets"><legend data-i18n="cfg_base">საბაზისო კომპლექტი</legend>{radios}</fieldset>'
             '<div class="cfg-items"><div class="cfg-row cfg-fixed"><div class="cfg-row-name"><span data-i18n="kit_drone">XAG P150 MAX სასოფლო-სამეურნეო დრონი (RevoSpray 5)</span></div><output class="cfg-fixed-qty">1</output></div>'

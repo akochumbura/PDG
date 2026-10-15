@@ -139,3 +139,5 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   Package contents link to their pages: drone → /p150-max, SRC5, B141050, CM13600S, cooling tank, XRTK7 (product_pages.py).
   Parts list has sorting (recommended / price ↑ / price ↓ / name) and min / max price.
 - Phone menu (owner, 15 Oct 2026): while open, the page behind is locked (html/body.nav-lock) and the menu scrolls by itself; closing restores the scroll position.
+- (owner, 15 Oct 2026) RevoSling 05-002-02682 + Landing Gear 05-002-02683 = ONE system: one shop item 05-002-02682, price = sum (₾3,498),
+  merged by import-price-list.py (MERGE). Configurator extras also include RevoCast 5 spreader (09-023-00145) and the RevoSling system (max 1 each).

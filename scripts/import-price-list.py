@@ -42,6 +42,23 @@ def clean(s):
     return s
 
 
+# Owner, 15 Oct 2026: the RevoSling and its landing gear (05-002-02683) are one system, sold together as one item.
+MERGE = {'05-002-02683': '05-002-02682'}
+MERGED_NAMES = {'05-002-02682': ('XAG RevoSling system (RevoSling + Landing Gear 05-002-02683, INTL)',
+                                 'XAG RevoSling ტვირთის საკიდი სისტემა დასაჯდომი შასით (05-002-02683), INTL — ტვირთის გადასატანად')}
+
+
+def merge_systems(out):
+    """Fold each MERGE child into its parent: one row, prices added, child removed."""
+    by = {r['sku']: r for r in out}
+    for child, parent in MERGE.items():
+        if child in by and parent in by:
+            by[parent]['gel'] = str(int(by[parent]['gel']) + int(by[child]['gel']))
+            by[parent]['name'], by[parent]['name_ka'] = MERGED_NAMES[parent]
+            out.remove(by[child])
+    return out
+
+
 def main(path):
     ws = openpyxl.load_workbook(path, data_only=True)['Full Item Price List']
     head = [c.value for c in ws[6]]
@@ -79,6 +96,7 @@ def main(path):
         row.update(group=group, name=en, name_ka=ka, sku=sku, gel=str(gel))
         out.append(row)
     out += [r for r in extra if r['sku'] not in seen]
+    out = merge_systems(out)
     with open(CATALOG, 'w', encoding='utf-8', newline='') as f:
         w = csv.DictWriter(f, fieldnames=fields, lineterminator='\n')
         w.writeheader()
