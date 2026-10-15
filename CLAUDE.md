@@ -138,3 +138,4 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   Screws and similar fasteners = 5-15 GEL by invoice landed cost (cost x 2.5 + 3.5, clamped; import-price-list.py: 02-004-*, nut/bolt/circlip, M-size gaskets).
   Package contents link to their pages: drone → /p150-max, SRC5, B141050, CM13600S, cooling tower, XRTK7 (product_pages.py).
   Parts list has sorting (recommended / price ↑ / price ↓ / name) and min / max price.
+- Phone menu (owner, 15 Oct 2026): while open, the page behind is locked (html/body.nav-lock) and the menu scrolls by itself; closing restores the scroll position.
