@@ -147,7 +147,7 @@ def render(page_source, language, filename):
         if faq: graph.append({"@type":"FAQPage","mainEntity":faq})
     # Product/Offer schema = exactly what the page shows: packages, and shop items that have their own photo.
     # Availability comes from each card (data-avail); quote-only parts and previous-generation models get no Offer.
-    KIT_DESC={"ka":"სასოფლო-სამეურნეო დრონი შეწამვლისთვის, გრანულების გაფანტვისთვის და ტვირთის გადატანისთვის","en":"Agricultural drone for spraying, granule spreading and cargo transport","ru":"Сельскохозяйственный дрон для опрыскивания, разбрасывания гранул и перевозки грузов"}[language]
+    KIT_DESC={"ka":"სასოფლო-სამეურნეო დრონი ნაკვეთის რუკის შედგენისთვის, შეწამვლისთვის, გრანულების გაფანტვისთვის და ტვირთის გადატანისთვის","en":"Agricultural drone for field mapping, spraying, granule spreading and cargo transport","ru":"Сельскохозяйственный дрон для картографирования полей, опрыскивания, разбрасывания гранул и перевозки грузов"}[language]
     AVAIL={'in_stock':'https://schema.org/InStock'}
     def product(sku,name,price,img,avail,kit,url):
         if avail not in AVAIL or not price: return None

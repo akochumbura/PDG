@@ -154,3 +154,4 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   product/package pages carry stock max; product page h1 = short name (pd_<slug>_h1); Russian texts use the Latin "Premium Drones Georgia";
   catalog names normalised "Station (INTL)"; hero image recompressed (q82) and preloaded per viewport; search ranks items with their own page first;
   terms/payment pages styled; quote-only cards wrap; tap targets ≥40px on phones (footer, back links, logo); hero scroll hint removed.
+- (owner, 15 Oct 2026) Feature ORDER everywhere: mapping, spraying, spreading, cargo (home cards + title, hero sentence, P150 MAX chapters 01 RealTerra..04 RevoSling, stats strip, meta descriptions, chat prompt). Keep this order in new texts.
