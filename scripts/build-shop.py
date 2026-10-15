@@ -170,7 +170,10 @@ def card(r):
     page = product_pages.url(s)
     pic, ttl = photo(r, kit), title(r)
     more = ''
-    if page:  # own product page with the official specs: the photo and the name open it
+    if page and st == 'out':  # previous model: photo and name open its gallery page
+        pic = f'<a class="product-link" href="{page}" data-local>{pic}</a>'
+        ttl = f'<a class="product-link" href="{page}" data-local>{ttl}</a>'
+    elif page:  # own product page with the official specs: the photo and the name open it
         pic = f'<a class="product-link" href="{page}" data-local>{pic}</a>'
         ttl = f'<a class="product-link" href="{page}" data-local>{ttl}</a>'
         mk, mt = ('pd_pk_more', 'შემადგენლობა და ფოტოები') if kit else ('pd_more', 'მახასიათებლები')

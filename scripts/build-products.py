@@ -192,6 +192,47 @@ for sku, slug in P.KITS.items():
         f'<a class="text-link" href="/p150-max.html?kit={sku.split('-')[-1].lower()}#configurator" data-local><span data-i18n="pd_pk_cfg">კომპლექტის შეცვლა კონფიგურატორში</span><span aria-hidden="true">→</span></a></p>'
         f'</article></div></section>\n</template>\n')
 
+# ---- Previous-generation model pages (gallery, specs, consultation) ----
+import legacy_models as LM
+T2 = {'pd_lg_back': ('← წინა მოდელები', '← Previous models', '← Предыдущие модели'),
+      'pd_lg_note': ('წინა თაობის მოდელი. ამჟამად არ არის მარაგში; მიიღეთ კონსულტაცია.', 'Previous-generation model. Currently out of stock; ask for a consultation.',
+                     'Модель предыдущего поколения. Сейчас нет в наличии; получите консультацию.'),
+      'pd_lg_eyebrow': ('წინა თაობა', 'Previous generation', 'Предыдущее поколение'),
+      'pd_lg_source': ('წყარო: XAG-ის ოფიციალური მახასიათებლები (xa.com).', 'Source: official XAG specifications (xa.com).', 'Источник: официальные характеристики XAG (xa.com).')}
+for k, v in T2.items():
+    put(k, v)
+for m in LM.MODELS:
+    L = P.LEGACY[m['sku']]
+    slug, pid = L['slug'], L['slug'].replace('-', '_')
+    n = len(L['pics'])
+    put(f'pd_{pid}_title', (f'{L["short"]} — წინა თაობის მოდელი, ფოტოები და მახასიათებლები', f'{L["short"]} — previous-generation model, photos and specifications',
+                            f'{L["short"]} — модель предыдущего поколения, фото и характеристики'))
+    put(f'pd_{pid}_intro', (f'{L["short"]} სასოფლო-სამეურნეო დრონი: ფოტოები და ოფიციალური მახასიათებლები. ამჟამად არ არის მარაგში.',
+                            f'{L["short"]} agricultural drone: photos and official specifications. Currently out of stock.',
+                            f'Сельскохозяйственный дрон {L["short"]}: фото и официальные характеристики. Сейчас нет в наличии.'))
+    for i, a in enumerate(L['pics'], 1):
+        put(f'pd_{pid}_g{i}', a)
+    pics = [(f'/assets/img/models/{L["prefix"]}-{i}.webp', f'/assets/img/models/{L["prefix"]}-{i}-t.webp', f'pd_{pid}_g{i}', L['pics'][i - 1][0]) for i in range(1, n + 1)]
+    thumbs = ''.join(f'<button type="button" class="pk-thumb{" is-on" if j == 0 else ""}" data-full="{full}" aria-label="{html.escape(alt, quote=True)}" data-i18n-aria="{key}"{" aria-current=\"true\"" if j == 0 else ""}>'
+                     f'<img src="{th}" width="240" height="180" alt="" loading="lazy" decoding="async"></button>' for j, (full, th, key, alt) in enumerate(pics))
+    spec_ka = m['specs'][0]
+    put(f'pd_{pid}_spec', tuple(m['specs']))
+    out.append(
+        f'<template data-page="{slug}.html" data-ka-title="{html.escape(L["short"] + " — წინა თაობის მოდელი | საქართველოს პრემიუმ დრონები", quote=True)}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro">\n'
+        f'  <section class="page-hero pd-hero"><div class="container"><a class="back-link" href="/shop.html#previous-models" data-local data-i18n="pd_lg_back">← წინა მოდელები</a>'
+        f'<p class="eyebrow" data-i18n="pd_lg_eyebrow">წინა თაობა</p><h1>{html.escape(L["short"])}</h1><p class="product-orig">{html.escape(m["name"])}</p>'
+        f'<p class="page-intro" data-i18n="pd_{pid}_intro">{html.escape(c["ka"][f"pd_{pid}_intro"])}</p></div></section>\n'
+        f'  <section class="section pd-main"><div class="container pd-grid">'
+        f'<div class="pk-gallery"><div class="product-photo pd-photo pk-main"><img id="pkMain" src="{pics[0][0]}" width="1200" height="900" alt="{html.escape(pics[0][3], quote=True)}" data-i18n-alt="{pics[0][2]}" decoding="async"></div>'
+        f'<div class="pk-thumbs" aria-label="ფოტო" data-i18n-aria="pd_pk_photo">{thumbs}</div></div>'
+        f'<article class="product product-out pd-buybox" data-cat="legacy" data-avail="out">'
+        f'<h2 class="pk-in-title" data-i18n="pd_specs">მახასიათებლები</h2><p class="product-specs" data-i18n="pd_{pid}_spec">{html.escape(spec_ka)}</p>'
+        f'<p class="product-stock is-out" data-i18n="out_of_stock">არ არის მარაგში</p>'
+        f'<p class="small-note" data-i18n="pd_lg_note">{html.escape(T2["pd_lg_note"][0])}</p>'
+        f'<a class="button button-line consult-btn" href="/consultation" data-local><span data-i18n="consult_cta">კონსულტაცია</span></a>'
+        f'<p class="small-note"><span data-i18n="pd_lg_source">{html.escape(T2["pd_lg_source"][0])}</span></p>'
+        f'</article></div></section>\n</template>\n')
+
 pb = ROOT / 'scripts/page-bodies.html'
 t = pb.read_text(encoding='utf-8')
 if '<!--product-pages-->' not in t:

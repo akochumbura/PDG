@@ -165,7 +165,7 @@ def render(page_source, language, filename):
             if btn is None: continue
             d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),img,card.get('data-avail'),kit,canonical+('#kits' if kit else '#parts'))
             if d: graph.append(d)
-    for box in doc.xpath('//article[contains(@class,"pd-buybox")][@data-avail]'):
+    for box in doc.xpath('//article[contains(@class,"pd-buybox")][@data-avail][@data-avail!="out"]'):
         # Product page (battery, charger, charging station): Offer only with the product's own photo (as on the shop page).
         img=(doc.xpath('//div[contains(@class,"pd-photo")]//img/@src') or [''])[0]
         btn=box.xpath('.//button[contains(@class,"add-btn")]')[0]

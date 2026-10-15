@@ -1,0 +1,158 @@
+# Premium Drones Georgia
+
+Read PROJECT_MEMORY.md before editing. Keep this project buildless: HTML, CSS,
+vanilla JavaScript and self-hosted font/photo assets. Preserve the owner's supplied
+logo exactly. Georgian source is UTF-8 in dist/index.html and scripts/page-bodies.html;
+English and Russian counterparts belong in dist/assets/js/content.js. Regenerate
+and check everything with `python scripts/build.py`. Publish only dist. Update project memory
+and stage documentation after significant changes. The consultation form is server-side (docs/12-consultation-form.md): say "received" only after the server
+accepts it; before RESEND_API_KEY exists requests only land in /api/contact/inbox. The separately referenced FastAPI project was not included.
+
+## Workflow (updated 14 Oct 2026: shop, 3 languages, premium-drones.ge on Cloudflare Pages)
+- Domain premium-drones.ge (DNS on Cloudflare); contact info@premium-drones.ge; WhatsApp/phone +995 550 00 43 33.
+- Rebuild and verify EVERYTHING with `python scripts/build.py` (shop cards + P150 kit table from catalog.csv/pricing.py,
+  then pages, then checks). Never hand-edit generated dist/*.html except dist/index.html (source of the Georgian home page).
+- Hosting is Cloudflare Pages: it serves /shop.html as /shop. The build writes clean URLs (no .html) in links,
+  canonicals and the sitemap; verify fails on any internal .html link. 404.html exists per language (noindex).
+  Local preview that behaves the same: `python scripts/serve.py`.
+- Prices (owner, 14 Oct 2026): the shop = the owner's price list PDG_XAG_Complete_Item_Price_List_With_Margins.xlsx (268 items,
+  sheet "Full Item Price List", Retail incl. VAT GEL) imported into scripts/catalog.csv by scripts/import-price-list.py (SKU = XAG manufacturer code
+  "მწარმოებლის კოდი" e.g. 09-017-00073, looked up from the invoice Code P0000… in scripts/supplier-code-map.csv, made from
+  PDG_Invoice_Packing_List_Georgian.xlsx; never show the P0000 codes; name = Original item, name_ka = Georgian item). Cost/margin columns are internal and never published. A new list: rerun the import.
+  Prices show only the ₾ sign; no "prices in GEL / ლარში / в лари" texts anywhere (owner).
+- Packages (owner, 14 Oct 2026 night, LATEST APPROVED, exact contents): Starter 75,999 = drone (RevoSpray 5), SRC5 remote,
+  4 B141050 batteries, 2 CM13600S chargers, 2 battery cooling tanks ("cooling tanks"). Pro 87,999 = Starter + 2 batteries (6) + XRTK7.
+  Business 104,999 = Pro with 8 batteries and 4 chargers. Contents = catalog columns (drones, remotes, batteries, chargers, towers, rtk).
+  No ACS4 control stick in any package (the handheld item in the XAG combo picture is the XRTK7).
+  Each package has its own page (/p150-max-starter, -pro, -business): first picture = combo picture with exactly those contents
+  (dist/assets/img/products/PDG-P150MAX-*.webp, made by scripts/tools/package-pictures.py), then the P150 MAX gallery.
+- Spraying (owner brief 14 Oct 2026): headings use შესხურება, explanatory text uses შეწამვლა; combined line
+  "ზუსტი შესხურება / შეწამვლა რეალურ საველე პირობებში." Experience: "thousands of hectares in real field conditions"
+  (optional quiet "2,900+ ha in the 2026 season"); never "1000+ ha". Worked with XAG V40, P100, P100 Pro; focus P150 MAX.
+  Locations: Tbilisi = storage and service (Panaskerteli-Tsitsishvili St 12, by appointment, not a showroom);
+  Lagodekhi = warehouse and field operations. No hidden SEO text; model names only in meta/structured data/llms.txt.
+- Model range on home: P150 MAX available; P100 Pro 72,500 / P100 70,220 (drone + 4 batteries), V40 38,500 (drone + 2)
+  are out of stock and show "Last package price".
+- Product photos: dist/assets/img/products/<SKU>.webp is picked up at build time. Until then EVERY product card (packages too)
+  shows the official XAG logo (owner, 14 Oct 2026). Never show a photo of a different product on a part card (verify enforces this).
+- No people or faces in any photo, no founder name, no CEO, no personal biography (verify blocks technical-service.webp,
+  'founder', 'CEO', '1000+'). Product and equipment photos only; no DJI images in XAG sections; no AI images.
+- No negative letter-spacing anywhere (verify enforces); no decorative gradients; no loud badges.
+- P150 MAX specs on the site are from xa.com/en/p150max/p150maxspecs (Oct 2026). Do not add unverified specs.
+  Full spec table ("მახასიათებლები", 109 rows, ka/en/ru) lives in scripts/p150_specs.py, built by scripts/build-specs.py.
+- Every new UI string needs ka (in the HTML), en and ru keys in dist/assets/js/content.js.
+- Payments: Bank of Georgia via dist/_worker.js, PAUSED and not live (see docs/07-payments.md). Never claim a payment succeeded
+  unless the bank receipt says completed. Under 20,000 GEL full payment, from 20,000 GEL deposit + bank transfer.
+- Server part: dist/_worker.js is GENERATED from scripts/worker.template.js by build-shop.py (prices + chat knowledge
+  from the catalog). /api/*: payments (docs/07), AI chat (docs/10), accounts (docs/11). Each stays off until its
+  Cloudflare secret/binding exists. Header: Home + Products/Services/Media (blog, gallery) mega menu, search (scripts/build-search.py), account, cart.
+- Home page must stay short and simple (owner): hero, dealer line, key specs, ecosystem, packages, contact. Detail lives on other pages.
+- Fonts: D-DIN (Latin, like xa.com), Noto Sans Georgian, IBM Plex Sans (Cyrillic). Keep font licences in dist/assets/fonts.
+  Header logo = "PDG ~ XAG" lockup: official XAG vector logo (dist/assets/img/xag-logo.svg / xag-logo-white.svg, from xa.com) + dash + PDG logo.
+  Logo: pdg-logo-light.png / pdg-logo-dark.png are transparent cut-outs of the supplied logo (owner asked for this);
+  header, footer and logo follow the light/dark theme (default = phone setting).
+- Dealer claim, exact owner wording only: "Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus
+  region." (ka/en/ru key dealer_line). Make no other official claims.
+- E-mail on the site: only info@premium-drones.ge.
+- Company name in Georgian text is "საქართველოს პრემიუმ დრონები" (owner, 14 Oct 2026); Latin "Premium Drones Georgia" in en/ru,
+  the logo and structured data (with alternateName).
+- E-mail DNS records in Cloudflare must not be removed (docs/09-email.md).
+
+## Wording and SEO (2026-10-14)
+- Visible Georgian wording: "სასოფლო-სამეურნეო დრონი/პლატფორმა", "შეწამვლა" (never "შესხურება"), "გრანულების გაფანტვა", "ტვირთის გადატანა". Do not show "აგრო დრონი" on pages.
+- Farmer search words (შეწამვლა, აგროდრონი, აგრო დრონი, შესაწამლი დრონი…) live only in meta keywords, search synonyms (scripts/build-search.py) and FAQ wording — never as visible keyword lists.
+- P150 MAX positioning: world-class flagship agricultural platform for spraying, granule spreading, cargo transport and field mapping
+  (owner, 15 Oct 2026: mapping must be visible — home 4th card 'რუკის შედგენა' 30 ha per flight (owner 15 Oct: mapping up to 30 ha; droplet 60~1500 µm; 20 m/s = 70 km/h; warranty = official XAG 1 year, batteries 1 year or 1500 cycles); maps by itself with its camera, built-in AI recognises obstacles).
+- GC4000+ photo = owner-supplied render (09-017-00109.webp). The dimension drawing he sent (RevoSpray 4 / RevoCast 4 / RealTerra 3, 3118×3110 mm) is the P100 Pro, NOT the P150 MAX: not used on P150 MAX pages.
+- Header: language dropdown (#langBtn/#langList), About us in the top menu, light theme by default.
+- Chat = website conversation first (stored in PDG_DATA, team answers at /api/chat/inbox). AI: OpenAI (OPENAI_API_KEY, CHAT_MODEL gpt-6-luna,
+  CHAT_EFFORT medium in Cloudflare) or Anthropic; answers every message, pauses 30 min after a team reply, learns from team replies. No subtitle in
+  the chat header (owner). AI explains why PDG chose XAG (since 2007, global leader, No.1 patent holder per XAG, next-gen; comparative part = "we believe"). WhatsApp / Messenger / Call are secondary, shown after the first message. Keep the small "replies are generated by AI" note when AI is on.
+- P150 MAX: 80 L tank, 32 L/min (two pumps), 46 L/min with the XAG 4-Nozzle Upgrade Kit (orchards and vineyards), 115 L granule container, 80 kg payload.
+- No calculator page (removed on request).
+- Site is published by pushing to GitHub akochumbura/PDG (main); Cloudflare Pages project "pdg" builds with `pip install lxml && python3 scripts/build.py`, output `dist`.
+- P150 MAX facts (owner + xa.com/en/p150max): 80 L tank, 32 L/min (2 pumps), 46 L/min with the 4-Nozzle Upgrade Kit (recommended for orchards and vineyards), granule container 115 L (owner confirmed; not 120), 300 kg/min, 9 m spread width, 80 kg payload, 20 m/s, RealTerra mapping up to 30 ha/flight (owner), 4D radar 1.5–100 m, B141050 1050 Wh / 1500 cycles, IPX6K.
+- No calculator page (removed by owner request).
+
+## Catalog, stock and shop rules (owner brief 14 Oct 2026, evening)
+- Parts PDFs (AgriFuture XAG P150 Max category pages) use XAG part numbers; the invoice uses P0000… codes: NO exact SKU overlap.
+  scripts/pdf-part-matches.csv records every PDF part: A = identical official name, one-to-one (photo attached to the invoice item),
+  A-model = same model code (CM13600S), B = ambiguous, C = probable duplicate (not added), D = not in invoice (added as quote-only).
+  Never attach a picture shared by several part numbers, placeholders or drawings. Do not match by similar names.
+- catalog.csv column avail: '' = price-list item (shown "საწყობშია"; quantities in scripts/stock.csv from the packing list),
+  quote = no approved price ("ფასი მოთხოვნით" + WhatsApp quote, never in cart/checkout), legacy rows come from scripts/legacy_models.py
+  (P100 Pro, P100, V40: "არ არის მარაგში" + consultation, no price, no Offer schema; specs from xa.com spec pages; owner photos XAG-*.webp).
+- Quantity steppers on cards, kit table and cart (positive whole numbers; data-max only when a verified stock limit exists).
+- P150 MAX configurator (P150 MAX page, built by build-shop.py): presets = package rows; extras = B141050, CM13600S, XRTK7, GC4000+
+  at their shop price; fewer components than the preset = "ფასი მოთხოვნით". WhatsApp message + add to cart.
+- Header: PDG logo first, then XAG logo, equal containers. Home dealer line uses the XAG logo image. About page has "XAG-ის შესახებ" (xa.com, no claims).
+- Mobile bar (≤768px): call + chat (see 15 Oct additions), safe-area aware. Chat: one-line welcome, 4 quick actions, 1–3 sentence answers.
+- Schema: Organization with Tbilisi + Lagodekhi locations (no HQ, hours or village address); Product/Offer only for in-stock priced items
+  with own photo + packages; quote-only and previous models have no Offer. verify-site.py blocks ₾0 cart buttons, bad tel links, cost data.
+
+## Logos and home hero (owner, 14 Oct 2026, late)
+- Logo colours = official XAG file (xa.com xag-icon.svg): black #3D3C38, red #CC0000. pdg-logo-light.png / pdg-logo-dark.png and the
+  app icon / favicon were recoloured to exactly these values (dark version: #F4F3EF + #CC0000). pdg-logo.png = untouched original.
+- Header: PDG ~ XAG (literal "~", equal logo heights). Strip below the hero: PDG ~ XAG (owner 15 Oct: PDG first, like the header) (literal "~"), then exactly
+  "საქართველოს პრემიუმ დრონები არის XAG-ის ოფიციალური და ერთადერთი დილერი კავკასიაში." (key dealer_strip). No extra slogans.
+- Hero (owner, 14 Oct 2026 final): photo as before, text on the LEFT, centred vertically: small bold tagline
+  "სწრაფი, ზუსტი, საიმედო" (hero_tagline) above "XAG P150 MAX" in Barlow Bold (OFL, self-hosted), then sentence and buttons.
+  Do not redesign the hero.
+
+## STATUS — 2026-10-14 (read this first in a new chat)
+Live: premium-drones.ge on Cloudflare Pages project "pdg" (account ako.chumburidze@gmail.com), auto-deploys from GitHub akochumbura/PDG main.
+Build: dist/ is built locally with `python3 scripts/build.py` and COMMITTED; on Cloudflare (CF_PAGES set) build.py exits at once and dist/ is published as is.
+www → root: Redirect Rule must match only hostname www.premium-drones.ge (a rule on "All incoming requests" caused a redirect loop).
+Owner is non-technical, works from iPhone/Windows; wants Claude to do Cloudflare steps for him (use the desktop-app browser when available).
+
+TODO in Cloudflare (dashboard, owner's account):
+1. DONE 14 Oct 2026: KV binding on pdg Production = variable name "PDG" -> KV namespace "PDG_DATA" (id 8cd5cc39…).
+   The worker accepts PDG_DATA, ORDERS or PDG as the variable name (kv() in scripts/worker.template.js).
+   Check bindings per deployment: Deployments → Details → Functions → "KV namespace bindings" (Variable name column).
+2. DONE: Secret ADMIN_KEY exists (owner set the value). Team inbox: https://premium-drones.ge/api/chat/inbox?key=ADMIN_KEY
+   Check: https://premium-drones.ge/api/chat/config must show "live":true.
+3. Optional WhatsApp alert (CallMeBot): secrets WHATSAPP_ALERT_PHONE (+995550004333) and WHATSAPP_ALERT_KEY (from CallMeBot after sending "I allow callmebot to send me messages").
+4. After adding bindings/secrets: Deployments → ⋯ → Retry deployment.
+6. AI replies: owner must create ANTHROPIC_API_KEY (console.anthropic.com, set a monthly limit) and add it as a Secret on pdg, then redeploy. AI answers all messages, pauses 30 min after a team reply, learns from team replies (KV learn:index). Greeting = "გამარჯობა! რით შეგვიძლია დაგეხმაროთ?" (owner: no "ჩვენი გუნდი გიპასუხებთ ამავე ჩატში").
+7. Inbox: open /api/chat/inbox without ?key — sign-in box.
+5. Later: Bank of Georgia e-commerce agreement → secrets BOG_CLIENT_ID, BOG_CLIENT_SECRET (payments). Optional ANTHROPIC_API_KEY for AI replies in chat.
+Pending from owner: product photos (no people), BOG agreement, deposit % (10% assumed), other payment options (asked: TBC, installments, invoice?).
+
+## Manufacturer codes, photos, product pages (owner, 14 Oct 2026, night)
+- Every SKU on the site = XAG manufacturer code (packing list column "მწარმოებლის კოდი"); 268 invoice codes map one-to-one.
+- The P150 MAX drone (09-007-00188) is NOT sold separately: only inside the packages (importer skips it; no drone filter chip).
+- Product photos = the parts PDFs, matched by EXACT manufacturer code (scripts/pdf-part-matches.csv). A picture shared by
+  different part numbers (screw kits, CW/CCW gaskets, 1&2 / 3&4 cables) is never used; one shared only by versions of the same
+  part (same name) is. Exception: B141050 picture = PDF code 09-017-00083 (INTL) for invoice 09-017-00073 (same model).
+  Many PDF parts have no picture in the PDF (blank lazy-loaded image): those keep the XAG logo.
+- Product pages (scripts/product_pages.py → build-products.py): /b141050-battery, /cm13600s-charger, /gc4000-plus-generator,
+  specs from p150_specs.py 'power'. Cards, home part list and search open them. Only items with verified xa.com specs get a page
+  (B13970S: no verified specs, no page).
+- Every page title starts with "PREMIUM DRONES GEORGIA — " (build-pages.py adds it).
+- Logo lockups (owner, 14 Oct 2026 night): the XAG logo is exactly the height of the whole PDG logo (incl. the PREMIUM DRONES
+  GEORGIA line), aspect ratios kept, centred; header = PDG ~ XAG with a literal "~", strip = PDG ~ XAG; "~" in --xag-black. build.py adds ?v=hash to /assets/img URLs so changed logos/photos reach visitors at once.
+- Home hero (owner, 14 Oct 2026 night): heading, sentence and buttons at the top with equal gaps (32px desktop, 24px phone);
+  the whole drone must stay visible (wide screens: photo right of the text, hero ≤ 56vw tall; ≤1240px: text above the full photo).
+- Home page <title> starts with "PREMIUM DRONES GEORGIA" (owner: the browser tab must show it), in ka/en/ru.
+- (owner, 14 Oct 2026, 23:15) Parts not on the packing list (avail=quote) = "არ არის მარაგში" + price on request (not "მარაგი დაზუსტდება").
+  Screws and similar fasteners = 5-15 GEL by invoice landed cost (cost x 2.5 + 3.5, clamped; import-price-list.py: 02-004-*, nut/bolt/circlip, M-size gaskets).
+  Package contents link to their pages: drone → /p150-max, SRC5, B141050, CM13600S, cooling tank, XRTK7 (product_pages.py).
+  Parts list has sorting (recommended / price ↑ / price ↓ / name) and min / max price.
+- Phone menu (owner, 15 Oct 2026): while open, the page behind is locked (html/body.nav-lock) and the menu scrolls by itself; closing restores the scroll position.
+- (owner, 15 Oct 2026) RevoSling 05-002-02682 + Landing Gear 05-002-02683 = ONE system: one shop item 05-002-02682, price = sum (₾3,498),
+  merged by import-price-list.py (MERGE). Configurator extras also include RevoCast 5 spreader (09-023-00145) and the RevoSling system (max 1 each).
+
+## 15 Oct 2026 (morning) additions
+- Purchasing today: cart -> WhatsApp/e-mail -> PDG confirms -> invoice -> bank transfer. Online card payment is off; terms (terms_p2/p3/p5/p7) describe that, the card/deposit paragraph (#termsOnline, terms_online) and cart pay/deposit notes appear only when /api/payments/config says enabled. Chat knowledge says online payment is NOT available.
+- Mobile (<=768px): bar = "დარეკვა" (tel) + "მოგვწერეთ" (data-chat-open, opens chat; falls back to /consultation without JS). Chat bubble hidden on phones, bar hidden while chat is open, chat panel follows visualViewport (keyboard). Desktop keeps the bubble.
+- Security: build.py writes CSP (script hashes of the inline theme script) + HSTS into dist/_headers; worker adds nosniff/HSTS/CSP on /api responses, bounded body reads, KV hourly/daily chat, live-chat and registration limits, constant-time admin key check.
+- Home strip: PDG ~ XAG, dealer sentence, small xag_intro line, link "XAG-ის შესახებ →" to /about#about-xag.
+- (owner, 15 Oct 2026) Everything on the price list is in stock (nothing sold yet); quantities: see STOCK below. Deposit 10% for orders from 20,000 GEL is the confirmed policy (applies once online payment is live; today the site only takes WhatsApp/e-mail orders). "Use official photos": xa.com is not reachable from the build environment, so official photos must be supplied as files (dist/assets/img/products/<SKU>.webp; legacy models P100 Pro / P100 / V40 need their own images).
+- (owner, 15 Oct 2026) STOCK = scripts/stock.csv, quantities from the NIK Electronics packing list Shipment-0060920 (all 266 shop parts + 10 drones; nothing sold yet). build-shop.py sets max on every qty input (packages = complete sets the stock allows), configurator max, and the worker rejects orders above stock (CATALOG[sku][2]). After sales, update stock.csv. Limits are per item, not shared across package + loose parts.
+- (owner, 15 Oct 2026) Legacy model photos supplied by the owner: XAG-P100.webp (flying), XAG-V40.webp (on grass), XAG-P100PRO.webp (studio render). Not used: a P100 expo photo with a person in it (no people in photos) and a second V40 close-up.
+- (15 Oct 2026, full-site audit) Cart drawer scrolls as one piece and shows names in the visitor's language (pn_ keys incl. ka);
+  product/package pages carry stock max; product page h1 = short name (pd_<slug>_h1); Russian texts use the Latin "Premium Drones Georgia";
+  catalog names normalised "Station (INTL)"; hero image recompressed (q82) and preloaded per viewport; search ranks items with their own page first;
+  terms/payment pages styled; quote-only cards wrap; tap targets ≥40px on phones (footer, back links, logo); hero scroll hint removed.
+- (owner, 15 Oct 2026) Feature ORDER everywhere: mapping, spraying, spreading, cargo (home cards + title, hero sentence, P150 MAX chapters 01 RealTerra..04 RevoSling, stats strip, meta descriptions, chat prompt). Keep this order in new texts.
+- (owner, 15 Oct 2026) Previous models P100 Pro / P100 / V40 have own pages (/xag-p100-pro, /xag-p100, /xag-v40) with photo galleries (dist/assets/img/models/, made by scripts/tools/model-pictures.py; legacy list in product_pages.py LEGACY). No price, no Offer schema. The P100 expo photo is cropped so no person shows. More photos: add to LEGACY pics + the tool script.

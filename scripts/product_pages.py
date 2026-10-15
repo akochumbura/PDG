@@ -54,8 +54,25 @@ GALLERY = [  # (file, ka alt, en alt, ru alt)
 ]
 
 
+# Previous-generation models (owner photos, 15 Oct 2026): own page with gallery, no price, consultation instead of a cart.
+# Pictures: dist/assets/img/models/<prefix>-N.webp (+ -t thumbs), made by scripts/tools/model-pictures.py.
+LEGACY = {
+    'XAG-P100PRO': {'slug': 'xag-p100-pro', 'prefix': 'p100pro', 'short': 'XAG P100 Pro', 'pics': [
+        ('XAG P100 Pro — სტუდიური ფოტო', 'XAG P100 Pro — studio picture', 'XAG P100 Pro — студийное фото'),
+        ('XAG P100 Pro — დრონი და აღჭურვილობა', 'XAG P100 Pro — drone and equipment', 'XAG P100 Pro — дрон и оборудование')]},
+    'XAG-P100': {'slug': 'xag-p100', 'prefix': 'p100', 'short': 'XAG P100', 'pics': [
+        ('XAG P100 ფრენისას მინდორზე', 'XAG P100 flying over a field', 'XAG P100 в полёте над полем'),
+        ('XAG P100 გამოფენაზე', 'XAG P100 at an exhibition', 'XAG P100 на выставке')]},
+    'XAG-V40': {'slug': 'xag-v40', 'prefix': 'v40', 'short': 'XAG V40', 'pics': [
+        ('XAG V40 მინდორზე', 'XAG V40 on the field', 'XAG V40 в поле'),
+        ('XAG V40 ბაღის შეწამვლისას', 'XAG V40 spraying an orchard', 'XAG V40 при опрыскивании сада')]},
+}
+
+
 def url(sku):
     """Clean URL of the product or package page (Cloudflare Pages serves /x.html as /x), or None."""
+    if sku in LEGACY:
+        return '/' + LEGACY[sku]['slug']
     if sku in KITS:
         return '/' + KITS[sku]
     p = BY_SKU.get(sku)
