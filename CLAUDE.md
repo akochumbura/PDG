@@ -96,7 +96,7 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - Header: PDG ~ XAG (literal "~", equal logo heights). Strip below the hero: XAG ~ PDG (literal "~"), then exactly
   "საქართველოს პრემიუმ დრონები არის XAG-ის ოფიციალური და ერთადერთი დილერი კავკასიაში." (key dealer_strip). No extra slogans.
 - Hero (owner, 14 Oct 2026 final): photo as before, text on the LEFT, centred vertically: small bold tagline
-  "სწრაფი, ზუსტი, ყოველთვის საიმედო" (hero_tagline) above "XAG P150 MAX" in Barlow Bold (OFL, self-hosted), then sentence and buttons.
+  "სწრაფი, ზუსტი, საიმედო" (hero_tagline) above "XAG P150 MAX" in Barlow Bold (OFL, self-hosted), then sentence and buttons.
   Do not redesign the hero.
 
 ## STATUS — 2026-10-14 (read this first in a new chat)
