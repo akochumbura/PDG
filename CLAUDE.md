@@ -62,7 +62,7 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - Visible Georgian wording: "სასოფლო-სამეურნეო დრონი/პლატფორმა", "შეწამვლა" (never "შესხურება"), "გრანულების გაფანტვა", "ტვირთის გადატანა". Do not show "აგრო დრონი" on pages.
 - Farmer search words (შეწამვლა, აგროდრონი, აგრო დრონი, შესაწამლი დრონი…) live only in meta keywords, search synonyms (scripts/build-search.py) and FAQ wording — never as visible keyword lists.
 - P150 MAX positioning: world-class flagship agricultural platform for spraying, granule spreading, cargo transport and field mapping
-  (owner, 15 Oct 2026: mapping must be visible — home 4th card 'რუკის შედგენა' 20 ha per flight; maps by itself with its camera, built-in AI recognises obstacles).
+  (owner, 15 Oct 2026: mapping must be visible — home 4th card 'რუკის შედგენა' 30 ha per flight (owner 15 Oct: mapping up to 30 ha; droplet 60~1500 µm; 20 m/s = 70 km/h; warranty = official XAG 1 year, batteries 1 year or 1500 cycles); maps by itself with its camera, built-in AI recognises obstacles).
 - GC4000+ photo = owner-supplied render (09-017-00109.webp). The dimension drawing he sent (RevoSpray 4 / RevoCast 4 / RealTerra 3, 3118×3110 mm) is the P100 Pro, NOT the P150 MAX: not used on P150 MAX pages.
 - Header: language dropdown (#langBtn/#langList), About us in the top menu, light theme by default.
 - Chat = website conversation first (stored in PDG_DATA, team answers at /api/chat/inbox). AI: OpenAI (OPENAI_API_KEY, CHAT_MODEL gpt-6-luna,
@@ -71,7 +71,7 @@ as a server inbox. The separately referenced FastAPI project was not included.
 - P150 MAX: 80 L tank, 32 L/min (two pumps), 46 L/min with the XAG 4-Nozzle Upgrade Kit (orchards and vineyards), 120 L spreader, 80 kg payload.
 - No calculator page (removed on request).
 - Site is published by pushing to GitHub akochumbura/PDG (main); Cloudflare Pages project "pdg" builds with `pip install lxml && python3 scripts/build.py`, output `dist`.
-- P150 MAX facts (owner + xa.com/en/p150max): 80 L tank, 32 L/min (2 pumps), 46 L/min with the 4-Nozzle Upgrade Kit (recommended for orchards and vineyards), granule container 115 L (owner confirmed; not 120), 300 kg/min, 9 m spread width, 80 kg payload, 20 m/s, RealTerra mapping up to 20 ha/flight, 4D radar 1.5–100 m, B141050 1050 Wh / 1500 cycles, IPX6K.
+- P150 MAX facts (owner + xa.com/en/p150max): 80 L tank, 32 L/min (2 pumps), 46 L/min with the 4-Nozzle Upgrade Kit (recommended for orchards and vineyards), granule container 115 L (owner confirmed; not 120), 300 kg/min, 9 m spread width, 80 kg payload, 20 m/s, RealTerra mapping up to 30 ha/flight (owner), 4D radar 1.5–100 m, B141050 1050 Wh / 1500 cycles, IPX6K.
 - No calculator page (removed by owner request).
 
 ## Catalog, stock and shop rules (owner brief 14 Oct 2026, evening)

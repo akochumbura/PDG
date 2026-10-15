@@ -1043,3 +1043,16 @@ html[data-theme=dark] .dealer-cell .logo-dark{display:block}
 }
 @media(max-width:380px){.header-actions .search-btn{display:none}}
 @media(max-width:900px){.header-actions .search-btn{display:none}.header-inner>.brand{margin:0 auto;flex:0 0 auto}}
+
+/* Phone hero like xa.com (owner, 15 Oct 2026): short centred text on top, the whole drone photo below */
+@media(max-width:600px){
+  .hero{height:auto;min-height:0;max-height:none;padding-bottom:75vw}
+  .hero-content{height:auto;align-items:center;text-align:center;padding-top:36px;padding-bottom:20px}
+  .hero .hero-tagline{font-size:15px;font-weight:500;margin-bottom:8px}
+  .hero h1,html[lang=en] .hero h1,html[lang=ru] .hero h1{font-size:36px;line-height:1.1;max-width:none;margin-bottom:12px}
+  .hero .hero-sub,.hero-actions .button,.hero-scroll{display:none}
+  .hero-actions{justify-content:center}
+  .hero-link{min-height:44px;border-bottom:0;font-size:15px}
+  .hero-shade,html[lang] .hero-shade{background:none}
+  .hero-media{bottom:0}
+}
