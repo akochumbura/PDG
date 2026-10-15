@@ -93,7 +93,7 @@ as a server inbox. The separately referenced FastAPI project was not included.
 ## Logos and home hero (owner, 14 Oct 2026, late)
 - Logo colours = official XAG file (xa.com xag-icon.svg): black #3D3C38, red #CC0000. pdg-logo-light.png / pdg-logo-dark.png and the
   app icon / favicon were recoloured to exactly these values (dark version: #F4F3EF + #CC0000). pdg-logo.png = untouched original.
-- Header: PDG ~ XAG (literal "~", equal logo heights). Strip below the hero: XAG ~ PDG (literal "~"), then exactly
+- Header: PDG ~ XAG (literal "~", equal logo heights). Strip below the hero: PDG ~ XAG (owner 15 Oct: PDG first, like the header) (literal "~"), then exactly
   "საქართველოს პრემიუმ დრონები არის XAG-ის ოფიციალური და ერთადერთი დილერი კავკასიაში." (key dealer_strip). No extra slogans.
 - Hero (owner, 14 Oct 2026 final): photo as before, text on the LEFT, centred vertically: small bold tagline
   "სწრაფი, ზუსტი, საიმედო" (hero_tagline) above "XAG P150 MAX" in Barlow Bold (OFL, self-hosted), then sentence and buttons.
@@ -130,7 +130,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   (B13970S: no verified specs, no page).
 - Every page title starts with "PREMIUM DRONES GEORGIA — " (build-pages.py adds it).
 - Logo lockups (owner, 14 Oct 2026 night): the XAG logo is exactly the height of the whole PDG logo (incl. the PREMIUM DRONES
-  GEORGIA line), aspect ratios kept, centred; header = PDG ~ XAG with a literal "~", strip = XAG ~ PDG; "~" in --xag-black. build.py adds ?v=hash to /assets/img URLs so changed logos/photos reach visitors at once.
+  GEORGIA line), aspect ratios kept, centred; header = PDG ~ XAG with a literal "~", strip = PDG ~ XAG; "~" in --xag-black. build.py adds ?v=hash to /assets/img URLs so changed logos/photos reach visitors at once.
 - Home hero (owner, 14 Oct 2026 night): heading, sentence and buttons at the top with equal gaps (32px desktop, 24px phone);
   the whole drone must stay visible (wide screens: photo right of the text, hero ≤ 56vw tall; ≤1240px: text above the full photo).
 - Home page <title> starts with "PREMIUM DRONES GEORGIA" (owner: the browser tab must show it), in ka/en/ru.
