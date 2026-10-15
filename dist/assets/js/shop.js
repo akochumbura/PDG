@@ -308,15 +308,33 @@
   function cardName(r) { var h = r.querySelector("h3"); return h ? h.textContent.trim() : ""; }
   list.forEach(function (r, i) { r._i = i; r._p = cardPrice(r); r._n = cardName(r); });
   function num(el) { var v = el && el.value.trim(); return v === "" || v == null || isNaN(Number(v)) ? null : Number(v); }
-  function run() {
-    var s = search.value.trim().toLowerCase(), shown = 0, lo = num(pMin), hi = num(pMax);
-    cards.forEach(function (r) {
+  /* "Load more": only PAGE cards of the filtered, sorted list are shown at a time; search, category, sort and price range all apply to the whole catalog. */
+  var PAGE = 24, limit = PAGE, moreBox = document.getElementById("partsMore"), moreBtn = document.getElementById("partsMoreBtn"), countEl = document.getElementById("partsCount");
+  function run(keep) {
+    if (keep !== true) limit = PAGE;
+    var s = search.value.trim().toLowerCase(), lo = num(pMin), hi = num(pMax), matched = [];
+    list.forEach(function (r) { r._m = false; });
+    Array.prototype.slice.call(grid.children).forEach(function (r) {
+      if (!r.classList || !r.classList.contains("product")) return;
       var ok = (cat === "all" || r.dataset.cat === cat) && (!s || r.textContent.toLowerCase().indexOf(s) > -1);
       if (ok && (lo !== null || hi !== null)) ok = r._p !== null && (lo === null || r._p >= lo) && (hi === null || r._p <= hi);
-      r.hidden = !ok; if (ok) shown++;
+      if (ok) matched.push(r);
+      r.hidden = true;
     });
-    if (none) none.hidden = shown > 0;
+    matched.forEach(function (r, i) { r.hidden = i >= limit; });
+    if (none) none.hidden = matched.length > 0;
+    if (moreBox) {
+      var shown = Math.min(limit, matched.length), left = matched.length - shown;
+      moreBox.hidden = matched.length === 0;
+      if (countEl) countEl.textContent = tx("parts_count").replace("{n}", shown).replace("{total}", matched.length);
+      if (moreBtn) { moreBtn.hidden = left <= 0; moreBtn.textContent = tx("parts_more").replace("{n}", Math.min(PAGE, left)); }
+    }
   }
+  if (moreBtn) moreBtn.addEventListener("click", function () {
+    var before = limit; limit += PAGE; run(true);
+    var first = Array.prototype.slice.call(grid.querySelectorAll(".product")).filter(function (r) { return !r.hidden; })[before];
+    var link = first && first.querySelector("a, button"); if (link) link.focus({ preventScroll: false });
+  });
   function order() {
     var m = sortSel ? sortSel.value : "", sorted = list.slice();
     var big = Infinity;
@@ -325,6 +343,7 @@
     else if (m === "name") sorted.sort(function (a, b) { return a._n.localeCompare(b._n, document.documentElement.lang || "ka") || a._i - b._i; });
     else sorted.sort(function (a, b) { return a._i - b._i; });
     sorted.forEach(function (r) { grid.appendChild(r); });
+    run();
   }
   if (sortSel) sortSel.addEventListener("change", order);
   [pMin, pMax].forEach(function (el) { if (el) el.addEventListener("input", run); });
@@ -339,5 +358,6 @@
     });
     if (wanted && c.dataset.filter === wanted) c.click();
   });
-  if (askedFor) { search.value = askedFor.slice(0, 60); run(); }
+  if (askedFor) { search.value = askedFor.slice(0, 60); }
+  run();
 })();

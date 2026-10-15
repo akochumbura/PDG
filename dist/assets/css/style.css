@@ -1065,3 +1065,13 @@ h1,h2,h3,h4{overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto}
 .hp-field{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
 .form-status.is-ok{color:#1f6b3a}.form-status.is-error{color:#b3261e}
 .button[disabled]{opacity:.6;cursor:progress}
+/* Shop: "Load more" and jump links (15 Oct 2026) */
+.parts-more{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:32px}
+.parts-more[hidden],.parts-more [hidden]{display:none}
+.parts-count{margin:0;font-size:14px;color:var(--muted,#6d6d6a)}
+.shop-jumps{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:20px;font-size:14px}
+.shop-jumps a{color:inherit;border-bottom:1px solid currentColor;padding-bottom:2px}
+.shop-jumps a:hover{color:var(--accent)}
+/* Cards in the 2-column phone grid: the quantity stepper and the cart button must wrap instead of being clipped (QA 15 Oct 2026) */
+@media(max-width:700px){.product:not(.product-kit) .buy-actions{flex-wrap:wrap}.product:not(.product-kit) .buy-actions .qty-stepper{flex:0 0 100%;justify-content:space-between}.product:not(.product-kit) .buy-actions .add-btn{flex:1 1 100%;min-width:0}}
+@media(max-width:700px){.product:not(.product-kit) .buy-actions .qty-stepper .qty-input{flex:1;min-width:0;border-radius:0}.product:not(.product-kit) .buy-actions .qty-stepper .qty-btn{flex:0 0 44px}}

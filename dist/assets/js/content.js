@@ -1,5 +1,9 @@
 window.PDG_CONTENT = {
   "ka": {
+    "legacy_nav": "წინა თაობის დრონები",
+    "shop_jump_label": "გვერდის სექციები",
+    "parts_more": "მეტის ჩვენება ({n})",
+    "parts_count": "ნაჩვენებია {n} / {total}",
     "form_submit": "გაგზავნა",
     "form_note_server": "მოთხოვნა პირდაპირ ჩვენამდე მოაღწევს. შეგიძლიათ ასევე დაგვირეკოთ ან მოგვწეროთ WhatsApp-ზე.",
     "form_sending": "იგზავნება…",
@@ -435,6 +439,10 @@ window.PDG_CONTENT = {
     "pd_p150_max_business_alt": "XAG P150 MAX Business — კომპლექტის შემადგენლობა"
   },
   "en": {
+    "legacy_nav": "Previous-generation drones",
+    "shop_jump_label": "Page sections",
+    "parts_more": "Show {n} more",
+    "parts_count": "Showing {n} of {total}",
     "form_submit": "Send",
     "form_note_server": "Your request goes straight to us. You can also call us or write on WhatsApp.",
     "form_sending": "Sending…",
@@ -1582,6 +1590,10 @@ window.PDG_CONTENT = {
     "pd_p150_max_business_alt": "XAG P150 MAX Business — package contents"
   },
   "ru": {
+    "legacy_nav": "Дроны предыдущего поколения",
+    "shop_jump_label": "Разделы страницы",
+    "parts_more": "Показать ещё {n}",
+    "parts_count": "Показано {n} из {total}",
     "form_submit": "Отправить",
     "form_note_server": "Заявка приходит напрямую к нам. Также можно позвонить или написать в WhatsApp.",
     "form_sending": "Отправляем…",

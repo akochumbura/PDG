@@ -269,7 +269,7 @@ pb = ROOT / 'scripts/page-bodies.html'
 t = pb.read_text(encoding='utf-8')
 subs = [
     (r'(<div class="shop-grid kit-grid">\n).*?(</div></div></section>)', ''.join(card(r) for r in kits)),
-    (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in parts)),
+    (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div>\n<!--partsMore-->)', ''.join(card(r).replace('<article class="product"', '<article hidden class="product"', 1) if i >= 24 else card(r) for i, r in enumerate(parts))),  # first 24 visible, the rest revealed by "Load more" (shop.js PAGE)
     (r'(<ul class="kit-table">\n).*?(</ul>)', ''.join(kit_row(r) for r in kits)),
     (r'(<div class="shop-grid" id="legacyGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in legacy)),
     (r'(<!--configurator-->\n).*?(<!--/configurator-->)', configurator() + '\n'),
