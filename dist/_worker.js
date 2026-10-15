@@ -40,6 +40,9 @@ export default {
       if (route === 'GET /api/payments/status') return await status(env, url);
       if (route === 'POST /api/payments/callback') return await callback(request, env);
       if (route === 'GET /api/orders') return await orders(env, url);
+      if (route === 'POST /api/contact') return await contactSubmit(request, env, url);
+      if (route === 'GET /api/contact/config') return json({ enabled: contactReady(env) });
+      if (route === 'GET /api/contact/inbox') return await contactInbox(env, url);
       if (route === 'GET /api/chat/config') return json({ enabled: chatEnabled(env), live: liveOn(env) });
       if (route === 'POST /api/chat/send') return await liveSend(request, env, url);
       if (route === 'GET /api/chat/thread') return await liveThread(env, url);
@@ -549,6 +552,122 @@ async function adminReset(env, url) {
 }
 
 
+/* ---------------- Consultation requests (the /consultation form) ----------------
+   Owner brief 15 Oct 2026: reliable server-side submission instead of a mailto draft.
+   POST /api/contact (JSON) -> validated, spam-checked, rate-limited -> stored in KV (contact:<time>-<id>, one year)
+   and e-mailed to CONTACT_TO (default info@premium-drones.ge) through Resend when RESEND_API_KEY exists;
+   Telegram / WhatsApp alerts reuse the chat settings. Success is returned only after the request is stored or e-mailed.
+   Neither KV nor RESEND_API_KEY -> 503 not_configured (the page then shows phone and WhatsApp).
+   Team view: /api/contact/inbox?key=ADMIN_KEY. Secrets: RESEND_API_KEY, optional CONTACT_TO, CONTACT_FROM (a verified sender), CONTACT_DAILY_LIMIT. */
+const CONTACT_TOPICS = ['drone', 'service', 'academy', 'gov', 'spraying'];
+const contactHits = new Map();
+function contactMailOn(env) { return Boolean(String(secret(env, 'RESEND_API_KEY')).trim()); }
+function contactReady(env) { return Boolean(kv(env) || contactMailOn(env)); }
+function contactSeen(env, ip) {
+  const now = Date.now(), list = (contactHits.get(ip) || []).filter(x => now - x < 600000);
+  if (list.length >= 4) return false;
+  list.push(now); contactHits.set(ip, list);
+  if (contactHits.size > 5000) contactHits.clear();
+  return true;
+}
+async function contactHash(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return hex(new Uint8Array(buf)).slice(0, 24);
+}
+/* KV-backed limits survive across the many isolates Cloudflare runs: 5 requests per visitor per hour, a daily cap for the whole form. */
+async function contactBudget(env, ip) {
+  const store = kv(env); if (!store) return true;
+  const day = new Date().toISOString().slice(0, 10), hour = new Date().toISOString().slice(0, 13);
+  const ipKey = 'contactrl:' + hour + ':' + await contactHash(ip), dayKey = 'contactrl:day:' + day;
+  const [a, b] = await Promise.all([store.get(ipKey), store.get(dayKey)]);
+  if ((Number(a) || 0) >= 5 || (Number(b) || 0) >= (Number(env.CONTACT_DAILY_LIMIT) || 200)) return false;
+  await Promise.all([store.put(ipKey, String((Number(a) || 0) + 1), { expirationTtl: 7200 }), store.put(dayKey, String((Number(b) || 0) + 1), { expirationTtl: 172800 })]);
+  return true;
+}
+function contactValidate(input) {
+  const fields = {};
+  const name = clean(input.name, 100), phone = clean(input.phone, 30), topic = String(input.topic || ''), message = String(input.message || '').replace(/[\u0000-\u0008\u000b-\u001f\u007f<>]/g, ' ').replace(/[ \t]+/g, ' ').trim().slice(0, 3000);
+  const digits = phone.replace(/\D/g, '').length;
+  if (name.length < 2) fields.name = 'required';
+  if (!/^[+()\d\s.\-]+$/.test(phone) || digits < 9 || digits > 15) fields.phone = 'phone';
+  if (!CONTACT_TOPICS.includes(topic)) fields.topic = 'topic';
+  if ((message.match(/https?:\/\/|www\./gi) || []).length > 2) fields.message = 'links';
+  return { fields, ok: !Object.keys(fields).length, rec: { name, phone, topic, message } };
+}
+async function contactMail(env, rec, id) {
+  const key = String(secret(env, 'RESEND_API_KEY')).trim();
+  const to = String(env.CONTACT_TO || 'info@premium-drones.ge').trim();
+  const from = String(env.CONTACT_FROM || 'Premium Drones Georgia <no-reply@premium-drones.ge>').trim();
+  const text = `New consultation request (${rec.lang})\nRequest: ${id}\nTime (UTC): ${rec.at}\n\nName: ${rec.name}\nPhone: ${rec.phone}\nTopic: ${rec.topic}\nPage: ${rec.page || '-'}\n\n${rec.message || '(no message)'}\n`;
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key },
+    body: JSON.stringify({ from, to: [to], subject: ('PDG consultation request: ' + rec.name).replace(/[\r\n]+/g, ' ').slice(0, 120), text }),
+    signal: AbortSignal.timeout(8000)
+  });
+  if (!res.ok) { console.error('contact mail failed', res.status); return false; }
+  return true;
+}
+async function contactAlert(env, url, rec) {
+  const msg = `PDG consultation request (${rec.lang}) · ${rec.topic}\n${rec.name} · ${rec.phone}\n\n${rec.message.slice(0, 400)}\n\nAll requests: ${url.origin}/api/contact/inbox`;
+  const jobs = [];
+  if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
+    jobs.push(fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, text: msg, disable_web_page_preview: true })
+    }).catch(() => null));
+  }
+  if (env.WHATSAPP_ALERT_PHONE && env.WHATSAPP_ALERT_KEY) {
+    const q = new URLSearchParams({ phone: String(env.WHATSAPP_ALERT_PHONE).replace(/[^\d+]/g, ''), text: msg, apikey: env.WHATSAPP_ALERT_KEY });
+    jobs.push(fetch('https://api.callmebot.com/whatsapp.php?' + q).catch(() => null));
+  }
+  await Promise.all(jobs);
+}
+async function contactSubmit(request, env, url) {
+  if (!contactReady(env)) return json({ error: 'not_configured' }, 503);
+  const origin = request.headers.get('Origin');
+  if (origin && origin !== url.origin) return json({ error: 'bad_origin' }, 403);
+  if (!/application\/json/i.test(request.headers.get('Content-Type') || '')) return json({ error: 'bad_type' }, 415);
+  if (Number(request.headers.get('Content-Length') || 0) > 10000) return json({ error: 'too_large' }, 413);
+  let input;
+  try { input = await request.json(); } catch { return json({ error: 'bad_json' }, 400); }
+  if (!input || typeof input !== 'object') return json({ error: 'bad_json' }, 400);
+  const ip = request.headers.get('CF-Connecting-IP') || 'local';
+  if (!contactSeen(env, ip)) return json({ error: 'busy' }, 429);
+  // Spam traps: the hidden "website" field must stay empty and a person needs a couple of seconds to fill the form.
+  if (String(input.website || '').trim()) return json({ ok: true });
+  if (Number(input.elapsed) < 2500) return json({ error: 'too_fast' }, 400);
+  const v = contactValidate(input);
+  if (!v.ok) return json({ error: 'invalid', fields: v.fields }, 400);
+  if (!(await contactBudget(env, ip))) return json({ error: 'busy' }, 429);
+  const id = 'R' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + randomHex(3).toUpperCase();
+  const rec = { id, at: new Date().toISOString(), lang: LANGS.includes(input.lang) ? input.lang : 'ka', page: clean(input.page, 120), ...v.rec, mail: 'off' };
+  const store = kv(env), dupKey = store ? 'contactdup:' + await contactHash(rec.phone + '|' + rec.message) : '';
+  if (store && await store.get(dupKey)) return json({ ok: true, id });  // the same request sent twice within 15 minutes
+  let stored = false, mailed = false;
+  if (contactMailOn(env)) { try { mailed = await contactMail(env, rec, id); } catch (err) { console.error('contact mail', err && err.name); } rec.mail = mailed ? 'sent' : 'failed'; }
+  if (store) {
+    try { await store.put('contact:' + rec.at.replace(/[^\d]/g, '') + '-' + id, JSON.stringify(rec), { expirationTtl: 60 * 60 * 24 * 365 }); stored = true; } catch (err) { console.error('contact store', err && err.name); }
+  }
+  if (!stored && !mailed) return json({ error: 'delivery_failed' }, 502);
+  if (store) await store.put(dupKey, '1', { expirationTtl: 900 }).catch(() => null);
+  await contactAlert(env, url, rec);
+  return json({ ok: true, id });
+}
+async function contactInbox(env, url) {
+  const key = (url.searchParams.get('key') || '').trim();
+  if (!adminOk(env, key)) return inboxLogin(env, Boolean(key), '/api/contact/inbox');
+  const list = await kv(env).list({ prefix: 'contact:', limit: 1000 });
+  const recs = (await Promise.all(list.keys.map(k => kv(env).get(k.name, 'json')))).filter(Boolean)
+    .sort((a, b) => String(b.at).localeCompare(String(a.at))).slice(0, 100);
+  const items = recs.map(r => `<section><h2>${esc(r.at.slice(0, 16).replace('T', ' '))} UTC · ${esc(r.id)} · ${esc(r.lang)} · ${esc(r.topic)} · e-mail: ${esc(r.mail)}</h2>
+<p><b>${esc(r.name)}</b> · <a href="tel:${esc(r.phone.replace(/[^\d+]/g, ''))}">${esc(r.phone)}</a></p><p class="m">${esc(r.message || '(no message)')}</p></section>`).join('');
+  const page = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>PDG consultation requests</title><style>body{font:15px/1.45 system-ui,sans-serif;margin:0 auto;max-width:760px;padding:16px;color:#1c1c1c}
+section{border:1px solid #ddd;padding:12px 14px;margin:0 0 16px}h2{font-size:13px;margin:0 0 6px;color:#555}p{margin:4px 0}.m{background:#f4f3ef;padding:8px 10px;white-space:pre-wrap}</style>
+<h1>Consultation requests (${recs.length})</h1><p>Newest first. <a href="/api/chat/inbox?key=${esc(encodeURIComponent(key))}">Chat inbox</a></p>${items || '<p>No requests yet.</p>'}`;
+  return new Response(page, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex', 'Referrer-Policy': 'no-referrer' } });
+}
+
 /* ---------------- Live chat: the website conversation comes first ----------------
    Threads in KV (PDG_DATA): thread:<id> {id, created, updated, lang, page, contact, human, unread, msgs:[{r:'v'|'ai'|'team', t, at}]}.
    The visitor's id is 32 random hex characters made in the browser and kept there; it is the key to that conversation.
@@ -672,13 +791,13 @@ function adminOk(env, key) {
   return Boolean(want && kv(env) && got.length >= 16 && got === want);
 }
 /* Sign-in page for the inbox: the browser encodes the key correctly, so keys with + # & or spaces work. */
-function inboxLogin(env, wrong) {
+function inboxLogin(env, wrong, action = '/api/chat/inbox') {
   const note = !kv(env) ? 'Chat storage (KV binding) is not connected.' : !String(secret(env, 'ADMIN_KEY')).trim() ? 'ADMIN_KEY is not set in Cloudflare.' : wrong ? 'Wrong key. Check it in Cloudflare → pdg → Settings → Variables and secrets (ADMIN_KEY, 16+ characters).' : '';
   const page = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <title>PDG chat inbox</title><style>body{font:16px/1.45 system-ui,sans-serif;margin:0 auto;max-width:420px;padding:24px 16px;color:#1c1c1c}
 input,button{font:inherit;width:100%;box-sizing:border-box;padding:12px;margin-top:10px}.err{color:#b3261e}</style>
 <h1>PDG chat inbox</h1>${note ? `<p class="err">${esc(note)}</p>` : ''}
-<form method="get" action="/api/chat/inbox"><label>Admin key<input name="key" type="password" autocomplete="current-password" required minlength="16"></label><button>Open inbox</button></form>
+<form method="get" action="${esc(action)}"><label>Admin key<input name="key" type="password" autocomplete="current-password" required minlength="16"></label><button>Open inbox</button></form>
 <p>Tip: after it opens, bookmark the page.</p>`;
   return new Response(page, { status: wrong ? 403 : 200, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex', 'Referrer-Policy': 'no-referrer' } });
 }
@@ -701,7 +820,7 @@ ${th.msgs.slice(-40).map(m => `<p class="m ${m.r}"><span>${who[m.r] || m.r}</spa
 section{border:1px solid #ddd;padding:12px 14px;margin:0 0 16px}section.new{border-color:#cc3d30}h2{font-size:14px;margin:0 0 4px}.pg{color:#777;font-size:12px;margin:0 0 10px}
 .m{margin:6px 0;padding:8px 10px;background:#f4f3ef;white-space:pre-wrap}.m.team{background:#e8f1ea}.m.ai{background:#eef0f6}.m span{display:block;font-size:11px;color:#777}
 textarea{width:100%;box-sizing:border-box;font:inherit;padding:8px;margin-top:6px}button{font:inherit;padding:8px 14px;margin-top:6px}</style>
-<h1>PDG chat inbox (${threads.length})</h1><p>Newest first. Replies appear in the visitor's chat on the website within a few seconds (or when they come back). Refresh this page to see new messages. Orders: <a href="/api/orders?key=${esc(key)}">orders page</a>.</p>${items || '<p>No chats yet.</p>'}`;
+<h1>PDG chat inbox (${threads.length})</h1><p>Newest first. Replies appear in the visitor's chat on the website within a few seconds (or when they come back). Refresh this page to see new messages. Orders: <a href="/api/orders?key=${esc(key)}">orders page</a>. <a href="/api/contact/inbox?key=${esc(encodeURIComponent(key))}">Consultation requests</a>.</p>${items || '<p>No chats yet.</p>'}`;
   return new Response(page, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex', 'Referrer-Policy': 'no-referrer' } });
 }
 async function liveReply(request, env, url) {

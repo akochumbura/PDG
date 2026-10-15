@@ -27,5 +27,7 @@ for f in D.rglob('*.html'):
     if s2!=s: f.write_text(s2,encoding='utf-8')
 if shutil.which('node'):
     for f in ('content','script','shop','payments-config','chat','account'): run('node','--check',f'dist/assets/js/{f}.js')
-    run('node','--check','dist/_worker.js')
+    import tempfile  # the worker is an ES module: check it as one (a .js copy is parsed as a script and misses duplicate declarations)
+    with tempfile.TemporaryDirectory() as td:
+        (Path(td)/'worker.mjs').write_text((D/'_worker.js').read_text(encoding='utf-8'),encoding='utf-8'); run('node','--check',str(Path(td)/'worker.mjs'))
 run(py,'scripts/verify-site.py'); print('BUILD OK')

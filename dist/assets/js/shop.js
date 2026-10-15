@@ -266,7 +266,18 @@
       cfgRows.forEach(function (r) { r.querySelector(".qty-input").value = p.q[r.dataset.key] || 0; });
       show();
     }
-    cfgBox.addEventListener("change", function (e) { if (e.target.name === "cfgPreset") applyPreset(); });
+    /* The selected package lives in the URL (?kit=starter|pro|business), so links and reloads keep it. */
+    function kitKey(sku) { return String(sku).split("-").pop().toLowerCase(); }
+    function selectKit(v) {
+      v = String(v || "").toLowerCase(); var hit = null;
+      cfgBox.querySelectorAll('input[name="cfgPreset"]').forEach(function (i) { if (i.value.toLowerCase() === v || kitKey(i.value) === v) hit = i; });
+      if (hit) hit.checked = true; return !!hit;
+    }
+    cfgBox.addEventListener("change", function (e) {
+      if (e.target.name !== "cfgPreset") return;
+      applyPreset();
+      try { var u = new URL(location.href); u.searchParams.set("kit", kitKey(e.target.value)); history.replaceState(null, "", u.pathname + u.search + u.hash); } catch (x) {}
+    });
     cfgBox.addEventListener("input", function (e) { if (e.target.classList.contains("qty-input")) show(); });
     document.getElementById("cfgWa").addEventListener("click", function () {
       var c = calc(), lines = [tx("cfg_msg_title"), tx("cfg_msg_base") + ": " + c.p.name + " (" + fmt(c.p.price) + ")", "- " + tx("kit_drone") + " × 1", "- " + tx("kit_remote") + " × 1"];
@@ -281,6 +292,7 @@
       save(); render();
       var b = document.getElementById("cfgCart"); b.classList.add("is-added"); setTimeout(function () { b.classList.remove("is-added"); }, 900);
     });
+    selectKit(new URLSearchParams(location.search).get("kit"));
     applyPreset();
   }
 

@@ -180,7 +180,7 @@ for sku, slug in P.KITS.items():
         f'<button type="button" class="add-btn" data-sku="{sku}" data-name="{name}" data-price="{gel}" data-i18n="add_to_cart">კალათაში</button></div>'
         f'<a class="button button-line pd-ask" href="{html.escape(wa, quote=True)}" target="_blank" rel="noopener noreferrer"><span data-i18n="pd_ask">კითხვა WhatsApp-ით</span></a>'
         f'<p class="pk-links"><a class="text-link" href="/p150-max.html#specifications" data-local><span data-i18n="pd_pk_specs">P150 MAX-ის სრული მახასიათებლები</span><span aria-hidden="true">→</span></a>'
-        f'<a class="text-link" href="/p150-max.html#configurator" data-local><span data-i18n="pd_pk_cfg">კომპლექტის შეცვლა კონფიგურატორში</span><span aria-hidden="true">→</span></a></p>'
+        f'<a class="text-link" href="/p150-max.html?kit={sku.split('-')[-1].lower()}#configurator" data-local><span data-i18n="pd_pk_cfg">კომპლექტის შეცვლა კონფიგურატორში</span><span aria-hidden="true">→</span></a></p>'
         f'</article></div></section>\n</template>\n')
 
 pb = ROOT / 'scripts/page-bodies.html'

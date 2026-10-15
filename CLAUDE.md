@@ -5,8 +5,8 @@ vanilla JavaScript and self-hosted font/photo assets. Preserve the owner's suppl
 logo exactly. Georgian source is UTF-8 in dist/index.html and scripts/page-bodies.html;
 English and Russian counterparts belong in dist/assets/js/content.js. Regenerate
 and check everything with `python scripts/build.py`. Publish only dist. Update project memory
-and stage documentation after significant changes. Never describe the mailto form
-as a server inbox. The separately referenced FastAPI project was not included.
+and stage documentation after significant changes. The consultation form is server-side (docs/12-consultation-form.md): say "received" only after the server
+accepts it; before RESEND_API_KEY exists requests only land in /api/contact/inbox. The separately referenced FastAPI project was not included.
 
 ## Workflow (updated 14 Oct 2026: shop, 3 languages, premium-drones.ge on Cloudflare Pages)
 - Domain premium-drones.ge (DNS on Cloudflare); contact info@premium-drones.ge; WhatsApp/phone +995 550 00 43 33.

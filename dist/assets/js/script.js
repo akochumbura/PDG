@@ -207,22 +207,40 @@
     }
     const fields = [document.getElementById("contactName"), document.getElementById("contactPhone")];
     fields.forEach((field) => field.addEventListener("blur", () => validate(field)));
-    form.addEventListener("submit", (event) => {
+    const loadedAt = Date.now(), status = document.getElementById("formStatus"), sendBtn = form.querySelector('button[type="submit"]');
+    const lang = (document.documentElement.lang || "ka").slice(0, 2);
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      if (sendBtn.disabled) return;
+      status.classList.remove("is-error", "is-ok");
       const invalid = fields.map((field) => ({ field, error: validate(field) })).find((result) => result.error);
-      const status = document.getElementById("formStatus");
-      if (invalid) { status.textContent = invalid.error; invalid.field.focus(); return; }
-      const name = fields[0].value.trim();
-      const phone = fields[1].value.trim();
-      const message = document.getElementById("contactMessage").value.trim();
-      const body = [t("form_name") + ": " + name, t("form_phone") + ": " + phone, t("form_topic") + ": " + topic.options[topic.selectedIndex].text, "", message].join("\n");
-      const subject = "Premium Drones Georgia — " + name;
-      const mailto = "mailto:info@premium-drones.ge?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-      const draftLink = document.createElement("a");
-      draftLink.href = mailto;
-      draftLink.click();
-      status.textContent = t("email_ready");
-      /* Keep the form values if no mail application is configured. Never claim delivery. */
+      if (invalid) { status.textContent = t("form_check"); status.classList.add("is-error"); invalid.field.focus(); return; }
+      sendBtn.disabled = true; status.textContent = t("form_sending");
+      const payload = {
+        name: fields[0].value.trim(), phone: fields[1].value.trim(), topic: topic.value,
+        message: document.getElementById("contactMessage").value.trim(), website: document.getElementById("contactWebsite").value,
+        elapsed: Date.now() - loadedAt, lang, page: location.pathname
+      };
+      let outcome = "failed";
+      try {
+        const res = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.ok) outcome = "sent";
+        else if (res.status === 429) outcome = "busy";
+        else if (data.error === "too_fast") outcome = "too_fast";
+        else if (res.status === 400 && data.error === "invalid") {
+          outcome = "check";
+          const map = { name: "contactName", phone: "contactPhone" };
+          Object.keys(data.fields || {}).forEach((k) => {
+            const el = map[k] && document.getElementById(map[k]); if (!el) return;
+            el.setAttribute("aria-invalid", "true"); document.getElementById("err-" + el.id).textContent = t(k === "phone" ? "error_phone" : "error_required");
+          });
+        }
+      } catch (err) { outcome = "failed"; }
+      sendBtn.disabled = false;
+      if (outcome === "sent") { form.reset(); if (Array.from(topic.options).some((o) => o.value === requestedTopic)) topic.value = requestedTopic; }
+      status.textContent = t({ sent: "form_sent", busy: "form_busy", too_fast: "form_too_fast", check: "form_check", failed: "form_failed" }[outcome]);
+      status.classList.add(outcome === "sent" ? "is-ok" : "is-error");
     });
   }
 })();
