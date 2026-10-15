@@ -19,6 +19,15 @@
   }
   var ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5"/></svg>';
 
+  var api = { open: null }, wantOpen = false;
+  /* Any element with data-chat-open (the mobile bar button) opens the chat; without this script it is a plain link to the consultation page. */
+  document.addEventListener("click", function (e) {
+    var o = e.target.closest && e.target.closest("[data-chat-open]");
+    if (!o || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+    e.preventDefault();
+    if (api.open) api.open(true); else wantOpen = true;
+  });
+
   function build(cfg) {
     var live = !!cfg.live, ai = !!cfg.enabled && live;
     var id = store(ID_KEY) || "", msgs = [], polling = null, openNow = false;
@@ -61,7 +70,8 @@
     }
     var other = el("p", "chat-other");
     other.append(el("span", null, t("chat_other") + " "), link("WhatsApp", WA, true), document.createTextNode(" · "),
-      link("Messenger", MS, true), document.createTextNode(" · "), link(t("chat_call"), TEL));
+      link("Messenger", MS, true), document.createTextNode(" · "), link(t("chat_call"), TEL), document.createTextNode(" · "),
+      link(t("mb_consult"), (lang === "ka" ? "" : "/" + lang) + "/consultation"));
     var foot = el("div", "chat-foot"); foot.appendChild(other);
     if (ai) foot.appendChild(el("p", "chat-note", t("chat_note")));
     if (live) panel.append(head, log, chips, form, foot); else { panel.classList.add("chat-off"); Array.prototype.slice.call(other.childNodes).forEach(function (n) { if (n.nodeType === 3) n.remove(); }); panel.append(head, log, foot); }
@@ -162,11 +172,23 @@
     box.addEventListener("input", size);
     box.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(box.value); } });
     form.addEventListener("submit", function (e) { e.preventDefault(); send(box.value); });
+    /* On phones the page's bottom bar opens the chat; the panel then follows the visual viewport so the input stays above the keyboard. */
+    var vv = window.visualViewport, openers = Array.prototype.slice.call(document.querySelectorAll("[data-chat-open]"));
+    function fit() {
+      if (!openNow || !vv || window.innerWidth > 768) { panel.style.top = panel.style.height = ""; panel.classList.remove("chat-short"); return; }
+      panel.style.top = vv.offsetTop + "px"; panel.style.height = vv.height + "px";
+      panel.classList.toggle("chat-short", vv.height < 460);
+      log.scrollTop = log.scrollHeight;
+    }
+    if (vv) { vv.addEventListener("resize", fit); vv.addEventListener("scroll", fit); }
     function open(on) {
       openNow = on; panel.hidden = !on; fab.setAttribute("aria-expanded", String(on)); document.body.classList.toggle("chat-open", on);
-      if (on) { draw(); markSeen(); fetchNew(); if (live) box.focus(); } else fab.focus();
+      openers.forEach(function (o) { o.setAttribute("aria-expanded", String(on)); });
+      if (on) { draw(); markSeen(); fetchNew(); fit(); if (live) box.focus(); } else { fit(); (window.innerWidth > 768 ? fab : (openers[0] || fab)).focus(); }
       schedule();
     }
+    api.open = open;
+    if (wantOpen) { wantOpen = false; open(true); }
     fab.addEventListener("click", function () { open(panel.hidden); });
     close.addEventListener("click", function () { open(false); });
     panel.addEventListener("keydown", function (e) { if (e.key === "Escape") open(false); });

@@ -180,6 +180,7 @@
         if (c.threshold) PAY.threshold = c.threshold;
         if (c.depositPercent) PAY.depositPercent = c.depositPercent;
         payReady = true; render();
+        var to = document.getElementById("termsOnline"); if (to) to.hidden = false;
       })
       .catch(function () { /* static preview or payments off */ });
   }

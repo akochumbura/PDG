@@ -324,8 +324,8 @@ for r in rows:
     what = f"{p_:,} GEL, listed in stock" if st_ == 'in_stock' else ('not in stock, price on request' if st_ == 'quote' else 'not in stock (previous model), consultation only')
     know.append(f"- {r['name']}{local} (code {r['sku']}, {CATN[r['group']]}): {what}" + (f" — contains {extra}" if extra else ''))
 know += ['', '## Buying and payment',
-         f"Online payment (card, Apple Pay, Google Pay via Bank of Georgia) is being set up and may not be live yet. Planned rule: orders under {rules['threshold']:,} GEL are paid in full online; from {rules['threshold']:,} GEL the customer pays a {rules['depositPercent']}% deposit online and the rest by bank transfer.",
-         'Today orders are placed from the cart by WhatsApp or email; PDG confirms stock and delivery.', '', '## Terms']
+         "Online card payment is NOT available on the website at the moment; do not tell customers they can pay online. Do not mention deposit percentages.",
+         'Orders are sent from the cart by WhatsApp or email; PDG confirms price, stock and delivery, then sends an invoice and the customer pays by bank transfer.', '', '## Terms']
 know += [f"- {cdata[f'terms_h{i}']}: {cdata[f'terms_p{i}']}" for i in range(1, 8)]
 know += ['', '## FAQ'] + [f"Q: {cdata[f'faq_q{i}']}\nA: {cdata[f'faq_a{i}']}" for i in range(1, 5)]
 know += ['', '## PDG Academy', cdata['academy_description'], cdata['academy_section_text'], '', '## Service', cdata['service_page_p1'], cdata['service_page_p2']]

@@ -29,10 +29,29 @@ let cachedToken = null;
    Do not detect bindings by shape: ASSETS is an RPC stub where every property looks like a function. */
 function kv(env) { return env.PDG_DATA || env.ORDERS || env.PDG || null; }
 
+/* Worker answers are not covered by dist/_headers, so every API response gets its own security headers here. */
+function hardened(res) {
+  const h = new Headers(res.headers);
+  h.set('X-Content-Type-Options', 'nosniff');
+  h.set('Strict-Transport-Security', 'max-age=31536000');
+  if (/text\/html/i.test(h.get('Content-Type') || '')) {
+    h.set('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
+    h.set('X-Frame-Options', 'DENY');
+    if (!h.has('Referrer-Policy')) h.set('Referrer-Policy', 'no-referrer');
+  }
+  return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
+    return hardened(await api(request, env, url));
+  }
+};
+
+async function api(request, env, url) {
+  {
     try {
       const route = request.method + ' ' + url.pathname.replace(/\/+$/, '');
       if (route === 'GET /api/payments/config') return json(publicConfig(env));
@@ -57,7 +76,7 @@ export default {
       return json({ error: 'server_error' }, 500);
     }
   }
-};
+}
 
 function json(data, code = 200, extra = {}) {
   return new Response(JSON.stringify(data), {
@@ -102,6 +121,13 @@ function quote(items) {
 
 class UserError extends Error {}
 
+/* Reads a JSON body and enforces the size limit on the real bytes (a missing or false Content-Length does not help an attacker). */
+async function readJson(request, max) {
+  const text = await request.text();
+  if (text.length > max) throw new UserError('too_large');
+  return JSON.parse(text);
+}
+
 function clean(value, max) {
   return String(value == null ? '' : value).replace(/[\u0000-\u001f\u007f<>]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
 }
@@ -141,7 +167,7 @@ async function checkout(request, env, url) {
   const sentFrom = request.headers.get('Origin');
   if (sentFrom && sentFrom !== origin) return json({ error: 'bad_origin' }, 403);
   let input;
-  try { input = await request.json(); } catch { return json({ error: 'bad_json' }, 400); }
+  try { input = await readJson(request, 20000); } catch (err) { return json({ error: err instanceof UserError ? 'too_large' : 'bad_json' }, err instanceof UserError ? 413 : 400); }
   let q;
   try { q = quote(input && input.items); } catch (err) {
     if (err instanceof UserError) return json({ error: err.message }, 400);
@@ -279,7 +305,7 @@ async function orders(env, url) {
 <h1>PDG orders (${recs.length})</h1><p>Paid = status "completed". Deposit orders: the rest is paid by bank transfer. Status "requested" = sent by WhatsApp or e-mail by a signed-in customer. Customer accounts: ${users}.</p>
 <p>Reset a customer's password: open /api/admin/reset?key=YOUR_KEY&amp;email=CUSTOMER_EMAIL and send them the temporary password.</p>
 <div style="overflow-x:auto"><table><tr><th>Date (UTC)</th><th>Order</th><th>Status</th><th>Paid / total</th><th>Customer</th><th>Items</th></tr>${rows}</table></div>`;
-  return new Response(page, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
+  return new Response(page, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex', 'Referrer-Policy': 'no-referrer' } });
 }
 
 
@@ -288,6 +314,7 @@ async function orders(env, url) {
    Limits: per visitor (IP) 20 replies per 10 minutes, whole site CHAT_DAILY_LIMIT replies per day. */
 const CHAT_MAX_TURNS = 16;
 const chatHits = new Map();
+const chatDay = { day: '', n: 0 };
 
 /* OpenAI settings: CHAT_MODEL (default gpt-6-astra), CHAT_EFFORT (low | medium | high | xhigh | max; e.g. medium). */
 /* AI provider: OpenAI if OPENAI_API_KEY is set (CHAT_PROVIDER = openai, the default when only that key exists),
@@ -337,12 +364,21 @@ async function chatAllowed(env, ip) {
   if (list.length >= 20) return false;
   list.push(now); chatHits.set(ip, list);
   if (chatHits.size > 5000) chatHits.clear();
-  const store = kv(env);
+  const store = kv(env), cap = Number(env.CHAT_DAILY_LIMIT) || 400, day = new Date().toISOString().slice(0, 10);
   if (store) {
-    const key = 'chat:day:' + new Date().toISOString().slice(0, 10);
+    // Application-enforced usage cutoff: a visitor gets 40 AI replies an hour (shared across Cloudflare servers), the whole site CHAT_DAILY_LIMIT a day.
+    const ipKey = 'chatrl:' + day + ':' + new Date().getUTCHours() + ':' + await sha(ip);
+    const mine = Number(await store.get(ipKey)) || 0;
+    if (mine >= 40) return false;
+    const key = 'chat:day:' + day;
     const used = Number(await store.get(key)) || 0;
-    if (used >= (Number(env.CHAT_DAILY_LIMIT) || 400)) return false;
+    if (used >= cap) return false;
     await store.put(key, String(used + 1), { expirationTtl: 60 * 60 * 48 });
+    await store.put(ipKey, String(mine + 1), { expirationTtl: 7200 });
+  } else {
+    if (chatDay.day !== day) { chatDay.day = day; chatDay.n = 0; }
+    if (chatDay.n >= cap) return false;
+    chatDay.n++;
   }
   return true;
 }
@@ -353,7 +389,7 @@ async function chat(request, env, url) {
   const sentFrom = request.headers.get('Origin');
   if (sentFrom && sentFrom !== url.origin) return json({ error: 'bad_origin' }, 403);
   let input;
-  try { input = await request.json(); } catch { return json({ error: 'bad_json' }, 400); }
+  try { input = await readJson(request, 40000); } catch (err) { return json({ error: err instanceof UserError ? 'too_large' : 'bad_json' }, err instanceof UserError ? 413 : 400); }
   const raw = Array.isArray(input && input.messages) ? input.messages.slice(-CHAT_MAX_TURNS) : [];
   const messages = [];
   for (const m of raw) {
@@ -475,7 +511,7 @@ async function account(route, request, env, url) {
     if (Number(request.headers.get('Content-Length') || 0) > 20000) return json({ error: 'too_large' }, 413);
   }
   let input = {};
-  if (request.method === 'POST') { try { input = await request.json(); } catch { return json({ error: 'bad_json' }, 400); } }
+  if (request.method === 'POST') { try { input = await readJson(request, 20000); } catch (err) { return json({ error: err instanceof UserError ? 'too_large' : 'bad_json' }, err instanceof UserError ? 413 : 400); } }
 
   if (route === 'POST /api/account/register') {
     const email = clean(input.email, 254).toLowerCase();
@@ -483,7 +519,11 @@ async function account(route, request, env, url) {
     const password = String(input.password || '');
     if (u.name.length < 2 || !emailOk(email) || u.phone.replace(/\D/g, '').length < 9) return json({ error: 'fields' }, 400);
     if (password.length < 8 || password.length > 200) return json({ error: 'password' }, 400);
+    const regKey = 'regrl:' + new Date().toISOString().slice(0, 13) + ':' + await sha(request.headers.get('CF-Connecting-IP') || 'local');
+    const regs = Number(await store.get(regKey)) || 0;
+    if (regs >= 5) return json({ error: 'busy' }, 429);
     if (await store.get('user:' + email)) return json({ error: 'exists' }, 409);
+    await store.put(regKey, String(regs + 1), { expirationTtl: 7200 });
     u.salt = randomHex(16); u.hash = await pbkdf2(password, u.salt); u.created = new Date().toISOString(); u.orders = [];
     await store.put('user:' + email, JSON.stringify(u));
     const token = await startSession(env, email);
@@ -629,7 +669,7 @@ async function contactSubmit(request, env, url) {
   if (!/application\/json/i.test(request.headers.get('Content-Type') || '')) return json({ error: 'bad_type' }, 415);
   if (Number(request.headers.get('Content-Length') || 0) > 10000) return json({ error: 'too_large' }, 413);
   let input;
-  try { input = await request.json(); } catch { return json({ error: 'bad_json' }, 400); }
+  try { input = await readJson(request, 10000); } catch (err) { return json({ error: err instanceof UserError ? 'too_large' : 'bad_json' }, err instanceof UserError ? 413 : 400); }
   if (!input || typeof input !== 'object') return json({ error: 'bad_json' }, 400);
   const ip = request.headers.get('CF-Connecting-IP') || 'local';
   if (!contactSeen(env, ip)) return json({ error: 'busy' }, 429);
@@ -712,7 +752,7 @@ async function liveInput(request, url) {
   const sentFrom = request.headers.get('Origin');
   if (sentFrom && sentFrom !== url.origin) throw new UserError('bad_origin');
   if (Number(request.headers.get('Content-Length') || 0) > 8000) throw new UserError('too_large');
-  try { return await request.json(); } catch { throw new UserError('bad_json'); }
+  try { return await readJson(request, 8000); } catch (err) { throw new UserError(err instanceof UserError ? 'too_large' : 'bad_json'); }
 }
 async function notifyTeam(env, url, th, text) {
   const msg = `PDG website chat (${th.lang})${th.contact ? ' · ' + th.contact : ''}\n\n${text.slice(0, 600)}\n\nReply: ${url.origin}/api/chat/inbox`;
@@ -730,6 +770,16 @@ async function notifyTeam(env, url, th, text) {
   }
   await Promise.all(jobs);
 }
+/* Visitor messages are capped in KV too: 60 per visitor per hour and LIVE_DAILY_LIMIT (default 1500) per day for the whole site. */
+async function liveBudget(env, ip) {
+  const store = kv(env); if (!store) return true;
+  const now = new Date(), day = now.toISOString().slice(0, 10), hour = now.toISOString().slice(0, 13);
+  const ipKey = 'liverl:' + hour + ':' + await sha(ip), dayKey = 'liverl:day:' + day;
+  const [a, b] = await Promise.all([store.get(ipKey), store.get(dayKey)]);
+  if ((Number(a) || 0) >= 60 || (Number(b) || 0) >= (Number(env.LIVE_DAILY_LIMIT) || 1500)) return false;
+  await Promise.all([store.put(ipKey, String((Number(a) || 0) + 1), { expirationTtl: 7200 }), store.put(dayKey, String((Number(b) || 0) + 1), { expirationTtl: 172800 })]);
+  return true;
+}
 async function liveSend(request, env, url) {
   if (!liveOn(env)) return json({ error: 'live_off' }, 503);
   let input;
@@ -738,6 +788,7 @@ async function liveSend(request, env, url) {
   const text = String(input.text || '').replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, ' ').trim().slice(0, 1200);
   if (!okId(id) || !text) return json({ error: 'bad_input' }, 400);
   if (!liveAllowed(request.headers.get('CF-Connecting-IP') || 'local')) return json({ error: 'busy' }, 429);
+  if (!(await liveBudget(env, request.headers.get('CF-Connecting-IP') || 'local'))) return json({ error: 'busy' }, 429);
   const lang = LANGS.includes(input.lang) ? input.lang : 'ka';
   const now = new Date().toISOString();
   const th = await kv(env).get('thread:' + id, 'json') || { id, created: now, lang, page: clean(input.page, 200), contact: '', human: false, msgs: [] };
@@ -788,7 +839,7 @@ function secret(env, name) {
 /* Key check ignores spaces around the key (easy to add by accident when pasting into Cloudflare or a phone). */
 function adminOk(env, key) {
   const want = String(secret(env, 'ADMIN_KEY')).trim(), got = String(key || '').trim();
-  return Boolean(want && kv(env) && got.length >= 16 && got === want);
+  return Boolean(want && kv(env) && got.length >= 16 && same(got, want));
 }
 /* Sign-in page for the inbox: the browser encodes the key correctly, so keys with + # & or spaces work. */
 function inboxLogin(env, wrong, action = '/api/chat/inbox') {

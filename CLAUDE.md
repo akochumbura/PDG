@@ -141,3 +141,9 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - Phone menu (owner, 15 Oct 2026): while open, the page behind is locked (html/body.nav-lock) and the menu scrolls by itself; closing restores the scroll position.
 - (owner, 15 Oct 2026) RevoSling 05-002-02682 + Landing Gear 05-002-02683 = ONE system: one shop item 05-002-02682, price = sum (₾3,498),
   merged by import-price-list.py (MERGE). Configurator extras also include RevoCast 5 spreader (09-023-00145) and the RevoSling system (max 1 each).
+
+## 15 Oct 2026 (morning) additions
+- Purchasing today: cart -> WhatsApp/e-mail -> PDG confirms -> invoice -> bank transfer. Online card payment is off; terms (terms_p2/p3/p5/p7) describe that, the card/deposit paragraph (#termsOnline, terms_online) and cart pay/deposit notes appear only when /api/payments/config says enabled. Chat knowledge says online payment is NOT available.
+- Mobile (<=768px): bar = "დარეკვა" (tel) + "მოგვწერეთ" (data-chat-open, opens chat; falls back to /consultation without JS). Chat bubble hidden on phones, bar hidden while chat is open, chat panel follows visualViewport (keyboard). Desktop keeps the bubble.
+- Security: build.py writes CSP (script hashes of the inline theme script) + HSTS into dist/_headers; worker adds nosniff/HSTS/CSP on /api responses, bounded body reads, KV hourly/daily chat, live-chat and registration limits, constant-time admin key check.
+- Home strip: PDG ~ XAG, dealer sentence, small xag_intro line, link "XAG-ის შესახებ →" to /about#about-xag.

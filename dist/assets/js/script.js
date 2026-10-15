@@ -49,6 +49,9 @@
     root.classList.add("js-reveal");
     const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
     reveal.forEach((el) => io.observe(el));
+    // Safety net: if the observer never fires (print, odd browsers, anchors jumped to), nothing stays hidden.
+    setTimeout(() => reveal.forEach((el) => el.classList.add("is-in")), 4000);
+    if (location.hash) reveal.forEach((el) => el.classList.add("is-in"));
   }
   const header = document.querySelector(".site-header");
   if (header) {

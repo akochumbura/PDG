@@ -25,6 +25,22 @@ for f in D.rglob('*.html'):
     s2=re.sub(r'(?<=["(])(/assets/(?:css|js)/[\w.-]+\.(?:css|js))(?:\?v=[0-9a-f]+)?(?=[")])',lambda m:m.group(1)+('?v='+ver[m.group(1)] if m.group(1) in ver else ''),s)
     s2=re.sub(r'(?<=")(/assets/img/[\w./-]+\.(?:png|svg|webp|jpg))(?:\?v=[0-9a-f]+)?(?=[" ])',lambda m:m.group(1)+('?v='+img_ver(m.group(1)) if img_ver(m.group(1)) else ''),s2)
     if s2!=s: f.write_text(s2,encoding='utf-8')
+
+# Security headers: the CSP lists the SHA-256 of each inline script (only the theme bootstrap today); nothing else may run.
+import base64
+def csp_hashes():
+    found=set()
+    for f in D.rglob('*.html'):
+        for m in re.finditer(r'<script(?![^>]*\bsrc=)([^>]*)>(.*?)</script>',f.read_text(encoding='utf-8'),re.S):
+            if 'json' in m.group(1): continue
+            found.add("'sha256-"+base64.b64encode(hashlib.sha256(m.group(2).encode('utf-8')).digest()).decode()+"'")
+    return sorted(found)
+CSP=("default-src 'self'; script-src 'self' "+' '.join(csp_hashes())+"; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; "
+     "connect-src 'self'; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests")
+hp=D/'_headers'; hs=hp.read_text(encoding='utf-8')
+hs=re.sub(r'^  (Content-Security-Policy|Strict-Transport-Security):.*\n','',hs,flags=re.M)
+hs=hs.replace('/*\n','/*\n  Strict-Transport-Security: max-age=31536000\n  Content-Security-Policy: '+CSP+'\n',1)
+hp.write_text(hs,encoding='utf-8')
 if shutil.which('node'):
     for f in ('content','script','shop','payments-config','chat','account'): run('node','--check',f'dist/assets/js/{f}.js')
     import tempfile  # the worker is an ES module: check it as one (a .js copy is parsed as a script and misses duplicate declarations)
