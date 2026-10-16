@@ -29,7 +29,9 @@ for template in templates.xpath('//template[@data-page]'):
     desc_key = template.get('data-description')
     ka_title = template.get('data-ka-title') or template.xpath('.//h1')[0].text_content()+' — საქართველოს პრემიუმ დრონები'
     page_head = re.sub(r'(<title data-i18n=")[^"]+(">).*?</title>', lambda m: m.group(1)+title_key+m.group(2)+escape(ka_title)+'</title>', head)
-    intro = template.xpath('.//p[contains(@class,"page-intro")]')[0].text_content()
+    _intro = template.xpath('.//p[contains(@class,"page-intro")]')
+    # Pages without an intro paragraph (the compact platform page) take the Georgian description from content.js.
+    intro = _intro[0].text_content() if _intro else json.loads((ROOT/'dist/assets/js/content.js').read_text(encoding='utf-8').split('=',1)[1].strip().rstrip(';'))['ka'][desc_key]
     page_head = re.sub(r'<meta name="description"[^>]+>', '<meta name="description" content="'+escape(intro,quote=True)+'" data-i18n-content="'+desc_key+'">', page_head)
     page_head = re.sub(r'\s*<link rel="preload"[^>]*as="image"[^>]*>', '', page_head)
     body = ''.join(etree.tostring(child, encoding='unicode', method='html') for child in template)
@@ -179,7 +181,7 @@ def render(page_source, language, filename):
             if btn is None: continue
             d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),img,card.get('data-avail'),kit,canonical+('#kits' if kit else '#parts'))
             if d: graph.append(d)
-    for box in doc.xpath('//article[contains(@class,"pd-buybox")][@data-avail][@data-avail!="out"]'):
+    for box in doc.xpath('//article[contains(@class,"pd-buybox") or contains(@class,"pp-buy")][@data-avail][@data-avail!="out"]'):
         # Product page (battery, charger, charging station): Offer only with the product's own photo (as on the shop page).
         img=box.get('data-img') or (doc.xpath('//div[contains(@class,"pd-photo")]//img/@src') or [''])[0]
         btn=(box.xpath('.//button[contains(@class,"add-btn")]') or [box])[0]  # platform page: data on the buybox itself (configurator is the buy path)

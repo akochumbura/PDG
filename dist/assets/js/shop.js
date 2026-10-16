@@ -258,42 +258,40 @@
     inp.dispatchEvent(new Event("input", { bubbles: true }));
   });
 
-  /* XAG P150 MAX configurator (owner, 16 Oct 2026; platform page and P150 MAX page). Built by scripts/configurator.py.
-     Starts with the platform only. Prices = shop prices item by item; when the selection contains a complete package,
-     the existing package price (+ the remaining items at shop price) is offered with a switch. No other discounts. */
+  /* XAG P150 MAX configurator (only on /p150-max-platform; markup from scripts/configurator.py, prices from the catalog).
+     Pricing (owner, 16 Oct 2026, second brief): item-by-item total; every package whose complete contents are selected is
+     checked (package price + only the additional items) and the lowest valid total is used automatically. At most one package,
+     quantities are never changed, nothing is prorated. The summary, mobile bar, cart and WhatsApp all use pcState(). */
   var pcBox = document.getElementById("platformConfig");
   if (pcBox) {
-    var pcSec = pcBox.closest("section") || document, PC = JSON.parse(pcBox.dataset.config), pcRows = pcBox.querySelectorAll(".pcfg-row[data-key]"), usePkg = null;
-    function pcQ() { var q = {}; pcRows.forEach(function (r) { var i = r.querySelector(".qty-input"); q[r.dataset.key] = clampInt(i.value, 0, Number(i.max) || 0); }); return q; }
-    function rowLabel(k) { var r = pcBox.querySelector('.pcfg-row[data-key="' + k + '"] .pcfg-name > span'); return r ? r.textContent.trim() : PC.items[k].name; }
-    function itemName(sku, fallback) { return tx("pn_" + String(sku).replace(/[^A-Za-z0-9]/g, "_")) || fallback; }
-    function single(q) { var t = PC.platform.price; Object.keys(PC.items).forEach(function (k) { t += q[k] * PC.items[k].price; }); return t; }
+    var pcSec = pcBox.closest("section") || document, PC = JSON.parse(pcBox.dataset.config), pcRows = pcBox.querySelectorAll(".pcfg-row[data-key]");
+    var pcKeys = Object.keys(PC.items);
+    function pcInput(k) { return pcBox.querySelector('.pcfg-row[data-key="' + k + '"] .qty-input'); }
+    function pcQ() { var q = {}; pcKeys.forEach(function (k) { var i = pcInput(k); q[k] = clampInt(i.value, 0, Number(i.max) || 0); }); return q; }
+    function rowLabel(k) { var r = pcBox.querySelector('.pcfg-row[data-key="' + k + '"] .pcfg-label'); return r ? r.textContent.trim() : PC.items[k].name; }
     function fits(p, q) { return Object.keys(p.q).every(function (k) { return (q[k] || 0) >= p.q[k]; }); }
-    function withPkg(p, q) {
-      var extras = [], t = p.price;
-      Object.keys(PC.items).forEach(function (k) { var d = q[k] - (p.q[k] || 0); if (d > 0) { extras.push([k, d]); t += d * PC.items[k].price; } });
-      return { p: p, total: t, extras: extras, exact: !extras.length };
+    function pcState() {
+      var q = pcQ(), single = PC.platform.price, best = null;
+      pcKeys.forEach(function (k) { single += q[k] * PC.items[k].price; });
+      PC.packages.forEach(function (p) {
+        if (!fits(p, q)) return;
+        var extras = [], t = p.price;
+        pcKeys.forEach(function (k) { var d = q[k] - (p.q[k] || 0); if (d > 0) { extras.push([k, d]); t += d * PC.items[k].price; } });
+        if (t < single && (!best || t < best.total)) best = { p: p, total: t, extras: extras };
+      });
+      return { q: q, single: single, pkg: best, total: best ? best.total : single };
     }
-    function best(q) {
-      var b = null;
-      PC.packages.forEach(function (p) { if (!fits(p, q)) return; var o = withPkg(p, q); if (!b || o.total < b.total) b = o; });
-      return b;
-    }
-    function state() {
-      var q = pcQ(), s = single(q), b = best(q), cur = null;
-      if (usePkg) { var p = PC.packages.filter(function (x) { return x.sku === usePkg; })[0]; if (p && fits(p, q)) cur = withPkg(p, q); else usePkg = null; }
-      return { q: q, single: s, best: b, cur: cur, total: cur ? cur.total : s };
-    }
-    function lines(st) {
-      var out = [];
-      if (st.cur) {
-        out.push({ sku: st.cur.p.sku, cn: st.cur.p.name, name: st.cur.p.name, q: 1, unit: st.cur.p.price, max: st.cur.p.max, pkg: st.cur.p });
-        st.cur.extras.forEach(function (x) { var it = PC.items[x[0]]; out.push({ sku: it.sku, cn: it.name, name: itemName(it.sku, it.name), label: rowLabel(x[0]), q: x[1], unit: it.price, max: it.max }); });
+    /* Lines to show / send / add to the cart: one package SKU + extras, or the platform + items. */
+    function pcLines(st) {
+      var L = [];
+      if (st.pkg) {
+        L.push({ sku: st.pkg.p.sku, cn: st.pkg.p.name, label: tx("pc_pkg_line").replace("{name}", st.pkg.p.short), q: 1, unit: st.pkg.p.price, max: st.pkg.p.max, pkg: st.pkg.p });
+        st.pkg.extras.forEach(function (x) { var it = PC.items[x[0]]; L.push({ sku: it.sku, cn: it.name, label: rowLabel(x[0]), q: x[1], unit: it.price, max: it.max, extra: true }); });
       } else {
-        out.push({ sku: PC.platform.sku, cn: PC.platform.name, name: itemName(PC.platform.sku, PC.platform.name), label: tx("pc_platform"), q: 1, unit: PC.platform.price, max: PC.platform.max });
-        Object.keys(PC.items).forEach(function (k) { if (st.q[k] > 0) { var it = PC.items[k]; out.push({ sku: it.sku, cn: it.name, name: itemName(it.sku, it.name), label: rowLabel(k), q: st.q[k], unit: it.price, max: it.max }); } });
+        L.push({ sku: PC.platform.sku, cn: PC.platform.name, label: tx("pc_platform"), q: 1, unit: PC.platform.price, max: PC.platform.max });
+        pcKeys.forEach(function (k) { if (st.q[k] > 0) { var it = PC.items[k]; L.push({ sku: it.sku, cn: it.name, label: rowLabel(k), q: st.q[k], unit: it.price, max: it.max }); } });
       }
-      return out;
+      return L;
     }
     function contentsText(p) {
       var parts = [tx("pc_platform") + " × 1"];
@@ -302,103 +300,101 @@
     }
     function missing(st) {
       var m = [];
-      if (!st.cur) {
-        if (!st.q.remotes) m.push(tx("pc_need_remote"));
-        if (!st.q.batteries) m.push(tx("pc_need_batteries"));
-        if (!st.q.chargers) m.push(tx("pc_need_chargers"));
-      }
+      if (!st.q.remotes) m.push(tx("pc_need_remote"));
+      if (!st.q.batteries) m.push(tx("pc_need_batteries"));
+      if (!st.q.chargers) m.push(tx("pc_need_chargers"));
       return m;
     }
-    function link(st) {
+    function pcLink(st) {
       var parts = [];
-      Object.keys(PC.items).forEach(function (k) { if (st.q[k] > 0) parts.push(k + "-" + st.q[k]); });
+      pcKeys.forEach(function (k) { if (st.q[k] > 0) parts.push(k + "-" + st.q[k]); });
       var lang = document.documentElement.lang, pre = lang && lang !== "ka" ? "/" + lang : "";
-      var u = location.origin + pre + PC.page + (parts.length || st.cur ? "?c=" + (parts.join("_") || "none") + (st.cur ? "&p=" + st.cur.p.key : "") : "");
-      return u;
+      return location.origin + pre + PC.page + (parts.length ? "?c=" + parts.join("_") : "") + "#configurator";
+    }
+    function presetMatch(q) {
+      if (pcKeys.every(function (k) { return !q[k]; })) return "none";
+      var hit = PC.packages.filter(function (p) { return pcKeys.every(function (k) { return (p.q[k] || 0) === q[k]; }); })[0];
+      return hit ? hit.sku : "";
     }
     function pcShow() {
-      var st = state(), list = document.getElementById("pcList"), L = lines(st);
-      pcRows.forEach(function (r) {
-        var q = st.q[r.dataset.key], it = PC.items[r.dataset.key];
-        r.classList.toggle("is-on", q > 0);
-        r.querySelector(".pcfg-line").textContent = q > 0 ? fmt(q * it.price) : "";
-      });
+      var st = pcState(), list = document.getElementById("pcList");
+      pcRows.forEach(function (r) { r.classList.toggle("is-on", st.q[r.dataset.key] > 0); });
       list.textContent = "";
-      L.forEach(function (l) {
+      var extrasShown = false;
+      pcLines(st).forEach(function (l) {
+        if (l.extra && !extrasShown) { extrasShown = true; var h = document.createElement("li"); h.className = "pcfg-li-head"; h.textContent = tx("pc_extras"); list.appendChild(h); }
         var li = document.createElement("li"), n = document.createElement("span"), v = document.createElement("span");
-        n.className = "pcfg-li-name"; n.textContent = (l.pkg ? l.pkg.name : l.label) + " × " + l.q;
-        if (l.pkg) { var sm = document.createElement("small"); sm.textContent = contentsText(l.pkg); n.appendChild(document.createElement("br")); n.appendChild(sm); }
+        n.className = "pcfg-li-name"; n.textContent = l.label + (l.pkg ? "" : " × " + l.q);
+        if (l.pkg) { var sm = document.createElement("small"); sm.textContent = contentsText(l.pkg); n.appendChild(sm); li.className = "pcfg-li-pkg"; }
         v.className = "pcfg-li-price"; v.textContent = fmt(l.q * l.unit);
         li.append(n, v); list.appendChild(li);
       });
-      var of = document.getElementById("pcOffer"), sw = document.getElementById("pcSwitch");
-      var b = st.best, showB = b && !(st.cur && st.cur.p.sku === b.p.sku);
-      if (st.cur && !showB) {
-        of.hidden = false; of.classList.add("is-active");
-        document.getElementById("pcOfferText").textContent = tx(st.cur.exact ? "pc_offer_exact" : "pc_offer_contains").replace("{name}", st.cur.p.short);
-        document.getElementById("pcOfferPrice").textContent = tx("pc_offer_price").replace("{total}", fmt(st.cur.total)).replace("{single}", fmt(st.single)).replace("{save}", fmt(st.single - st.cur.total));
-        sw.dataset.act = "off"; sw.querySelector("span").textContent = tx("pc_unswitch");
-      } else if (showB) {
-        of.hidden = false; of.classList.remove("is-active");
-        document.getElementById("pcOfferText").textContent = tx(b.exact ? "pc_offer_exact" : "pc_offer_contains").replace("{name}", b.p.short);
-        document.getElementById("pcOfferPrice").textContent = tx("pc_offer_price").replace("{total}", fmt(b.total)).replace("{single}", fmt(st.single)).replace("{save}", fmt(st.single - b.total));
-        sw.dataset.act = b.p.sku; sw.querySelector("span").textContent = tx("pc_switch").replace("{name}", b.p.short);
-      } else of.hidden = true;
+      var ap = document.getElementById("pcApplied");
+      ap.hidden = !st.pkg; if (st.pkg) ap.textContent = tx("pc_applied").replace("{name}", st.pkg.p.short);
       var m = missing(st), rm = document.getElementById("pcRemind");
       rm.hidden = !m.length; if (m.length) rm.textContent = tx("pc_remind").replace("{list}", m.join(", "));
       document.getElementById("pcTotal").textContent = fmt(st.total);
       document.getElementById("pcBarTotal").textContent = fmt(st.total);
-      pcSec.querySelectorAll(".pcfg-pkg").forEach(function (el) {
-        var p = PC.packages.filter(function (x) { return x.sku === el.querySelector(".pcfg-load").dataset.load; })[0];
-        el.classList.toggle("is-match", !!(st.cur && st.cur.p.sku === p.sku));
-      });
+      var n = 0; pcBox.querySelectorAll(".pcfg-more .pcfg-row[data-key]").forEach(function (r) { if (st.q[r.dataset.key] > 0) n++; });
+      document.getElementById("pcMoreCount").textContent = n ? tx("pc_more_count").replace("{n}", n) : "";
+      var pm = presetMatch(st.q);
+      pcBox.querySelectorAll(".pcfg-preset").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.preset === pm ? "true" : "false"); });
       return st;
     }
-    function setQ(q) { pcRows.forEach(function (r) { r.querySelector(".qty-input").value = clampInt(q[r.dataset.key] || 0, 0, Number(r.querySelector(".qty-input").max) || 0); }); }
+    function setQ(q) { pcKeys.forEach(function (k) { var i = pcInput(k); i.value = clampInt(q[k] || 0, 0, Number(i.max) || 0); }); }
+    function preset(v) {
+      var p = PC.packages.filter(function (x) { return x.sku === v || x.key === v; })[0], q = {};
+      if (p) Object.keys(p.q).forEach(function (k) { q[k] = p.q[k]; });
+      setQ(q); pcShow();
+    }
     function pcSend() {
-      var st = pcShow(), L = lines(st), msg = [tx("pc_msg_title")];
-      L.forEach(function (l) { msg.push("- " + (l.pkg ? l.pkg.name + " (" + contentsText(l.pkg) + ")" : l.label) + " (" + l.sku + ") × " + l.q + " = " + fmt(l.q * l.unit)); });
+      var st = pcShow(), msg = [tx("pc_msg_title")];
+      pcLines(st).forEach(function (l) {
+        if (l.pkg) { msg.push("- " + l.pkg.name + " (" + l.sku + ") × 1 = " + fmt(l.unit)); msg.push("  " + tx("pc_contents_of") + ": " + contentsText(l.pkg)); }
+        else msg.push("- " + (l.extra ? tx("pc_extras") + ": " : "") + l.label + " (" + l.sku + ") × " + l.q + " = " + fmt(l.q * l.unit));
+      });
+      if (st.pkg) msg.push(tx("pc_applied").replace("{name}", st.pkg.p.short));
       var m = missing(st); if (m.length) msg.push(tx("pc_msg_missing") + ": " + m.join(", "));
       msg.push(tx("pc_total") + ": " + fmt(st.total));
-      msg.push(tx("pc_msg_link") + ": " + link(st));
+      msg.push(tx("pc_msg_link") + ": " + pcLink(st));
       openWa(msg.join("\n"));
     }
     pcBox.addEventListener("input", function (e) { if (e.target.classList.contains("qty-input")) pcShow(); });
-    pcSec.addEventListener("click", function (e) {
-      var ld = e.target.closest(".pcfg-load");
-      if (ld) {
-        var p = PC.packages.filter(function (x) { return x.sku === ld.dataset.load; })[0];
-        var q = {}; Object.keys(PC.items).forEach(function (k) { q[k] = p.q[k] || 0; });
-        setQ(q); usePkg = p.sku; pcShow();
-        var sum = document.getElementById("pcSummary"); if (sum && sum.scrollIntoView) sum.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+    pcBox.addEventListener("change", function (e) { if (e.target.classList.contains("qty-input")) pcShow(); });
+    pcBox.addEventListener("click", function (e) { var b = e.target.closest(".pcfg-preset"); if (b) preset(b.dataset.preset); });
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest ? e.target.closest("[data-preset-link]") : null;
+      if (a) preset(a.getAttribute("data-preset-link"));
     });
-    document.getElementById("pcSwitch").addEventListener("click", function () { var a = this.dataset.act; usePkg = a && a !== "off" ? a : null; pcShow(); });
     document.getElementById("pcWa").addEventListener("click", pcSend);
     document.getElementById("pcBarSend").addEventListener("click", pcSend);
     document.getElementById("pcCart").addEventListener("click", function () {
       var st = pcShow();
-      lines(st).forEach(function (l) { addItem(l.sku, l.cn, l.unit, l.q, l.max); });
+      pcLines(st).forEach(function (l) { addItem(l.sku, l.cn, l.unit, l.q, l.max); });
       save(); render();
       var b = this; b.classList.add("is-added"); setTimeout(function () { b.classList.remove("is-added"); }, 900);
     });
-    /* Package comparison: localised contents and savings. */
-    pcSec.querySelectorAll("[data-pkg-in]").forEach(function (el) { var p = PC.packages.filter(function (x) { return x.sku === el.dataset.pkgIn; })[0]; el.textContent = contentsText(p); });
-    pcSec.querySelectorAll("[data-save]").forEach(function (el) { el.textContent = tx("pc_save").replace("{save}", fmt(Number(el.dataset.save))); });
-    /* Shared links: ?c=batteries-4_chargers-2&p=starter, and the package pages' ?kit=starter. */
-    var qs = new URLSearchParams(location.search), q0 = {}, kit = (qs.get("kit") || qs.get("p") || "").toLowerCase();
+    /* Shared links (?c=batteries-4_chargers-2) and package pages (?kit=starter); older links may still carry &p=. */
+    var qs = new URLSearchParams(location.search), q0 = {}, kit = (qs.get("kit") || "").toLowerCase();
     String(qs.get("c") || "").split("_").forEach(function (x) { var m = /^([a-z0-9]+)-(\d+)$/.exec(x); if (m && PC.items[m[1]]) q0[m[1]] = Number(m[2]); });
     var kp = PC.packages.filter(function (x) { return x.key === kit; })[0];
     if (kp && !qs.get("c")) Object.keys(kp.q).forEach(function (k) { q0[k] = kp.q[k]; });
-    setQ(q0); if (kp && fits(kp, pcQ())) usePkg = kp.sku;
+    setQ(q0);
+    if (pcKeys.some(function (k) { return q0[k] > 0 && pcBox.querySelector('.pcfg-more .pcfg-row[data-key="' + k + '"]'); })) document.getElementById("pcMore").open = true;
     pcShow();
-    /* Phones: a slim total + send bar while the summary is off screen (never over the summary itself). */
-    var bar = document.getElementById("pcBar"), sumEl = document.getElementById("pcSummary"), optEl = pcBox.querySelector(".pcfg-options");
+    /* Phones: a slim total + send bar replaces the call/chat bar while the options are on screen and the summary total/actions are not. */
+    var bar = document.getElementById("pcBar"), sumEl = document.querySelector("#pcSummary .pcfg-total-row"), optEl = pcBox.querySelector(".pcfg-options");
     if (bar && "IntersectionObserver" in window) {
       var vis = { sum: false, opt: false };
-      var upd = function () { var on = vis.opt && !vis.sum; bar.classList.toggle("is-on", on); bar.setAttribute("aria-hidden", on ? "false" : "true"); document.getElementById("pcBarSend").tabIndex = on ? 0 : -1; };
-      new IntersectionObserver(function (es) { es.forEach(function (e) { vis[e.target === sumEl ? "sum" : "opt"] = e.isIntersecting; }); upd(); }, { threshold: 0 }).observe(sumEl);
+      var upd = function () {
+        var on = vis.opt && !vis.sum && window.matchMedia("(max-width: 768px)").matches;
+        bar.classList.toggle("is-on", on); bar.setAttribute("aria-hidden", on ? "false" : "true");
+        document.getElementById("pcBarSend").tabIndex = on ? 0 : -1;
+        document.body.classList.toggle("pcfg-bar-on", on);
+      };
+      new IntersectionObserver(function (es) { es.forEach(function (e) { vis.sum = e.isIntersecting; }); upd(); }, { threshold: 0 }).observe(sumEl);
       new IntersectionObserver(function (es) { es.forEach(function (e) { vis.opt = e.isIntersecting; }); upd(); }, { threshold: 0 }).observe(optEl);
+      window.addEventListener("resize", upd);
     }
   }
 

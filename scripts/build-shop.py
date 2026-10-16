@@ -214,9 +214,14 @@ import configurator as _pc
 PLATFORM_TEXT = dict(_pc.TEXT)
 PLATFORM_TEXT.update({
     'pp_eyebrow': ('ცალკე პლატფორმა', 'Platform only', 'Только платформа'),
-    'pp_notice': ('მხოლოდ დრონი RevoSpray 5 სისტემით. მართვის პულტი, აკუმულატორები და დამტენები არ შედის. არ წარმოადგენს სამუშაოდ სრულ კომპლექტს.',
-                  'Drone only, with the RevoSpray 5 system. The remote controller, batteries and chargers are not included. Not a complete working set.',
-                  'Только дрон с системой RevoSpray 5. Пульт управления, аккумуляторы и зарядные устройства не входят. Не является полным рабочим комплектом.'),
+    'pp_notice': ('ფასში შედის დრონი RevoSpray 5 სისტემით. მართვის პულტი, აკუმულატორები და დამტენები იყიდება ცალკე. ეს არ არის სრული სამუშაო კომპლექტი.',
+                  'The price includes the drone with the RevoSpray 5 system. The remote controller, batteries and chargers are sold separately. This is not a complete working set.',
+                  'В цену входит дрон с системой RevoSpray 5. Пульт управления, аккумуляторы и зарядные устройства продаются отдельно. Это не полный рабочий комплект.'),
+    'pp_sub': ('სასოფლო-სამეურნეო დრონი · RevoSpray 5', 'Agricultural drone · RevoSpray 5', 'Сельскохозяйственный дрон · RevoSpray 5'),
+    'pp_back': ('← მაღაზია', '← Shop', '← Магазин'),
+    'pm_cfg_link': tuple(t.format(int([r for r in csv.DictReader(open(ROOT / 'scripts/catalog.csv', encoding='utf-8')) if r['sku'] == _pc.PLATFORM][0]['gel']))
+                         for t in ('კონფიგურაციის აწყობა — ₾{:,}-დან', 'Build your configuration — from ₾{:,}', 'Собрать конфигурацию — от ₾{:,}')),
+    'pm_cfg_note': ('საწყისი ფასი — მხოლოდ დრონი RevoSpray 5 სისტემით.', 'Starting price: the drone with RevoSpray 5 only.', 'Начальная цена — только дрон с RevoSpray 5.'),
     'pp_configure': ('კონფიგურაციის აწყობა', 'Build your configuration', 'Собрать конфигурацию')})
 import json as _json
 _cj = ROOT / 'dist/assets/js/content.js'
@@ -252,6 +257,13 @@ for r in rows:
 import configurator as PCFG
 
 
+def platform_link():
+    """P150 MAX page, under the introduction: one link to the platform configurator with the starting price (catalog)."""
+    p = price(by_sku_all[PCFG.PLATFORM], False)
+    return (f'<p class="pm-cfg"><a class="text-link" href="/p150-max-platform#configurator" data-local><span data-i18n="pm_cfg_link">კონფიგურაციის აწყობა — ₾{p:,}-დან</span>'
+            '<span aria-hidden="true">→</span></a><span class="pm-cfg-note" data-i18n="pm_cfg_note">საწყისი ფასი — მხოლოდ დრონი RevoSpray 5 სისტემით.</span></p>')
+
+
 def platform_row(r):
     """Standalone platform listing in the shop (below the packages): drone only, link to its page and configurator."""
     p = price(r, False)
@@ -260,7 +272,7 @@ def platform_row(r):
             '<div class="platform-row-body"><p class="product-cat" data-i18n="pp_eyebrow">ცალკე პლატფორმა</p>'
             f'<h3><a class="product-link" href="/p150-max-platform" data-local data-i18n="pc_platform">XAG P150 MAX პლატფორმა (RevoSpray 5)</a></h3>'
             '<div class="pp-price-row"><p class="pp-price"><span class="product-price">₾{0:,}</span> <span class="pd-vat" data-i18n="pd_vat">ფასი დღგ-ს ჩათვლით</span></p>'.format(p) +
-            '<p class="pp-notice" role="note" data-i18n="pp_notice">მხოლოდ დრონი RevoSpray 5 სისტემით. მართვის პულტი, აკუმულატორები და დამტენები არ შედის. არ წარმოადგენს სამუშაოდ სრულ კომპლექტს.</p></div>'
+            '<p class="pp-notice" data-i18n="pp_notice">ფასში შედის დრონი RevoSpray 5 სისტემით. მართვის პულტი, აკუმულატორები და დამტენები იყიდება ცალკე. ეს არ არის სრული სამუშაო კომპლექტი.</p></div>'
             '<a class="button button-line" href="/p150-max-platform#configurator" data-local><span data-i18n="pp_configure">კონფიგურაციის აწყობა</span><span aria-hidden="true">→</span></a>'
             '</div></div>')
 
@@ -275,7 +287,9 @@ subs = [
     (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div>\n<!--partsMore-->)', ''.join(card(r).replace('<article class="product"', '<article hidden class="product"', 1) if i >= 24 else card(r) for i, r in enumerate(parts))),  # first 24 visible, the rest revealed by "Load more" (shop.js PAGE)
     (r'(<ul class="kit-table">\n).*?(</ul>)', ''.join(kit_row(r) for r in kits)),
     (r'(<div class="shop-grid" id="legacyGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in legacy)),
-    (r'(<!--configurator-->\n).*?(<!--/configurator-->)', PCFG.block() + '\n'),
+    # Owner, 16 Oct 2026 (second brief): the full configurator lives only on /p150-max-platform; the P150 MAX page links to it.
+    (r'(<!--configurator-->\n).*?(<!--/configurator-->)', ''),
+    (r'(<!--platformLink-->).*?(<!--/platformLink-->)', platform_link()),
 ]
 home = ROOT / 'dist/index.html'
 ht = home.read_text(encoding='utf-8')

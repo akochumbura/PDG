@@ -56,8 +56,9 @@ GALLERY = [  # (file, ka alt, en alt, ru alt)
 
 # Standalone P150 MAX platform (owner, 16 Oct 2026): own page with the configurator (scripts/configurator.py).
 PLATFORM = '09-007-00188'
-PLATFORM_GALLERY = [  # P150 MAX gallery pictures that show only what the platform includes (no remote/battery/spreader pictures)
-    ('p150-max-1.webp', 'pd_g1'), ('p150-max-2.webp', 'pd_g2'), ('p150-max-8.webp', 'pd_g8'), ('p150-max-9.webp', 'pd_g9')]
+PLATFORM_GALLERY = [  # whole drone visible, nothing that is not included (owner photos 16 Oct 2026 + P150 MAX gallery); paths under /assets/img/
+    ('platform/platform-front.webp', 'pd_pf_front'), ('packages/p150-max-1.webp', 'pd_g1'), ('packages/p150-max-2.webp', 'pd_g2'),
+    ('platform/platform-field.webp', 'pd_pf_field'), ('packages/p150-max-8.webp', 'pd_g8')]
 
 # Previous-generation models (owner photos, 15 Oct 2026): own page with gallery, no price, consultation instead of a cart.
 # Pictures: dist/assets/img/models/<prefix>-N.webp (+ -t thumbs), made by scripts/tools/model-pictures.py.
