@@ -54,6 +54,11 @@ GALLERY = [  # (file, ka alt, en alt, ru alt)
 ]
 
 
+# Standalone P150 MAX platform (owner, 16 Oct 2026): own page with the configurator (scripts/configurator.py).
+PLATFORM = '09-007-00188'
+PLATFORM_GALLERY = [  # P150 MAX gallery pictures that show only what the platform includes (no remote/battery/spreader pictures)
+    ('p150-max-1.webp', 'pd_g1'), ('p150-max-2.webp', 'pd_g2'), ('p150-max-8.webp', 'pd_g8'), ('p150-max-9.webp', 'pd_g9')]
+
 # Previous-generation models (owner photos, 15 Oct 2026): own page with gallery, no price, consultation instead of a cart.
 # Pictures: dist/assets/img/models/<prefix>-N.webp (+ -t thumbs), made by scripts/tools/model-pictures.py.
 LEGACY = {
@@ -71,6 +76,8 @@ LEGACY = {
 
 def url(sku):
     """Clean URL of the product or package page (Cloudflare Pages serves /x.html as /x), or None."""
+    if sku == PLATFORM:
+        return '/p150-max-platform'
     if sku in LEGACY:
         return '/' + LEGACY[sku]['slug']
     if sku in KITS:

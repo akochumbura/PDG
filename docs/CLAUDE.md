@@ -120,7 +120,8 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 
 ## Manufacturer codes, photos, product pages (owner, 14 Oct 2026, night)
 - Every SKU on the site = XAG manufacturer code (packing list column "მწარმოებლის კოდი"); 268 invoice codes map one-to-one.
-- The P150 MAX drone (09-007-00188) is NOT sold separately: only inside the packages (importer skips it; no drone filter chip).
+- (owner, 16 Oct 2026; replaces 'drone only in packages') The P150 MAX drone (09-007-00188) is ALSO sold as the standalone platform, 41,999 GEL (price list),
+  RevoSpray 5 only — no SRC5, batteries or chargers. The packages stay unchanged. See the 16 Oct platform notes below.
 - Product photos = the parts PDFs, matched by EXACT manufacturer code (scripts/pdf-part-matches.csv). A picture shared by
   different part numbers (screw kits, CW/CCW gaskets, 1&2 / 3&4 cables) is never used; one shared only by versions of the same
   part (same name) is. Exception: B141050 picture = PDF code 09-017-00083 (INTL) for invoice 09-017-00073 (same model).
@@ -161,3 +162,13 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 16 Oct 2026) Delivery in Georgia: ₾30 for orders under ₾100, free from ₾100; pickup from Tbilisi storage free (site_config.SHIPPING).
   Cart has a delivery/pickup choice + products/delivery/total lines; the worker adds the same fee as a DELIVERY basket line (server rule, not the browser's).
   terms_p4 (ka/en/ru) states the rule in words: if SHIPPING changes, update terms_p4 too.
+- (owner, 16 Oct 2026) Standalone platform: page /p150-max-platform (build-products.py) = gallery (p150-max-1/2/8/9 only: nothing that is not included),
+  price + exact notice pp_notice beside it (stacks under it below 420px), then the configurator. Shop: a .platform-row under the packages (<!--platformRow-->), not in the parts grid.
+  Configurator = scripts/configurator.py (one builder, also on /p150-max at <!--configurator-->; shop.js #platformConfig). Starts with the platform only;
+  groups 'მართვა და ენერგია' (SRC5, B141050, CM13600S, cooling tank, GC4000+ optional) and 'დამატებითი აღჭურვილობა' (XRTK7, RevoCast 5, RevoSling, 4-Nozzle kit; optional).
+  Prices/stock/package contents come from catalog.csv/stock.csv only. Item-by-item prices; when the selection contains a complete package the package price
+  (+ remaining items at shop price) is offered with a switch button (exact or 'contains'). No other discounts. Non-blocking reminder when SRC5/batteries/chargers are 0.
+  Comparison block: Starter 75,999 vs 79,590, Pro 87,999 vs 95,587, Business 104,999 vs 114,583 (computed; build warns if they drift from the owner figures).
+  Main action 'კონფიგურაციის გაგზავნა' = WhatsApp with items, codes, quantities, line prices, total and a share link (?c=batteries-4_chargers-2&p=starter);
+  package pages' ?kit=starter still preloads. Cart button adds the package SKU (if switched) or the platform + items. Mobile: sticky total/send bar above the call/chat bar
+  only while the options are on screen and the summary is not.

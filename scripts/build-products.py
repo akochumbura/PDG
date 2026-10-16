@@ -192,6 +192,46 @@ for sku, slug in P.KITS.items():
         f'<a class="text-link" href="/p150-max.html?kit={sku.split('-')[-1].lower()}#configurator" data-local><span data-i18n="pd_pk_cfg">კომპლექტის შეცვლა კონფიგურატორში</span><span aria-hidden="true">→</span></a></p>'
         f'</article></div></section>\n</template>\n')
 
+# ---- Standalone P150 MAX platform page (owner, 16 Oct 2026): price + notice, configurator right below, package comparison ----
+import configurator as PCFG
+_pr = rows[P.PLATFORM]
+_pgel = int(_pr['gel'])
+_pst = {row['sku']: int(row['qty']) for row in csv.DictReader(open(ROOT / 'scripts/stock.csv', encoding='utf-8'))}.get(P.PLATFORM, 0)
+put('pd_platform_title', ('XAG P150 MAX პლატფორმა (RevoSpray 5) — ფასი და კონფიგურატორი', 'XAG P150 MAX platform (RevoSpray 5) — price and configurator',
+                          'Платформа XAG P150 MAX (RevoSpray 5) — цена и конфигуратор'))
+put('pd_platform_intro', ('XAG P150 MAX ცალკე, RevoSpray 5 შეწამვლის სისტემით. შეარჩიეთ მართვის პულტი, ენერგოსისტემა და დამატებითი აღჭურვილობა ან შეადარეთ სრულ კომპლექტებს.',
+                          'The XAG P150 MAX on its own, with the RevoSpray 5 spraying system. Choose the controller, power system and extra equipment, or compare with the complete packages.',
+                          'XAG P150 MAX отдельно, с системой опрыскивания RevoSpray 5. Выберите пульт, систему питания и дополнительное оборудование или сравните с полными комплектами.'))
+put('pd_platform_in', ('შედის: XAG P150 MAX პლატფორმა და RevoSpray 5 შეწამვლის სისტემა.', 'Included: the XAG P150 MAX platform and the RevoSpray 5 spraying system.',
+                       'В комплекте: платформа XAG P150 MAX и система опрыскивания RevoSpray 5.'))
+put('pd_platform_pkgs', ('სრული კომპლექტი — ₾{0:,}-დან, შედარება ქვემოთ.'.format(min(int(r['gel']) for r in rows.values() if r['group'] == 'kit')),
+                         'Complete packages from ₾{0:,} — compared below.'.format(min(int(r['gel']) for r in rows.values() if r['group'] == 'kit')),
+                         'Полные комплекты от ₾{0:,} — сравнение ниже.'.format(min(int(r['gel']) for r in rows.values() if r['group'] == 'kit'))))
+_pics = [(f'/assets/img/packages/{f}', f'/assets/img/packages/{f.replace(".webp", "-t.webp")}', key, c['ka'][key]) for f, key in P.PLATFORM_GALLERY]
+_thumbs = ''.join(f'<button type="button" class="pk-thumb{" is-on" if j == 0 else ""}" data-full="{full}" aria-label="{html.escape(alt, quote=True)}" data-i18n-aria="{key}"{" aria-current=\"true\"" if j == 0 else ""}>'
+                  f'<img src="{th}" width="240" height="180" alt="" loading="lazy" decoding="async"></button>' for j, (full, th, key, alt) in enumerate(_pics))
+_wa = 'https://wa.me/995550004333?text=' + quote(f'გამარჯობა! მაინტერესებს {_pr["name"]} ({P.PLATFORM}).')
+out.append(
+    f'<template data-page="p150-max-platform.html" data-ka-title="{html.escape("XAG P150 MAX პლატფორმა (RevoSpray 5) — ფასი და კონფიგურატორი | საქართველოს პრემიუმ დრონები", quote=True)}" data-title="pd_platform_title" data-description="pd_platform_intro">\n'
+    f'  <section class="page-hero pd-hero"><div class="container"><a class="back-link" href="/shop.html#kits" data-local data-i18n="pd_pk_back">← კომპლექტები</a>'
+    f'<p class="eyebrow">XAG P150 MAX</p><h1 data-i18n="pc_platform">XAG P150 MAX პლატფორმა (RevoSpray 5)</h1>'
+    f'<p class="page-intro" data-i18n="pd_platform_intro">{html.escape(c["ka"]["pd_platform_intro"])}</p></div></section>\n'
+    f'  <section class="section pd-main"><div class="container pd-grid">'
+    f'<div class="pk-gallery"><div class="product-photo pd-photo pk-main"><img id="pkMain" src="{_pics[0][0]}" width="1200" height="900" alt="{html.escape(_pics[0][3], quote=True)}" data-i18n-alt="{_pics[0][2]}" decoding="async"></div>'
+    f'<div class="pk-thumbs" aria-label="ფოტო" data-i18n-aria="pd_pk_photo">{_thumbs}</div></div>'
+    f'<article class="product pd-buybox pp-buybox" data-cat="drone" data-avail="in_stock" data-sku="{P.PLATFORM}" data-name="{html.escape(_pr["name"], quote=True)}" data-price="{_pgel}" data-img="/assets/img/products/{P.PLATFORM}.webp">'
+    f'<p class="product-sku"><span data-i18n="pd_code">მწარმოებლის კოდი</span>: {P.PLATFORM}</p>'
+    f'<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
+    f'<div class="pp-price-row"><p class="pp-price"><span class="product-price">₾{_pgel:,}</span> <span class="pd-vat" data-i18n="pd_vat">ფასი დღგ-ს ჩათვლით</span></p>'
+    f'<p class="pp-notice" role="note" data-i18n="pp_notice">მხოლოდ დრონი RevoSpray 5 სისტემით. მართვის პულტი, აკუმულატორები და დამტენები არ შედის. არ წარმოადგენს სამუშაოდ სრულ კომპლექტს.</p></div>'
+    f'<p class="pp-in" data-i18n="pd_platform_in">{html.escape(c["ka"]["pd_platform_in"])}</p>'
+    f'<a class="button button-red" href="#configurator"><span data-i18n="pp_configure">კონფიგურაციის აწყობა</span><span aria-hidden="true">↓</span></a>'
+    f'<p class="pp-pkgs"><a class="text-link" href="#pcCompare"><span data-i18n="pd_platform_pkgs">{html.escape(c["ka"]["pd_platform_pkgs"])}</span></a></p>'
+    f'<p class="pk-links"><a class="text-link" href="/p150-max.html#specifications" data-local><span data-i18n="pd_pk_specs">P150 MAX-ის სრული მახასიათებლები</span><span aria-hidden="true">→</span></a>'
+    f'<a class="text-link" href="{html.escape(_wa, quote=True)}" target="_blank" rel="noopener noreferrer"><span data-i18n="pd_ask">კითხვა WhatsApp-ით</span><span aria-hidden="true">→</span></a></p>'
+    f'</article></div></section>\n'
+    f'  {PCFG.block()}\n</template>\n')
+
 # ---- Previous-generation model pages (gallery, specs, consultation) ----
 import legacy_models as LM
 T2 = {'pd_lg_back': ('← წინა მოდელები', '← Previous models', '← Предыдущие модели'),
@@ -240,4 +280,4 @@ if '<!--product-pages-->' not in t:
 t = re.sub(r'<!--product-pages-->\n.*?<!--/product-pages-->', lambda m: '<!--product-pages-->\n' + ''.join(out) + '<!--/product-pages-->', t, count=1, flags=re.S)
 pb.write_text(t, encoding='utf-8')
 cj.write_text('window.PDG_CONTENT = ' + json.dumps(c, ensure_ascii=False, indent=2) + ';\n', encoding='utf-8')
-print(f'product pages: {len(out)} ({", ".join([p["slug"] for p in P.PAGES] + list(P.KITS.values()))})')
+print(f'product pages: {len(out)} (p150-max-platform, {", ".join([p["slug"] for p in P.PAGES] + list(P.KITS.values()))})')

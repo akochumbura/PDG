@@ -5,7 +5,8 @@ Keeps the three P150 MAX packages (kit rows) and the non-invoice rows (avail=quo
 SKU = the XAG manufacturer code (მწარმოებლის კოდი, e.g. 09-017-00073), looked up from the invoice code (Code, P0000…)
 in scripts/supplier-code-map.csv (made from PDG_Invoice_Packing_List_Georgian.xlsx, owner 14 Oct 2026);
 name = Original item (English), name_ka = Georgian item, gel = Retail incl. VAT GEL.
-The P150 MAX drone itself is sold only in the packages (owner, 14 Oct 2026), so it is not imported as a separate item.
+The P150 MAX drone is imported as the standalone platform listing (owner, 16 Oct 2026: 41,999 GEL, RevoSpray 5 only,
+no controller/batteries/chargers), with the clean names in NAMES; the packages stay unchanged.
 Cost and margin columns are internal and are NOT copied (the landed cost only sets the 5-15 GEL fastener price). Then run: python scripts/build.py
 """
 import csv, re, sys
@@ -45,6 +46,10 @@ def clean(s):
 
 # Owner, 15 Oct 2026: the RevoSling and its landing gear (05-002-02683) are one system, sold together as one item.
 MERGE = {'05-002-02683': '05-002-02682'}
+# Clean shop names that replace the price-list text (sku: (en, ka, ru); '' = keep the price-list value).
+NAMES = {'09-007-00188': ('XAG P150 MAX Platform (RevoSpray 5)', 'XAG P150 MAX პლატფორმა (RevoSpray 5)', 'Платформа XAG P150 MAX (RevoSpray 5)'),
+         '09-017-00065': ('', 'XAG 2024 აკუმულატორის გაგრილების მოწყობილობა (ავზი, INTL), სასოფლო-სამეურნეო დრონის აკუმულატორების გასაგრილებლად', ''),
+         '05-002-02682': ('', '', 'Система подвеса груза XAG RevoSling с посадочным шасси (05-002-02683), INTL')}
 MERGED_NAMES = {'05-002-02682': ('XAG RevoSling system (RevoSling + Landing Gear 05-002-02683, INTL)',
                                  'XAG RevoSling ტვირთის საკიდი სისტემა დასაჯდომი შასით (05-002-02683), INTL — ტვირთის გადასატანად')}
 
@@ -86,9 +91,7 @@ def main(path):
             continue  # the same code twice on the invoice = one product
         en, ka = clean(r[col['Original item']]), clean(r[col['Georgian item']])
         cat = clean(r[col['Category']])
-        if re.search(r'Agricultural Drone', en):
-            continue  # the drone is sold only in the P150 MAX packages
-        group = GROUP.get(cat)
+        group = 'drone' if re.search(r'Agricultural Drone', en) else GROUP.get(cat)
         seen.add(sku)
         if not group:
             raise SystemExit(f'Unknown category {cat!r} for {sku}: add it to GROUP')
@@ -98,6 +101,10 @@ def main(path):
         out.append(row)
     out += [r for r in extra if r['sku'] not in seen]
     out = merge_systems(out)
+    for r in out:
+        for f, v in zip(('name', 'name_ka', 'name_ru'), NAMES.get(r['sku'], ())):
+            if v:
+                r[f] = v
     with open(CATALOG, 'w', encoding='utf-8', newline='') as f:
         w = csv.DictWriter(f, fieldnames=fields, lineterminator='\n')
         w.writeheader()

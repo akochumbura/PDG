@@ -210,6 +210,14 @@ import legacy_models
 LEGACY_SPECS = {m['sku']: m['specs'] for m in legacy_models.MODELS}
 rows += [{'group': 'legacy', 'name': m['name'], 'name_ka': m['name_ka'], 'name_ru': '', 'sku': m['sku'], 'usd': '', 'gel': '',
           'image': '', 'drones': '', 'batteries': '', 'chargers': '', 'rtk': '', 'generators': '', 'avail': 'legacy'} for m in legacy_models.MODELS]
+import configurator as _pc
+PLATFORM_TEXT = dict(_pc.TEXT)
+PLATFORM_TEXT.update({
+    'pp_eyebrow': ('ცალკე პლატფორმა', 'Platform only', 'Только платформа'),
+    'pp_notice': ('მხოლოდ დრონი RevoSpray 5 სისტემით. მართვის პულტი, აკუმულატორები და დამტენები არ შედის. არ წარმოადგენს სამუშაოდ სრულ კომპლექტს.',
+                  'Drone only, with the RevoSpray 5 system. The remote controller, batteries and chargers are not included. Not a complete working set.',
+                  'Только дрон с системой RevoSpray 5. Пульт управления, аккумуляторы и зарядные устройства не входят. Не является полным рабочим комплектом.'),
+    'pp_configure': ('კონფიგურაციის აწყობა', 'Build your configuration', 'Собрать конфигурацию')})
 import json as _json
 _cj = ROOT / 'dist/assets/js/content.js'
 _c = _json.loads(_cj.read_text(encoding='utf-8').split('=', 1)[1].strip().removesuffix(';'))
@@ -224,11 +232,14 @@ for r in rows:
 for _k, _ka, in [(k, ka) for _c_, k, ka in CONTENTS]:
     _c['ka'][_k] = _ka
     _c['en'][_k], _c['ru'][_k] = KIT_LABELS[_k]
+for _k, (_ka, _en, _ru) in PLATFORM_TEXT.items():
+    _c['ka'][_k], _c['en'][_k], _c['ru'][_k] = _ka, _en, _ru
 for _s, (_ka, _en, _ru) in LEGACY_SPECS.items():
     _c['en'][pkey(_s) + '_spec'], _c['ru'][pkey(_s) + '_spec'] = _en, _ru
 _cj.write_text('window.PDG_CONTENT = ' + _json.dumps(_c, ensure_ascii=False, indent=2) + ';\n', encoding='utf-8')
 kits = [r for r in rows if r['group'] == 'kit']
-parts = [r for r in rows if r['group'] not in ('kit', 'legacy')]
+parts = [r for r in rows if r['group'] not in ('kit', 'legacy', 'drone')]
+platform = [r for r in rows if r['group'] == 'drone']  # owner, 16 Oct 2026: standalone P150 MAX platform (own row below the packages)
 legacy = [r for r in rows if r['group'] == 'legacy']
 # Shop order: drone, energy, control/RTK, spraying/spreading, accessories, spare parts; most expensive first in each group.
 ORDER = ['drone', 'power', 'control', 'spray', 'acc', 'spare']
@@ -237,49 +248,21 @@ for r in rows:
     if r['group'] not in {'kit', *ICON}:
         raise SystemExit(f'Unknown group {r["group"]!r} for {r["sku"]}')
 
-# P150 MAX kit configurator (P150 MAX page). Compatible components = the power and RTK items listed for the
-# P150 MAX on xa.com/en/p150max/p150maxspecs: B141050 battery, CM13600S charger, GC4000+ station, XRTK7 station.
-# Price rule: the preset's approved package price + extra components at their approved shop price.
-# Fewer components than the preset = no approved rule -> "ფასი მოთხოვნით" (quote), never an invented discount.
-CFG_ITEMS = [('batteries', '09-017-00073', 'cfg_battery', 'აკუმულატორი B141050', 12), ('chargers', '09-017-00069', 'cfg_charger', 'დამტენი CM13600S', 6),
-             ('towers', '09-017-00065', 'cfg_tower', 'გამაგრილებელი ავზი', 4),
-             ('rtk', '09-016-00083', 'cfg_rtk', 'RTK სადგური XRTK7', 1), ('generators', '09-017-00109', 'cfg_generator', 'დამუხტვის სადგური GC4000+', 2),
-             ('spreader', '09-023-00145', 'cfg_revocast', 'გრანულების გამფანტველი RevoCast 5', 1),
-             ('sling', '05-002-02682', 'cfg_revosling', 'ტვირთის საკიდი სისტემა RevoSling (შასით)', 1)]
+# P150 MAX configurator (owner, 16 Oct 2026): shared builder in scripts/configurator.py, also used by the platform page.
+import configurator as PCFG
 
 
-def configurator():
-    items = {}
-    for key, sku, lab, ka, mx in CFG_ITEMS:
-        r = by_sku_all[sku]; p = price(r, False)
-        if p is None:
-            raise SystemExit('configurator component without approved price: ' + sku)
-        items[key] = {'sku': sku, 'name': r['name'], 'price': p, 'max': STOCK.get(sku, mx)}
-    presets = [{'sku': r['sku'], 'name': r['name'], 'price': price(r, True),
-                'q': {k: int((r.get(k) or '0').strip() or 0) for k, *_ in CFG_ITEMS}} for r in kits]
-    data = html.escape(json.dumps({'presets': presets, 'items': items}, ensure_ascii=False), quote=True)
-    radios = ''.join(f'<label class="cfg-preset"><input type="radio" name="cfgPreset" value="{p["sku"]}"{" checked" if i == 0 else ""}>'
-                     f'<span class="cfg-preset-name">{html.escape(re.sub(r"^XAG P150 MAX ", "", p["name"]))}</span><span class="cfg-preset-price">₾{p["price"]:,}</span></label>'
-                     for i, p in enumerate(presets))
-    rows_ = ''.join(f'<div class="cfg-row" data-key="{k}"><div class="cfg-row-name"><span data-i18n="{lab}">{ka}</span>'
-                    f'<span class="cfg-unit">₾{items[k]["price"]:,} <span data-i18n="cfg_each">/ ცალი</span></span></div>'
-                    f'<div class="qty-stepper cfg-stepper"><button type="button" class="qty-btn" data-step="-1" aria-label="რაოდენობის შემცირება" data-i18n-aria="qty_less">−</button>'
-                    f'<input class="qty-input" type="number" inputmode="numeric" min="0" max="{items[k]["max"]}" step="1" value="0" aria-label="{ka}" data-i18n-aria="{lab}">'
-                    f'<button type="button" class="qty-btn" data-step="1" aria-label="რაოდენობის გაზრდა" data-i18n-aria="qty_more">+</button></div></div>'
-                    for k, s_, lab, ka, mx in CFG_ITEMS)
-    return ('<section class="section kit-config" id="configurator" aria-labelledby="cfg-title"><div class="container">'
-            '<div class="section-heading"><h2 id="cfg-title"><span data-i18n="cfg_title">კომპლექტის კონფიგურატორი</span></h2></div>'
-            '<p class="page-intro" data-i18n="cfg_intro">აირჩიეთ საბაზისო კომპლექტი და საჭიროებისამებრ დაამატეთ აკუმულატორები, დამტენები, RTK, დამუხტვის სადგური, გრანულების გამფანტველი ან ტვირთის საკიდი სისტემა.</p>'
-            f'<div class="cfg" id="kitConfig" data-config="{data}">'
-            f'<fieldset class="cfg-presets"><legend data-i18n="cfg_base">საბაზისო კომპლექტი</legend>{radios}</fieldset>'
-            '<div class="cfg-items"><div class="cfg-row cfg-fixed"><div class="cfg-row-name"><span data-i18n="kit_drone">XAG P150 MAX სასოფლო-სამეურნეო დრონი (RevoSpray 5)</span></div><output class="cfg-fixed-qty">1</output></div>'
-            '<div class="cfg-row cfg-fixed"><div class="cfg-row-name"><span data-i18n="kit_remote">XAG SRC5 ჭკვიანი მართვის პულტი</span></div><output class="cfg-fixed-qty">1</output></div>'
-            f'{rows_}</div>'
-            '<div class="cfg-summary"><p class="cfg-total-label" data-i18n="cfg_total">ჯამი, დღგ-ს ჩათვლით</p><p class="cfg-total" id="cfgTotal" aria-live="polite"></p>'
-            '<p class="cfg-note" id="cfgNote" hidden data-i18n="cfg_quote_note">კომპლექტზე ნაკლები კომპონენტით ფასს ინდივიდუალურად დაგითვლით — ფასი მოთხოვნით.</p>'
-            '<div class="cfg-actions"><button class="button button-red" id="cfgWa" type="button"><span data-i18n="cfg_whatsapp">გაგზავნა WhatsApp-ით</span></button>'
-            '<button class="button button-line" id="cfgCart" type="button"><span data-i18n="cfg_cart">კალათაში დამატება</span></button></div>'
-            '<p class="small-note" data-i18n="cfg_rule">ჯამი = კომპლექტის ფასი + დამატებითი კომპონენტები მაღაზიის ფასით.</p></div></div></div></section>')
+def platform_row(r):
+    """Standalone platform listing in the shop (below the packages): drone only, link to its page and configurator."""
+    p = price(r, False)
+    return ('<div class="platform-row"><a class="platform-row-photo" href="/p150-max-platform" data-local>'
+            f'<img src="/assets/img/products/{r["sku"]}.webp" width="1200" height="900" alt="{html.escape(r["name"], quote=True)}" loading="lazy" decoding="async"></a>'
+            '<div class="platform-row-body"><p class="product-cat" data-i18n="pp_eyebrow">ცალკე პლატფორმა</p>'
+            f'<h3><a class="product-link" href="/p150-max-platform" data-local data-i18n="pc_platform">XAG P150 MAX პლატფორმა (RevoSpray 5)</a></h3>'
+            '<div class="pp-price-row"><p class="pp-price"><span class="product-price">₾{0:,}</span> <span class="pd-vat" data-i18n="pd_vat">ფასი დღგ-ს ჩათვლით</span></p>'.format(p) +
+            '<p class="pp-notice" role="note" data-i18n="pp_notice">მხოლოდ დრონი RevoSpray 5 სისტემით. მართვის პულტი, აკუმულატორები და დამტენები არ შედის. არ წარმოადგენს სამუშაოდ სრულ კომპლექტს.</p></div>'
+            '<a class="button button-line" href="/p150-max-platform#configurator" data-local><span data-i18n="pp_configure">კონფიგურაციის აწყობა</span><span aria-hidden="true">→</span></a>'
+            '</div></div>')
 
 
 by_sku_all = {r['sku']: r for r in rows}
@@ -287,11 +270,12 @@ import json
 pb = ROOT / 'scripts/page-bodies.html'
 t = pb.read_text(encoding='utf-8')
 subs = [
-    (r'(<div class="shop-grid kit-grid">\n).*?(</div></div></section>)', ''.join(card(r) for r in kits)),
+    (r'(<div class="shop-grid kit-grid">\n).*?(</div>\n<!--platformRow-->)', ''.join(card(r) for r in kits)),
+    (r'(<!--platformRow-->\n).*?(<!--/platformRow-->)', ''.join(platform_row(r) for r in platform) + '\n'),
     (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div>\n<!--partsMore-->)', ''.join(card(r).replace('<article class="product"', '<article hidden class="product"', 1) if i >= 24 else card(r) for i, r in enumerate(parts))),  # first 24 visible, the rest revealed by "Load more" (shop.js PAGE)
     (r'(<ul class="kit-table">\n).*?(</ul>)', ''.join(kit_row(r) for r in kits)),
     (r'(<div class="shop-grid" id="legacyGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in legacy)),
-    (r'(<!--configurator-->\n).*?(<!--/configurator-->)', configurator() + '\n'),
+    (r'(<!--configurator-->\n).*?(<!--/configurator-->)', PCFG.block() + '\n'),
 ]
 home = ROOT / 'dist/index.html'
 ht = home.read_text(encoding='utf-8')
@@ -316,7 +300,7 @@ if llms.is_file():
     def line(r):
         what = ', '.join(f"{r[c]} × {KIT_LABELS[k][0]}" for c, k, _ in CONTENTS if (r.get(c) or '').strip())
         return f"- {r['name']}: {price(r, True):,} GEL" + (f" ({what})" if what else '')
-    extra = [r for r in parts if (r.get('gel') or '').strip()]
+    extra = [r for r in platform + parts if (r.get('gel') or '').strip()]
     block = '## Packages (prices in GEL)\n' + '\n'.join(line(r) for r in kits) + '\n' + \
             '\n'.join(f"- {r['name']}: {price(r, False):,} GEL" for r in extra) + '\n\n'
     text = llms.read_text(encoding='utf-8')
@@ -343,6 +327,11 @@ for r in rows:
     p_ = price(r, r['group'] == 'kit'); st_ = status(r)
     what = f"{p_:,} GEL, listed in stock" if st_ == 'in_stock' else ('not in stock, price on request' if st_ == 'quote' else 'not in stock (previous model), consultation only')
     know.append(f"- {r['name']}{local} (code {r['sku']}, {CATN[r['group']]}): {what}" + (f" — contains {extra}" if extra else ''))
+_pd = _pc.data()
+know += ['', '## Standalone platform and configurator (owner, 16 Oct 2026)',
+         f"The XAG P150 MAX Platform ({_pd['platform']['price']:,} GEL, code {_pd['platform']['sku']}) is the drone with the RevoSpray 5 system only: the SRC5 remote controller, batteries and chargers are NOT included and it is not a complete working set. "
+         "It suits operators who already own compatible equipment; others should add a controller, batteries and chargers in the configurator (https://premium-drones.ge/p150-max-platform) or choose a package. Generator and RTK are optional.",
+         'Packages are cheaper than the same equipment bought item by item: ' + '; '.join(f"{p['name']} {p['price']:,} GEL instead of {p['single']:,} GEL" for p in _pd['packages']) + '.']
 know += ['', '## Buying and payment',
          "Online card payment is NOT available on the website at the moment; do not tell customers they can pay online. Do not mention deposit percentages.",
          'Orders are sent from the cart by WhatsApp or email; PDG confirms price, stock and delivery, then sends an invoice and the customer pays by bank transfer.',
