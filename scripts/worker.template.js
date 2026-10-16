@@ -100,7 +100,7 @@ function publicConfig(env) {
 }
 
 /* Order amount: full price under the threshold, otherwise a deposit (whole lari, kept under the threshold). */
-function quote(items) {
+function quote(items, delivery) {
   if (!Array.isArray(items) || items.length < 1 || items.length > 60) throw new UserError('bad_items');
   const lines = [];
   const seen = new Set();
@@ -114,10 +114,14 @@ function quote(items) {
     if (stock && qty > stock) throw new UserError('bad_items');
     lines.push({ sku, name, qty, price });
   }
-  const total = lines.reduce((s, l) => s + l.price * l.qty, 0);
-  const deposit = total >= RULES.threshold;
+  const goods = lines.reduce((s, l) => s + l.price * l.qty, 0);
+  // Delivery in Georgia (owner, 16 Oct 2026): RULES.shippingFee under RULES.freeFrom GEL, free from it; pickup in Tbilisi is free.
+  const pickup = delivery === 'pickup';
+  const shipping = !pickup && goods < RULES.freeFrom ? RULES.shippingFee : 0;
+  const total = goods + shipping;
+  const deposit = goods >= RULES.threshold;
   const amount = deposit ? Math.min(Math.ceil(total * RULES.depositPercent / 100), RULES.threshold - 1) : total;
-  return { lines, total, amount, mode: deposit ? 'deposit' : 'full' };
+  return { lines, goods, shipping, delivery: pickup ? 'pickup' : 'delivery', total, amount, mode: deposit ? 'deposit' : 'full' };
 }
 
 class UserError extends Error {}
@@ -170,7 +174,7 @@ async function checkout(request, env, url) {
   let input;
   try { input = await readJson(request, 20000); } catch (err) { return json({ error: err instanceof UserError ? 'too_large' : 'bad_json' }, err instanceof UserError ? 413 : 400); }
   let q;
-  try { q = quote(input && input.items); } catch (err) {
+  try { q = quote(input && input.items, input && input.delivery); } catch (err) {
     if (err instanceof UserError) return json({ error: err.message }, 400);
     throw err;
   }
@@ -182,6 +186,7 @@ async function checkout(request, env, url) {
   const back = `${origin}${lang === 'ka' ? '' : '/' + lang}/payment?ref=${encodeURIComponent(ref)}`;
   const basket = q.mode === 'full'
     ? q.lines.map(l => ({ product_id: l.sku, description: l.name.slice(0, 120), quantity: l.qty, unit_price: l.price, total_price: l.price * l.qty }))
+      .concat(q.shipping ? [{ product_id: 'DELIVERY', description: 'Delivery in Georgia', quantity: 1, unit_price: q.shipping, total_price: q.shipping }] : [])
     : [{ product_id: 'DEPOSIT', description: `Deposit ${RULES.depositPercent}% for order ${ref} (total GEL ${q.total})`, quantity: 1, unit_price: q.amount, total_price: q.amount }];
   const body = {
     callback_url: `${origin}/api/payments/callback`,
@@ -225,6 +230,7 @@ async function checkout(request, env, url) {
   }
   if (kv(env)) {
     const record = { ref, bogId: data.id, created: new Date().toISOString(), lang, mode: q.mode, total: q.total, amount: q.amount,
+      delivery: q.delivery, shipping: q.shipping,
       items: q.lines, customer, status: 'created' };
     await kv(env).put('order:' + ref, JSON.stringify(record), { expirationTtl: 60 * 60 * 24 * 730 });
     await kv(env).put('bog:' + data.id, ref, { expirationTtl: 60 * 60 * 24 * 730 });
@@ -299,7 +305,7 @@ async function orders(env, url) {
     .sort((a, b) => String(b.created).localeCompare(String(a.created)));
   const users = (await kv(env).list({ prefix: 'user:', limit: 500 })).keys.length;
   const rows = recs.map(o => `<tr><td>${esc(o.created.slice(0, 16).replace('T', ' '))}</td><td>${esc(o.ref)}</td><td>${esc(o.status)}</td>`
-    + `<td>${o.mode === 'deposit' ? 'deposit ' : ''}₾${esc(o.amount)} / ₾${esc(o.total)}</td><td>${esc(o.customer.name)}<br>${esc(o.customer.phone)}<br>${esc(o.customer.address)}${o.account ? '<br>' + esc(o.account) : ''}</td>`
+    + `<td>${o.mode === 'deposit' ? 'deposit ' : ''}₾${esc(o.amount)} / ₾${esc(o.total)}</td><td>${esc(o.customer.name)}<br>${esc(o.customer.phone)}<br>${esc(o.customer.address)}${o.delivery ? '<br>' + (o.delivery === 'pickup' ? 'pickup Tbilisi' : 'delivery ₾' + esc(o.shipping || 0)) : ''}${o.account ? '<br>' + esc(o.account) : ''}</td>`
     + `<td>${o.items.map(i => esc(i.qty + ' × ' + i.name)).join('<br>')}</td></tr>`).join('');
   const page = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <title>PDG orders</title><style>body{font:14px/1.45 system-ui,sans-serif;margin:16px;color:#1c1c1c}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}th{font-weight:600}</style>
@@ -566,9 +572,9 @@ async function account(route, request, env, url) {
   if (route === 'POST /api/account/order-request') {
     // A signed-in customer sent the cart by WhatsApp or e-mail: keep it in their order history (server prices).
     let q;
-    try { q = quote(input.items); } catch (err) { if (err instanceof UserError) return json({ error: err.message }, 400); throw err; }
+    try { q = quote(input.items, input.delivery); } catch (err) { if (err instanceof UserError) return json({ error: err.message }, 400); throw err; }
     const ref = orderRef();
-    const rec = { ref, created: new Date().toISOString(), lang: LANGS.includes(input.lang) ? input.lang : 'ka', mode: 'request', total: q.total, amount: 0,
+    const rec = { ref, created: new Date().toISOString(), lang: LANGS.includes(input.lang) ? input.lang : 'ka', mode: 'request', total: q.total, amount: 0, delivery: q.delivery, shipping: q.shipping,
       items: q.lines, customer: { name: me.user.name, phone: me.user.phone, address: me.user.address || '' }, status: 'requested',
       channel: input.channel === 'email' ? 'email' : 'whatsapp', account: me.user.email };
     await store.put('order:' + ref, JSON.stringify(rec), { expirationTtl: 60 * 60 * 24 * 730 });

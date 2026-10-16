@@ -151,7 +151,12 @@ def render(page_source, language, filename):
     AVAIL={'in_stock':'https://schema.org/InStock'}
     # Return policy = the terms page (terms_p5): 14 days, unused, complete, original packaging; contact first.
     # Return fees / method are not stated in the terms, so they are not claimed here.
-    # shippingDetails is deliberately absent: the terms say delivery cost is agreed per order (no fixed rate to publish).
+    # Delivery (owner, 16 Oct 2026, terms_p4 + site_config.SHIPPING): fee under free_from GEL, free from it (one item = its own order value).
+    import site_config as _sc
+    def SHIP(price):
+        rate=0 if float(price)>=_sc.SHIPPING['free_from'] else _sc.SHIPPING['fee']
+        return {"@type":"OfferShippingDetails","shippingDestination":{"@type":"DefinedRegion","addressCountry":"GE"},
+                "shippingRate":{"@type":"MonetaryAmount","value":rate,"currency":"GEL"}}
     lp='' if language=='ka' else '/'+language
     RETURNS={"@type":"MerchantReturnPolicy","applicableCountry":"GE","returnPolicyCategory":"https://schema.org/MerchantReturnFiniteReturnWindow",
              "merchantReturnDays":14,"merchantReturnLink":BASE_URL+lp+'/terms'}
@@ -162,7 +167,7 @@ def render(page_source, language, filename):
         d={"@type":"Product","@id":BASE_URL+'/shop#'+sku,"name":name,"sku":sku,"brand":{"@type":"Brand","name":"XAG"},
            "image":BASE_URL+img if img.startswith('/') else img,"description":KIT_DESC if kit else PART_DESC.format(sku),
            "offers":{"@type":"Offer","price":price,"priceCurrency":"GEL","availability":AVAIL[avail],"itemCondition":"https://schema.org/NewCondition",
-                     "url":url,"seller":{"@id":BASE_URL+'/#business'},"hasMerchantReturnPolicy":RETURNS}}
+                     "url":url,"seller":{"@id":BASE_URL+'/#business'},"hasMerchantReturnPolicy":RETURNS,"shippingDetails":SHIP(price)}}
         if kit: d.update(category="Agricultural drone")
         return d
     if filename=='shop.html':

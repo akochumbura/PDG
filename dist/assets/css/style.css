@@ -1177,3 +1177,11 @@ dialog.cart[open]{overflow-y:auto;overscroll-behavior:contain}
 /* Hero: the decorative "scroll" hint sat under the chat button; the page continues visibly below the hero anyway */
 .hero-scroll{display:none}
 @media(max-width:900px){.footer-bottom a,.footer-bottom .theme-toggle,.social-links a{display:inline-flex;align-items:center;min-height:40px}}
+/* Cart delivery choice and sums (16 Oct 2026) */
+.cart-delivery{border:0;margin:0 0 4px;padding:0;display:grid;gap:8px}
+.cart-delivery legend{font-size:13px;color:var(--muted);margin-bottom:6px;padding:0}
+.cart-delivery label{display:flex;align-items:flex-start;gap:10px;min-height:44px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:14px;line-height:1.4}
+.cart-delivery label:has(input:checked){border-color:var(--text)}
+.cart-delivery input{margin:2px 0 0;accent-color:#CC0000;flex:none;width:18px;height:18px}
+.cart-sum{display:flex;justify-content:space-between;margin:0;font-size:15px;color:var(--muted)}
+.cart-free{margin:0;font-size:13px;color:var(--muted)}

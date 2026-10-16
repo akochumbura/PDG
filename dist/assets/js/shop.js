@@ -39,7 +39,11 @@
   save();
 
   var PAY = window.PDG_PAY || {}, payReady = false, paying = false;
-  function payAmount(t) { return t >= PAY.threshold ? Math.min(Math.ceil(t * PAY.depositPercent / 100), PAY.threshold - 1) : t; }
+  /* Delivery (owner, 16 Oct 2026): PAY.shippingFee under PAY.freeFrom, free from it; pickup in Tbilisi is free. The server applies the same rule. */
+  var FEE = PAY.shippingFee || 30, FREE = PAY.freeFrom || 100;
+  function pickup() { var f = document.getElementById("cartForm"), r = f && f.elements.delivery; return !!(r && r.value === "pickup"); }
+  function ship(goods) { return pickup() || goods >= FREE ? 0 : FEE; }
+  function payAmount(goods, total) { return goods >= PAY.threshold ? Math.min(Math.ceil(total * PAY.depositPercent / 100), PAY.threshold - 1) : total; }
   var badge = document.getElementById("cartCount"), dlg = document.getElementById("cart");
   var form = document.getElementById("cartForm");
 
@@ -48,7 +52,10 @@
       var it = cart[k];
       return "- " + it.n + " (" + k + ") × " + it.q + " = " + fmt(it.p * it.q);
     });
-    var text = "Premium Drones Georgia — " + label("lbOrder") + "\n" + lines.join("\n") + "\n" + label("lbTotal") + ": " + fmt(totals()[0]);
+    var g = totals()[0], sh = ship(g);
+    var text = "Premium Drones Georgia — " + label("lbOrder") + "\n" + lines.join("\n") + "\n"
+      + label("lbShip") + ": " + (pickup() ? label("lbPickup") : (sh ? fmt(sh) : label("lbFreeWord"))) + "\n"
+      + label("lbTotal") + ": " + fmt(g + sh);
     if (form) {
       var who = [form.elements.name.value.trim(), form.elements.phone.value.trim(), form.elements.address.value.trim()].filter(Boolean).join(", ");
       if (who) text += "\n\n" + who;
@@ -75,15 +82,20 @@
       li.append(name, qty, price, btn("×", function () { delete cart[k]; save(); render(); }, label("lbRemove")));
       list.appendChild(li);
     });
-    document.getElementById("cartTotal").textContent = fmt(T[0]);
+    var sh = ship(T[0]), total = T[0] + sh;
+    document.getElementById("cartGoods").textContent = fmt(T[0]);
+    document.getElementById("cartShip").textContent = pickup() ? label("lbFreeWord") : (sh ? fmt(sh) : label("lbFreeWord"));
+    var fr = document.getElementById("cartFree");
+    fr.hidden = !(sh > 0); fr.textContent = label("lbFree").replace("{free}", FREE);
+    document.getElementById("cartTotal").textContent = fmt(total);
     var pay = document.getElementById("cartPay");
     if (pay) {
-      var amount = payAmount(T[0]), dep = T[0] >= PAY.threshold;
+      var amount = payAmount(T[0], total), dep = T[0] >= PAY.threshold;
       pay.hidden = !payReady;
       pay.querySelector("span").textContent = label(dep ? "lbPayDeposit" : "lbPayFull") + " · " + fmt(amount);
       var dn = document.getElementById("cartDeposit");
       dn.hidden = !(payReady && dep);
-      if (dep) dn.textContent = label("lbDeposit").replace("{pct}", PAY.depositPercent).replace("{deposit}", fmt(amount)).replace("{rest}", fmt(T[0] - amount));
+      if (dep) dn.textContent = label("lbDeposit").replace("{pct}", PAY.depositPercent).replace("{deposit}", fmt(amount)).replace("{rest}", fmt(total - amount));
       var wa = document.getElementById("cartWa");
       wa.classList.toggle("button-red", !payReady); wa.classList.toggle("button-line", payReady);
       document.getElementById("cartNote").hidden = payReady;
@@ -130,6 +142,7 @@
     if (dlg && (e.target === dlg || e.target.id === "cartClose")) dlg.close();
   });
   if (dlg) dlg.addEventListener("close", function () { document.body.classList.remove("modal-open"); });
+  if (dlg) dlg.addEventListener("change", function (e) { if (e.target && e.target.name === "delivery") render(); });
 
   if (form) {
     var error = document.getElementById("cartError");
@@ -158,6 +171,7 @@
       var order = {
         items: Object.keys(cart).map(function (k) { return { sku: k, qty: cart[k].q }; }),
         lang: document.documentElement.lang,
+        delivery: pickup() ? "pickup" : "delivery",
         customer: { name: form.elements.name.value.trim(), phone: form.elements.phone.value.trim(), address: form.elements.address.value.trim() }
       };
       fetch(PAY.endpoint + "/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(order) })

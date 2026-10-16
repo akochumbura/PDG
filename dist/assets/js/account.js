@@ -23,7 +23,7 @@
         var c = cart(), items = Object.keys(c).map(function (k) { return { sku: k, qty: c[k].q }; });
         if (!items.length) return;
         fetch("/api/account/order-request", { method: "POST", keepalive: true, credentials: "same-origin", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ items: items, channel: channel, lang: document.documentElement.lang }) }).catch(function () {});
+          body: JSON.stringify({ items: items, channel: channel, lang: document.documentElement.lang, delivery: (cartForm.elements.delivery && cartForm.elements.delivery.value) || "delivery" }) }).catch(function () {});
       };
       cartForm.addEventListener("submit", function () { if (cartForm.elements.name.value.trim() && cartForm.elements.phone.value.replace(/\D/g, "").length >= 9) log("whatsapp"); });
       var mail = document.getElementById("cartMail");
