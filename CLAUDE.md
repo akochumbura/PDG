@@ -156,3 +156,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   terms/payment pages styled; quote-only cards wrap; tap targets ≥40px on phones (footer, back links, logo); hero scroll hint removed.
 - (owner, 15 Oct 2026) Feature ORDER everywhere: mapping, spraying, spreading, cargo (home cards + title, hero sentence, P150 MAX chapters 01 RealTerra..04 RevoSling, stats strip, meta descriptions, chat prompt). Keep this order in new texts.
 - (owner, 15 Oct 2026) Previous models P100 Pro / P100 / V40 have own pages (/xag-p100-pro, /xag-p100, /xag-v40) with photo galleries (dist/assets/img/models/, made by scripts/tools/model-pictures.py; legacy list in product_pages.py LEGACY). No price, no Offer schema. The P100 expo photo is cropped so no person shows. More photos: add to LEGACY pics + the tool script.
+- (16 Oct 2026, Search Console merchant listings) Every Product has a description and every Offer has itemCondition New + hasMerchantReturnPolicy
+  (14 days, GE, link to /terms, from terms_p5; no return fee/method claimed). shippingDetails is NOT added until the owner gives a real delivery rate rule
+  (terms_p4: cost agreed per order) — never publish an invented or free shipping rate.

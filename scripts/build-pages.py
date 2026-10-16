@@ -149,12 +149,21 @@ def render(page_source, language, filename):
     # Availability comes from each card (data-avail); quote-only parts and previous-generation models get no Offer.
     KIT_DESC={"ka":"სასოფლო-სამეურნეო დრონი ნაკვეთის რუკის შედგენისთვის, შეწამვლისთვის, გრანულების გაფანტვისთვის და ტვირთის გადატანისთვის","en":"Agricultural drone for field mapping, spraying, granule spreading and cargo transport","ru":"Сельскохозяйственный дрон для картографирования полей, опрыскивания, разбрасывания гранул и перевозки грузов"}[language]
     AVAIL={'in_stock':'https://schema.org/InStock'}
+    # Return policy = the terms page (terms_p5): 14 days, unused, complete, original packaging; contact first.
+    # Return fees / method are not stated in the terms, so they are not claimed here.
+    # shippingDetails is deliberately absent: the terms say delivery cost is agreed per order (no fixed rate to publish).
+    lp='' if language=='ka' else '/'+language
+    RETURNS={"@type":"MerchantReturnPolicy","applicableCountry":"GE","returnPolicyCategory":"https://schema.org/MerchantReturnFiniteReturnWindow",
+             "merchantReturnDays":14,"merchantReturnLink":BASE_URL+lp+'/terms'}
+    PART_DESC={"ka":"XAG-ის ორიგინალი პროდუქტი XAG P150 MAX-ისთვის. მწარმოებლის კოდი: {}.","en":"Original XAG product for the XAG P150 MAX. Manufacturer code: {}.",
+               "ru":"Оригинальный продукт XAG для XAG P150 MAX. Код производителя: {}."}[language]
     def product(sku,name,price,img,avail,kit,url):
         if avail not in AVAIL or not price: return None
         d={"@type":"Product","@id":BASE_URL+'/shop#'+sku,"name":name,"sku":sku,"brand":{"@type":"Brand","name":"XAG"},
-           "image":BASE_URL+img if img.startswith('/') else img,
-           "offers":{"@type":"Offer","price":price,"priceCurrency":"GEL","availability":AVAIL[avail],"url":url,"seller":{"@id":BASE_URL+'/#business'}}}
-        if kit: d.update(category="Agricultural drone",description=KIT_DESC)
+           "image":BASE_URL+img if img.startswith('/') else img,"description":KIT_DESC if kit else PART_DESC.format(sku),
+           "offers":{"@type":"Offer","price":price,"priceCurrency":"GEL","availability":AVAIL[avail],"itemCondition":"https://schema.org/NewCondition",
+                     "url":url,"seller":{"@id":BASE_URL+'/#business'},"hasMerchantReturnPolicy":RETURNS}}
+        if kit: d.update(category="Agricultural drone")
         return d
     if filename=='shop.html':
         for card in doc.xpath('//article[contains(@class,"product")][@data-avail]'):
