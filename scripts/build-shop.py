@@ -265,7 +265,7 @@ def platform_link():
 
 
 def platform_row(r):
-    """Standalone platform listing in the shop (below the packages): drone only, link to its page and configurator."""
+    """Standalone platform listing in the shop (owner, 17 Oct 2026: above the packages): drone only, link to its page and configurator."""
     p = price(r, False)
     return ('<div class="platform-row"><a class="platform-row-photo" href="/p150-max-platform" data-local>'
             f'<img src="/assets/img/products/{r["sku"]}.webp" width="1200" height="900" alt="{html.escape(r["name"], quote=True)}" loading="lazy" decoding="async"></a>'
@@ -282,7 +282,7 @@ import json
 pb = ROOT / 'scripts/page-bodies.html'
 t = pb.read_text(encoding='utf-8')
 subs = [
-    (r'(<div class="shop-grid kit-grid">\n).*?(</div>\n<!--platformRow-->)', ''.join(card(r) for r in kits)),
+    (r'(<div class="shop-grid kit-grid">\n).*?(</div>\n<!--/kitGrid-->)', ''.join(card(r) for r in kits)),
     (r'(<!--platformRow-->\n).*?(<!--/platformRow-->)', ''.join(platform_row(r) for r in platform) + '\n'),
     (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div>\n<!--partsMore-->)', ''.join(card(r).replace('<article class="product"', '<article hidden class="product"', 1) if i >= 24 else card(r) for i, r in enumerate(parts))),  # first 24 visible, the rest revealed by "Load more" (shop.js PAGE)
     (r'(<ul class="kit-table">\n).*?(</ul>)', ''.join(kit_row(r) for r in kits)),

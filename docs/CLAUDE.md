@@ -164,11 +164,11 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   terms_p4 (ka/en/ru) states the rule in words: if SHIPPING changes, update terms_p4 too.
 - (owner, 16 Oct 2026, second brief — replaces the first platform notes) One purpose per page: /p150-max = model presentation (NO configurator;
   one link under the intro "კონფიგურაციის აწყობა — ₾41,999-დან" + note, generated at <!--platformLink-->); /p150-max-platform = the ONLY configurator;
-  /shop = catalog (3 packages + one .platform-row). Platform page first screen: gallery left (object-fit contain, whole drone; owner front render +
+  /shop = catalog (one .platform-row ABOVE the 3 packages, owner 17 Oct 2026). Platform page first screen: gallery left (object-fit contain, whole drone; owner front render +
   field photo via scripts/tools/platform-pictures.py, which also makes products/thumbs/<sku>.webp), right: XAG P150 MAX, "სასოფლო-სამეურნეო დრონი · RevoSpray 5",
   price incl. VAT, calm notice pp_notice, stock, one primary CTA, subordinate links; SKU in the details list. Mobile: name, image, price, action.
   Configurator (scripts/configurator.py + shop.js #platformConfig): presets (მხოლოდ პლატფორმა / Starter / Pro / Business), core rows visible
-  (SRC5, B141050, CM13600S, cooling tank), <details> 'დამატებითი აღჭურვილობა' (GC4000+, XRTK7, RevoCast 5, RevoSling, 4-Nozzle kit).
+  (SRC5, B141050, CM13600S, cooling tank), 'დამატებითი აღჭურვილობა' always visible (owner 17 Oct 2026; GC4000+, XRTK7, RevoCast 5, RevoSling, 4-Nozzle kit).
   Pricing is AUTOMATIC: lowest of item-by-item and (package + extras) for every package fully contained; at most one package; no switch button,
   no comparison cards; note "გამოყენებულია {name} კომპლექტის ფასი". Summary, mobile bar, cart (package SKU + extras) and WhatsApp use one state.
   Links: ?c=batteries-4_chargers-2 and package pages' ?kit=starter (now pointing to /p150-max-platform). Mobile bar replaces the call/chat bar

@@ -335,8 +335,6 @@
       rm.hidden = !m.length; if (m.length) rm.textContent = tx("pc_remind").replace("{list}", m.join(", "));
       document.getElementById("pcTotal").textContent = fmt(st.total);
       document.getElementById("pcBarTotal").textContent = fmt(st.total);
-      var n = 0; pcBox.querySelectorAll(".pcfg-more .pcfg-row[data-key]").forEach(function (r) { if (st.q[r.dataset.key] > 0) n++; });
-      document.getElementById("pcMoreCount").textContent = n ? tx("pc_more_count").replace("{n}", n) : "";
       var pm = presetMatch(st.q);
       pcBox.querySelectorAll(".pcfg-preset").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.preset === pm ? "true" : "false"); });
       return st;
@@ -380,7 +378,6 @@
     var kp = PC.packages.filter(function (x) { return x.key === kit; })[0];
     if (kp && !qs.get("c")) Object.keys(kp.q).forEach(function (k) { q0[k] = kp.q[k]; });
     setQ(q0);
-    if (pcKeys.some(function (k) { return q0[k] > 0 && pcBox.querySelector('.pcfg-more .pcfg-row[data-key="' + k + '"]'); })) document.getElementById("pcMore").open = true;
     pcShow();
     /* Phones: a slim total + send bar replaces the call/chat bar while the options are on screen and the summary total/actions are not. */
     var bar = document.getElementById("pcBar"), sumEl = document.querySelector("#pcSummary .pcfg-total-row"), optEl = pcBox.querySelector(".pcfg-options");
