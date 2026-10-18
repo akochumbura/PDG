@@ -62,7 +62,7 @@ async function api(request, env, url) {
       if (route === 'POST /api/contact') return await contactSubmit(request, env, url);
       if (route === 'GET /api/contact/config') return json({ enabled: contactReady(env) });
       if (route === 'GET /api/contact/inbox') return await contactInbox(env, url);
-      if (route === 'GET /api/chat/config') return json({ enabled: chatEnabled(env), live: liveOn(env) });
+      if (route === 'GET /api/chat/config') return json({ enabled: chatEnabled(env), live: liveOn(env), alerts: Boolean(String(env.TELEGRAM_BOT_TOKEN || '').trim() && await tgChat(env)), v: 3 });
       if (route === 'POST /api/chat/send') return await liveSend(request, env, url);
       if (route === 'GET /api/chat/thread') return await liveThread(env, url);
       if (route === 'POST /api/chat/contact') return await liveContact(request, env, url);
