@@ -1371,3 +1371,6 @@ dialog.cart[open]{overflow-y:auto;overscroll-behavior:contain}
   .pkg-compare{padding-bottom:8px}
 }
 .nowrap{white-space:nowrap}
+/* Home (owner, 19 Oct 2026): packages = platform row + compact comparison only; the section heading already says "კომპლექტაციები" */
+.packages-section .pkg-compare{margin-top:24px}
+.packages-section .pkg-compare-title{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

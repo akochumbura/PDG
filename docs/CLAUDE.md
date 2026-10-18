@@ -220,3 +220,4 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 19 Oct 2026, 02:30) Package comparison v2: NO "ყველა კომპლექტში შედის" line and NO generator note in it (that belongs in the configurator, kit photos and
   descriptions). Only Starter / Pro / Business, batteries, chargers, RTK (— when not included), price, "კომპლექტაციის ნახვა". Desktop table, phone = 3 stacked
   cards; Pro accented in red. Package contents labels are the short names (XAG SRC5 მართვის პულტი etc.).
+- (owner, 19 Oct 2026, 02:42) Home page has NO packages section (no platform row, kit cards or comparison): hero, dealer strip, capabilities, ecosystem, why PDG, contact. Hero primary 'ფასები და კომპლექტაციები' → /shop#kits. Comparison stays on /p150-max (#compare).
