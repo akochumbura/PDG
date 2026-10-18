@@ -264,6 +264,14 @@ def platform_link():
             '<span aria-hidden="true">→</span></a><span class="pm-cfg-note" data-i18n="pm_cfg_note">საწყისი ფასი — მხოლოდ დრონი RevoSpray 5 სისტემით.</span></p>')
 
 
+def platform_kit_row(r):
+    """P150 MAX page package table: the platform-only option first (owner, 18 Oct 2026), opening the configurator."""
+    p = price(r, False)
+    return ('<li class="kit-row kit-row-platform"><div class="kit-row-name"><span class="kit-row-title"><a href="/p150-max-platform" data-local data-i18n="pc_platform">XAG P150 MAX პლატფორმა (RevoSpray 5)</a></span>'
+            '<span class="kit-row-note" data-i18n="pp_notice">ფასში შედის დრონი RevoSpray 5 სისტემით. მართვის პულტი, აკუმულატორები და დამტენები იყიდება ცალკე. ეს არ არის სრული სამუშაო კომპლექტი.</span></div>'
+            f'<span class="kit-row-price">₾{p:,}</span><a class="button button-line kit-row-cfg" href="/p150-max-platform#configurator" data-local><span data-i18n="pp_configure">კონფიგურაციის აწყობა</span></a></li>\n')
+
+
 def platform_row(r):
     """Standalone platform listing in the shop (owner, 17 Oct 2026: above the packages): drone only, link to its page and configurator."""
     p = price(r, False)
@@ -285,7 +293,7 @@ subs = [
     (r'(<div class="shop-grid kit-grid">\n).*?(</div>\n<!--/kitGrid-->)', ''.join(card(r) for r in kits)),
     (r'(<!--platformRow-->\n).*?(<!--/platformRow-->)', ''.join(platform_row(r) for r in platform) + '\n'),
     (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div>\n<!--partsMore-->)', ''.join(card(r).replace('<article class="product"', '<article hidden class="product"', 1) if i >= 24 else card(r) for i, r in enumerate(parts))),  # first 24 visible, the rest revealed by "Load more" (shop.js PAGE)
-    (r'(<ul class="kit-table">\n).*?(</ul>)', ''.join(kit_row(r) for r in kits)),
+    (r'(<ul class="kit-table">\n).*?(</ul>)', ''.join(platform_kit_row(r) for r in platform) + ''.join(kit_row(r) for r in kits)),
     (r'(<div class="shop-grid" id="legacyGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in legacy)),
     # Owner, 16 Oct 2026 (second brief): the full configurator lives only on /p150-max-platform; the P150 MAX page links to it.
     (r'(<!--configurator-->\n).*?(<!--/configurator-->)', ''),
@@ -294,7 +302,8 @@ subs = [
 home = ROOT / 'dist/index.html'
 ht = home.read_text(encoding='utf-8')
 by_sku = {r['sku']: r for r in rows}
-for pattern, body in [(r'(<div class="shop-grid kit-grid" id="homePackages">).*?(</div>\s*<!--/homePackages-->)', '\n' + ''.join(card(r) for r in kits)),
+for pattern, body in [(r'(<!--homePlatform-->).*?(<!--/homePlatform-->)', ''.join(platform_row(r) for r in platform)),  # owner, 18 Oct 2026: platform first wherever the packages are
+                      (r'(<div class="shop-grid kit-grid" id="homePackages">).*?(</div>\s*<!--/homePackages-->)', '\n' + ''.join(card(r) for r in kits)),
                       (r'(<ul class="part-list" id="homeParts">).*?(</ul>\s*<!--/homeParts-->)', '\n' + ''.join(part_row(by_sku[s]) for s in HOME_PARTS if s in by_sku))]:
     ht, n = re.subn(pattern, lambda m: m.group(1) + body + m.group(2), ht, count=1, flags=re.S)
     if n != 1 and 'homePackages' in pattern:

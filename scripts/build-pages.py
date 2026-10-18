@@ -158,10 +158,19 @@ def render(page_source, language, filename):
     def SHIP(price):
         rate=0 if float(price)>=_sc.SHIPPING['free_from'] else _sc.SHIPPING['fee']
         return {"@type":"OfferShippingDetails","shippingDestination":{"@type":"DefinedRegion","addressCountry":"GE"},
-                "shippingRate":{"@type":"MonetaryAmount","value":rate,"currency":"GEL"}}
+                "shippingRate":{"@type":"MonetaryAmount","value":rate,"currency":"GEL"},
+                # Owner, 18 Oct 2026 (terms_p4): after confirmation, Tbilisi same or next day, regions 1-3 days.
+                "deliveryTime":{"@type":"ShippingDeliveryTime","handlingTime":{"@type":"QuantitativeValue","minValue":0,"maxValue":0,"unitCode":"DAY"},
+                                "transitTime":{"@type":"QuantitativeValue","minValue":0,"maxValue":3,"unitCode":"DAY"}}}
     lp='' if language=='ka' else '/'+language
     RETURNS={"@type":"MerchantReturnPolicy","applicableCountry":"GE","returnPolicyCategory":"https://schema.org/MerchantReturnFiniteReturnWindow",
-             "merchantReturnDays":14,"merchantReturnLink":BASE_URL+lp+'/terms'}
+             "merchantReturnDays":14,"merchantReturnLink":BASE_URL+lp+'/terms',
+             # Owner, 18 Oct 2026 (terms_p5): returns at the Tbilisi storage or by courier; return shipping paid by the customer,
+             # free when the item is faulty or wrong.
+             "returnMethod":["https://schema.org/ReturnInStore","https://schema.org/ReturnByMail"],
+             "returnFees":"https://schema.org/ReturnFeesCustomerResponsibility",
+             "customerRemorseReturnFees":"https://schema.org/ReturnFeesCustomerResponsibility",
+             "itemDefectReturnFees":"https://schema.org/FreeReturn"}
     PART_DESC={"ka":"XAG-ის ორიგინალი პროდუქტი XAG P150 MAX-ისთვის. მწარმოებლის კოდი: {}.","en":"Original XAG product for the XAG P150 MAX. Manufacturer code: {}.",
                "ru":"Оригинальный продукт XAG для XAG P150 MAX. Код производителя: {}."}[language]
     def product(sku,name,price,img,avail,kit,url):
@@ -190,7 +199,9 @@ def render(page_source, language, filename):
             if d: d['@id']=canonical+'#product'; d['description']=desc; graph.append(d)
     if filename=='p150-max.html':
         for row in doc.xpath('//li[contains(@class,"kit-row")]'):
-            btn=row.xpath('.//button[contains(@class,"add-btn")]')[0]
+            btns=row.xpath('.//button[contains(@class,"add-btn")]')
+            if not btns: continue  # the platform-only row opens the configurator (its Offer is on its own page)
+            btn=btns[0]
             d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),'/assets/img/products/'+btn.get('data-sku')+'.webp','in_stock',True,canonical+'#kits')
             if d: graph.append(d)
     if graph:

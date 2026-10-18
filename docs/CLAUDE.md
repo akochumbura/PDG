@@ -174,3 +174,8 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   Links: ?c=batteries-4_chargers-2 and package pages' ?kit=starter (now pointing to /p150-max-platform). Mobile bar replaces the call/chat bar
   (body.pcfg-bar-on) while options are on screen and the summary total is not. Verified totals: 41,999 / 46,998 / 75,999 / 87,999 / 104,999 /
   79,998 / 87,997 / 99,797 / 116,797.
+- (owner, 18 Oct 2026) Platform-only listing is FIRST wherever the packages are: shop (.platform-row), home (<!--homePlatform--> above #homePackages),
+  P150 MAX page kit table (platform_kit_row, links to the configurator; no cart button/Offer there). Configurator extras include the 90 W LED headlight (09-027-00003).
+  Return policy (terms_p5 + schema): 14 days; Tbilisi storage drop-off or courier; return shipping paid by the customer, free if faulty/wrong item
+  (returnFees CustomerResponsibility, itemDefectReturnFees FreeReturn, returnMethod InStore+ByMail). Delivery (terms_p4 + schema deliveryTime):
+  after confirmation Tbilisi same/next day, regions 1-3 days (handling 0, transit 0-3). No reviews/aggregateRating: never invent reviews.
