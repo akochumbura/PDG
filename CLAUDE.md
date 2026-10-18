@@ -62,7 +62,7 @@ accepts it; before RESEND_API_KEY exists requests only land in /api/contact/inbo
 - Visible Georgian wording: "სასოფლო-სამეურნეო დრონი/პლატფორმა", "შეწამვლა" (never "შესხურება"), "გრანულების გაფანტვა", "ტვირთის გადატანა". Do not show "აგრო დრონი" on pages.
 - Farmer search words (შეწამვლა, აგროდრონი, აგრო დრონი, შესაწამლი დრონი…) live only in meta keywords, search synonyms (scripts/build-search.py) and FAQ wording — never as visible keyword lists.
 - P150 MAX positioning: world-class flagship agricultural platform for spraying, granule spreading, cargo transport and field mapping
-  (owner, 15 Oct 2026: mapping must be visible — home 4th card 'რუკის შედგენა' 30 ha per flight (owner 15 Oct: mapping up to 30 ha; droplet 60~1500 µm; 20 m/s = 70 km/h; warranty = official XAG 1 year, batteries 1 year or 1500 cycles); maps by itself with its camera, built-in AI recognises obstacles).
+  (owner, 15 Oct 2026: mapping must be visible — home 4th card 'რუკის შედგენა' 30 ha per flight (owner 15 Oct: mapping up to 30 ha; droplet 60~1500 µm; 20 m/s = 72 km/h exact; warranty = official XAG 1 year, batteries 1 year or 1500 cycles); maps by itself with its camera, built-in AI recognises obstacles).
 - GC4000+ photo = owner-supplied render (09-017-00109.webp). The dimension drawing he sent (RevoSpray 4 / RevoCast 4 / RealTerra 3, 3118×3110 mm) is the P100 Pro, NOT the P150 MAX: not used on P150 MAX pages.
 - Header: language dropdown (#langBtn/#langList), About us in the top menu, light theme by default.
 - Chat = website conversation first (stored in PDG_DATA, team answers at /api/chat/inbox). AI: OpenAI (OPENAI_API_KEY, CHAT_MODEL gpt-6-luna,
