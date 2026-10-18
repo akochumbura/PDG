@@ -49,6 +49,7 @@ def ka_labels():
 
 
 KA = ka_labels()
+from display_names import short_ka
 rows = list(csv.DictReader(open(ROOT / 'scripts/catalog.csv', encoding='utf-8')))
 shop_doc = html.fromstring((DIST / 'shop.html').read_text(encoding='utf-8'))
 prices = {b.get('data-sku'): int(b.get('data-price')) for b in shop_doc.xpath('//button[@data-sku][@data-price]')}
@@ -80,8 +81,10 @@ for lang in ('ka', 'en', 'ru'):
         key = CAT[g]
         cat = KA.get(key, '') if lang == 'ka' else T[lang].get(key, '')
         url = f'{prefix}{product_pages.url(r["sku"])}' if product_pages.url(r['sku']) else (f'{prefix}/shop#kits' if g == 'kit' else f'{prefix}/shop?q={r["sku"]}#parts')
+        full_ka = (r.get('name_ka') or '').strip()
+        r = dict(r, name_ka=short_ka(r['sku'], full_ka))
         local = (r.get('name_' + lang) or '').strip() if lang != 'en' else ''
         products.append({'n': local or r['name'], 'o': r['name'] if local else '', 's': r['sku'], 'p': prices.get(r['sku'], 0), 'q': '' if prices.get(r['sku']) else DICT_Q[lang], 'c': cat,
-                         'k': SYN[g][lang] + ' ' + r['name'], 'u': url})
+                         'k': SYN[g][lang] + ' ' + r['name'] + (' ' + full_ka if lang == 'ka' and full_ka != r['name_ka'] else ''), 'u': url})
     (out_dir / f'{lang}.json').write_text(json.dumps({'pages': pages, 'products': products}, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
     print(f'search {lang}: {len(pages)} pages, {len(products)} products')

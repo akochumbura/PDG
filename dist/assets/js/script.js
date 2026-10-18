@@ -63,8 +63,21 @@
   const navToggle = document.getElementById("navToggle");
   /* Phone menu: while it is open the page behind it does not scroll (the menu scrolls on its own). */
   const pageParts = Array.from(document.querySelectorAll("#main, footer, .mobile-bar, .chat-fab, .chat-panel"));
+  /* The page is pinned with position:fixed at its current offset, so opening and closing the menu keeps the reading position (audit 19 Oct 2026). */
+  let lockedAt = null;
   function lockPage(on) {
-    document.body.classList.toggle("nav-lock", !!on);
+    const body = document.body;
+    if (on && lockedAt === null) {
+      lockedAt = window.scrollY;
+      body.style.top = -lockedAt + "px";
+      body.classList.add("nav-lock");
+    } else if (!on && lockedAt !== null) {
+      const y = lockedAt;
+      lockedAt = null;
+      body.classList.remove("nav-lock");
+      body.style.top = "";
+      window.scrollTo({ top: y, left: 0, behavior: "instant" });
+    }
     pageParts.forEach((el) => { if (on) el.setAttribute("inert", ""); else el.removeAttribute("inert"); });
   }
   /* Current page in the menu: brand red (and its group button) */
@@ -89,7 +102,7 @@
     navToggle?.setAttribute("aria-expanded", "false");
     lockPage(false);
     closeGroups();
-    if (wasOpen && restoreFocus === true) navToggle?.focus();
+    if (wasOpen && restoreFocus === true) navToggle?.focus({ preventScroll: true });
   }
   navToggle?.addEventListener("click", () => {
     const open = nav.classList.toggle("is-open");

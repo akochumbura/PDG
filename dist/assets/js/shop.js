@@ -415,7 +415,7 @@
     list.forEach(function (r) { r._m = false; });
     Array.prototype.slice.call(grid.children).forEach(function (r) {
       if (!r.classList || !r.classList.contains("product")) return;
-      var ok = (cat === "all" || r.dataset.cat === cat) && (!s || r.textContent.toLowerCase().indexOf(s) > -1);
+      var ok = (cat === "all" || r.dataset.cat === cat) && (!s || (r.textContent + " " + (r.dataset.k || "")).toLowerCase().indexOf(s) > -1);
       if (ok && (lo !== null || hi !== null)) ok = r._p !== null && (lo === null || r._p >= lo) && (hi === null || r._p <= hi);
       if (ok) matched.push(r);
       r.hidden = true;

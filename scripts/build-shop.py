@@ -161,6 +161,12 @@ def part_row(r):
             f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></li>\n')
 
 
+def search_k(r):
+    """The full price-list name stays searchable in the shop filter after the display name was shortened."""
+    full = r.get('name_ka_full') or ''
+    return f' data-k="{html.escape(full, quote=True)}"' if full and full != r.get('name_ka') else ''
+
+
 def card(r):
     kit = r['group'] == 'kit'
     n = html.escape(r['name'], quote=True)
@@ -178,7 +184,7 @@ def card(r):
         ttl = f'<a class="product-link" href="{page}" data-local>{ttl}</a>'
         mk, mt = ('pd_pk_more', 'შემადგენლობა და ფოტოები') if kit else ('pd_more', 'მახასიათებლები')
         more = f'<a class="text-link product-more" href="{page}" data-local><span data-i18n="{mk}">{mt}</span><span aria-hidden="true">→</span></a>'
-    head = (f'<article class="product{" product-kit" if kit else ""}{" product-out" if st == "out" else ""}" data-cat="{r["group"]}" data-avail="{st}">{pic}'
+    head = (f'<article class="product{" product-kit" if kit else ""}{" product-out" if st == "out" else ""}" data-cat="{r["group"]}" data-avail="{st}"{search_k(r)}>{pic}'
             f'<div class="product-body">{cat(r)}<p class="product-sku">{s}</p>{ttl}{contents(r) if kit else ""}{more}')
     if st == 'out':  # previous-generation model: no price, no purchase, consultation instead
         spec = LEGACY_SPECS.get(s)
@@ -206,6 +212,11 @@ def kit_row(r):
 
 
 rows = list(csv.DictReader(open(ROOT / 'scripts/catalog.csv', encoding='utf-8')))
+# Audit 19 Oct 2026: cards, cart and chat use the short Georgian name; the full price-list name stays in catalog.csv (search keyword).
+from display_names import short_ka
+for _r in rows:
+    _r['name_ka_full'] = (_r.get('name_ka') or '').strip()
+    _r['name_ka'] = short_ka(_r['sku'], _r.get('name_ka'))
 import legacy_models
 LEGACY_SPECS = {m['sku']: m['specs'] for m in legacy_models.MODELS}
 rows += [{'group': 'legacy', 'name': m['name'], 'name_ka': m['name_ka'], 'name_ru': '', 'sku': m['sku'], 'usd': '', 'gel': '',

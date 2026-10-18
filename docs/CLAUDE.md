@@ -190,4 +190,16 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   "PDG გუნდი ამ ჩატს კითხულობს". Two-way Telegram: owner replies to an alert → teamAnswer() posts it to the website chat (docs/10-ai-chat.md).
   LED headlight photo = owner render (products/09-027-00003.webp).
 - (owner, 18 Oct 2026) About page XAG model range: P100 Pro / P100 / V40 cards show their first gallery photo (models/*-1.webp) and link to their pages.
-- (owner, 19 Oct 2026) About "XAG-ის შესახებ" (about_xag_p1/p2, ka/en/ru) uses the owner's wording: world's largest maker of agricultural drones and robots, most patents in the field, goal = agricultural infrastructure for the next 100 years.
+- (owner, 19 Oct 2026) About "XAG-ის შესახებ": XAG = "მსოფლიო ლიდერი" / "world leader" (never "largest"); patents only as "according to XAG"; goal = agricultural infrastructure for the next 100 years (owner sentence).
+
+## Audit 19 Oct 2026 (owner brief)
+- Short Georgian product names: scripts/display_names.py (short_ka + OVERRIDES) used by build-shop (cards, cart, chat) and build-search;
+  catalog.csv keeps the full price-list name (searchable via data-k on cards and the search keywords). Internal supplier notes are stripped.
+- Copy: P150 MAX speed 20 m/s = 72 km/h (exact). "4-საქშენიანი განახლების კომპლექტი (იყიდება ცალკე)" — never "additional 4 nozzles".
+  Pumps = "იმპელერიანი ტუმბო" (not "მოქნილი ტუმბო"). RevoCast 5 and RevoSling are always marked optional ("იყიდება ცალკე") near capability texts.
+  Max values are manufacturer figures (note on the P150 MAX page). Company facts: founded 2022, field work since 2023.
+- About: company story once (about-story + facts row with hectares and locations); models section heading "XAG-ის დრონები", P150 MAX card
+  (available, in stock) first, then label "წინა თაობის მოდელები — მარაგში აღარ არის" and the 3 old-model cards. Every section must deliver what its heading says.
+- Service / Academy: 3-step "how it works" (.order-steps), CTA to /consultation?topic=service|academy; no invented durations, prices, warranty or turnaround.
+- Phone menu: body pinned with position:fixed at the scroll offset, scroll restored on close (script.js lockPage).
+- Tools: scripts/tools/set_text.py sets a key in ka (HTML) + en/ru (content.js).

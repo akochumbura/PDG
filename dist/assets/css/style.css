@@ -1034,7 +1034,7 @@ html[data-theme=dark] .dealer-cell .logo-dark{display:block}
 /* Phone menu (owner, 15 Oct 2026): the open menu covers the screen under the header and scrolls by itself;
    the page behind does not scroll. position:fixed needs the header without backdrop-filter while the menu is open. */
 @media(max-width:900px){
-  body.nav-lock{overflow:hidden}
+  body.nav-lock{overflow:hidden;position:fixed;left:0;right:0;width:100%}
   body.nav-lock .site-header{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--white)}
   html[data-theme=dark] body.nav-lock .site-header{background:#191918}
   .site-nav.is-open{position:fixed;top:var(--header-height);left:0;right:0;bottom:0;z-index:40;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
@@ -1297,3 +1297,8 @@ dialog.cart[open]{overflow-y:auto;overscroll-behavior:contain}
 .model-card-photo img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
 .model-card .model-name a{color:inherit;text-decoration:none}
 .model-card .model-name a:hover{text-decoration:underline;text-underline-offset:3px}
+/* Service / Academy: how it works (audit 19 Oct 2026) — reuses .order-steps */
+.page-steps{border-top:1px solid var(--border)}
+.page-steps .container{padding-top:clamp(40px,5vw,72px);padding-bottom:clamp(24px,3vw,40px)}
+.page-steps-title{font-size:clamp(26px,2.6vw,38px);line-height:1.2;margin:0 0 8px}
+.model-grid-label{margin:clamp(36px,4vw,56px) 0 16px;font-size:15px;color:var(--muted)}

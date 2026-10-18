@@ -2,7 +2,7 @@
 
 Georgian name: საქართველოს პრემიუმ დრონები.
 
-> Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus region. It provides the XAG ecosystem in Georgia: drones, batteries, chargers, generators, parts, service and training. PDG started from real field work with the XAG V40, P100 and P100 Pro in Georgian conditions (thousands of hectares in real field conditions; 2,900+ ha in the 2026 season). Its current focus is the XAG P150 MAX. Storage and service support in Tbilisi (Panaskerteli-Tsitsishvili St 12, by appointment); warehouse, field experience and operations in Lagodekhi. Serves farmers, service companies and government and municipal buyers. Prices are listed in Georgian lari (GEL) on the website.
+> Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus region. It provides the XAG ecosystem in Georgia: drones, batteries, chargers, generators, parts, service and training. PDG was founded in 2022 and has worked in the field with agricultural drones since 2023, with the XAG V40, P100 and P100 Pro in Georgian conditions (thousands of hectares in real field conditions; 2,900+ ha in the 2026 season). Its current focus is the XAG P150 MAX. Storage and service support in Tbilisi (Panaskerteli-Tsitsishvili St 12, by appointment); warehouse, field experience and operations in Lagodekhi. Serves farmers, service companies and government and municipal buyers. Prices are listed in Georgian lari (GEL) on the website.
 
 Contact: +995 550 00 43 33 (phone and WhatsApp), info@premium-drones.ge. Languages: Georgian, English, Russian.
 
@@ -18,7 +18,7 @@ Contact: +995 550 00 43 33 (phone and WhatsApp), info@premium-drones.ge. Languag
 - English versions: https://premium-drones.ge/en/ ; Russian versions: https://premium-drones.ge/ru/
 
 ## Key facts
-- XAG P150 MAX: 80 L spray tank, up to 32 L/min with two pumps, up to 46 L/min with the additional XAG 4-Nozzle Upgrade Kit (recommended for orchards and vineyards), 5-10 m spray width, 115 L granule container (9 m spread width, up to 300 kg/min), built-in RealTerra field mapping (up to 30 ha per flight), 4D imaging radar, 20 m/s (70 km/h) top speed, 80 kg max payload, IPX6K (official XAG specifications).
+- XAG P150 MAX: 80 L spray tank, up to 32 L/min with two pumps, up to 46 L/min with the XAG 4-Nozzle Upgrade Kit (sold separately; recommended for orchards and vineyards), 5-10 m spray width, with the optional RevoCast 5 module a 115 L granule container (9 m spread width, up to 300 kg/min), built-in RealTerra field mapping (up to 30 ha per flight), 4D imaging radar, 20 m/s (72 km/h) maximum flight speed, 80 kg max payload (cargo with the optional RevoSling system), IPX6K (official XAG specifications).
 - Services: drone spraying and spreading of fields, PDG Academy operator training, diagnostics and repair, original parts.
 - XAG model range: P150 MAX available (new generation). P100 Pro, P100 and V40 currently out of stock; last package prices 72,500 GEL (P100 Pro, drone + 4 batteries), 70,220 GEL (P100, drone + 4 batteries), 38,500 GEL (V40, drone + 2 batteries).
 
