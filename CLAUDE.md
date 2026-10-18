@@ -190,3 +190,4 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   "PDG გუნდი ამ ჩატს კითხულობს". Two-way Telegram: owner replies to an alert → teamAnswer() posts it to the website chat (docs/10-ai-chat.md).
   LED headlight photo = owner render (products/09-027-00003.webp).
 - (owner, 18 Oct 2026) About page XAG model range: P100 Pro / P100 / V40 cards show their first gallery photo (models/*-1.webp) and link to their pages.
+- (owner, 19 Oct 2026) About "XAG-ის შესახებ" (about_xag_p1/p2, ka/en/ru) uses the owner's wording: world's largest maker of agricultural drones and robots, most patents in the field, goal = agricultural infrastructure for the next 100 years.
