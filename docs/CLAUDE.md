@@ -186,3 +186,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 18 Oct 2026) Georgian: "მინდორი / მინდორზე / მინდვრის" everywhere instead of "ველი / ველზე / საველე" (form-field texts form_check /
   error_required keep "ველი" = input field). Battery texts: no "1500 ციკლამდე" / cycle-life claim; only the warranty "1 წელი ან 1500 ციკლი" stays
   (P150 MAX power chapter stat "ციკლი 1500" removed). The chat AI follows both rules (chatSystem).
+- (owner, 18 Oct 2026) Person requests: instant hand-off text (HANDOFF ka/en/ru) + waiting list (th.wait), AI silent until a team reply; never
+  "PDG გუნდი ამ ჩატს კითხულობს". Two-way Telegram: owner replies to an alert → teamAnswer() posts it to the website chat (docs/10-ai-chat.md).
+  LED headlight photo = owner render (products/09-027-00003.webp).

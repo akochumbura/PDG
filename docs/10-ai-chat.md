@@ -58,3 +58,10 @@ CallMeBot is a free third-party service for personal alerts (no guarantee); the 
 3. Open your new bot in Telegram and press Start.
 4. Open https://premium-drones.ge/api/telegram/setup and sign in with ADMIN_KEY: the site saves your chat (KV tg:chat) and sends a test message.
 New chat conversations (and new messages after you read a conversation) and consultation requests then arrive in Telegram with the inbox link.
+
+## Hand-off and two-way Telegram (18 Oct 2026)
+- Visitor asks for a person (keywords or AI [[HANDOFF]]): the chat answers at once "ახლავე დაგაკავშირებთ… თქვენ რიგში ხართ", the
+  conversation is on the waiting list (th.wait, max 24 h), the AI stays silent, and Telegram gets "🙋 Visitor asks for a person".
+- Reply to an alert in Telegram (swipe left → Reply): the text appears in that visitor's website chat as a PDG answer (webhook
+  /api/telegram/hook, secret token derived from the bot token + ADMIN_KEY, only the connected owner chat is accepted).
+  Opening /api/telegram/setup (re)connects the chat and sets the webhook.
