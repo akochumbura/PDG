@@ -181,3 +181,5 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   after confirmation Tbilisi same/next day, regions 1-3 days (handling 0, transit 0-3). No reviews/aggregateRating: never invent reviews.
 - (owner, 18 Oct 2026) Alerts via Telegram (CallMeBot had no free slots): secret TELEGRAM_BOT_TOKEN only; the chat id is captured by
   /api/telegram/setup?key=ADMIN_KEY (stored in KV tg:chat; TELEGRAM_CHAT_ID still overrides). tgSend() is used by chat and consultation alerts. Steps: docs/10-ai-chat.md.
+- (owner, 18 Oct 2026) Chat AI: never "შესხურება" in any form, always "შეწამვლა" (rule in chatSystem). The word stays only in meta keywords /
+  search synonyms (what farmers type). Chat alerts now fire on every visitor message, max one per conversation per minute (th.alertAt).
