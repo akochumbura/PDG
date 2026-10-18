@@ -183,3 +183,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   /api/telegram/setup?key=ADMIN_KEY (stored in KV tg:chat; TELEGRAM_CHAT_ID still overrides). tgSend() is used by chat and consultation alerts. Steps: docs/10-ai-chat.md.
 - (owner, 18 Oct 2026) Chat AI: never "შესხურება" in any form, always "შეწამვლა" (rule in chatSystem). The word stays only in meta keywords /
   search synonyms (what farmers type). Chat alerts now fire on every visitor message, max one per conversation per minute (th.alertAt).
+- (owner, 18 Oct 2026) Georgian: "მინდორი / მინდორზე / მინდვრის" everywhere instead of "ველი / ველზე / საველე" (form-field texts form_check /
+  error_required keep "ველი" = input field). Battery texts: no "1500 ციკლამდე" / cycle-life claim; only the warranty "1 წელი ან 1500 ციკლი" stays
+  (P150 MAX power chapter stat "ციკლი 1500" removed). The chat AI follows both rules (chatSystem).

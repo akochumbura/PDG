@@ -17,7 +17,7 @@ PAGES = [
     {'sku': '09-017-00109', 'slug': 'gc4000-plus-generator', 'block': 2,
      'title': ('XAG GC4000+ დამუხტვის სადგური (გენერატორი) — ფასი და მახასიათებლები', 'XAG GC4000+ charging station (generator) — price and specifications',
                'Зарядная станция XAG GC4000+ (генератор) — цена и характеристики'),
-     'intro': ('XAG P150 MAX-ის აკუმულატორების საველე დამუხტვის სადგური (გენერატორი). ოფიციალური მახასიათებლები, ფასი და შეკვეთა.',
+     'intro': ('XAG P150 MAX-ის აკუმულატორების მინდვრის დამუხტვის სადგური (გენერატორი). ოფიციალური მახასიათებლები, ფასი და შეკვეთა.',
                'Field charging station (generator) for XAG P150 MAX batteries. Official specifications, price and ordering.',
                'Полевая зарядная станция (генератор) для аккумуляторов XAG P150 MAX. Официальные характеристики, цена и заказ.')},
     {'sku': '09-017-00065', 'slug': 'battery-cooling-tank', 'block': 3,
