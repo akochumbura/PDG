@@ -51,3 +51,10 @@ CallMeBot is a free third-party service for personal alerts (no guarantee); the 
 - PDG facts (prices, stock, delivery, warranty, specs) only from KNOWLEDGE and team answers; general drone/agronomy questions from the model's general knowledge. Still no pesticide dosages.
 - This is not model training: the model itself does not change; it reads these answers each time.
 - Inbox: https://premium-drones.ge/api/chat/inbox shows a sign-in box (keys with + # & work); spaces around the key are ignored.
+
+## Telegram alerts (18 Oct 2026, recommended; CallMeBot had no free slots)
+1. Telegram → @BotFather → /newbot → choose a name and a username ending in "bot" → copy the token.
+2. Cloudflare → pdg → Settings → Variables and secrets → add Secret TELEGRAM_BOT_TOKEN = the token → Deployments → ⋯ → Retry deployment.
+3. Open your new bot in Telegram and press Start.
+4. Open https://premium-drones.ge/api/telegram/setup and sign in with ADMIN_KEY: the site saves your chat (KV tg:chat) and sends a test message.
+New chat conversations (and new messages after you read a conversation) and consultation requests then arrive in Telegram with the inbox link.

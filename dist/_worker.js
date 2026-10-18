@@ -67,6 +67,7 @@ async function api(request, env, url) {
       if (route === 'GET /api/chat/thread') return await liveThread(env, url);
       if (route === 'POST /api/chat/contact') return await liveContact(request, env, url);
       if (route === 'GET /api/chat/inbox') return await liveInbox(env, url);
+      if (route === 'GET /api/telegram/setup') return await telegramSetup(env, url);
       if (route === 'POST /api/chat/reply') return await liveReply(request, env, url);
       if (url.pathname.startsWith('/api/account/') || url.pathname.startsWith('/api/admin/')) return await account(route, request, env, url);
       if (route === 'POST /api/chat') return await chat(request, env, url);
@@ -657,12 +658,7 @@ async function contactMail(env, rec, id) {
 async function contactAlert(env, url, rec) {
   const msg = `PDG consultation request (${rec.lang}) · ${rec.topic}\n${rec.name} · ${rec.phone}\n\n${rec.message.slice(0, 400)}\n\nAll requests: ${url.origin}/api/contact/inbox`;
   const jobs = [];
-  if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
-    jobs.push(fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, text: msg, disable_web_page_preview: true })
-    }).catch(() => null));
-  }
+  jobs.push(tgSend(env, msg));
   if (env.WHATSAPP_ALERT_PHONE && env.WHATSAPP_ALERT_KEY) {
     const q = new URLSearchParams({ phone: String(env.WHATSAPP_ALERT_PHONE).replace(/[^\d+]/g, ''), text: msg, apikey: env.WHATSAPP_ALERT_KEY });
     jobs.push(fetch('https://api.callmebot.com/whatsapp.php?' + q).catch(() => null));
@@ -719,7 +715,7 @@ section{border:1px solid #ddd;padding:12px 14px;margin:0 0 16px}h2{font-size:13p
    Threads in KV (PDG_DATA): thread:<id> {id, created, updated, lang, page, contact, human, unread, msgs:[{r:'v'|'ai'|'team', t, at}]}.
    The visitor's id is 32 random hex characters made in the browser and kept there; it is the key to that conversation.
    The AI answers when ANTHROPIC_API_KEY is set, until the team replies (then the team has the thread).
-   Team inbox: /api/chat/inbox?key=ADMIN_KEY (works on a phone). Optional alerts: WhatsApp (WHATSAPP_ALERT_PHONE + WHATSAPP_ALERT_KEY, via CallMeBot) and/or Telegram (TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID). */
+   Team inbox: /api/chat/inbox?key=ADMIN_KEY (works on a phone). Optional alerts: WhatsApp (WHATSAPP_ALERT_PHONE + WHATSAPP_ALERT_KEY, via CallMeBot) and/or Telegram (TELEGRAM_BOT_TOKEN; chat id from /api/telegram/setup or TELEGRAM_CHAT_ID). */
 const liveHits = new Map();
 /* The AI answers every message, except for 30 minutes after a team reply in that chat (so it does not talk over the team). */
 const TEAM_PAUSE_MS = 30 * 60 * 1000;
@@ -761,15 +757,58 @@ async function liveInput(request, url) {
   if (Number(request.headers.get('Content-Length') || 0) > 8000) throw new UserError('too_large');
   try { return await readJson(request, 8000); } catch (err) { throw new UserError(err instanceof UserError ? 'too_large' : 'bad_json'); }
 }
+/* Telegram alerts (owner, 18 Oct 2026; CallMeBot WhatsApp had no free slots). Secret TELEGRAM_BOT_TOKEN from @BotFather.
+   The chat id comes from TELEGRAM_CHAT_ID or, simpler, from /api/telegram/setup?key=ADMIN_KEY: the owner sends the bot any
+   message, opens that page, and the worker stores his chat id in KV (tg:chat) and sends a test alert. */
+async function tgChat(env) {
+  if (env.TELEGRAM_CHAT_ID) return String(env.TELEGRAM_CHAT_ID);
+  return kv(env) ? (await kv(env).get('tg:chat')) || '' : '';
+}
+async function tgSend(env, text) {
+  const token = String(env.TELEGRAM_BOT_TOKEN || '').trim();
+  if (!token) return false;
+  const chat = await tgChat(env);
+  if (!chat) return false;
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chat, text: String(text).slice(0, 3900), disable_web_page_preview: true }), signal: AbortSignal.timeout(8000)
+    });
+    if (!res.ok) console.error('telegram', res.status);
+    return res.ok;
+  } catch (err) { console.error('telegram', err); return false; }
+}
+async function telegramSetup(env, url) {
+  const key = (url.searchParams.get('key') || '').trim();
+  if (!adminOk(env, key)) return inboxLogin(env, Boolean(key), '/api/telegram/setup');
+  const token = String(env.TELEGRAM_BOT_TOKEN || '').trim();
+  const page = (title, body) => new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>PDG Telegram alerts</title><style>body{font:16px/1.5 system-ui,sans-serif;margin:0 auto;max-width:520px;padding:24px 16px;color:#1c1c1c}.ok{color:#1b7f3b}.err{color:#b3261e}a{color:#c00}</style>
+<h1>${esc(title)}</h1>${body}<p><a href="/api/chat/inbox?key=${esc(encodeURIComponent(key))}">Chat inbox</a></p>`,
+    { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex', 'Referrer-Policy': 'no-referrer' } });
+  if (!token) return page('Telegram alerts: not set up', '<p class="err">The secret TELEGRAM_BOT_TOKEN is missing in Cloudflare (pdg → Settings → Variables and secrets). Add it, then Retry deployment and open this page again.</p>');
+  let updates = [];
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${token}/getUpdates?limit=50`, { signal: AbortSignal.timeout(8000) });
+    const data = await res.json();
+    if (!data.ok) return page('Telegram alerts: token not accepted', '<p class="err">Telegram did not accept TELEGRAM_BOT_TOKEN. Copy it again from @BotFather (no spaces), save it in Cloudflare and Retry deployment.</p>');
+    updates = data.result || [];
+  } catch (err) { return page('Telegram alerts: no answer', '<p class="err">Telegram did not answer. Try again in a minute.</p>'); }
+  const msgs = updates.map(u => u.message || u.edited_message).filter(m => m && m.chat && m.chat.type === 'private');
+  const last = msgs[msgs.length - 1];
+  if (!last) {
+    const cur = await tgChat(env);
+    return page('Telegram alerts', (cur ? '<p class="ok">Alerts are already connected.</p>' : '') + '<p>Open your bot in Telegram, press <b>Start</b> (or send it any message), then reload this page.</p>');
+  }
+  await kv(env).put('tg:chat', String(last.chat.id));
+  const ok = await tgSend(env, 'PDG website: Telegram alerts are on. New chat messages and consultation requests will arrive here.');
+  const who = [last.chat.first_name, last.chat.last_name].filter(Boolean).join(' ') || last.chat.username || 'you';
+  return page('Telegram alerts', ok ? `<p class="ok">Connected to ${esc(who)}. A test message was sent to Telegram.</p>` : '<p class="err">Chat saved, but the test message failed. Send the bot a message and reload.</p>');
+}
 async function notifyTeam(env, url, th, text) {
   const msg = `PDG website chat (${th.lang})${th.contact ? ' · ' + th.contact : ''}\n\n${text.slice(0, 600)}\n\nReply: ${url.origin}/api/chat/inbox`;
   const jobs = [];
-  if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
-    jobs.push(fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: env.TELEGRAM_CHAT_ID, text: msg, disable_web_page_preview: true })
-    }).catch(err => console.error('telegram', err)));
-  }
+  jobs.push(tgSend(env, msg));
   // WhatsApp alert to the owner's own number via CallMeBot (free; activate once, see docs/10-ai-chat.md).
   if (env.WHATSAPP_ALERT_PHONE && env.WHATSAPP_ALERT_KEY) {
     const q = new URLSearchParams({ phone: String(env.WHATSAPP_ALERT_PHONE).replace(/[^\d+]/g, ''), text: msg, apikey: env.WHATSAPP_ALERT_KEY });
