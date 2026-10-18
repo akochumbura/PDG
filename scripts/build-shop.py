@@ -44,16 +44,16 @@ CAT_KEY = {'power': ('cat_power', 'აკუმულატორები დ�
 
 
 # Package contents (owner, 14 Oct 2026, exact): catalog column, content key, Georgian label. en/ru labels in KIT_LABELS.
-CONTENTS = [('drones', 'kit_drone', 'XAG P150 MAX სასოფლო-სამეურნეო დრონი (RevoSpray 5)'),
-            ('remotes', 'kit_remote', 'XAG SRC5 ჭკვიანი მართვის პულტი'),
-            ('batteries', 'kit_batteries', 'XAG B141050 ჭკვიანი აკუმულატორი'),
+CONTENTS = [('drones', 'kit_drone', 'XAG P150 MAX (RevoSpray 5)'),
+            ('remotes', 'kit_remote', 'XAG SRC5 მართვის პულტი'),
+            ('batteries', 'kit_batteries', 'XAG B141050 აკუმულატორი'),
             ('chargers', 'kit_chargers', 'XAG CM13600S დამტენი'),
             ('towers', 'kit_towers', 'XAG აკუმულატორის გამაგრილებელი ავზი'),
             ('rtk', 'kit_rtk', 'XAG XRTK7 მობილური RTK სადგური'),
-            ('generators', 'kit_generators', 'XAG GC4000+ დამუხტვის სადგური')]
-KIT_LABELS = {'kit_drone': ('XAG P150 MAX agricultural drone (RevoSpray 5)', 'Сельскохозяйственный дрон XAG P150 MAX (RevoSpray 5)'),
-              'kit_remote': ('XAG SRC5 smart remote controller', 'Умный пульт управления XAG SRC5'),
-              'kit_batteries': ('XAG B141050 smart battery', 'Умный аккумулятор XAG B141050'),
+            ('generators', 'kit_generators', 'XAG GC4000+ გენერატორი')]
+KIT_LABELS = {'kit_drone': ('XAG P150 MAX (RevoSpray 5)', 'XAG P150 MAX (RevoSpray 5)'),
+              'kit_remote': ('XAG SRC5 remote controller', 'Пульт управления XAG SRC5'),
+              'kit_batteries': ('XAG B141050 battery', 'Аккумулятор XAG B141050'),
               'kit_chargers': ('XAG CM13600S charger', 'Зарядное устройство XAG CM13600S'),
               'kit_towers': ('XAG battery cooling tank', 'Охлаждающий бак для аккумуляторов XAG'),
               'kit_rtk': ('XAG XRTK7 mobile RTK station', 'Мобильная RTK-станция XAG XRTK7'),
@@ -231,21 +231,48 @@ def compare_text(kits):
     return tuple(lead[i] + ', '.join((f"{_n(kits[0], c)} × " if _n(kits[0], c) > 1 else '') + CMP_LABEL[c][i] for c in common) + '.' for i in range(3))
 
 
+def _kit_short(r):
+    return re.sub(r"^XAG P150 MAX ", "", r["name"])
+
+
+def _kit_line(r, i):
+    """One-line summary per package for the phone cards: batteries · chargers · RTK (when included)."""
+    b, c, k = _n(r, 'batteries'), _n(r, 'chargers'), _n(r, 'rtk')
+    if i == 0:
+        parts = [f'{b} აკუმულატორი', f'{c} დამტენი'] + (['RTK სადგური'] if k else [])
+    elif i == 1:
+        parts = [f'{b} batteries', f'{c} chargers'] + (['RTK station'] if k else [])
+    else:
+        parts = [f'аккумуляторы: {b}', f'зарядные: {c}'] + (['RTK-станция'] if k else [])
+    return ' · '.join(parts)
+
+
+PICK = 'PDG-P150MAX-PRO'  # owner/ChatGPT review 19 Oct 2026: Pro gets the subtle accent
+
+
 def compare(kits, more_href):
-    common = [c for c in _CMP_COLS if all(_n(r, c) == _n(kits[0], c) for r in kits) and _n(kits[0], c)]
-    diff = [c for c in _CMP_COLS if c not in common and any(_n(r, c) for r in kits)]
-    head = ''.join(f'<th scope="col"><a href="{product_pages.url(r["sku"])}" data-local>{html.escape(re.sub(r"^XAG P150 MAX ", "", r["name"]))}</a></th>' for r in kits)
+    """Package comparison (19 Oct 2026, second version): only what differs + price + link; no explanatory paragraphs.
+    Desktop: table. Phone: three stacked cards."""
+    diff = ['batteries', 'chargers', 'rtk']
+    pick = lambda r: ' is-pick' if r['sku'] == PICK else ''
+    head = ''.join(f'<th scope="col" class="pkg-col{pick(r)}">{html.escape(_kit_short(r))}</th>' for r in kits)
     body = ''
     for c in diff:
-        cells = ''.join(f'<td>{_n(r, c)}</td>' if _n(r, c) else '<td class="is-sep" data-i18n="cmp_separate">ცალკე</td>' for r in kits)
+        cells = ''.join(f'<td class="pkg-col{pick(r)}">{_n(r, c)}</td>' if _n(r, c)
+                        else f'<td class="pkg-col is-none{pick(r)}"><span aria-hidden="true">—</span><span class="visually-hidden" data-i18n="cmp_none">არ შედის</span></td>' for r in kits)
         body += f'<tr><th scope="row" data-i18n="cmp_l_{c}">{CMP_LABEL[c][0]}</th>{cells}</tr>'
-    body += '<tr class="pkg-compare-price"><th scope="row" data-i18n="cmp_price">ფასი</th>' + ''.join(f'<td>₾{price(r, True):,}</td>' for r in kits) + '</tr>'
+    body += ('<tr class="pkg-compare-price"><th scope="row" data-i18n="cmp_price">ფასი</th>'
+             + ''.join(f'<td class="pkg-col{pick(r)}">₾{price(r, True):,}</td>' for r in kits) + '</tr>')
+    body += ('<tr class="pkg-compare-links"><th scope="row"><span class="visually-hidden" data-i18n="cmp_corner">კომპლექტი</span></th>'
+             + ''.join(f'<td class="pkg-col{pick(r)}"><a class="text-link" href="{product_pages.url(r["sku"])}" data-local><span data-i18n="cmp_view">კომპლექტაციის ნახვა</span><span aria-hidden="true">→</span></a></td>' for r in kits) + '</tr>')
+    cards = ''.join(
+        f'<li class="pkg-card{pick(r)}"><a href="{product_pages.url(r["sku"])}" data-local>'
+        f'<span class="pkg-card-head"><span class="pkg-card-name">{html.escape(_kit_short(r))}</span><span class="pkg-card-price">₾{price(r, True):,}</span></span>'
+        f'<span class="pkg-card-line" data-i18n="cmp_line_{r["sku"].split("-")[-1].lower()}">{_kit_line(r, 0)}</span>'
+        f'<span class="pkg-card-cta"><span data-i18n="cmp_view">კომპლექტაციის ნახვა</span><span aria-hidden="true">→</span></span></a></li>' for r in kits)
     return (f'<div class="pkg-compare"><h3 class="pkg-compare-title" data-i18n="cmp_title">რით განსხვავდება კომპლექტები</h3>'
-            f'<p class="pkg-compare-common" data-i18n="cmp_common">{html.escape(compare_text(kits)[0])}</p>'
             f'<div class="pkg-compare-scroll"><table class="pkg-compare-table"><thead><tr><th scope="col"><span class="visually-hidden" data-i18n="cmp_corner">კომპლექტი</span></th>{head}</tr></thead><tbody>{body}</tbody></table></div>'
-            f'<p class="pkg-compare-note" data-i18n="cmp_power_note">{CMP_TEXT["cmp_power_note"][0]}</p>'
-            f'<a class="text-link" href="{more_href}"{" data-local" if more_href.startswith("/") else ""}><span data-i18n="cmp_all">ყველა კომპლექტი და შემადგენლობა</span><span aria-hidden="true">→</span></a></div>')
-
+            f'<ul class="pkg-cards">{cards}</ul></div>')
 
 def kit_row(r):
     n = html.escape(r['name'], quote=True)
@@ -297,6 +324,10 @@ for _k, _ka, in [(k, ka) for _c_, k, ka in CONTENTS]:
 _kits_for_text = [r for r in rows if r['group'] == 'kit']
 PLATFORM_TEXT.update(CMP_TEXT)
 PLATFORM_TEXT['cmp_common'] = compare_text(_kits_for_text)
+PLATFORM_TEXT['cmp_view'] = ('კომპლექტაციის ნახვა', 'View package', 'Смотреть комплект')
+PLATFORM_TEXT['cmp_none'] = ('არ შედის', 'not included', 'не входит')
+for _r in _kits_for_text:
+    PLATFORM_TEXT['cmp_line_' + _r['sku'].split('-')[-1].lower()] = tuple(_kit_line(_r, _i) for _i in range(3))
 for _col, _lab in CMP_LABEL.items():
     PLATFORM_TEXT['cmp_l_' + _col] = _lab
 for _k, (_ka, _en, _ru) in PLATFORM_TEXT.items():
@@ -322,7 +353,7 @@ import configurator as PCFG
 def platform_link():
     """P150 MAX page, under the introduction: one link to the platform configurator with the starting price (catalog)."""
     p = price(by_sku_all[PCFG.PLATFORM], False)
-    return (f'<p class="pm-cfg"><a class="text-link" href="/p150-max-platform#configurator" data-local><span data-i18n="pm_cfg_link">კონფიგურაციის აწყობა — ₾{p:,}-დან</span>'
+    return (f'<p class="pm-cfg"><a class="text-link" href="/p150-max-platform#configurator" data-local><span data-i18n="pm_cfg_link">კონფიგურაციის აწყობა — <span class="nowrap">₾{p:,}-დან</span></span>'
             '<span aria-hidden="true">→</span></a><span class="pm-cfg-note" data-i18n="pm_cfg_note">საწყისი ფასი — მხოლოდ დრონი RevoSpray 5 სისტემით.</span></p>')
 
 

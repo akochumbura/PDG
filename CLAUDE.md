@@ -217,3 +217,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   About model cards: no historical package prices (shop legacy cards unchanged).
 - Honeypot wrapper: aria-hidden + inert. About/Academy/Service mention XAG Academy training, XAG trainer / technician qualifications in the team
   (owner statement; exact certificate names still to be confirmed).
+- (owner, 19 Oct 2026, 02:30) Package comparison v2: NO "ყველა კომპლექტში შედის" line and NO generator note in it (that belongs in the configurator, kit photos and
+  descriptions). Only Starter / Pro / Business, batteries, chargers, RTK (— when not included), price, "კომპლექტაციის ნახვა". Desktop table, phone = 3 stacked
+  cards; Pro accented in red. Package contents labels are the short names (XAG SRC5 მართვის პულტი etc.).

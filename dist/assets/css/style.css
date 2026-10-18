@@ -1346,3 +1346,28 @@ dialog.cart[open]{overflow-y:auto;overscroll-behavior:contain}
 .why-pdg .why-grid{gap:0}.why-pdg .why-item p:last-child{max-width:none}
 .pkg-compare-scroll{max-width:960px}
 @media(max-width:900px){.why-pdg .why-grid{gap:0}}
+/* Package comparison v2 (19 Oct 2026): table on desktop, stacked cards on phones; Pro accented; no notes */
+.pkg-cards{display:none;list-style:none;margin:0;padding:0}
+.pkg-compare-title{margin-bottom:20px}
+.pkg-compare-table th[scope=row]{color:var(--muted);font-weight:400}
+.pkg-compare-table thead th.pkg-col{font-size:18px;padding-top:18px}
+.pkg-compare-table .pkg-col.is-pick{background:var(--bg)}
+.pkg-compare-table thead th.is-pick{color:var(--accent);box-shadow:inset 0 2px 0 var(--accent)}
+.pkg-compare-table td.is-none{color:var(--muted)}
+.pkg-compare-table .pkg-compare-price td{font-size:19px}
+.pkg-compare-table .pkg-compare-links td,.pkg-compare-table .pkg-compare-links th{border-bottom:0;padding-top:18px;padding-bottom:20px}
+.pkg-compare-links .text-link{font-size:14px}
+@media(max-width:700px){
+  .pkg-compare-scroll{display:none}
+  .pkg-cards{display:grid;gap:12px}
+  .pkg-card a{display:grid;gap:8px;padding:18px 18px 16px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:inherit;text-decoration:none}
+  .pkg-card.is-pick a{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+  .pkg-card-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .pkg-card-name{font:600 19px/1.2 var(--font-latin)}
+  .pkg-card.is-pick .pkg-card-name{color:var(--accent)}
+  .pkg-card-price{font:600 19px/1.2 var(--font-latin);white-space:nowrap}
+  .pkg-card-line{font-size:15px;line-height:1.45;color:var(--muted)}
+  .pkg-card-cta{display:inline-flex;gap:10px;align-items:center;font-size:14px;color:var(--accent)}
+  .pkg-compare{padding-bottom:8px}
+}
+.nowrap{white-space:nowrap}
