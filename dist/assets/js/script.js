@@ -28,13 +28,19 @@
     storage.set("pdge-theme", root.dataset.theme);
   });
   storage.set("pdge-lang", lang);
-  document.querySelectorAll("[data-lang]").forEach((link) => {
+  /* Language links carry the current query and anchor. They are rebuilt on click, so state the page wrote to the URL
+     after loading (e.g. the configurator's ?c=…) survives a language change (audit 19 Oct 2026). */
+  const langHref = (link) => {
     const targetLanguage = link.dataset.lang;
     const relativePath = location.pathname.replace(/^\/(en|ru)(?=\/|$)/, "");
     const path = relativePath === "/index.html" || relativePath === "" ? "/" : relativePath;
     const prefix = targetLanguage === "ka" ? "" : "/" + targetLanguage;
     link.href = prefix + path + location.search + location.hash;
-    if (targetLanguage === lang) link.setAttribute("aria-current", "page");
+  };
+  document.querySelectorAll("[data-lang]").forEach((link) => {
+    langHref(link);
+    ["click", "focus", "pointerenter"].forEach((ev) => link.addEventListener(ev, () => langHref(link)));
+    if (link.dataset.lang === lang) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
   });
   const langBtn = document.getElementById("langBtn"), langList = document.getElementById("langList");

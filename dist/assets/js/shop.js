@@ -311,6 +311,17 @@
       var lang = document.documentElement.lang, pre = lang && lang !== "ka" ? "/" + lang : "";
       return location.origin + pre + PC.page + (parts.length ? "?c=" + parts.join("_") : "") + "#configurator";
     }
+    /* The selection lives in the address (?c=…), so reloading, sharing and switching language keep it. */
+    var pcReady = false;
+    function pcRemember(st) {
+      var parts = [];
+      pcKeys.forEach(function (k) { if (st.q[k] > 0) parts.push(k + "-" + st.q[k]); });
+      var u = new URL(location.href);
+      u.searchParams.delete("kit"); u.searchParams.delete("p");
+      if (parts.length) u.searchParams.set("c", parts.join("_")); else u.searchParams.delete("c");
+      var next = u.pathname + (u.search ? decodeURIComponent(u.search) : "") + u.hash;
+      if (next !== location.pathname + location.search + location.hash) { try { history.replaceState(history.state, "", next); } catch (e) { /* ignore */ } }
+    }
     function presetMatch(q) {
       if (pcKeys.every(function (k) { return !q[k]; })) return "none";
       var hit = PC.packages.filter(function (p) { return pcKeys.every(function (k) { return (p.q[k] || 0) === q[k]; }); })[0];
@@ -337,6 +348,7 @@
       document.getElementById("pcBarTotal").textContent = fmt(st.total);
       var pm = presetMatch(st.q);
       pcBox.querySelectorAll(".pcfg-preset").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.preset === pm ? "true" : "false"); });
+      if (pcReady) pcRemember(st);
       return st;
     }
     function setQ(q) { pcKeys.forEach(function (k) { var i = pcInput(k); i.value = clampInt(q[k] || 0, 0, Number(i.max) || 0); }); }
@@ -379,6 +391,7 @@
     if (kp && !qs.get("c")) Object.keys(kp.q).forEach(function (k) { q0[k] = kp.q[k]; });
     setQ(q0);
     pcShow();
+    pcReady = true;
     /* Phones: a slim total + send bar replaces the call/chat bar while the options are on screen and the summary total/actions are not. */
     var bar = document.getElementById("pcBar"), sumEl = document.querySelector("#pcSummary .pcfg-total-row"), optEl = pcBox.querySelector(".pcfg-options");
     if (bar && "IntersectionObserver" in window) {

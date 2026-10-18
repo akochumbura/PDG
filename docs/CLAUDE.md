@@ -203,3 +203,17 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - Service / Academy: 3-step "how it works" (.order-steps), CTA to /consultation?topic=service|academy; no invented durations, prices, warranty or turnaround.
 - Phone menu: body pinned with position:fixed at the scroll offset, scroll restored on close (script.js lockPage).
 - Tools: scripts/tools/set_text.py sets a key in ka (HTML) + en/ru (content.js).
+
+## Brief 2, 19 Oct 2026 (night)
+- Configurator state lives in the URL (?c=…, shop.js pcRemember via history.replaceState); language links are rebuilt on click (script.js langHref),
+  so a selection survives ka/en/ru switches. Verified: Pro + 2 GC4000+ = 99,797 in all three languages.
+- Home hero: tagline, XAG P150 MAX, "სასოფლო-სამეურნეო დრონი" (also on desktop), feature sentence, hero_local line (desktop), primary red
+  "ფასები და კომპლექტაციები" → #packages, secondary "კონსულტაცია". Phone: tagline, title, kind, primary button only.
+- Home "რატომ PDG?" (#why-pdg) right before #packages: team trained at XAG Academy (China), field work since 2023, local stock, support after purchase.
+  Never say training/repair/support is free or included. Home XAG strip line = owner sentence (xag_intro, 19 Oct 2026).
+- Package comparison (build-shop compare(): only differing columns + "all three include" line + GC4000+ sold separately / suitable power source note):
+  home (<!--homeCompare-->) and P150 MAX page (#compare, <!--pmCompare-->) before the technical chapters; P150 MAX hero has section links.
+- Menu: no "XAG მოდელების ხაზი" entry (/about#models anchor kept); P150 promo → /p150-max#kits; "კონფიგურაციის აწყობა" link added.
+  About model cards: no historical package prices (shop legacy cards unchanged).
+- Honeypot wrapper: aria-hidden + inert. About/Academy/Service mention XAG Academy training, XAG trainer / technician qualifications in the team
+  (owner statement; exact certificate names still to be confirmed).

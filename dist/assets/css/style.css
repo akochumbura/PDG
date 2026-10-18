@@ -1302,3 +1302,47 @@ dialog.cart[open]{overflow-y:auto;overscroll-behavior:contain}
 .page-steps .container{padding-top:clamp(40px,5vw,72px);padding-bottom:clamp(24px,3vw,40px)}
 .page-steps-title{font-size:clamp(26px,2.6vw,38px);line-height:1.2;margin:0 0 8px}
 .model-grid-label{margin:clamp(36px,4vw,56px) 0 16px;font-size:15px;color:var(--muted)}
+/* Brief 19 Oct 2026 (night): hero order, "Why PDG", package comparison, P150 MAX section links */
+.hero-local{font-size:15px;line-height:1.5;color:rgba(255,255,255,.8);max-width:46ch;margin:0 0 var(--hero-gap,32px)}
+.hero .hero-sub:has(+ .hero-local){margin-bottom:10px}
+@media(min-width:601px){.hero-kicker{display:block;margin:-6px 0 22px;font-size:clamp(18px,1.6vw,22px);line-height:1.3;font-weight:500;color:rgba(255,255,255,.95)}}
+@media(max-width:600px){
+  .hero-local{display:none}
+  .hero .hero-actions .button{display:inline-flex;min-height:44px;padding:0 22px}
+  .hero .hero-actions .hero-link{display:none}
+}
+.why-pdg{border-top:1px solid var(--border)}
+.why-head{max-width:760px;margin-bottom:clamp(24px,3vw,40px)}
+.why-head h2{font-size:clamp(28px,3vw,44px);line-height:1.15}
+.why-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--text)}
+.why-item{padding:24px 28px 8px 0}
+.why-item+.why-item{padding-left:28px;border-left:1px solid var(--border)}
+.why-item h3{font-size:clamp(18px,1.6vw,22px);line-height:1.3;margin:0 0 10px}
+.why-item p{margin:0;color:var(--muted);font-size:15px;line-height:1.6}
+.why-cta{margin-top:28px}
+@media(max-width:900px){.why-grid{grid-template-columns:1fr}.why-item,.why-item+.why-item{padding:18px 0;border-left:0;border-bottom:1px solid var(--border)}}
+.pkg-compare{margin-top:clamp(32px,4vw,56px)}
+.pkg-compare-title{font-size:clamp(22px,2vw,30px);line-height:1.25;margin:0 0 8px}
+.pkg-compare-common{color:var(--muted);font-size:15px;line-height:1.55;margin:0 0 18px;max-width:70ch}
+.pkg-compare-scroll{overflow-x:auto}
+.pkg-compare-table{width:100%;border-collapse:collapse;font-size:15px}
+.pkg-compare-table th,.pkg-compare-table td{padding:14px 12px;border-bottom:1px solid var(--border);text-align:center;vertical-align:middle}
+.pkg-compare-table th[scope=row],.pkg-compare-table thead th:first-child{text-align:left;font-weight:500;padding-left:0}
+.pkg-compare-table thead th{font-family:var(--font-latin);font-weight:600;font-size:16px;border-bottom:1px solid var(--text)}
+.pkg-compare-table thead a{color:inherit}
+.pkg-compare-table thead a:hover{color:var(--accent)}
+.pkg-compare-table td{font-family:var(--font-latin);font-size:17px}
+.pkg-compare-table td.is-sep{font-family:inherit;font-size:14px;color:var(--muted)}
+.pkg-compare-price td{font-weight:600}
+.pkg-compare-note{color:var(--muted);font-size:14px;line-height:1.55;margin:16px 0 14px;max-width:70ch}
+@media(max-width:600px){.pkg-compare-table{font-size:14px}.pkg-compare-table th,.pkg-compare-table td{padding:12px 6px}.pkg-compare-table td{font-size:15px}.pkg-compare-table thead th{font-size:14px}}
+.pm-compare .pkg-compare{margin-top:0}
+.pm-jump{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:22px;font-size:14px}
+.pm-jump a{color:inherit;border-bottom:1px solid currentColor;padding-bottom:2px}
+.pm-jump a:hover{color:var(--accent)}
+@media(min-width:1241px){.hero .hero-sub{max-width:44ch}.hero-local{max-width:56ch}}
+.why-grid{border-top:0}.why-item{border-top:1px solid var(--text)}.why-item p{max-width:none}
+@media(max-width:900px){.why-item+.why-item{border-top:0}}
+.why-pdg .why-grid{gap:0}.why-pdg .why-item p:last-child{max-width:none}
+.pkg-compare-scroll{max-width:960px}
+@media(max-width:900px){.why-pdg .why-grid{gap:0}}

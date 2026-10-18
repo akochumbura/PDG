@@ -201,6 +201,52 @@ def card(r):
             f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></div></div></div></article>\n')
 
 
+# Package comparison (owner brief, 19 Oct 2026): only what differs, from the catalog columns; what all three share in one line.
+CMP_LABEL = {'drones': ('P150 MAX პლატფორმა (RevoSpray 5)', 'P150 MAX platform (RevoSpray 5)', 'платформа P150 MAX (RevoSpray 5)'),
+             'remotes': ('SRC5 მართვის პულტი', 'SRC5 remote controller', 'пульт SRC5'),
+             'batteries': ('B141050 აკუმულატორი', 'B141050 battery', 'аккумулятор B141050'),
+             'chargers': ('CM13600S დამტენი', 'CM13600S charger', 'зарядное устройство CM13600S'),
+             'towers': ('აკუმულატორის გამაგრილებელი ავზი', 'battery cooling tank', 'бак охлаждения аккумуляторов'),
+             'rtk': ('XRTK7 RTK სადგური', 'XRTK7 RTK station', 'RTK-станция XRTK7'),
+             'generators': ('GC4000+ გენერატორი', 'GC4000+ generator', 'генератор GC4000+')}
+CMP_TEXT = {'cmp_title': ('რით განსხვავდება კომპლექტები', 'How the packages differ', 'Чем отличаются комплекты'),
+            'cmp_price': ('ფასი', 'Price', 'Цена'),
+            'cmp_separate': ('ცალკე', 'separate', 'отдельно'),
+            'cmp_power_note': ('GC4000+ გენერატორი კომპლექტებში არ შედის და იყიდება ცალკე. დამტენებს სჭირდება შესაბამისი კვების წყარო — სხვა გენერატორის თავსებადობა წინასწარ შეგვითანხმეთ.',
+                               'The GC4000+ generator is not part of any package and is sold separately. The chargers need a suitable power source; check any other generator with us before you rely on it.',
+                               'Генератор GC4000+ не входит в комплекты и продаётся отдельно. Зарядным устройствам нужен подходящий источник питания — совместимость другого генератора согласуйте с нами заранее.'),
+            'cmp_all': ('ყველა კომპლექტი და შემადგენლობა', 'All packages and contents', 'Все комплекты и состав'),
+            'cmp_corner': ('კომპლექტი', 'Package', 'Комплект')}
+_CMP_COLS = ['drones', 'remotes', 'batteries', 'chargers', 'towers', 'rtk', 'generators']
+
+
+def _n(r, c):
+    v = (r.get(c) or '').strip()
+    return int(v) if v.isdigit() else 0
+
+
+def compare_text(kits):
+    common = [c for c in _CMP_COLS if all(_n(r, c) == _n(kits[0], c) for r in kits) and _n(kits[0], c)]
+    lead = ('სამივე კომპლექტში შედის: ', 'All three packages include: ', 'Во все три комплекта входят: ')
+    return tuple(lead[i] + ', '.join((f"{_n(kits[0], c)} × " if _n(kits[0], c) > 1 else '') + CMP_LABEL[c][i] for c in common) + '.' for i in range(3))
+
+
+def compare(kits, more_href):
+    common = [c for c in _CMP_COLS if all(_n(r, c) == _n(kits[0], c) for r in kits) and _n(kits[0], c)]
+    diff = [c for c in _CMP_COLS if c not in common and any(_n(r, c) for r in kits)]
+    head = ''.join(f'<th scope="col"><a href="{product_pages.url(r["sku"])}" data-local>{html.escape(re.sub(r"^XAG P150 MAX ", "", r["name"]))}</a></th>' for r in kits)
+    body = ''
+    for c in diff:
+        cells = ''.join(f'<td>{_n(r, c)}</td>' if _n(r, c) else '<td class="is-sep" data-i18n="cmp_separate">ცალკე</td>' for r in kits)
+        body += f'<tr><th scope="row" data-i18n="cmp_l_{c}">{CMP_LABEL[c][0]}</th>{cells}</tr>'
+    body += '<tr class="pkg-compare-price"><th scope="row" data-i18n="cmp_price">ფასი</th>' + ''.join(f'<td>₾{price(r, True):,}</td>' for r in kits) + '</tr>'
+    return (f'<div class="pkg-compare"><h3 class="pkg-compare-title" data-i18n="cmp_title">რით განსხვავდება კომპლექტები</h3>'
+            f'<p class="pkg-compare-common" data-i18n="cmp_common">{html.escape(compare_text(kits)[0])}</p>'
+            f'<div class="pkg-compare-scroll"><table class="pkg-compare-table"><thead><tr><th scope="col"><span class="visually-hidden" data-i18n="cmp_corner">კომპლექტი</span></th>{head}</tr></thead><tbody>{body}</tbody></table></div>'
+            f'<p class="pkg-compare-note" data-i18n="cmp_power_note">{CMP_TEXT["cmp_power_note"][0]}</p>'
+            f'<a class="text-link" href="{more_href}"{" data-local" if more_href.startswith("/") else ""}><span data-i18n="cmp_all">ყველა კომპლექტი და შემადგენლობა</span><span aria-hidden="true">→</span></a></div>')
+
+
 def kit_row(r):
     n = html.escape(r['name'], quote=True)
     s = r['sku']
@@ -248,6 +294,11 @@ for r in rows:
 for _k, _ka, in [(k, ka) for _c_, k, ka in CONTENTS]:
     _c['ka'][_k] = _ka
     _c['en'][_k], _c['ru'][_k] = KIT_LABELS[_k]
+_kits_for_text = [r for r in rows if r['group'] == 'kit']
+PLATFORM_TEXT.update(CMP_TEXT)
+PLATFORM_TEXT['cmp_common'] = compare_text(_kits_for_text)
+for _col, _lab in CMP_LABEL.items():
+    PLATFORM_TEXT['cmp_l_' + _col] = _lab
 for _k, (_ka, _en, _ru) in PLATFORM_TEXT.items():
     _c['ka'][_k], _c['en'][_k], _c['ru'][_k] = _ka, _en, _ru
 for _s, (_ka, _en, _ru) in LEGACY_SPECS.items():
@@ -309,12 +360,14 @@ subs = [
     # Owner, 16 Oct 2026 (second brief): the full configurator lives only on /p150-max-platform; the P150 MAX page links to it.
     (r'(<!--configurator-->\n).*?(<!--/configurator-->)', ''),
     (r'(<!--platformLink-->).*?(<!--/platformLink-->)', platform_link()),
+    (r'(<!--pmCompare-->).*?(<!--/pmCompare-->)', compare(kits, '#kits')),
 ]
 home = ROOT / 'dist/index.html'
 ht = home.read_text(encoding='utf-8')
 by_sku = {r['sku']: r for r in rows}
 for pattern, body in [(r'(<!--homePlatform-->).*?(<!--/homePlatform-->)', ''.join(platform_row(r) for r in platform)),  # owner, 18 Oct 2026: platform first wherever the packages are
                       (r'(<div class="shop-grid kit-grid" id="homePackages">).*?(</div>\s*<!--/homePackages-->)', '\n' + ''.join(card(r) for r in kits)),
+                      (r'(<!--homeCompare-->).*?(<!--/homeCompare-->)', compare(kits, '/shop#kits')),
                       (r'(<ul class="part-list" id="homeParts">).*?(</ul>\s*<!--/homeParts-->)', '\n' + ''.join(part_row(by_sku[s]) for s in HOME_PARTS if s in by_sku))]:
     ht, n = re.subn(pattern, lambda m: m.group(1) + body + m.group(2), ht, count=1, flags=re.S)
     if n != 1 and 'homePackages' in pattern:
