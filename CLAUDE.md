@@ -129,12 +129,12 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - Product pages (scripts/product_pages.py → build-products.py): /b141050-battery, /cm13600s-charger, /gc4000-plus-generator,
   specs from p150_specs.py 'power'. Cards, home part list and search open them. Only items with verified xa.com specs get a page
   (B13970S: no verified specs, no page).
-- Every page title starts with "PREMIUM DRONES GEORGIA — " (build-pages.py adds it).
+- Every page title starts with "Premium Drones Georgia — " (build-pages.py adds it; owner 19 Oct 2026: never all capitals).
 - Logo lockups (owner, 14 Oct 2026 night): the XAG logo is exactly the height of the whole PDG logo (incl. the PREMIUM DRONES
   GEORGIA line), aspect ratios kept, centred; header = PDG ~ XAG with a literal "~", strip = PDG ~ XAG; "~" in --xag-black. build.py adds ?v=hash to /assets/img URLs so changed logos/photos reach visitors at once.
 - Home hero (owner, 14 Oct 2026 night): heading, sentence and buttons at the top with equal gaps (32px desktop, 24px phone);
   the whole drone must stay visible (wide screens: photo right of the text, hero ≤ 56vw tall; ≤1240px: text above the full photo).
-- Home page <title> starts with "PREMIUM DRONES GEORGIA" (owner: the browser tab must show it), in ka/en/ru.
+- Home page <title> + share preview = exactly "საქართველოს პრემიუმ დრონები • Premium Drones Georgia" in ka/en/ru (owner, 19 Oct 2026). Brand text is never written in capitals (the logo image is unchanged).
 - (owner, 14 Oct 2026, 23:15) Parts not on the packing list (avail=quote) = "არ არის მარაგში" + price on request (not "მარაგი დაზუსტდება").
   Screws and similar fasteners = 5-15 GEL by invoice landed cost (cost x 2.5 + 3.5, clamped; import-price-list.py: 02-004-*, nut/bolt/circlip, M-size gaskets).
   Package contents link to their pages: drone → /p150-max, SRC5, B141050, CM13600S, cooling tank, XRTK7 (product_pages.py).

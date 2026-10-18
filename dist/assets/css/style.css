@@ -556,7 +556,7 @@ html[data-theme=dark] .model-status.is-available,html[data-theme=dark] .product-
 @media(max-width:380px){.brand{width:124px}.header-actions{gap:12px}}
 /* Company name lockup in the hero: Latin wordmark, red rule, local name */
 .hero-brand{display:inline-flex;flex-direction:column;align-items:flex-start;margin-bottom:clamp(28px,3vw,44px)}
-.hero-brand-latin{font-family:var(--font-latin);font-weight:700;font-size:clamp(24px,2.7vw,42px);line-height:1.05;letter-spacing:.12em;text-transform:uppercase;color:#fff}
+.hero-brand-latin{font-family:var(--font-latin);font-weight:700;font-size:clamp(24px,2.7vw,42px);line-height:1.05;letter-spacing:.02em;color:#fff}
 .hero-brand-local{position:relative;margin-top:14px;padding-top:14px;font-weight:500;font-size:clamp(17px,1.75vw,27px);line-height:1.25;color:rgba(255,255,255,.92)}
 .hero-brand-local:before{content:'';position:absolute;top:0;left:0;width:56px;height:2px;background:var(--accent)}
 .hero-brand-local:empty{display:none}
@@ -564,7 +564,7 @@ html[lang=en] .hero-brand-latin{padding-bottom:16px;border-bottom:2px solid var(
 .dealer-name{font-weight:600}
 /* Header: name beside the logo, Home + two submenus */
 .brand-name{flex-shrink:0;padding-left:20px;margin-left:-12px;border-left:1px solid var(--border);font-size:14px;line-height:1.3;font-weight:500;white-space:nowrap;color:var(--text)}
-html[lang=en] .brand-name{font-family:var(--font-latin);font-weight:400;letter-spacing:.08em;text-transform:uppercase;font-size:12px;max-width:none}
+html[lang=en] .brand-name{font-family:var(--font-latin);font-weight:400;letter-spacing:.02em;font-size:12px;max-width:none}
 .site-nav{gap:clamp(24px,3vw,44px)}
 .site-nav>a,.nav-group-btn{font-size:14px}
 .nav-group{position:static}

@@ -124,12 +124,14 @@ def render(page_source, language, filename):
             etree.SubElement(doc_head,'link',rel='alternate',hreflang=target,href=BASE_URL+p+path)
         etree.SubElement(doc_head,'meta',property='og:url',content=canonical)
     # Per-page share text (Facebook, WhatsApp, Telegram previews) = the page's own title and description.
-    # Owner (14 Oct 2026): every browser tab starts with PREMIUM DRONES GEORGIA.
+    # Owner (19 Oct 2026): brand written 'Premium Drones Georgia' (not capitals); home = 'საქართველოს პრემიუმ დრონები • Premium Drones Georgia',
+    # other pages start with 'Premium Drones Georgia — '.
     t_el=doc.find('.//title')
-    if t_el is not None and not (t_el.text or '').startswith('PREMIUM DRONES GEORGIA'):
-        rest=re.sub(r'\s*[—|–-]\s*(PDG|საქართველოს პრემიუმ დრონები|Premium Drones Georgia|Премиум Дроны Грузии)\s*$','',(t_el.text or '').strip())
+    if t_el is not None and not (t_el.text or '').startswith(('Premium Drones Georgia','საქართველოს პრემიუმ დრონები •')):
+        rest=re.sub(r'^PREMIUM DRONES GEORGIA\s*[—|–-]\s*','',(t_el.text or '').strip())
+        rest=re.sub(r'\s*[—|–-]\s*(PDG|საქართველოს პრემიუმ დრონები|Premium Drones Georgia|Премиум Дроны Грузии)\s*$','',rest)
         rest=re.sub(r'\s*[—|–-]\s*(მაღაზია|shop|магазин) PDG\s*$','',rest,flags=re.I)
-        t_el.text='PREMIUM DRONES GEORGIA — '+rest
+        t_el.text='Premium Drones Georgia — '+rest
     title_text=doc.findtext('.//title') or ''
     desc=(doc.xpath('//meta[@name="description"]/@content') or [''])[0]
     for m in doc.xpath('//meta[@property="og:title"]'): m.set('content',title_text); m.attrib.pop('data-i18n-content',None)
