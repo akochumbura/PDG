@@ -189,3 +189,4 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 18 Oct 2026) Person requests: instant hand-off text (HANDOFF ka/en/ru) + waiting list (th.wait), AI silent until a team reply; never
   "PDG გუნდი ამ ჩატს კითხულობს". Two-way Telegram: owner replies to an alert → teamAnswer() posts it to the website chat (docs/10-ai-chat.md).
   LED headlight photo = owner render (products/09-027-00003.webp).
+- (owner, 18 Oct 2026) About page XAG model range: P100 Pro / P100 / V40 cards show their first gallery photo (models/*-1.webp) and link to their pages.
