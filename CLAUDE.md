@@ -102,7 +102,7 @@ accepts it; before RESEND_API_KEY exists requests only land in /api/contact/inbo
 ## STATUS — 2026-10-14 (read this first in a new chat)
 Live: premium-drones.ge on Cloudflare Pages project "pdg" (account ako.chumburidze@gmail.com), auto-deploys from GitHub akochumbura/PDG main.
 Build: dist/ is built locally with `python3 scripts/build.py` and COMMITTED; on Cloudflare (CF_PAGES set) build.py exits at once and dist/ is published as is.
-www → root: Redirect Rule must match only hostname www.premium-drones.ge (a rule on "All incoming requests" caused a redirect loop).
+www/http → https://premium-drones.ge: ONE Redirect Rule, target concat("https://premium-drones.ge", http.request.uri), 301 (fixed 19 Oct 2026; never wildcard_replace on "https://www.*" — it looped for http://www). Details: docs/08-go-live-cloudflare.md.
 Owner is non-technical, works from iPhone/Windows; wants Claude to do Cloudflare steps for him (use the desktop-app browser when available).
 
 TODO in Cloudflare (dashboard, owner's account):

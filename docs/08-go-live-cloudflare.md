@@ -41,3 +41,11 @@ The site's main address stays https://premium-drones.ge (canonical links, sitema
    www.premium-drones.ge/* -> https://premium-drones.ge/${1}, 301, keep query string. Save.
 3. Test on the phone: www.premium-drones.ge and www.premium-drones.ge/shop must open premium-drones.ge.
 Do not touch the MX, SPF, DKIM or DMARC e-mail records while doing this.
+
+## Redirect rule (fixed 19 Oct 2026)
+The only Redirect Rule ("Redirect www and http to https://premium-drones.ge", Rules → Redirect Rules) is:
+- When: (http.host eq "www.premium-drones.ge" or (http.host eq "premium-drones.ge" and not ssl)) and not starts_with(http.request.uri.path, "/.well-known/acme-challenge/")
+- Then: Dynamic, concat("https://premium-drones.ge", http.request.uri), 301, "Preserve query string" OFF (http.request.uri already has the query).
+The old template rule used wildcard_replace(full_uri, "https://www.*", ...): for http://www it matched nothing and sent visitors back to
+the same http://www address (endless 301 loop, broke the Facebook ad link). Verified with httpstatus.io: every http/www variant = one 301 to
+https://premium-drones.ge + same path and query (fbclid kept), then 200. "Always Use HTTPS" stays off (the rule covers plain http).
