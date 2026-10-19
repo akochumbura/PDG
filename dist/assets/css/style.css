@@ -1583,35 +1583,55 @@ body.acc-typing .mobile-bar{display:none}
   .pd-page .product.pd-buybox .buy-actions .add-btn{flex:1 1 auto;width:auto;min-width:0}
 }
 
-/* Typography trial (design preview, 19 Oct 2026) — ONLY on the Pro package page (.type-v2) until the owner approves.
+/* Typography v2 (owner approved 19 Oct 2026) — product, package and previous-model pages.
    Real weights only: D-DIN = 400 + Bold (600+); Noto Sans Georgian = 400/500/600. Headings, prices, buttons, nav = 600/500; text 400. */
-body:has(.type-v2) .site-nav a,body:has(.type-v2) .nav-link,body:has(.type-v2) .nav-toggle,body:has(.type-v2) header nav button{font-weight:500}
-.type-v2 .pp-grid{row-gap:0}
-.type-v2 .pp-back{font-size:13px;font-weight:500;margin-bottom:12px}
-.type-v2 .eyebrow{font-size:12px;font-weight:600;letter-spacing:.04em;margin:0 0 6px}
-.type-v2 .pp-title{font-size:clamp(26px,2.4vw,34px);font-weight:600;line-height:1.15}
-.type-v2 .pd-intro{font-size:15px;line-height:1.6;margin:10px 0 18px}
-.type-v2 .pd-buybox{gap:12px}
-.type-v2 .pd-price{margin:0;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-.type-v2 .pd-price .product-price{font-size:clamp(28px,2.4vw,32px);font-weight:600;line-height:1}
-.type-v2 .pd-vat{font-size:13px;color:var(--muted)}
-.type-v2 .pk-in-title{margin:8px 0 0;font-size:14px;font-weight:600}
-.type-v2 .pk-in li{padding:7px 0;font-size:14px;line-height:1.45}
-.type-v2 .pk-in li a{text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-underline-offset:3px}
-.type-v2 .buy-actions{margin-top:6px;max-width:440px;gap:8px}
-.type-v2 .buy-actions .qty-stepper,.type-v2 .buy-actions .add-btn{height:46px;min-height:46px}
-.type-v2 .buy-actions .add-btn{font-size:15px;font-weight:600}
-.type-v2 .buy-actions .qty-input{font-size:16px;font-weight:500}
-.type-v2 .pd-links{margin:4px 0 0;gap:6px 18px;font-size:13px}
-.type-v2 .pd-links a{font-weight:500;text-decoration:none}
-.type-v2 .pd-links a::after{content:" →"}
-.type-v2 .pd-links a:hover,.type-v2 .pd-links a:focus-visible{text-decoration:underline}
-.type-v2 .pk-gallery>.small-note{font-size:12px;line-height:1.5;margin-top:4px}
+.pd-page .pp-grid{row-gap:0}
+.pd-page .pp-back{font-size:13px;font-weight:500;margin-bottom:12px}
+.pd-page .eyebrow{font-size:12px;font-weight:600;letter-spacing:.04em;margin:0 0 6px}
+.pd-page .pp-title{font-size:clamp(26px,2.4vw,34px);font-weight:600;line-height:1.15}
+.pd-page .pd-intro{font-size:15px;line-height:1.6;margin:10px 0 18px}
+.pd-page .pd-buybox{gap:12px}
+.pd-page .pd-price{margin:0;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.pd-page .pd-price .product-price{font-size:clamp(28px,2.4vw,32px);font-weight:600;line-height:1}
+.pd-page .pd-vat{font-size:13px;color:var(--muted)}
+.pd-page .pk-in-title{margin:8px 0 0;font-size:14px;font-weight:600}
+.pd-page .pk-in li{padding:7px 0;font-size:14px;line-height:1.45}
+.pd-page .pk-in li a{text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-underline-offset:3px}
+.pd-page .buy-actions{margin-top:6px;max-width:440px;gap:8px}
+.pd-page .buy-actions .qty-stepper,.pd-page .buy-actions .add-btn{height:46px;min-height:46px}
+.pd-page .buy-actions .add-btn{font-size:15px;font-weight:600}
+.pd-page .buy-actions .qty-input{font-size:16px;font-weight:500}
+.pd-page .pd-links{margin:4px 0 0;gap:6px 18px;font-size:13px}
+.pd-page .pd-links a{font-weight:500;text-decoration:none}
+.pd-page .pd-links a::after{content:" →"}
+.pd-page .pd-links a:hover,.pd-page .pd-links a:focus-visible{text-decoration:underline}
+.pd-page .pk-gallery>.small-note{font-size:12px;line-height:1.5;margin-top:4px}
 @media(max-width:860px){
-  .type-v2 .pp-title{font-size:26px}
-  .type-v2 .pd-intro{font-size:16px;margin:8px 0 14px}
-  .type-v2 .pd-price .product-price{font-size:28px}
-  .type-v2 .pk-in li{font-size:16px;padding:8px 0}
-  .type-v2 .pd-links{font-size:14px;flex-direction:column;gap:10px}
-  .type-v2 .pd-links a{min-height:24px}
+  .pd-page .pp-title{font-size:26px}
+  .pd-page .pd-intro{font-size:16px;margin:8px 0 14px}
+  .pd-page .pd-price .product-price{font-size:28px}
+  .pd-page .pk-in li{font-size:16px;padding:8px 0}
+  .pd-page .pd-links{font-size:14px;flex-direction:column;gap:10px}
+  .pd-page .pd-links a{min-height:24px}
+}
+
+/* Typography v2, sitewide (owner approved 19 Oct 2026). Real weights only (D-DIN 400/Bold, Noto Georgian 400/500/600, Plex Cyr 400/500/600).
+   The home hero keeps its own Barlow rules. Headings, prices, buttons, navigation = 600/500; descriptions 400. */
+.site-nav a,.nav-group-btn{font-weight:500}
+.mega-head{font-weight:600}
+.page-hero h1{font-size:clamp(30px,3.4vw,46px);font-weight:600;line-height:1.2}
+.section-heading h2,.shop-section h2,.system-intro h2,.eco-title,.models-head h2,.parts-energy h2,.about-text h2,.about-do h2,.faq-layout h2,.why-title{font-size:clamp(26px,2.6vw,38px);font-weight:600;line-height:1.18}
+.pm-chapter h2{font-size:clamp(28px,3vw,42px);font-weight:600;line-height:1.12}
+h3,.model-name{font-weight:600}
+.model-name{font-size:clamp(24px,2.2vw,32px);line-height:1.1}
+.pp-title{font-size:clamp(28px,2.8vw,40px);font-weight:600;line-height:1.12}
+.pd-page .pp-title{font-size:clamp(26px,2.4vw,34px)}
+.product-price,.pp-price .product-price{font-weight:600}
+.button,.add-btn{font-weight:600}
+.page-hero .page-intro,.page-hero-compact .page-intro,.pm-hero .page-intro{font-size:16px;line-height:1.6}
+@media(max-width:768px){
+  input,select,textarea{font-size:16px}
+  .page-hero h1{font-size:30px}
+  .pd-page .pp-title{font-size:26px}
+  .page-hero .page-intro,.page-hero-compact .page-intro,.pm-hero .page-intro,.offering-description,.dealer-strip .dealer-intro,.dealer-intro{font-size:16px}
 }

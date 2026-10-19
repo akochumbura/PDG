@@ -446,6 +446,7 @@ subs = [
     (r'(<!--configurator-->\n).*?(<!--/configurator-->)', ''),
     (r'(<!--platformLink-->).*?(<!--/platformLink-->)', platform_link()),
     (r'(<!--pmCompare-->).*?(<!--/pmCompare-->)', tiles(platform, kits)),
+    (r'(<!--drKits-->).*?(<!--/drKits-->)', tiles(platform, kits).replace('data-kit="1"', 'data-kit="0"')),  # /drones (owner 19 Oct 2026): same four listings; schema stays on /p150-max
 ]
 home = ROOT / 'dist/index.html'
 ht = home.read_text(encoding='utf-8')

@@ -247,5 +247,15 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 19 Oct 2026, design-preview) Product/package/previous-model pages use the compact platform-page layout (.pd-page in .pp-grid); no "კითხვა WhatsApp-ით" button
   anywhere (pd_ask unused); spec/configurator links are small .pd-links. P150 MAX page: the "ძირითადი მახასიათებლები" summary grid (#specs) was removed as a repeat
   (home link → #specifications). Menu: removed Services "ორიგინალი ნაწილები" (repeat of Products → ყველა ნაწილი) and the Media gallery column (promo card stays).
-  Typography trial .type-v2 ONLY on /p150-max-pro until approved: D-DIN has only 400 + Bold, so weight 500 renders as 400 in Latin — use 600 for headings/prices/buttons;
-  Noto Georgian has real 400/500/600. Phone body text and inputs ≥16px.
+  Typography v2 (owner approved and DEPLOYED 19 Oct 2026, sitewide; home hero keeps Barlow): D-DIN has only 400 + Bold, so weight 500 renders as 400 in Latin —
+  headings/prices/buttons 600, nav 500, text 400; Noto Georgian has real 400/500/600. Phone body text and inputs ≥16px. Redesign (grey surfaces) merged to main.
+- (owner, 19 Oct 2026) ONE drones page /drones ("დრონები", title "სასოფლო-სამეურნეო დრონები"): in stock (P150 MAX feature card), "კომპლექტაციები და კონფიგურაცია"
+  (same four tiles via <!--drKits-->, data-kit=0 so the package schema stays on /p150-max; link to the configurator), previous-generation drones (P100 Pro/P100/V40,
+  out of stock). Menu column "სასოფლო-სამეურნეო დრონები" = "ყველა დრონი" (/drones) + "XAG P150 MAX" only. Old pages/anchors are kept (no broken links).
+
+## STILL TO DO (owner side, as of 19 Oct 2026 night)
+- RESEND_API_KEY (+ verify premium-drones.ge sender in Resend; add its DNS records without touching the email records) → password reset + consultation e-mails; then test real delivery.
+- Google sign-in: GOOGLE_CLIENT_ID/SECRET (redirect https://premium-drones.ge/api/auth/google/callback). Apple: APPLE_SERVICES_ID/TEAM_ID/KEY_ID/PRIVATE_KEY (paid developer account,
+  return URL https://premium-drones.ge/api/auth/apple/callback). Untested with real accounts; buttons stay hidden until secrets exist.
+- Bing Webmaster sign-in + import from Search Console; Instagram/YouTube/TikTok bio links; GA key event (generate_lead) once received; XAG/NIK message and 7 post drafts (not sent);
+  Merchant Center (deferred); BOG payment agreement; AI chat key; exact XAG certificate names; product photos.

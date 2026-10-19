@@ -172,7 +172,7 @@ for sku, slug in P.KITS.items():
     kit_max = min(_lim) if _lim else 0
     out.append(
         f'<template data-page="{slug}.html" data-ka-title="{html.escape(r["name"] + " — კომპლექტის შემადგენლობა და ფასი | საქართველოს პრემიუმ დრონები", quote=True)}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro">\n'
-        f'  <section class="section pp-main pd-page' + (' type-v2' if slug == 'p150-max-pro' else '') + '"><div class="container pp-grid"><div class="pp-head pd-head"><a class="back-link pp-back" href="/shop.html#kits" data-local data-i18n="pd_pk_back">← კომპლექტები</a>'
+        f'  <section class="section pp-main pd-page"><div class="container pp-grid"><div class="pp-head pd-head"><a class="back-link pp-back" href="/shop.html#kits" data-local data-i18n="pd_pk_back">← კომპლექტები</a>'
         f'<p class="eyebrow">XAG P150 MAX</p><h1 class="pp-title">{html.escape(r["name"])}</h1>'
         f'<p class="pd-intro" data-i18n="pd_{pid}_intro">{html.escape(KIT_INTRO[slug][0])}</p></div>'
         f'<div class="pk-gallery pp-gallery"><div class="product-photo pd-photo pk-main"><img id="pkMain" src="{pics[0][0]}" width="1200" height="900" alt="{html.escape(pics[0][3], quote=True)}" data-i18n-alt="{pics[0][2]}" decoding="async"></div>'
