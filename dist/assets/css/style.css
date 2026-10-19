@@ -1414,7 +1414,8 @@ html[data-theme=dark] .acc-apple:hover{background:#e8e8e8}
 @media(max-width:600px){
   .pkg-tiles{grid-template-columns:1fr;gap:12px}
   .pkg-tile-link{flex-direction:row}
-  .pkg-tile-photo{flex:0 0 38%;aspect-ratio:auto;min-height:100%}
+  .pkg-tile-photo{flex:0 0 38%;aspect-ratio:4/3;align-self:center}
+  .pkg-tile-photo img{object-fit:contain}
   .pkg-tile-body{padding:14px 14px 14px}
   .pkg-tile-name{font-size:19px}.pkg-tile-desc{font-size:13px;margin-top:6px}
   .pkg-tile-price{font-size:20px;padding-top:10px}.pkg-tile-cta{margin-top:10px;padding-top:10px;font-size:13px}
