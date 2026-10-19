@@ -263,3 +263,4 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   facts, XAG, what we do. NO model cards and NO FAQ there. FAQ = its own page /faq "ხშირად დასმული კითხვები" (keys faq_q1..8 / faq_a1..8, FAQPage schema comes from details.faq-item;
   footer link nav_faq). The owner wants the FAQ UPDATED FROM REAL customer questions (chat, WhatsApp, consultation inbox): add/replace items there, ka/en/ru.
   Georgian "საქშენი" is never used: always "გამფრქვევი". Previous-generation models (cards on /drones and /shop, their own pages) carry the link "ახალი თაობა: XAG P150 MAX" → /p150-max (lg_newer).
+- (owner, 19 Oct 2026) Home hero primary button = 'დეტალები' (hero_prices; en Details, ru Подробнее) → /p150-max#kits (packages with prices, now below the specifications). Same button on the P150 MAX card of /drones.
