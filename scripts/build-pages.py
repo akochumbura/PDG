@@ -148,6 +148,11 @@ def render(page_source, language, filename):
         org=dict(ORG); org['@id']=BASE_URL+'/#business'
         org['sameAs']=[u for u in SOCIAL.values() if u.strip()]
         org['areaServed']={"@type":"Country","name":"Georgia"}
+        # Owner, 19 Oct 2026: contact hours (Tbilisi time); visits only by appointment.
+        org['contactPoint']={"@type":"ContactPoint","contactType":"customer service","telephone":"+995550004333","email":"info@premium-drones.ge",
+            "availableLanguage":["ka","en","ru"],"areaServed":"GE","hoursAvailable":[
+            {"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"09:00","closes":"21:00"},
+            {"@type":"OpeningHoursSpecification","dayOfWeek":"Saturday","opens":"09:00","closes":"15:00"}]}
         org['knowsAbout']=["agricultural drones","crop spraying drones","drone crop spraying","drone spreading","drone operator training","drone repair","agricultural drone batteries and parts","XAG P150 MAX","XAG P150","XAG P100 Pro","XAG V40","XAG V50 Pro","DJI Agras T100","DJI Agras T70P","DJI Agras T50","DJI Agras T40","DJI Agras T25"]
         org.pop('@context',None); graph.append(org)
     if True:

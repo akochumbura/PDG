@@ -87,7 +87,7 @@ accepts it; before RESEND_API_KEY exists requests only land in /api/contact/inbo
   at their shop price; fewer components than the preset = "ფასი მოთხოვნით". WhatsApp message + add to cart.
 - Header: PDG logo first, then XAG logo, equal containers. Home dealer line uses the XAG logo image. About page has "XAG-ის შესახებ" (xa.com, no claims).
 - Mobile bar (≤768px): call + chat (see 15 Oct additions), safe-area aware. Chat: one-line welcome, 4 quick actions, 1–3 sentence answers.
-- Schema: Organization with Tbilisi + Lagodekhi locations (no HQ, hours or village address); Product/Offer only for in-stock priced items
+- Schema: Organization with Tbilisi + Lagodekhi locations (no HQ or village address; contactPoint hours = owner 19 Oct 2026: Mon–Fri 09–21, Sat 09–15, Sun closed; visits by appointment only, footer contact_hours + visit_note); Product/Offer only for in-stock priced items
   with own photo + packages; quote-only and previous models have no Offer. verify-site.py blocks ₾0 cart buttons, bad tel links, cost data.
 
 ## Logos and home hero (owner, 14 Oct 2026, late)
