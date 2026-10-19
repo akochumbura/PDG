@@ -227,3 +227,5 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   Menu: 'ყველა ნაწილი' is the first link under 'ნაწილები და ენერგია'. Home hero button text = 'კომპლექტაციები'.
 
 - (owner, 19 Oct 2026) Analytics: Cloudflare Web Analytics (dashboard toggle, CSP already allows its beacon) + Google Analytics 4 via scripts/site_config.py GA_ID (build writes dist/assets/js/analytics.js and opens the CSP for Google only when GA_ID is set). No cookie banner yet.
+
+- (owner brief, 19 Oct 2026, SEO audit) Search Console: sitemap.xml was never submitted (submitted 19 Oct). P150 MAX page now has its own FAQ (pf_* keys: what is an agricultural drone/აგროდრონი, where to buy in Georgia, Starter/Pro/Business difference); shop + P150 meta descriptions lengthened. EN/RU home <title> stays the owner's exact Georgian-brand title (open question: owner may want a descriptive English/Russian title).
