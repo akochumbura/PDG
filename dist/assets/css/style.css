@@ -1649,4 +1649,4 @@ h3,.model-name{font-weight:600}
 
 /* Hero button: label and arrow centred together (owner 19 Oct 2026) */
 .hero .hero-actions .button{justify-content:center;gap:14px}
-.hero .hero-actions .button .arrow{display:inline-block;line-height:1;transform:translateY(-3px)}
+.hero .hero-actions .button .arrow{display:inline-block;line-height:1;transform:translateY(-6px)}
