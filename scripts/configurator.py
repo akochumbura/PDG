@@ -24,7 +24,7 @@ EXTRA = [('generators', '09-017-00109', 'pc_generator', 'დამუხტვ�
          ('rtk', '09-016-00083', 'pc_rtk', 'მობილური RTK სადგური XRTK7', True),
          ('spreader', '09-023-00145', 'pc_revocast', 'გრანულების გამფანტველი RevoCast 5', True),
          ('sling', '05-002-02682', 'pc_revosling', 'ტვირთის საკიდი სისტემა RevoSling (შასით)', True),
-         ('nozzle4', '05-002-02640', 'pc_nozzle4', '4-საქშენიანი განახლების კომპლექტი (P150 MAX)', True),
+         ('nozzle4', '05-002-02640', 'pc_nozzle4', '4-გამფრქვევიანი განახლების კომპლექტი (P150 MAX)', True),
          ('led', '09-027-00003', 'pc_led', 'LED ფარი 90 ვტ', True)]  # owner, 18 Oct 2026: LED lights as an option for every setup
 KIT_COLS = ['remotes', 'batteries', 'chargers', 'towers', 'rtk', 'generators']
 # Owner, 16 Oct 2026: the same equipment bought one by one. Checked against the catalog at every build.
@@ -39,7 +39,7 @@ TEXT = {  # key: (ka, en, ru)
     'pc_rtk': ('მობილური RTK სადგური XRTK7', 'XRTK7 mobile RTK station', 'Мобильная RTK-станция XRTK7'),
     'pc_revocast': ('გრანულების გამფანტველი RevoCast 5', 'RevoCast 5 granule spreader', 'Разбрасыватель гранул RevoCast 5'),
     'pc_revosling': ('ტვირთის საკიდი სისტემა RevoSling (შასით)', 'RevoSling cargo system (with landing gear)', 'Грузовая система RevoSling (с шасси)'),
-    'pc_nozzle4': ('4-საქშენიანი განახლების კომპლექტი (P150 MAX)', '4-Nozzle Upgrade Kit (P150 MAX)', 'Комплект модернизации на 4 форсунки (P150 MAX)'),
+    'pc_nozzle4': ('4-გამფრქვევიანი განახლების კომპლექტი (P150 MAX)', '4-Nozzle Upgrade Kit (P150 MAX)', 'Комплект модернизации на 4 форсунки (P150 MAX)'),
     'pc_led': ('LED ფარი 90 ვტ', '90 W LED headlight', 'Светодиодная фара 90 Вт'),
     'pc_title': ('კონფიგურატორი', 'Configurator', 'Конфигуратор'),
     'pc_intro': ('დაიწყეთ მხოლოდ პლატფორმით ან აირჩიეთ კომპლექტი. თუ არჩევანი კომპლექტის სრულ შემადგენლობას შეიცავს, კომპლექტის ფასი ავტომატურად გამოიყენება.',

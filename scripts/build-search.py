@@ -16,7 +16,7 @@ SKIP = {'404.html', 'payment.html', 'account.html', 'terms.html'}
 SYN = {
     'power': {'ka': 'ბატარეა ბატარეები აკუმულატორი დამტენი დატენვა გენერატორი ენერგია', 'en': 'battery batteries charger charging generator power',
               'ru': 'батарея батареи аккумулятор зарядка зарядное генератор'},
-    'spray': {'ka': 'შეწამვლა შეწამვლა საქშენი ტუმბო ავზი გაფანტვა', 'en': 'spray spraying nozzle pump tank spreading', 'ru': 'опрыскивание форсунка насос бак разбрасыватель'},
+    'spray': {'ka': 'შეწამვლა შეწამვლა გამფრქვევი ტუმბო ავზი გაფანტვა', 'en': 'spray spraying nozzle pump tank spreading', 'ru': 'опрыскивание форсунка насос бак разбрасыватель'},
     'control': {'ka': 'პულტი მართვა RTK ანტენა', 'en': 'remote controller RTK antenna', 'ru': 'пульт управление RTK антенна'},
     'acc': {'ka': 'აქსესუარი', 'en': 'accessory accessories', 'ru': 'аксессуар'},
     'spare': {'ka': 'ნაწილი სათადარიგო ძრავა პროპელერი', 'en': 'part spare motor propeller', 'ru': 'запчасть мотор пропеллер'},

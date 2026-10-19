@@ -195,7 +195,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 ## Audit 19 Oct 2026 (owner brief)
 - Short Georgian product names: scripts/display_names.py (short_ka + OVERRIDES) used by build-shop (cards, cart, chat) and build-search;
   catalog.csv keeps the full price-list name (searchable via data-k on cards and the search keywords). Internal supplier notes are stripped.
-- Copy: P150 MAX speed 20 m/s = 72 km/h (exact). "4-საქშენიანი განახლების კომპლექტი (იყიდება ცალკე)" — never "additional 4 nozzles".
+- Copy: P150 MAX speed 20 m/s = 72 km/h (exact). "4-გამფრქვევიანი განახლების კომპლექტი (იყიდება ცალკე)" — never "additional 4 nozzles".
   Pumps = "იმპელერიანი ტუმბო" (not "მოქნილი ტუმბო"). RevoCast 5 and RevoSling are always marked optional ("იყიდება ცალკე") near capability texts.
   Max values are manufacturer figures (note on the P150 MAX page). Company facts: founded 2022, field work since 2023.
 - About: company story once (about-story + facts row with hectares and locations); models section heading "XAG-ის დრონები", P150 MAX card
