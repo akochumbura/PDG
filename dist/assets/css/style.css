@@ -1501,3 +1501,45 @@ html[data-theme=dark] .pm-hero-photo img,html[data-theme=dark] .pkg-tile-photo i
 }
 /* Home: contact heading in proportion with the rest of the page */
 .contact-inner h2{font-size:clamp(28px,2.8vw,42px);line-height:1.3}
+
+/* Account (19 Oct 2026): one compact panel, tabs between sign in and register, password visibility, errors only after submit */
+.acc-guest{display:block}
+.acc-panel{max-width:440px}
+.acc-tabs{display:flex;gap:28px;border-bottom:1px solid var(--border);margin-bottom:28px}
+.acc-tab{appearance:none;background:none;border:0;padding:0 0 12px;margin-bottom:-1px;font:inherit;font-size:18px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;min-height:44px}
+.acc-tab[aria-selected=true]{color:var(--text);border-bottom-color:var(--accent)}
+.acc-tab:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.acc-panel .acc-social{margin:0 0 24px;max-width:none}
+.acc-panel .acc-social:not([hidden])+.acc-form:before{content:"";display:block;height:1px;background:var(--border);margin:0 0 24px}
+.acc-form{display:flex;flex-direction:column;gap:16px}
+.acc-form[hidden]{display:none}
+.acc-form-title{font-size:clamp(24px,2.2vw,30px);margin:0}
+.acc-field input{border-radius:6px;border-color:#cfcfcb;transition:border-color var(--ease)}
+.acc-field input:hover{border-color:#9d9d98}
+.acc-field input:focus{outline:0;border-color:var(--text);box-shadow:0 0 0 3px rgba(204,0,0,.14)}
+.acc-field input[aria-invalid=true]{border-color:var(--accent)}
+.acc-pw{position:relative;display:block}
+.acc-pw input{width:100%;padding-right:52px}
+.acc-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:0;color:var(--muted);cursor:pointer;border-radius:6px}
+.acc-eye[aria-pressed=true]{color:var(--text)}
+.acc-eye:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.acc-submit{align-self:stretch;justify-content:center;border-radius:6px;min-height:50px}
+.acc-link{appearance:none;background:none;border:0;padding:6px 0;font:inherit;color:var(--text);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:40px}
+.acc-link:hover{color:var(--accent)}
+.acc-social-btn{border-radius:6px}
+.acc-msg{margin:0}
+body.acc-typing .mobile-bar{display:none}
+@media(max-width:768px){#account{padding-bottom:calc(88px + env(safe-area-inset-bottom))}.acc-panel{max-width:none}}
+/* Contact page: working hours (owner, 19 Oct 2026) */
+.contact-hours{margin-top:8px;padding-top:20px;border-top:1px solid var(--border)}
+.contact-hours-title{font-size:16px;font-weight:600;margin:0 0 10px}
+.contact-hours dl{margin:0;display:grid;gap:4px;font-size:15px}
+.contact-hours dl div{display:flex;justify-content:space-between;gap:16px;max-width:320px}
+.contact-hours dt{color:var(--muted)}.contact-hours dd{margin:0;font-family:var(--font-latin)}
+.contact-hours p{margin:12px 0 0;font-size:14px}
+.page-hero-compact{padding-block:clamp(28px,4vw,56px) clamp(20px,2.4vw,32px);border-bottom:0}
+.page-hero-compact h1{font-size:clamp(32px,3.2vw,46px)}
+.page-hero-compact .page-intro{margin-top:12px;font-size:15px}
+.acc-section{padding-top:clamp(8px,1.6vw,24px)}
+@media(max-width:600px){.page-hero-compact .back-link{display:none}.page-hero-compact h1{font-size:30px}}
+.contact-hours dd[data-i18n]{font-family:inherit}

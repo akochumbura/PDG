@@ -19,13 +19,13 @@
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=dea93b4c62">
   <script>try{var t=localStorage.getItem("pdge-theme")||"light";document.documentElement.dataset.theme=t}catch(e){}</script>
   <link rel="preload" href="/assets/fonts/D-DIN.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="/assets/css/style.css?v=4c5d993eed">
-  <script src="/assets/js/content-en.js?v=585230ccc1" defer></script>
+  <link rel="stylesheet" href="/assets/css/style.css?v=91440db769">
+  <script src="/assets/js/content-en.js?v=8384d2bef5" defer></script>
   <script src="/assets/js/script.js?v=d0c0e733df" defer></script>
   <script src="/assets/js/payments-config.js?v=156ada99b6" defer></script>
   <script src="/assets/js/shop.js?v=9a8d6624af" defer></script>
   <script src="/assets/js/chat.js?v=c7a8f32027" defer></script>
-  <script src="/assets/js/account.js?v=bad5cb7838" defer></script>
+  <script src="/assets/js/account.js?v=2eea3cc5d3" defer></script>
 <script src="/assets/js/analytics.js?v=85d62f6363" defer></script>
 <meta name="robots" content="noindex">
 <link rel="canonical" href="https://premium-drones.ge/en/account">
@@ -69,7 +69,7 @@
 </div>
 <div class="mega-col">
 <p class="mega-head" data-i18n="mm_consult">Consultation</p>
-<a href="/en/consultation?topic=drone" data-local><span data-i18n="topic_drone">Choosing a drone</span></a><a href="/en/consultation?topic=spraying" data-local><span data-i18n="topic_spraying">Field treatment</span></a><a href="/en/consultation?topic=gov" data-local><span data-i18n="topic_gov">Government and municipal buyers</span></a>
+<a href="/en/consultation?topic=drone" data-local><span data-i18n="topic_drone">Choosing a drone</span></a><a href="/en/consultation?topic=spraying" data-local><span data-i18n="topic_spraying">Field treatment</span></a><!-- procurement link hidden (owner, 19 Oct 2026): <a href="/consultation?topic=gov" data-local><span data-i18n="topic_gov">სახელმწიფო და მუნიციპალური შესყიდვები</span></a> -->
 </div>
 <a class="mega-feature" href="/en/service" data-local><img src="/assets/img/drone-detail.webp?v=fc906af181" width="1280" height="960" alt="" loading="lazy" decoding="async"><span class="mega-feature-text"><strong data-i18n="nav_service_repair">Service and repair</strong><span class="mega-feature-note" data-i18n="mm_service_feature">Storage and service in Tbilisi, by appointment.</span></span></a>
 </div></div>
@@ -102,36 +102,54 @@
         <button type="button" class="search-btn" id="searchOpen" aria-label="Search" data-i18n-aria="search_open" aria-haspopup="dialog"><svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button><a class="account-link" href="/en/account" data-local aria-label="Account" data-i18n-aria="nav_account"><svg width="21" height="21" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg></a><a class="cart-link" href="/en/shop#cart" data-local aria-label="Cart" data-i18n-aria="cart_title"><svg width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg><span class="cart-count" id="cartCount" hidden>0</span></a><button class="nav-toggle" id="navToggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Open menu" data-i18n-aria="menu_open"><span></span><span></span></button>
       </div>
     </div>
-  </header><main id="main"><section class="page-hero"><div class="container">
+  </header><main id="main"><section class="page-hero page-hero-compact"><div class="container">
 <a class="back-link" href="/en/" data-home data-i18n="back_home">← Home</a><h1 data-i18n="acc_heading">Your account</h1>
 <p class="page-intro" data-i18n="acc_intro">Sign in or create an account: saved details for ordering and your order history.</p>
 </div></section>
-  <section class="section"><div class="container account" id="account" data-state="loading">
+  <section class="section acc-section"><div class="container account" id="account" data-state="loading">
     <p class="acc-off" id="accOff" hidden data-i18n="acc_off">Accounts are opening soon. Until then, order from the cart by WhatsApp or email.</p>
-      <div class="acc-social" id="accSocial" hidden>
-<a class="acc-social-btn acc-google" id="accGoogle" href="/api/auth/google/start" hidden><svg viewbox="0 0 18 18" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"></path><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"></path><path fill="#FBBC05" d="M3.97 10.72A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.18.29-1.72V4.95H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.05l3.01-2.33z"></path><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58A8.95 8.95 0 0 0 9 0 9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"></path></svg><span data-i18n="acc_google">Sign in with Google</span></a><a class="acc-social-btn acc-apple" id="accApple" href="/api/auth/apple/start" hidden><svg viewbox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg><span data-i18n="acc_apple">Sign in with Apple</span></a><p class="acc-msg" id="accSocialMsg" role="alert" hidden></p>
-<p class="acc-or"><span data-i18n="acc_or">or with e-mail</span></p>
-</div>
     <div class="acc-guest" id="accGuest">
-      <form class="acc-card" id="loginForm" novalidate>
-        <h2 data-i18n="acc_login_title">Sign in</h2>
-        <label class="acc-field"><span data-i18n="acc_email">Email</span><input id="login_email" name="email" type="email" autocomplete="email" required></label>
-        <label class="acc-field"><span data-i18n="acc_password">Password</span><input id="login_password" name="password" type="password" autocomplete="current-password" required></label>
-        <p class="acc-msg" role="alert" hidden></p>
-        <button class="button button-red" type="submit"><span data-i18n="acc_login_btn">Sign in</span><span class="arrow" aria-hidden="true">→</span></button>
-        <p class="acc-small"><a href="https://wa.me/995550004333" target="_blank" rel="noopener noreferrer" data-i18n="acc_forgot">Forgot your password? Message us on WhatsApp and we will reset it.</a></p>
-      </form>
-      <form class="acc-card" id="registerForm" novalidate>
-        <h2 data-i18n="acc_register_title">Create an account</h2>
-        <label class="acc-field"><span data-i18n="co_name">Name</span><input id="reg_name" name="name" type="text" autocomplete="name" required maxlength="100"></label>
-        <label class="acc-field"><span data-i18n="acc_email">Email</span><input id="reg_email" name="email" type="email" autocomplete="email" required maxlength="254"></label>
-        <label class="acc-field"><span data-i18n="co_phone">Phone</span><input id="reg_phone" name="phone" type="tel" autocomplete="tel" required maxlength="30"></label>
-        <label class="acc-field"><span data-i18n="acc_company">Company (optional)</span><input id="reg_company" name="company" type="text" autocomplete="organization" maxlength="120"></label>
-        <label class="acc-field"><span data-i18n="acc_password">Password</span><input id="reg_password" name="password" type="password" autocomplete="new-password" required minlength="8" aria-describedby="regPwHint"><small id="regPwHint" data-i18n="acc_password_hint">At least 8 characters</small></label>
-        <label class="acc-check"><input id="reg_terms" type="checkbox" required> <span><a href="/en/terms" data-local data-i18n="acc_terms_ok">I agree to the terms</a></span></label>
-        <p class="acc-msg" role="alert" hidden></p>
-        <button class="button button-red" type="submit"><span data-i18n="acc_register_btn">Create account</span><span class="arrow" aria-hidden="true">→</span></button>
-      </form>
+      <div class="acc-panel">
+        <div class="acc-tabs" role="tablist" aria-label="Your account" data-i18n-aria="acc_heading">
+<button class="acc-tab" type="button" role="tab" id="tabLogin" aria-controls="loginForm" aria-selected="true" data-i18n="acc_login_title">Sign in</button><button class="acc-tab" type="button" role="tab" id="tabRegister" aria-controls="registerForm" aria-selected="false" tabindex="-1" data-i18n="acc_register_title">Create an account</button>
+</div>
+        <div class="acc-social" id="accSocial" hidden>
+<a class="acc-social-btn acc-google" id="accGoogle" href="/api/auth/google/start" hidden><svg viewbox="0 0 18 18" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"></path><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"></path><path fill="#FBBC05" d="M3.97 10.72A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.18.29-1.72V4.95H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.05l3.01-2.33z"></path><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58A8.95 8.95 0 0 0 9 0 9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"></path></svg><span data-i18n="acc_google">Sign in with Google</span></a><a class="acc-social-btn acc-apple" id="accApple" href="/api/auth/apple/start" hidden><svg viewbox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg><span data-i18n="acc_apple">Sign in with Apple</span></a><p class="acc-msg" id="accSocialMsg" role="alert" hidden></p>
+</div>
+        <form class="acc-form" id="loginForm" role="tabpanel" aria-labelledby="tabLogin" novalidate>
+          <label class="acc-field"><span data-i18n="acc_email">Email</span><input id="login_email" name="email" type="email" autocomplete="username" inputmode="email" required></label>
+          <label class="acc-field"><span data-i18n="acc_password">Password</span><span class="acc-pw"><input id="login_password" name="password" type="password" autocomplete="current-password" required><button class="acc-eye" type="button" data-eye="login_password" aria-pressed="false" aria-label="Show password" data-i18n-aria="acc_show_pw"><svg viewbox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></span></label>
+          <p class="acc-msg" role="alert" hidden></p>
+          <button class="button button-red acc-submit" type="submit"><span data-i18n="acc_login_btn">Sign in</span></button>
+          <p class="acc-small"><button class="acc-link" type="button" id="accForgotLink" hidden data-i18n="acc_forgot">Forgot your password?</button></p>
+        </form>
+        <form class="acc-form" id="registerForm" role="tabpanel" aria-labelledby="tabRegister" novalidate hidden>
+          <label class="acc-field"><span data-i18n="co_name">Name</span><input id="reg_name" name="name" type="text" autocomplete="name" required maxlength="100"></label>
+          <label class="acc-field"><span data-i18n="acc_email">Email</span><input id="reg_email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254"></label>
+          <label class="acc-field"><span data-i18n="co_phone">Phone</span><input id="reg_phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="30"></label>
+          <label class="acc-field"><span data-i18n="acc_company">Company (optional)</span><input id="reg_company" name="company" type="text" autocomplete="organization" maxlength="120"></label>
+          <label class="acc-field"><span data-i18n="acc_password">Password</span><span class="acc-pw"><input id="reg_password" name="password" type="password" autocomplete="new-password" required minlength="8" aria-describedby="regPwHint"><button class="acc-eye" type="button" data-eye="reg_password" aria-pressed="false" aria-label="Show password" data-i18n-aria="acc_show_pw"><svg viewbox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></span><small id="regPwHint" data-i18n="acc_password_hint">At least 8 characters</small></label>
+          <label class="acc-check"><input id="reg_terms" type="checkbox" required> <span><a href="/en/terms" data-local data-i18n="acc_terms_ok">I agree to the terms</a></span></label>
+          <p class="acc-msg" role="alert" hidden></p>
+          <button class="button button-red acc-submit" type="submit"><span data-i18n="acc_register_btn">Create account</span></button>
+        </form>
+        <form class="acc-form" id="forgotForm" novalidate hidden>
+          <h2 class="acc-form-title" data-i18n="acc_forgot_title">Reset your password</h2>
+          <p class="acc-small" data-i18n="acc_forgot_text">Enter the e-mail of your account and we will send you a link to set a new password.</p>
+          <label class="acc-field"><span data-i18n="acc_email">Email</span><input id="forgot_email" name="email" type="email" autocomplete="username" inputmode="email" required></label>
+          <p class="acc-msg" role="status" hidden></p>
+          <button class="button button-red acc-submit" type="submit"><span data-i18n="acc_forgot_btn">Send link</span></button>
+          <p class="acc-small"><button class="acc-link" type="button" data-back data-i18n="acc_back_login">← Back to sign in</button></p>
+        </form>
+        <form class="acc-form" id="resetForm" novalidate hidden>
+          <h2 class="acc-form-title" data-i18n="acc_reset_title">New password</h2>
+          <input type="email" name="username" autocomplete="username" hidden>
+          <label class="acc-field"><span data-i18n="acc_password">Password</span><span class="acc-pw"><input id="reset_password" name="password" type="password" autocomplete="new-password" required minlength="8" aria-describedby="resetPwHint"><button class="acc-eye" type="button" data-eye="reset_password" aria-pressed="false" aria-label="Show password" data-i18n-aria="acc_show_pw"><svg viewbox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></span><small id="resetPwHint" data-i18n="acc_password_hint">At least 8 characters</small></label>
+          <p class="acc-msg" role="alert" hidden></p>
+          <button class="button button-red acc-submit" type="submit"><span data-i18n="acc_reset_btn">Save password</span></button>
+          <p class="acc-small"><button class="acc-link" type="button" data-back data-i18n="acc_back_login">← Back to sign in</button></p>
+        </form>
+      </div>
     </div>
     <div class="acc-user" id="accUser" hidden>
       <div class="acc-user-head">
@@ -155,7 +173,14 @@
 </div>
       </div>
     </div>
-    <p hidden id="lb_acc_err_social" data-i18n="acc_err_social">Sign-in did not work. Please try again or use your e-mail.</p>
+    <p hidden id="lb_acc_forgot_sent" data-i18n="acc_forgot_sent">If this e-mail has an account, we have sent a link. It is valid for 1 hour.</p>
+<p hidden id="lb_acc_reset_expired" data-i18n="acc_reset_expired">This link has expired or was already used. Please request a new one.</p>
+<p hidden id="lb_acc_reset_done" data-i18n="acc_reset_done">Your password has been changed.</p>
+<p hidden id="lb_acc_err_busy" data-i18n="acc_err_busy">Too many requests. Please try again later.</p>
+<p hidden id="lb_acc_err_email" data-i18n="acc_err_email">Enter a valid e-mail address.</p>
+<p hidden id="lb_acc_show_pw" data-i18n="acc_show_pw">Show password</p>
+<p hidden id="lb_acc_hide_pw" data-i18n="acc_hide_pw">Hide password</p>
+<p hidden id="lb_acc_err_social" data-i18n="acc_err_social">Sign-in did not work. Please try again or use your e-mail.</p>
 <p hidden id="lb_acc_need_phone" data-i18n="acc_need_phone">Please add your phone number for orders.</p>
 <p hidden id="lb_acc_hello" data-i18n="acc_hello">Hello, {name}</p>
 <p hidden id="lb_acc_saved" data-i18n="acc_saved">Saved.</p>
@@ -179,8 +204,6 @@
 <a class="brand" href="/en/" data-home aria-label="Premium Drones Georgia"><img class="logo-light" src="/assets/img/pdg-logo-light.png?v=1cc3f53a77" alt="PDG — Premium Drones Georgia" width="780" height="212" loading="lazy"><img class="logo-dark" src="/assets/img/pdg-logo-dark.png?v=305b73104e" alt="" width="780" height="212" loading="lazy"></a>
 <p class="footer-place" data-i18n="loc_footer_tbilisi">Tbilisi — storage and service</p>
 <p class="footer-place" data-i18n="address">Lagodekhi — warehouse and field operations</p>
-<p class="footer-place footer-hours" data-i18n="contact_hours">Calls and messages: Mon–Fri 09:00–21:00, Sat 09:00–15:00, Sun closed</p>
-<p class="footer-place" data-i18n="visit_note">Visits by appointment only</p>
 </div>
       <nav class="footer-col" aria-label="Pages" data-i18n-aria="footer_pages"><p class="footer-head" data-i18n="footer_pages">Pages</p>
 <a href="/en/about" data-local data-i18n="nav_about">About us</a><a href="/en/p150-max" data-local>XAG P150 MAX</a><a href="/en/shop" data-local data-i18n="nav_shop">Shop</a><a href="/en/gallery" data-local data-i18n="nav_gallery">Gallery</a><a href="/en/blog" data-local data-i18n="nav_blog">Blog</a><a href="/en/terms" data-local data-i18n="nav_terms">Terms</a></nav>

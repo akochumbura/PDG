@@ -459,7 +459,8 @@ async function aiReply(env, lang, messages) {
 /* ---------------- Customer accounts ----------------
    Stored in KV (PDG_DATA): user:<email> {name, email, phone, company, address, salt, hash, orders[]},
    session:<sha256(token)> {email}. Passwords: PBKDF2-SHA256, 100,000 rounds, 16-byte salt. Session cookie: HttpOnly, Secure,
-   SameSite=Lax, 30 days. No e-mail service is connected, so a forgotten password is reset by PDG (/api/admin/reset). */
+   SameSite=Lax, 30 days. Forgotten password: e-mailed reset link (POST /api/account/forgot -> reset:<sha256(token)>, 1 hour, single use; POST /api/account/reset)
+   when RESEND_API_KEY exists; PDG can still reset by hand (/api/admin/reset). */
 const SESSION_DAYS = 30;
 const enc = new TextEncoder();
 const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -492,6 +493,7 @@ async function currentUser(env, request) {
   const sess = await store.get('session:' + await sha(token), 'json');
   if (!sess) return null;
   const user = await store.get('user:' + sess.email, 'json');
+  if (user && user.pwAt && !(Number(sess.created) >= Number(user.pwAt))) return null;  // signed out everywhere by a password reset
   return user ? { user, token } : null;
 }
 
@@ -514,7 +516,7 @@ async function startSession(env, email) {
 }
 
 async function account(route, request, env, url) {
-  if (route === 'GET /api/account/config') return json({ enabled: accountsOn(env), google: accountsOn(env) && googleOn(env), apple: accountsOn(env) && appleOn(env) });
+  if (route === 'GET /api/account/config') return json({ enabled: accountsOn(env), reset: accountsOn(env) && contactMailOn(env), google: accountsOn(env) && googleOn(env), apple: accountsOn(env) && appleOn(env) });
   if (route.startsWith('GET /api/admin/reset')) return adminReset(env, url);
   if (!accountsOn(env)) return json({ error: 'accounts_off' }, 503);
   const store = kv(env);
@@ -556,6 +558,43 @@ async function account(route, request, env, url) {
     await store.delete(failKey);
     const token = await startSession(env, email);
     return json({ user: publicUser(u) }, 200, { 'Set-Cookie': sessionCookie(token, 60 * 60 * 24 * SESSION_DAYS) });
+  }
+  if (route === 'POST /api/account/forgot') {
+    // Password reset by e-mail (owner, 19 Oct 2026). Same answer whether or not the e-mail has an account (no account probing).
+    if (!contactMailOn(env)) return json({ error: 'reset_off' }, 503);
+    const email = clean(input.email, 254).toLowerCase();
+    const lang = LANGS.includes(input.lang) ? input.lang : 'ka';
+    if (!emailOk(email)) return json({ error: 'fields' }, 400);
+    const ipKey = 'fgrl:' + new Date().toISOString().slice(0, 13) + ':' + await sha(request.headers.get('CF-Connecting-IP') || 'local');
+    const ipN = Number(await store.get(ipKey)) || 0;
+    if (ipN >= 10) return json({ error: 'busy' }, 429);
+    await store.put(ipKey, String(ipN + 1), { expirationTtl: 7200 });
+    const mailKey = 'fgmail:' + await sha(email);
+    const u = await store.get('user:' + email, 'json');
+    if (u && !(await store.get(mailKey))) {
+      await store.put(mailKey, '1', { expirationTtl: 120 });  // at most one e-mail per address every 2 minutes
+      const token = randomHex(32);
+      await store.put('reset:' + await sha(token), JSON.stringify({ email, created: Date.now() }), { expirationTtl: 3600 });
+      await resetMail(env, email, url.origin + (lang === 'ka' ? '' : '/' + lang) + '/account?reset=' + token, lang);
+    }
+    return json({ ok: true });
+  }
+  if (route === 'POST /api/account/reset') {
+    const token = String(input.token || '');
+    const password = String(input.password || '');
+    if (!/^[a-f0-9]{64}$/.test(token)) return json({ error: 'expired' }, 400);
+    if (password.length < 8 || password.length > 200) return json({ error: 'password' }, 400);
+    const key = 'reset:' + await sha(token);
+    const rec = await store.get(key, 'json');
+    if (!rec || Date.now() - Number(rec.created) > 3600 * 1000) { await store.delete(key); return json({ error: 'expired' }, 400); }
+    await store.delete(key);  // single use
+    const u = await store.get('user:' + rec.email, 'json');
+    if (!u) return json({ error: 'expired' }, 400);
+    u.salt = randomHex(16); u.hash = await pbkdf2(password, u.salt); u.pwAt = Date.now();
+    await store.put('user:' + rec.email, JSON.stringify(u));
+    await store.delete('loginfail:' + rec.email);
+    const session = await startSession(env, rec.email);
+    return json({ user: publicUser(u) }, 200, { 'Set-Cookie': sessionCookie(session, 60 * 60 * 24 * SESSION_DAYS) });
   }
   const me = await currentUser(env, request);
   if (route === 'POST /api/account/logout') {
@@ -736,6 +775,20 @@ function contactValidate(input) {
   if (!CONTACT_TOPICS.includes(topic)) fields.topic = 'topic';
   if ((message.match(/https?:\/\/|www\./gi) || []).length > 2) fields.message = 'links';
   return { fields, ok: !Object.keys(fields).length, rec: { name, phone, topic, message } };
+}
+const RESET_TEXT = {
+  ka: ['პაროლის აღდგენა — საქართველოს პრემიუმ დრონები', 'პაროლის შესაცვლელად გახსენით ბმული (მოქმედებს 1 საათი, ერთჯერადად):', 'თუ ეს მოთხოვნა თქვენ არ გაგიგზავნიათ, უბრალოდ უგულებელყავით წერილი.'],
+  en: ['Password reset — Premium Drones Georgia', 'Open this link to set a new password (valid for 1 hour, single use):', 'If you did not ask for this, you can ignore this e-mail.'],
+  ru: ['Сброс пароля — Premium Drones Georgia', 'Откройте ссылку, чтобы задать новый пароль (действует 1 час, однократно):', 'Если вы не запрашивали сброс, просто проигнорируйте это письмо.']
+};
+async function resetMail(env, to, link, lang) {
+  const [subject, line, ignore] = RESET_TEXT[lang] || RESET_TEXT.ka;
+  const from = String(env.CONTACT_FROM || 'Premium Drones Georgia <no-reply@premium-drones.ge>').trim();
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + String(secret(env, 'RESEND_API_KEY')).trim() },
+    body: JSON.stringify({ from, to: [to], subject, text: `${line}\n${link}\n\n${ignore}\n` }), signal: AbortSignal.timeout(8000)
+  }).catch(() => null);
+  if (!res || !res.ok) console.error('reset mail failed', res && res.status);
 }
 async function contactMail(env, rec, id) {
   const key = String(secret(env, 'RESEND_API_KEY')).trim();
