@@ -1392,3 +1392,30 @@ html[data-theme=dark] .acc-apple:hover{background:#e8e8e8}
 .page-hero h1.eyebrow:lang(en){letter-spacing:.16em}
 .page-hero .pm-slogan{font-size:clamp(38px,4.6vw,68px);max-width:900px;font-weight:400;line-height:1.3;overflow-wrap:break-word}
 @media(max-width:600px){.page-hero .pm-slogan{font-size:min(36px,9vw)}}
+/* P150 MAX page: four image-led listings (Platform, Starter, Pro, Business), 19 Oct 2026 final brief.
+   Same card language as the shop (border, radius, photo on --bg-alt, hover zoom); Pro keeps the subtle accent. */
+.pm-kits .section-heading{margin-bottom:28px}
+.pkg-tiles{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.pkg-tile{min-width:0}
+.pkg-tile-link{display:flex;flex-direction:column;height:100%;color:inherit;text-decoration:none;background:var(--bg);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:border-color var(--ease)}
+.pkg-tile-link:hover,.pkg-tile-link:focus-visible{border-color:var(--text)}
+.pkg-tile.is-pick .pkg-tile-link{border-color:var(--accent)}
+.pkg-tile-photo{display:block;aspect-ratio:4/3;background:var(--bg-alt);overflow:hidden}
+.pkg-tile-photo img{display:block;width:100%;height:100%;object-fit:cover;transition:transform 600ms cubic-bezier(.2,.6,.2,1)}
+.pkg-tile-link:hover .pkg-tile-photo img{transform:scale(1.03)}
+.pkg-tile-body{display:flex;flex-direction:column;flex:1;padding:18px 18px 20px}
+.pkg-tile-model{font-family:var(--font-latin);font-size:12px;letter-spacing:.12em;color:var(--muted)}
+.pkg-tile-name{font:400 22px/1.25 var(--font-latin);margin-top:4px}
+.pkg-tile.is-pick .pkg-tile-name{color:var(--accent)}
+.pkg-tile-desc{margin-top:10px;font-size:14px;line-height:1.55;color:var(--muted)}
+.pkg-tile-price{margin-top:auto;padding-top:16px;font:400 24px/1 var(--font-latin)}
+.pkg-tile-cta{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:14px}
+@media(max-width:1100px){.pkg-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){
+  .pkg-tiles{grid-template-columns:1fr;gap:12px}
+  .pkg-tile-link{flex-direction:row}
+  .pkg-tile-photo{flex:0 0 38%;aspect-ratio:auto;min-height:100%}
+  .pkg-tile-body{padding:14px 14px 14px}
+  .pkg-tile-name{font-size:19px}.pkg-tile-desc{font-size:13px;margin-top:6px}
+  .pkg-tile-price{font-size:20px;padding-top:10px}.pkg-tile-cta{margin-top:10px;padding-top:10px;font-size:13px}
+}

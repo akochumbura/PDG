@@ -27,7 +27,19 @@ if(n)gtag('event',n,{link_location:pdgWhere(a),page_path:location.pathname});},t
 document.addEventListener('pdg:track',function(e){var d=e.detail||{};if(d.name)gtag('event',d.name,Object.assign({page_path:location.pathname},d.params||{}));});
 """
 (D/'assets/js/analytics.js').write_text(("window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','"+GA+"',{anonymize_ip:true});var pdgGs=document.createElement('script');pdgGs.async=true;pdgGs.src='https://www.googletagmanager.com/gtag/js?id="+GA+"';document.head.appendChild(pdgGs);\n"+GA_EVENTS) if GA else "/* analytics off: set GA_ID in scripts/site_config.py */\n",encoding='utf-8')
-ver={p:hashlib.sha1((D/p.lstrip('/')).read_bytes()).hexdigest()[:10] for p in ['/assets/css/style.css']+[f'/assets/js/{n}' for n in ('content.js','script.js','shop.js','payments-config.js','chat.js','account.js','analytics.js')] if (D/p.lstrip('/')).exists()}
+# Speed (19 Oct 2026 final brief): each page loads only its own language (+ Georgian, which shop.js / chat.js use as the fallback)
+# instead of all three: content-ka.js / content-en.js / content-ru.js, made from content.js (still the single source).
+import json as _json
+_all=_json.loads((D/'assets/js/content.js').read_text(encoding='utf-8').split('=',1)[1].strip().rstrip(';'))
+for _l in ('ka','en','ru'):
+    _sub={k:_all[k] for k in dict.fromkeys(['ka',_l])}
+    (D/f'assets/js/content-{_l}.js').write_text('window.PDG_CONTENT = '+_json.dumps(_sub,ensure_ascii=False,separators=(',',':'))+';\n',encoding='utf-8')
+for _f in D.rglob('*.html'):
+    _s=_f.read_text(encoding='utf-8'); _m=re.search(r'<html[^>]*\blang="(ka|en|ru)"',_s)
+    if not _m: continue
+    _s2=re.sub(r'/assets/js/content(?:-(?:ka|en|ru))?\.js(\?v=\w+)?','/assets/js/content-'+_m.group(1)+'.js',_s)
+    if _s2!=_s: _f.write_text(_s2,encoding='utf-8')
+ver={p:hashlib.sha1((D/p.lstrip('/')).read_bytes()).hexdigest()[:10] for p in ['/assets/css/style.css']+[f'/assets/js/{n}' for n in ('content.js','content-ka.js','content-en.js','content-ru.js','script.js','shop.js','payments-config.js','chat.js','account.js','analytics.js')] if (D/p.lstrip('/')).exists()}
 # Images too (logos, product photos): a recoloured or replaced picture must reach visitors at once, not after the cache expires.
 def img_ver(p):
     f=D/p.lstrip('/')

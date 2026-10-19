@@ -211,10 +211,8 @@ def render(page_source, language, filename):
             d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),img,box.get('data-avail'),box.get('data-cat')=='kit',canonical)
             if d: d['@id']=canonical+'#product'; d['description']=desc; graph.append(d)
     if filename=='p150-max.html':
-        for row in doc.xpath('//li[contains(@class,"kit-row")]'):
-            btns=row.xpath('.//button[contains(@class,"add-btn")]')
-            if not btns: continue  # the platform-only row opens the configurator (its Offer is on its own page)
-            btn=btns[0]
+        for btn in doc.xpath('//li[contains(@class,"pkg-tile")][@data-kit="1"]'):
+            # 19 Oct 2026: image-led package listings; the platform listing links to its own page (its Offer lives there)
             d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),'/assets/img/products/'+btn.get('data-sku')+'.webp','in_stock',True,canonical+'#kits')
             if d: graph.append(d)
     if graph:

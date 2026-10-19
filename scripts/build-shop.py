@@ -274,6 +274,55 @@ def compare(kits, more_href):
             f'<div class="pkg-compare-scroll"><table class="pkg-compare-table"><thead><tr><th scope="col"><span class="visually-hidden" data-i18n="cmp_corner">კომპლექტი</span></th>{head}</tr></thead><tbody>{body}</tbody></table></div>'
             f'<ul class="pkg-cards">{cards}</ul></div>')
 
+def _tile_desc(r, i):
+    """Short contents line for a package listing, from the catalog columns (ka / en / ru)."""
+    b, c, t, k = _n(r, 'batteries'), _n(r, 'chargers'), _n(r, 'towers'), _n(r, 'rtk')
+    if i == 0:
+        s = f'დრონი, SRC5 პულტი, {b} აკუმულატორი, {c} დამტენი, {t} გამაგრილებელი ავზი' + (', XRTK7 RTK სადგური' if k else '')
+    elif i == 1:
+        s = f'Drone, SRC5 remote, {b} batteries, {c} chargers, {t} cooling tanks' + (', XRTK7 RTK station' if k else '')
+    else:
+        s = f'Дрон, пульт SRC5, аккумуляторы: {b}, зарядные устройства: {c}, баки охлаждения: {t}' + (', RTK-станция XRTK7' if k else '')
+    return s + '.'
+
+
+TILE_TEXT = {
+    'tile_platform_desc': ('დრონი RevoSpray 5 სისტემით. პულტი, აკუმულატორები და დამტენები იყიდება ცალკე.',
+                           'Drone with the RevoSpray 5 system. Remote, batteries and chargers are sold separately.',
+                           'Дрон с системой RevoSpray 5. Пульт, аккумуляторы и зарядные устройства продаются отдельно.'),
+    'tile_platform_view': ('პლატფორმის ნახვა', 'View the platform', 'Смотреть платформу'),
+    'tile_platform_name': ('პლატფორმა', 'Platform', 'Платформа'),
+}
+
+
+def tiles(platform, kits):
+    """P150 MAX page (owner, 19 Oct 2026 final brief): four image-led listings - Platform, Starter, Pro, Business -
+    each with its picture, name, price, short contents line and a link to its own page. Replaces the text comparison table."""
+    out = []
+    for r in platform + kits:
+        s = r['sku']
+        kit = r['group'] == 'kit'
+        href = product_pages.url(s)
+        name = html.escape(r['name'], quote=True)
+        short = _kit_short(r) if kit else None
+        desc_key = f'tile_desc_{s.split("-")[-1].lower()}' if kit else 'tile_platform_desc'
+        desc_ka = _tile_desc(r, 0) if kit else TILE_TEXT['tile_platform_desc'][0]
+        label = (f'<span class="pkg-tile-name">{html.escape(short)}</span>' if kit
+                 else '<span class="pkg-tile-name" data-i18n="tile_platform_name">პლატფორმა</span>')
+        view = ('<span data-i18n="cmp_view">კომპლექტაციის ნახვა</span>' if kit
+                else '<span data-i18n="tile_platform_view">პლატფორმის ნახვა</span>')
+        pick = ' is-pick' if s == PICK else ''
+        out.append(
+            f'<li class="pkg-tile{pick}" data-sku="{s}" data-name="{name}" data-price="{price(r, kit)}" data-kit="{int(kit)}">'
+            f'<a class="pkg-tile-link" href="{href}" data-local>'
+            f'<span class="pkg-tile-photo"><img src="/assets/img/products/{s}.webp" width="1200" height="900" alt="{name}" loading="lazy" decoding="async"></span>'
+            f'<span class="pkg-tile-body"><span class="pkg-tile-model">XAG P150 MAX</span>{label}'
+            f'<span class="pkg-tile-desc" data-i18n="{desc_key}">{html.escape(desc_ka)}</span>'
+            f'<span class="pkg-tile-price">₾{price(r, kit):,}</span>'
+            f'<span class="pkg-tile-cta">{view}<span aria-hidden="true">→</span></span></span></a></li>')
+    return '<ul class="pkg-tiles">' + ''.join(out) + '</ul>'
+
+
 def kit_row(r):
     n = html.escape(r['name'], quote=True)
     s = r['sku']
@@ -339,6 +388,12 @@ kits = [r for r in rows if r['group'] == 'kit']
 parts = [r for r in rows if r['group'] not in ('kit', 'legacy', 'drone')]
 platform = [r for r in rows if r['group'] == 'drone']  # owner, 16 Oct 2026: standalone P150 MAX platform (own row below the packages)
 legacy = [r for r in rows if r['group'] == 'legacy']
+for _k, _v in TILE_TEXT.items():
+    _c['ka'][_k], _c['en'][_k], _c['ru'][_k] = _v
+for _r in kits:
+    _k = f'tile_desc_{_r["sku"].split("-")[-1].lower()}'
+    _c['ka'][_k], _c['en'][_k], _c['ru'][_k] = (_tile_desc(_r, 0), _tile_desc(_r, 1), _tile_desc(_r, 2))
+_cj.write_text('window.PDG_CONTENT = ' + _json.dumps(_c, ensure_ascii=False, indent=2) + ';\n', encoding='utf-8')
 # Shop order: drone, energy, control/RTK, spraying/spreading, accessories, spare parts; most expensive first in each group.
 ORDER = ['drone', 'power', 'control', 'spray', 'acc', 'spare']
 parts.sort(key=lambda r: (ORDER.index(r['group']) if r['group'] in ORDER else 99, price(r, False) is None, -(price(r, False) or 0), r['name']))
@@ -386,12 +441,11 @@ subs = [
     (r'(<div class="shop-grid kit-grid">\n).*?(</div>\n<!--/kitGrid-->)', ''.join(card(r) for r in kits)),
     (r'(<!--platformRow-->\n).*?(<!--/platformRow-->)', ''.join(platform_row(r) for r in platform) + '\n'),
     (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div>\n<!--partsMore-->)', ''.join(card(r).replace('<article class="product"', '<article hidden class="product"', 1) if i >= 24 else card(r) for i, r in enumerate(parts))),  # first 24 visible, the rest revealed by "Load more" (shop.js PAGE)
-    (r'(<ul class="kit-table">\n).*?(</ul>)', ''.join(platform_kit_row(r) for r in platform) + ''.join(kit_row(r) for r in kits)),
     (r'(<div class="shop-grid" id="legacyGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in legacy)),
     # Owner, 16 Oct 2026 (second brief): the full configurator lives only on /p150-max-platform; the P150 MAX page links to it.
     (r'(<!--configurator-->\n).*?(<!--/configurator-->)', ''),
     (r'(<!--platformLink-->).*?(<!--/platformLink-->)', platform_link()),
-    (r'(<!--pmCompare-->).*?(<!--/pmCompare-->)', compare(kits, '#kits')),
+    (r'(<!--pmCompare-->).*?(<!--/pmCompare-->)', tiles(platform, kits)),
 ]
 home = ROOT / 'dist/index.html'
 ht = home.read_text(encoding='utf-8')
