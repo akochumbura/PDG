@@ -259,3 +259,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   return URL https://premium-drones.ge/api/auth/apple/callback). Untested with real accounts; buttons stay hidden until secrets exist.
 - Bing Webmaster sign-in + import from Search Console; Instagram/YouTube/TikTok bio links; GA key event (generate_lead) once received; XAG/NIK message and 7 post drafts (not sent);
   Merchant Center (deferred); BOG payment agreement; AI chat key; exact XAG certificate names; product photos.
+- (owner, 19 Oct 2026) About page = story, mission statement (about_mission: "ჩვენი მიზანია უმაღლესი კლასის, უახლესი ტექნოლოგიის მასობრივად დანერგვა ქართულ სოფლის მეურნეობაში"),
+  facts, XAG, what we do. NO model cards and NO FAQ there. FAQ = its own page /faq "ხშირად დასმული კითხვები" (keys faq_q1..8 / faq_a1..8, FAQPage schema comes from details.faq-item;
+  footer link nav_faq). The owner wants the FAQ UPDATED FROM REAL customer questions (chat, WhatsApp, consultation inbox): add/replace items there, ka/en/ru.
+  Georgian "საქშენი" is never used: always "გამფრქვევი". Previous-generation models (cards on /drones and /shop, their own pages) carry the link "ახალი თაობა: XAG P150 MAX" → /p150-max (lg_newer).

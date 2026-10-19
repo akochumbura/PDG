@@ -190,7 +190,7 @@ def card(r):
         spec = LEGACY_SPECS.get(s)
         return (head + (f'<p class="product-specs" data-i18n="{pkey(s)}_spec">{html.escape(spec[0])}</p>' if spec else '')
                 + '<p class="product-stock is-out" data-i18n="out_of_stock">არ არის მარაგში</p>'
-                + '<div class="product-buy"><a class="button button-line consult-btn" href="/consultation" data-local><span data-i18n="consult_cta">კონსულტაცია</span></a></div></div></article>\n')
+                + '<div class="product-buy"><a class="button button-line consult-btn" href="/consultation" data-local><span data-i18n="consult_cta">კონსულტაცია</span></a></div><a class="text-link model-newer" href="/p150-max" data-local><span data-i18n="lg_newer">ახალი თაობა: XAG P150 MAX</span><span aria-hidden="true">→</span></a></div></article>\n')
     if st == 'quote':  # no approved price: ask for a quote, never add to the cart at ₾0
         # Owner, 14 Oct 2026: a part that is not on the packing list is not in stock.
         return (head + '<p class="product-stock is-out" data-i18n="out_of_stock">არ არის მარაგში</p>'

@@ -268,6 +268,7 @@ for m in LM.MODELS:
         f'<h2 class="pk-in-title" data-i18n="pd_specs">მახასიათებლები</h2><p class="product-specs" data-i18n="pd_{pid}_spec">{html.escape(spec_ka)}</p>'
         f'<p class="product-stock is-out" data-i18n="out_of_stock">არ არის მარაგში</p>'
         f'<a class="button button-line consult-btn" href="/consultation" data-local><span data-i18n="consult_cta">კონსულტაცია</span></a>'
+        f'<a class="text-link pd-newer" href="/p150-max" data-local><span data-i18n="lg_newer">ახალი თაობა: XAG P150 MAX</span><span aria-hidden="true">→</span></a>'
         f'<p class="small-note"><span data-i18n="pd_lg_source">{html.escape(T2["pd_lg_source"][0])}</span></p>'
         f'</article></div></section>\n</template>\n')
 
