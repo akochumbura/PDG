@@ -946,9 +946,10 @@ async function teamAnswer(env, th, text) {
   if (question) await learnAdd(env, { q: question.slice(0, 600), a: text.slice(0, 1200), at, lang: th.lang });
   await putThread(env, th);
 }
-async function notifyTeam(env, url, th, text) {
+async function notifyTeam(env, url, th, text, aiText) {
   const head = th.wait ? '🙋 Visitor asks for a person — reply now' : 'PDG website chat';
-  const msg = `${head} (${th.lang})${th.contact ? ' · ' + th.contact : ''}\n\n${text.slice(0, 600)}\n\n↩️ Reply to this message in Telegram to answer the visitor.\nInbox: ${url.origin}/api/chat/inbox`;
+  const ai = aiText ? `\n\n🤖 AI answered:\n${aiText.slice(0, 900)}` : '';  // owner, 19 Oct 2026: show the AI reply in the Telegram alert
+  const msg = `${head} (${th.lang})${th.contact ? ' · ' + th.contact : ''}\n\n${text.slice(0, 600)}${ai}\n\n↩️ Reply to this message in Telegram to answer the visitor.\nInbox: ${url.origin}/api/chat/inbox`;
   const jobs = [];
   jobs.push(tgSend(env, msg).then(mid => mid && kv(env) ? kv(env).put('tgmsg:' + mid, th.id, { expirationTtl: 60 * 60 * 24 * 30 }) : null));
   // WhatsApp alert to the owner's own number via CallMeBot (free; activate once, see docs/10-ai-chat.md).
@@ -988,6 +989,7 @@ async function liveSend(request, env, url) {
   let handoff = !waiting(th) && WANTS_HUMAN.test(text);
   if (handoff) { th.wait = true; th.waitAt = now; th.msgs.push({ r: 'ai', t: HANDOFF[lang] || HANDOFF.ka, at: now }); }
   const useAi = chatEnabled(env) && !teamActive(th) && !waiting(th);
+  let aiText = '';
   if (useAi && (await chatAllowed(env, request.headers.get('CF-Connecting-IP') || 'local'))) {
     const messages = [];
     for (const m of th.msgs.slice(-CHAT_MAX_TURNS)) {
@@ -1000,10 +1002,10 @@ async function liveSend(request, env, url) {
     if (out.reply && out.reply.includes('[[HANDOFF]]')) {
       handoff = true; th.wait = true; th.waitAt = new Date().toISOString();
       th.msgs.push({ r: 'ai', t: HANDOFF[lang] || HANDOFF.ka, at: th.waitAt });
-    } else if (out.reply) th.msgs.push({ r: 'ai', t: out.reply, at: new Date().toISOString() });
+    } else if (out.reply) { aiText = out.reply; th.msgs.push({ r: 'ai', t: out.reply, at: new Date().toISOString() }); }
   }
   await putThread(env, th);
-  if (alertDue || handoff) { th.alertAt = new Date().toISOString(); await putThread(env, th); await notifyTeam(env, url, th, text); }
+  if (alertDue || handoff) { th.alertAt = new Date().toISOString(); await putThread(env, th); await notifyTeam(env, url, th, text, aiText); }
   return json({ msgs: since(th, input.after), ai: useAi });
 }
 async function liveThread(env, url) {
