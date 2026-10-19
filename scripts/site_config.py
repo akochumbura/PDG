@@ -17,4 +17,4 @@ SHIPPING = {'fee': 30, 'free_from': 100}
 
 # Analytics (owner, 19 Oct 2026): Google Analytics 4 Measurement ID (G-XXXXXXXXXX). Empty = no Google script is loaded.
 # Cloudflare Web Analytics is switched on in the Cloudflare dashboard (Pages > pdg > Metrics), not here.
-GA_ID = ''
+GA_ID = 'G-T6H1TFBWVS'

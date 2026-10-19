@@ -1,1 +1,1 @@
-/* analytics off: set GA_ID in scripts/site_config.py */
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-T6H1TFBWVS',{anonymize_ip:true});var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-T6H1TFBWVS';document.head.appendChild(s);
