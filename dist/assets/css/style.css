@@ -1420,3 +1420,84 @@ html[data-theme=dark] .acc-apple:hover{background:#e8e8e8}
   .pkg-tile-name{font-size:19px}.pkg-tile-desc{font-size:13px;margin-top:6px}
   .pkg-tile-price{font-size:20px;padding-top:10px}.pkg-tile-cta{margin-top:10px;padding-top:10px;font-size:13px}
 }
+
+/* ===== Design preview (19 Oct 2026, owner review pending) =====================================
+   Product first: the P150 MAX page opens with the product photo and the product name; the four options follow at once.
+   Listings without boxes: photo on a quiet light surface, text below, one link. Georgian text is never letter-spaced. */
+:root{--surface:#F3F3F1}
+html[data-theme=dark]{--surface:#1C1C1B}
+html[lang=ka] .eyebrow,html[lang=ka] .pkg-tile-model,html[lang=ka] .app-index{letter-spacing:.02em}
+html[lang=ka] .apps-head .eyebrow{letter-spacing:.02em}
+
+/* P150 MAX hero */
+.pm-hero{padding-block:clamp(28px,4vw,56px) clamp(40px,5vw,72px)}
+.pm-hero-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(32px,5vw,80px);align-items:center}
+.pm-hero .back-link{margin-bottom:clamp(20px,2.4vw,36px)}
+.page-hero h1.pm-title{font-family:"Barlow",var(--font-latin),sans-serif;font-weight:700;font-size:clamp(44px,5.2vw,80px);line-height:1;letter-spacing:0;max-width:none;margin:0}
+.page-hero .pm-title .pm-kind{display:block;margin-top:14px;font-family:var(--font-body,inherit);font-weight:400;font-size:clamp(17px,1.5vw,21px);line-height:1.4;color:var(--muted)}
+.page-hero .pm-title .pm-kind span{font:inherit}
+.page-hero .pm-slogan{margin-top:clamp(22px,2.4vw,32px);font-size:clamp(22px,2vw,30px);line-height:1.35;max-width:28ch;font-weight:400}
+.pm-hero .page-intro{margin-top:14px;font-size:16px;line-height:1.65;max-width:52ch}
+.pm-hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px;margin-top:clamp(24px,2.6vw,36px)}
+.pm-hero-actions .pm-cfg{margin:0}
+.pm-hero-actions .pm-cfg-note{display:none}
+.pm-hero-photo{background:var(--surface);border-radius:8px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pm-hero-photo img{width:100%;height:100%;object-fit:contain;padding:4%}
+.pm-hero-photo img,.pkg-tile-photo img{mix-blend-mode:multiply}
+html[data-theme=dark] .pm-hero-photo img,html[data-theme=dark] .pkg-tile-photo img{mix-blend-mode:normal}
+@media(max-width:900px){
+  .pm-hero-grid{grid-template-columns:1fr;gap:24px}
+  .pm-hero-photo{order:-1;margin-inline:calc(-1 * var(--gutter,20px));border-radius:0}
+  .pm-hero .back-link{display:none}
+  .pm-hero{padding-top:0}
+  .page-hero h1.pm-title{font-size:min(48px,12vw)}
+  .page-hero .pm-slogan{font-size:21px}
+  .pm-hero .page-intro{font-size:15px}
+  .pm-hero-actions .button{flex:1 1 100%;justify-content:space-between}
+}
+
+/* Four options: no boxes, photo on surface, aligned rows of text */
+.pm-kits{padding-top:clamp(40px,5vw,72px)}
+.pm-kits .section-heading{align-items:baseline;border-bottom:0;margin-bottom:clamp(20px,2.4vw,32px)}
+.pkg-tiles{gap:clamp(16px,2vw,28px)}
+.pkg-tile-link{border:0;border-radius:0;background:none}
+.pkg-tile-link:hover,.pkg-tile-link:focus-visible,.pkg-tile.is-pick .pkg-tile-link{border-color:transparent}
+.pkg-tile-photo{border-radius:8px;background:var(--surface);aspect-ratio:4/3}
+.pkg-tile-photo img{object-fit:contain;padding:6% 5%}
+.pkg-tile-body{padding:18px 2px 0}
+.pkg-tile-model{font-size:11px;color:var(--muted)}
+.pkg-tile-name{font-size:24px;margin-top:2px}
+.pkg-tile-desc{font-size:14px;line-height:1.55;margin-top:8px}
+.pkg-tile-price{padding-top:14px;font-size:22px}
+.pkg-tile-cta{border-top:0;margin-top:10px;padding-top:0;justify-content:flex-start;gap:8px;color:var(--text);font-size:14px}
+.pkg-tile-link:hover .pkg-tile-cta{color:var(--accent)}
+.pkg-tile.is-pick .pkg-tile-name{color:var(--text)}
+.pkg-tile.is-pick .pkg-tile-photo{box-shadow:inset 0 -3px 0 var(--accent)}
+.pkg-tile-link:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+@media(max-width:600px){
+  .pkg-tiles{gap:0}
+  .pkg-tile+.pkg-tile{border-top:1px solid var(--border)}
+  .pkg-tile-link{flex-direction:row;gap:16px;padding-block:16px;align-items:center}
+  .pkg-tile-photo{flex:0 0 40%;align-self:center}
+  .pkg-tile-body{padding:0}
+  .pkg-tile-name{font-size:20px}.pkg-tile-desc{font-size:13px;margin-top:4px}
+  .pkg-tile-price{font-size:19px;padding-top:8px}.pkg-tile-cta{display:none}
+}
+
+/* Home: quieter dealer band (smaller lockup, it repeats the header) */
+.dealer-logos{--logo-h:clamp(28px,3vw,44px)}
+.dealer-band .dealer-inner{padding-block:clamp(28px,3vw,44px)}
+
+/* Home: capabilities as a compact 2 x 2 on phones (descriptions stay on larger screens) */
+@media(max-width:600px){
+  .apps-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px 18px}
+  .app-card,.app-card+.app-card{padding:16px 0 0;border:0;border-top:1px solid rgba(244,243,239,.14)}
+  .app-card+.app-card:before{left:0}
+  .app-card h3{font-size:17px;margin:6px 0 14px;min-height:2.6em}
+  .offerings-4 .panel{min-height:320px}
+  .app-figure .app-num{font-size:44px}
+  .app-desc{display:none}
+  .apps-head h2{font-size:30px}
+}
+/* Home: contact heading in proportion with the rest of the page */
+.contact-inner h2{font-size:clamp(28px,2.8vw,42px);line-height:1.3}
