@@ -1,0 +1,2 @@
+IndexNow key (Bing, Yandex, Seznam...): dist/ea9d8a76f5ca2ecbc4f429f7f95a5477.txt
+Submit a changed page: https://api.indexnow.org/indexnow?url=<page URL>&key=ea9d8a76f5ca2ecbc4f429f7f95a5477
