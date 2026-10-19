@@ -17,7 +17,16 @@ D=ROOT/'dist'
 # analytics.js is generated from site_config.GA_ID (empty ID = file does nothing and the CSP does not open Google hosts)
 import site_config as _sc
 GA=getattr(_sc,'GA_ID','').strip()
-(D/'assets/js/analytics.js').write_text(("window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','"+GA+"',{anonymize_ip:true});var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id="+GA+"';document.head.appendChild(s);\n") if GA else "/* analytics off: set GA_ID in scripts/site_config.py */\n",encoding='utf-8')
+# Events (SEO/measurement brief, 19 Oct 2026): call_click, whatsapp_click, messenger_click, email_click (any link, with its place on the page),
+# generate_lead (consultation form accepted by the server, with topic), whatsapp_order / email_order (cart), via the 'pdg:track' DOM event.
+GA_EVENTS = r"""
+function pdgWhere(a){var n=a.closest('[id],header,footer,.mobile-bar,.chat-panel');if(!n)return 'page';if(n.matches('header'))return 'header';if(n.matches('footer'))return 'footer';if(n.matches('.mobile-bar'))return 'mobile_bar';if(n.matches('.chat-panel'))return 'chat';return n.id;}
+document.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('[data-chat-open]');if(c)gtag('event','chat_open',{link_location:pdgWhere(c),page_path:location.pathname});var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute('href')||'',n=null;
+if(/^tel:/i.test(h))n='call_click';else if(/wa\.me\//i.test(h))n='whatsapp_click';else if(/m\.me\//i.test(h))n='messenger_click';else if(/^mailto:/i.test(h))n='email_click';
+if(n)gtag('event',n,{link_location:pdgWhere(a),page_path:location.pathname});},true);
+document.addEventListener('pdg:track',function(e){var d=e.detail||{};if(d.name)gtag('event',d.name,Object.assign({page_path:location.pathname},d.params||{}));});
+"""
+(D/'assets/js/analytics.js').write_text(("window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','"+GA+"',{anonymize_ip:true});var pdgGs=document.createElement('script');pdgGs.async=true;pdgGs.src='https://www.googletagmanager.com/gtag/js?id="+GA+"';document.head.appendChild(pdgGs);\n"+GA_EVENTS) if GA else "/* analytics off: set GA_ID in scripts/site_config.py */\n",encoding='utf-8')
 ver={p:hashlib.sha1((D/p.lstrip('/')).read_bytes()).hexdigest()[:10] for p in ['/assets/css/style.css']+[f'/assets/js/{n}' for n in ('content.js','script.js','shop.js','payments-config.js','chat.js','account.js','analytics.js')] if (D/p.lstrip('/')).exists()}
 # Images too (logos, product photos): a recoloured or replaced picture must reach visitors at once, not after the cache expires.
 def img_ver(p):

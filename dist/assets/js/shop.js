@@ -22,6 +22,7 @@
     if (n < min) n = min; if (max > 0 && n > max) n = max; return n;
   }
   function openWa(text) {
+    document.dispatchEvent(new CustomEvent("pdg:track", { detail: { name: "whatsapp_click", params: { link_location: "product_quote" } } }));
     var url = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(text);
     var w = window.open(url, "_blank"); if (w) w.opener = null; else location.href = url;
   }
@@ -156,12 +157,14 @@
       e.preventDefault();
       if (!Object.keys(cart).length || !valid()) return;
       var url = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(orderText());
+      document.dispatchEvent(new CustomEvent("pdg:track", { detail: { name: "whatsapp_order", params: { link_location: "cart" } } }));
       var w = window.open(url, "_blank");
       if (w) w.opener = null; else location.href = url;
     });
     document.getElementById("cartMail").addEventListener("click", function (e) {
       e.preventDefault();
       if (!Object.keys(cart).length || !valid()) return;
+      document.dispatchEvent(new CustomEvent("pdg:track", { detail: { name: "email_order", params: { link_location: "cart" } } }));
       location.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent("Premium Drones Georgia — " + label("lbOrder")) + "&body=" + encodeURIComponent(orderText());
     });
     var payBtn = document.getElementById("cartPay"), payErr = document.getElementById("cartPayError");

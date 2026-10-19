@@ -129,12 +129,12 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - Product pages (scripts/product_pages.py → build-products.py): /b141050-battery, /cm13600s-charger, /gc4000-plus-generator,
   specs from p150_specs.py 'power'. Cards, home part list and search open them. Only items with verified xa.com specs get a page
   (B13970S: no verified specs, no page).
-- Every page title starts with "Premium Drones Georgia — " (build-pages.py adds it; owner 19 Oct 2026: never all capitals).
+- Page titles (owner SEO brief, 19 Oct 2026 evening; replaces "titles start with Premium Drones Georgia —"): "<topic> | Premium Drones Georgia" (build-pages.py adds the suffix); never all capitals.
 - Logo lockups (owner, 14 Oct 2026 night): the XAG logo is exactly the height of the whole PDG logo (incl. the PREMIUM DRONES
   GEORGIA line), aspect ratios kept, centred; header = PDG ~ XAG with a literal "~", strip = PDG ~ XAG; "~" in --xag-black. build.py adds ?v=hash to /assets/img URLs so changed logos/photos reach visitors at once.
 - Home hero (owner, 14 Oct 2026 night): heading, sentence and buttons at the top with equal gaps (32px desktop, 24px phone);
   the whole drone must stay visible (wide screens: photo right of the text, hero ≤ 56vw tall; ≤1240px: text above the full photo).
-- Home page <title> + share preview = exactly "საქართველოს პრემიუმ დრონები • Premium Drones Georgia" in ka/en/ru (owner, 19 Oct 2026). Brand text is never written in capitals (the logo image is unchanged).
+- Home page <title> + share preview (owner SEO brief, 19 Oct 2026 evening) = "XAG საქართველო | Premium Drones Georgia" (en "XAG Georgia | …", ru "XAG Грузия | …"). Brand text is never written in capitals (the logo image is unchanged).
 - (owner, 14 Oct 2026, 23:15) Parts not on the packing list (avail=quote) = "არ არის მარაგში" + price on request (not "მარაგი დაზუსტდება").
   Screws and similar fasteners = 5-15 GEL by invoice landed cost (cost x 2.5 + 3.5, clamped; import-price-list.py: 02-004-*, nut/bolt/circlip, M-size gaskets).
   Package contents link to their pages: drone → /p150-max, SRC5, B141050, CM13600S, cooling tank, XRTK7 (product_pages.py).
@@ -229,3 +229,8 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 19 Oct 2026) Analytics: Cloudflare Web Analytics (dashboard toggle, CSP already allows its beacon) + Google Analytics 4 via scripts/site_config.py GA_ID (build writes dist/assets/js/analytics.js and opens the CSP for Google only when GA_ID is set). No cookie banner yet.
 
 - (owner brief, 19 Oct 2026, SEO audit) Search Console: sitemap.xml was never submitted (submitted 19 Oct). P150 MAX page now has its own FAQ (pf_* keys: what is an agricultural drone/აგროდრონი, where to buy in Georgia, Starter/Pro/Business difference); shop + P150 meta descriptions lengthened. EN/RU home <title> stays the owner's exact Georgian-brand title (open question: owner may want a descriptive English/Russian title).
+- (owner SEO brief, 19 Oct 2026 evening) P150 MAX page: semantic h1 = "XAG P150 MAX · სასოფლო-სამეურნეო დრონი" styled as the eyebrow (h1.eyebrow.pm-h1); slogan = p.pm-slogan with the former h1 look.
+  Service/academy have fuller search descriptions via data-meta (service_meta, academy_meta) while the visible intro stays short. Product schema: items with their own page
+  (packages, battery, charger...) share that page's @id and Offer URL (product_pages.url). Hero desktop image has a 2048w variant (srcset + matching preload).
+  GA4 events: call_click, whatsapp_click, messenger_click, email_click (link_location), chat_open, generate_lead (consultation, topic), whatsapp_order, email_order.
+  Owner confirmed all existing business/product claims are correct: do not weaken them. No homepage sections/keyword blocks for SEO.

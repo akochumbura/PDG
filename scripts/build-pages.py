@@ -27,11 +27,14 @@ pages = {'index.html': source}
 for template in templates.xpath('//template[@data-page]'):
     title_key = template.get('data-title')
     desc_key = template.get('data-description')
+    meta_key = template.get('data-meta')  # optional: a fuller search description than the short visible intro (ka/en/ru in content.js)
     ka_title = template.get('data-ka-title') or template.xpath('.//h1')[0].text_content()+' — საქართველოს პრემიუმ დრონები'
     page_head = re.sub(r'(<title data-i18n=")[^"]+(">).*?</title>', lambda m: m.group(1)+title_key+m.group(2)+escape(ka_title)+'</title>', head)
     _intro = template.xpath('.//p[contains(@class,"page-intro")]')
     # Pages without an intro paragraph (the compact platform page) take the Georgian description from content.js.
     intro = _intro[0].text_content() if _intro else json.loads((ROOT/'dist/assets/js/content.js').read_text(encoding='utf-8').split('=',1)[1].strip().rstrip(';'))['ka'][desc_key]
+    if meta_key:
+        intro = json.loads((ROOT/'dist/assets/js/content.js').read_text(encoding='utf-8').split('=',1)[1].strip().rstrip(';'))['ka'][meta_key]; desc_key = meta_key
     page_head = re.sub(r'<meta name="description"[^>]+>', '<meta name="description" content="'+escape(intro,quote=True)+'" data-i18n-content="'+desc_key+'">', page_head)
     page_head = re.sub(r'\s*<link rel="preload"[^>]*as="image"[^>]*>', '', page_head)
     body = ''.join(etree.tostring(child, encoding='unicode', method='html') for child in template)
@@ -126,12 +129,13 @@ def render(page_source, language, filename):
     # Per-page share text (Facebook, WhatsApp, Telegram previews) = the page's own title and description.
     # Owner (19 Oct 2026): brand written 'Premium Drones Georgia' (not capitals); home = 'საქართველოს პრემიუმ დრონები • Premium Drones Georgia',
     # other pages start with 'Premium Drones Georgia — '.
+    # Owner (19 Oct 2026, SEO brief): home = 'XAG საქართველო | Premium Drones Georgia' (page_title); every other page = '<topic> | Premium Drones Georgia'.
     t_el=doc.find('.//title')
-    if t_el is not None and not (t_el.text or '').startswith(('Premium Drones Georgia','საქართველოს პრემიუმ დრონები •')):
-        rest=re.sub(r'^PREMIUM DRONES GEORGIA\s*[—|–-]\s*','',(t_el.text or '').strip())
+    if t_el is not None and filename!='index.html':
+        rest=re.sub(r'^(PREMIUM DRONES GEORGIA|Premium Drones Georgia)\s*[—|–-]\s*','',(t_el.text or '').strip())
         rest=re.sub(r'\s*[—|–-]\s*(PDG|საქართველოს პრემიუმ დრონები|Premium Drones Georgia|Премиум Дроны Грузии)\s*$','',rest)
         rest=re.sub(r'\s*[—|–-]\s*(მაღაზია|shop|магазин) PDG\s*$','',rest,flags=re.I)
-        t_el.text='Premium Drones Georgia — '+rest
+        t_el.text=rest+' | Premium Drones Georgia'
     title_text=doc.findtext('.//title') or ''
     desc=(doc.xpath('//meta[@name="description"]/@content') or [''])[0]
     for m in doc.xpath('//meta[@property="og:title"]'): m.set('content',title_text); m.attrib.pop('data-i18n-content',None)
@@ -175,9 +179,16 @@ def render(page_source, language, filename):
              "itemDefectReturnFees":"https://schema.org/FreeReturn"}
     PART_DESC={"ka":"XAG-ის ორიგინალი პროდუქტი XAG P150 MAX-ისთვის. მწარმოებლის კოდი: {}.","en":"Original XAG product for the XAG P150 MAX. Manufacturer code: {}.",
                "ru":"Оригинальный продукт XAG для XAG P150 MAX. Код производителя: {}."}[language]
+    import product_pages as _pp
     def product(sku,name,price,img,avail,kit,url):
         if avail not in AVAIL or not price: return None
-        d={"@type":"Product","@id":BASE_URL+'/shop#'+sku,"name":name,"sku":sku,"brand":{"@type":"Brand","name":"XAG"},
+        # SEO brief 19 Oct 2026: an item with its own page (package, battery, charger...) points its Offer to that page and
+        # shares that page's @id, so the shop / P150 MAX listings and the item page describe one product, not two.
+        own=_pp.url(sku)
+        pid=BASE_URL+'/shop#'+sku
+        if own:
+            url=BASE_URL+lp+own; pid=url+'#product'
+        d={"@type":"Product","@id":pid,"name":name,"sku":sku,"brand":{"@type":"Brand","name":"XAG"},
            "image":BASE_URL+img if img.startswith('/') else img,"description":KIT_DESC if kit else PART_DESC.format(sku),
            "offers":{"@type":"Offer","price":price,"priceCurrency":"GEL","availability":AVAIL[avail],"itemCondition":"https://schema.org/NewCondition",
                      "url":url,"seller":{"@id":BASE_URL+'/#business'},"hasMerchantReturnPolicy":RETURNS,"shippingDetails":SHIP(price)}}

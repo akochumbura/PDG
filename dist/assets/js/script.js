@@ -283,7 +283,7 @@
         }
       } catch (err) { outcome = "failed"; }
       sendBtn.disabled = false;
-      if (outcome === "sent") { form.reset(); if (Array.from(topic.options).some((o) => o.value === requestedTopic)) topic.value = requestedTopic; }
+      if (outcome === "sent") { document.dispatchEvent(new CustomEvent("pdg:track", { detail: { name: "generate_lead", params: { form: "consultation", topic: topic.value || "general" } } })); form.reset(); if (Array.from(topic.options).some((o) => o.value === requestedTopic)) topic.value = requestedTopic; }
       status.textContent = t({ sent: "form_sent", busy: "form_busy", too_fast: "form_too_fast", check: "form_check", failed: "form_failed" }[outcome]);
       status.classList.add(outcome === "sent" ? "is-ok" : "is-error");
     });
