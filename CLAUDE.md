@@ -234,3 +234,4 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   (packages, battery, charger...) share that page's @id and Offer URL (product_pages.url). Hero desktop image has a 2048w variant (srcset + matching preload).
   GA4 events: call_click, whatsapp_click, messenger_click, email_click (link_location), chat_open, generate_lead (consultation, topic), whatsapp_order, email_order.
   Owner confirmed all existing business/product claims are correct: do not weaken them. No homepage sections/keyword blocks for SEO.
+  Consultation topic "demo" (topic_demo, ?topic=demo) = field demonstration requests; GA generate_lead carries the topic.

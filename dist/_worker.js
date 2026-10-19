@@ -701,7 +701,7 @@ async function adminReset(env, url) {
    Telegram / WhatsApp alerts reuse the chat settings. Success is returned only after the request is stored or e-mailed.
    Neither KV nor RESEND_API_KEY -> 503 not_configured (the page then shows phone and WhatsApp).
    Team view: /api/contact/inbox?key=ADMIN_KEY. Secrets: RESEND_API_KEY, optional CONTACT_TO, CONTACT_FROM (a verified sender), CONTACT_DAILY_LIMIT. */
-const CONTACT_TOPICS = ['drone', 'service', 'academy', 'gov', 'spraying'];
+const CONTACT_TOPICS = ['drone', 'demo', 'service', 'academy', 'gov', 'spraying'];
 const contactHits = new Map();
 function contactMailOn(env) { return Boolean(String(secret(env, 'RESEND_API_KEY')).trim()); }
 function contactReady(env) { return Boolean(kv(env) || contactMailOn(env)); }
