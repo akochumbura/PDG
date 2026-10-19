@@ -101,11 +101,11 @@ for p in P.PAGES:
     title_ka = html.escape(p['title'][0] + ' | საქართველოს პრემიუმ დრონები', quote=True)
     out.append(
         f'<template data-page="{p["slug"]}.html" data-ka-title="{title_ka}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro">\n'
-        f'  <section class="page-hero pd-hero"><div class="container"><a class="back-link" href="/shop.html#parts" data-local data-i18n="pd_back">← მაღაზია</a>'
+        f'  <section class="section pp-main pd-page"><div class="container pp-grid"><div class="pp-head pd-head"><a class="back-link pp-back" href="/shop.html#parts" data-local data-i18n="pd_back">← მაღაზია</a>'
         + (f'<p class="eyebrow" data-i18n="pd_fits_control">{T["pd_fits_control"][0]}</p>' if p.get('specs') == 'control' else f'<p class="eyebrow" data-i18n="pd_fits">{T["pd_fits"][0]}</p>') +
-        f'<h1 data-i18n="pd_{pid}_h1">{html.escape(p["title"][0].split(" — ")[0])}</h1><p class="product-orig">{html.escape(r["name"])}</p>'
-        f'<p class="page-intro" data-i18n="pd_{pid}_intro">{html.escape(p["intro"][0])}</p></div></section>\n'
-        f'  <section class="section pd-main"><div class="container pd-grid">{pic}'
+        f'<h1 class="pp-title" data-i18n="pd_{pid}_h1">{html.escape(p["title"][0].split(" — ")[0])}</h1><p class="product-orig">{html.escape(r["name"])}</p>'
+        f'<p class="pd-intro" data-i18n="pd_{pid}_intro">{html.escape(p["intro"][0])}</p></div>'
+        f'<div class="pp-gallery pd-gallery">{pic}</div>'
         f'<article class="product pd-buybox" data-cat="{r["group"]}" data-avail="in_stock">'
         f'<p class="product-sku"><span data-i18n="pd_code">მწარმოებლის კოდი</span>: {sku}</p>'
         f'<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
@@ -114,7 +114,6 @@ for p in P.PAGES:
         f'<input class="qty-input" type="number" inputmode="numeric" min="1"' + (f' max="{stock}"' if stock else '') + ' step="1" value="1" aria-label="რაოდენობა" data-i18n-aria="qty_label">'
         f'<button type="button" class="qty-btn" data-step="1" aria-label="რაოდენობის გაზრდა" data-i18n-aria="qty_more">+</button></div>'
         f'<button type="button" class="add-btn" data-sku="{sku}" data-name="{name_en}" data-price="{gel}" data-i18n="add_to_cart">კალათაში</button></div>'
-        f'<a class="button button-line pd-ask" href="{html.escape(wa, quote=True)}" target="_blank" rel="noopener noreferrer"><span data-i18n="pd_ask">კითხვა WhatsApp-ით</span></a>'
         f'</article></div></section>\n'
         f'  <section class="section pd-specs" id="specifications" aria-labelledby="pd-specs-title"><div class="container">'
         f'<div class="section-heading"><h2 id="pd-specs-title"><span data-i18n="pd_specs">მახასიათებლები</span></h2></div>'
@@ -173,11 +172,10 @@ for sku, slug in P.KITS.items():
     kit_max = min(_lim) if _lim else 0
     out.append(
         f'<template data-page="{slug}.html" data-ka-title="{html.escape(r["name"] + " — კომპლექტის შემადგენლობა და ფასი | საქართველოს პრემიუმ დრონები", quote=True)}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro">\n'
-        f'  <section class="page-hero pd-hero"><div class="container"><a class="back-link" href="/shop.html#kits" data-local data-i18n="pd_pk_back">← კომპლექტები</a>'
-        f'<p class="eyebrow">XAG P150 MAX</p><h1>{html.escape(r["name"])}</h1>'
-        f'<p class="page-intro" data-i18n="pd_{pid}_intro">{html.escape(KIT_INTRO[slug][0])}</p></div></section>\n'
-        f'  <section class="section pd-main"><div class="container pd-grid">'
-        f'<div class="pk-gallery"><div class="product-photo pd-photo pk-main"><img id="pkMain" src="{pics[0][0]}" width="1200" height="900" alt="{html.escape(pics[0][3], quote=True)}" data-i18n-alt="{pics[0][2]}" decoding="async"></div>'
+        f'  <section class="section pp-main pd-page' + (' type-v2' if slug == 'p150-max-pro' else '') + '"><div class="container pp-grid"><div class="pp-head pd-head"><a class="back-link pp-back" href="/shop.html#kits" data-local data-i18n="pd_pk_back">← კომპლექტები</a>'
+        f'<p class="eyebrow">XAG P150 MAX</p><h1 class="pp-title">{html.escape(r["name"])}</h1>'
+        f'<p class="pd-intro" data-i18n="pd_{pid}_intro">{html.escape(KIT_INTRO[slug][0])}</p></div>'
+        f'<div class="pk-gallery pp-gallery"><div class="product-photo pd-photo pk-main"><img id="pkMain" src="{pics[0][0]}" width="1200" height="900" alt="{html.escape(pics[0][3], quote=True)}" data-i18n-alt="{pics[0][2]}" decoding="async"></div>'
         f'<div class="pk-thumbs" aria-label="ფოტო" data-i18n-aria="pd_pk_photo">{thumbs}</div>'
         f'<p class="small-note" data-i18n="pd_pk_photo_note">{html.escape(T["pd_pk_photo_note"][0])}</p></div>'
         f'<article class="product product-kit pd-buybox" data-cat="kit" data-avail="in_stock">'
@@ -187,9 +185,8 @@ for sku, slug in P.KITS.items():
         f'<input class="qty-input" type="number" inputmode="numeric" min="1"' + (f' max="{kit_max}"' if kit_max else '') + ' step="1" value="1" aria-label="რაოდენობა" data-i18n-aria="qty_label">'
         f'<button type="button" class="qty-btn" data-step="1" aria-label="რაოდენობის გაზრდა" data-i18n-aria="qty_more">+</button></div>'
         f'<button type="button" class="add-btn" data-sku="{sku}" data-name="{name}" data-price="{gel}" data-i18n="add_to_cart">კალათაში</button></div>'
-        f'<a class="button button-line pd-ask" href="{html.escape(wa, quote=True)}" target="_blank" rel="noopener noreferrer"><span data-i18n="pd_ask">კითხვა WhatsApp-ით</span></a>'
-        f'<p class="pk-links"><a class="text-link" href="/p150-max.html#specifications" data-local><span data-i18n="pd_pk_specs">P150 MAX-ის სრული მახასიათებლები</span><span aria-hidden="true">→</span></a>'
-        f'<a class="text-link" href="/p150-max-platform?kit={sku.split('-')[-1].lower()}#configurator" data-local><span data-i18n="pd_pk_cfg">კომპლექტის შეცვლა კონფიგურატორში</span><span aria-hidden="true">→</span></a></p>'
+        f'<p class="pd-links"><a href="/p150-max.html#specifications" data-local><span data-i18n="pd_pk_specs">P150 MAX-ის სრული მახასიათებლები</span></a>'
+        f'<a href="/p150-max-platform?kit={sku.split('-')[-1].lower()}#configurator" data-local><span data-i18n="pd_pk_cfg">კომპლექტის შეცვლა კონფიგურატორში</span></a></p>'
         f'</article></div></section>\n</template>\n')
 
 # ---- Standalone P150 MAX platform page (owner, 16 Oct 2026, second brief): compact first screen —
@@ -231,7 +228,7 @@ out.append(
     f'<dl class="pp-details"><div><dt data-i18n="pd_pf_included">შედის</dt><dd data-i18n="pd_pf_included_v">P150 MAX პლატფორმა, RevoSpray 5</dd></div>'
     f'<div><dt data-i18n="pd_code">მწარმოებლის კოდი</dt><dd>{P.PLATFORM}</dd></div></dl>'
     f'<p class="pp-links"><a class="text-link" href="/p150-max.html#specifications" data-local><span data-i18n="pd_pk_specs">P150 MAX-ის სრული მახასიათებლები</span><span aria-hidden="true">→</span></a>'
-    f'<a class="text-link" href="{html.escape(_wa, quote=True)}" target="_blank" rel="noopener noreferrer"><span data-i18n="pd_ask">კითხვა WhatsApp-ით</span><span aria-hidden="true">→</span></a></p>'
+    f'</p>'
     f'</article></div></section>\n'
     f'  {PCFG.block()}\n</template>\n')
 
@@ -262,16 +259,14 @@ for m in LM.MODELS:
     put(f'pd_{pid}_spec', tuple(m['specs']))
     out.append(
         f'<template data-page="{slug}.html" data-ka-title="{html.escape(L["short"] + " — წინა თაობის მოდელი | საქართველოს პრემიუმ დრონები", quote=True)}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro">\n'
-        f'  <section class="page-hero pd-hero"><div class="container"><a class="back-link" href="/shop.html#previous-models" data-local data-i18n="pd_lg_back">← წინა მოდელები</a>'
-        f'<p class="eyebrow" data-i18n="pd_lg_eyebrow">წინა თაობა</p><h1>{html.escape(L["short"])}</h1><p class="product-orig">{html.escape(m["name"])}</p>'
-        f'<p class="page-intro" data-i18n="pd_{pid}_intro">{html.escape(c["ka"][f"pd_{pid}_intro"])}</p></div></section>\n'
-        f'  <section class="section pd-main"><div class="container pd-grid">'
-        f'<div class="pk-gallery"><div class="product-photo pd-photo pk-main"><img id="pkMain" src="{pics[0][0]}" width="1200" height="900" alt="{html.escape(pics[0][3], quote=True)}" data-i18n-alt="{pics[0][2]}" decoding="async"></div>'
+        f'  <section class="section pp-main pd-page"><div class="container pp-grid"><div class="pp-head pd-head"><a class="back-link pp-back" href="/shop.html#previous-models" data-local data-i18n="pd_lg_back">← წინა მოდელები</a>'
+        f'<p class="eyebrow" data-i18n="pd_lg_eyebrow">წინა თაობა</p><h1 class="pp-title">{html.escape(L["short"])}</h1><p class="product-orig">{html.escape(m["name"])}</p>'
+        f'<p class="pd-intro" data-i18n="pd_{pid}_intro">{html.escape(c["ka"][f"pd_{pid}_intro"])}</p></div>'
+        f'<div class="pk-gallery pp-gallery"><div class="product-photo pd-photo pk-main"><img id="pkMain" src="{pics[0][0]}" width="1200" height="900" alt="{html.escape(pics[0][3], quote=True)}" data-i18n-alt="{pics[0][2]}" decoding="async"></div>'
         f'<div class="pk-thumbs" aria-label="ფოტო" data-i18n-aria="pd_pk_photo">{thumbs}</div></div>'
         f'<article class="product product-out pd-buybox" data-cat="legacy" data-avail="out">'
         f'<h2 class="pk-in-title" data-i18n="pd_specs">მახასიათებლები</h2><p class="product-specs" data-i18n="pd_{pid}_spec">{html.escape(spec_ka)}</p>'
         f'<p class="product-stock is-out" data-i18n="out_of_stock">არ არის მარაგში</p>'
-        f'<p class="small-note" data-i18n="pd_lg_note">{html.escape(T2["pd_lg_note"][0])}</p>'
         f'<a class="button button-line consult-btn" href="/consultation" data-local><span data-i18n="consult_cta">კონსულტაცია</span></a>'
         f'<p class="small-note"><span data-i18n="pd_lg_source">{html.escape(T2["pd_lg_source"][0])}</span></p>'
         f'</article></div></section>\n</template>\n')

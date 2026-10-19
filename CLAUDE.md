@@ -244,3 +244,8 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   'დაგავიწყდათ პაროლი?' only shows when /api/account/config says reset:true. Google/Apple buttons only show when their secrets exist.
   Procurement topic (gov) hidden from menu and form (worker still accepts it; link kept as an HTML comment in dist/index.html).
   Working hours live only on /consultation (.contact-hours: hours_*, visit_note); footer has no hours.
+- (owner, 19 Oct 2026, design-preview) Product/package/previous-model pages use the compact platform-page layout (.pd-page in .pp-grid); no "კითხვა WhatsApp-ით" button
+  anywhere (pd_ask unused); spec/configurator links are small .pd-links. P150 MAX page: the "ძირითადი მახასიათებლები" summary grid (#specs) was removed as a repeat
+  (home link → #specifications). Menu: removed Services "ორიგინალი ნაწილები" (repeat of Products → ყველა ნაწილი) and the Media gallery column (promo card stays).
+  Typography trial .type-v2 ONLY on /p150-max-pro until approved: D-DIN has only 400 + Bold, so weight 500 renders as 400 in Latin — use 600 for headings/prices/buttons;
+  Noto Georgian has real 400/500/600. Phone body text and inputs ≥16px.
