@@ -32,6 +32,7 @@
   }
   if (!page) return;
 
+  var social = document.getElementById("accSocial");
   var guest = document.getElementById("accGuest"), user = document.getElementById("accUser"), off = document.getElementById("accOff");
   function msg(form, text, ok) {
     var m = form.querySelector(".acc-msg"); m.textContent = text; m.hidden = !text; m.classList.toggle("is-ok", !!ok);
@@ -41,10 +42,11 @@
   function errText(d) { return lb(ERR[d && d.error] || "acc_err_server"); }
 
   function showUser(d) {
-    page.setAttribute("data-state", "user"); guest.hidden = true; user.hidden = false; off.hidden = true;
+    page.setAttribute("data-state", "user"); guest.hidden = true; user.hidden = false; off.hidden = true; if (social) social.hidden = true;
     document.getElementById("accHello").textContent = lb("acc_hello").replace("{name}", d.user.name);
     var pf = document.getElementById("profileForm");
     ["name", "phone", "company", "address"].forEach(function (k) { pf.elements[k].value = d.user[k] || ""; });
+    if (!d.user.phone) msg(pf, lb("acc_need_phone"));
     var list = document.getElementById("accOrders"); list.textContent = "";
     var orders = d.orders || [];
     if (!orders.length) { var li = document.createElement("li"); li.className = "acc-empty"; li.textContent = lb("acc_no_orders"); list.appendChild(li); }
@@ -62,7 +64,7 @@
       li.append(top, meta, items); list.appendChild(li);
     });
   }
-  function showGuest() { page.setAttribute("data-state", "guest"); guest.hidden = false; user.hidden = true; }
+  function showGuest() { page.setAttribute("data-state", "guest"); guest.hidden = false; user.hidden = true; if (social) social.hidden = !socialAny; }
 
   var login = document.getElementById("loginForm"), reg = document.getElementById("registerForm"), pf = document.getElementById("profileForm");
   login.addEventListener("submit", function (e) {
@@ -92,7 +94,22 @@
   });
   document.getElementById("accLogout").addEventListener("click", function () { api("logout", {}).then(showGuest, showGuest); });
 
+  /* Google / Apple: buttons only when the server has their keys; ?auth=error comes back from a failed sign-in. */
+  var socialAny = false, auth = (location.search.match(/[?&]auth=(\w+)/) || [])[1];
+  function setupSocial(c) {
+    var any = false, lang = document.documentElement.lang || "ka";
+    [["accGoogle", c.google, "google"], ["accApple", c.apple, "apple"]].forEach(function (b) {
+      var a = document.getElementById(b[0]); if (!a) return;
+      a.hidden = !b[1]; if (b[1]) { any = true; a.href = "/api/auth/" + b[2] + "/start?lang=" + encodeURIComponent(lang); }
+    });
+    socialAny = any; social.hidden = !any;
+    if (auth === "error" || auth === "off") {
+      var m = document.getElementById("accSocialMsg"); m.textContent = lb("acc_err_social"); m.hidden = false; socialAny = true; social.hidden = false;
+    }
+    if (auth && history.replaceState) history.replaceState(null, "", location.pathname + location.hash);
+  }
   fetch("/api/account/config").then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (c) {
+    if (c && c.enabled && social) setupSocial(c);
     if (!c || !c.enabled) {
       page.setAttribute("data-state", "off"); off.hidden = false;
       [login, reg].forEach(function (f) { Array.prototype.forEach.call(f.elements, function (x) { x.disabled = true; }); });

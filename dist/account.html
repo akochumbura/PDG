@@ -19,13 +19,13 @@
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=dea93b4c62">
   <script>try{var t=localStorage.getItem("pdge-theme")||"light";document.documentElement.dataset.theme=t}catch(e){}</script>
   <link rel="preload" href="/assets/fonts/NotoSansGeorgian-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/assets/css/style.css?v=4bafd8fae4">
-  <script src="/assets/js/content.js?v=c22e00c1b1" defer></script>
+  <link rel="stylesheet" href="/assets/css/style.css?v=619a5ece1e">
+  <script src="/assets/js/content.js?v=80ea67dcf6" defer></script>
   <script src="/assets/js/script.js?v=8c41e29a91" defer></script>
   <script src="/assets/js/payments-config.js?v=156ada99b6" defer></script>
   <script src="/assets/js/shop.js?v=6c5981f13e" defer></script>
   <script src="/assets/js/chat.js?v=c7a8f32027" defer></script>
-  <script src="/assets/js/account.js?v=63028d01bf" defer></script>
+  <script src="/assets/js/account.js?v=bad5cb7838" defer></script>
 <meta name="robots" content="noindex">
 <link rel="canonical" href="https://premium-drones.ge/account">
 <link rel="alternate" hreflang="ka" href="https://premium-drones.ge/account">
@@ -107,6 +107,10 @@
 </div></section>
   <section class="section"><div class="container account" id="account" data-state="loading">
     <p class="acc-off" id="accOff" hidden data-i18n="acc_off">ანგარიშები მალე ჩაირთვება. მანამდე შეუკვეთეთ კალათიდან WhatsApp-ით ან ელფოსტით.</p>
+      <div class="acc-social" id="accSocial" hidden>
+<a class="acc-social-btn acc-google" id="accGoogle" href="/api/auth/google/start" hidden><svg viewbox="0 0 18 18" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"></path><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"></path><path fill="#FBBC05" d="M3.97 10.72A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.18.29-1.72V4.95H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.05l3.01-2.33z"></path><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58A8.95 8.95 0 0 0 9 0 9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"></path></svg><span data-i18n="acc_google">Google-ით შესვლა</span></a><a class="acc-social-btn acc-apple" id="accApple" href="/api/auth/apple/start" hidden><svg viewbox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg><span data-i18n="acc_apple">Apple-ით შესვლა</span></a><p class="acc-msg" id="accSocialMsg" role="alert" hidden></p>
+<p class="acc-or"><span data-i18n="acc_or">ან ელფოსტით</span></p>
+</div>
     <div class="acc-guest" id="accGuest">
       <form class="acc-card" id="loginForm" novalidate>
         <h2 data-i18n="acc_login_title">შესვლა</h2>
@@ -150,7 +154,9 @@
 </div>
       </div>
     </div>
-    <p hidden id="lb_acc_hello" data-i18n="acc_hello">გამარჯობა, {name}</p>
+    <p hidden id="lb_acc_err_social" data-i18n="acc_err_social">შესვლა ვერ მოხერხდა. სცადეთ ხელახლა ან შედით ელფოსტით.</p>
+<p hidden id="lb_acc_need_phone" data-i18n="acc_need_phone">შეკვეთისთვის დაამატეთ ტელეფონის ნომერი.</p>
+<p hidden id="lb_acc_hello" data-i18n="acc_hello">გამარჯობა, {name}</p>
 <p hidden id="lb_acc_saved" data-i18n="acc_saved">შენახულია.</p>
 <p hidden id="lb_acc_err_exists" data-i18n="acc_err_exists">ამ ელფოსტით ანგარიში უკვე არსებობს. შედით.</p>
 <p hidden id="lb_acc_err_login" data-i18n="acc_err_login">ელფოსტა ან პაროლი არასწორია.</p>

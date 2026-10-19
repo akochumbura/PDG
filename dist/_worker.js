@@ -70,6 +70,7 @@ async function api(request, env, url) {
       if (route === 'GET /api/telegram/setup') return await telegramSetup(env, url);
       if (route === 'POST /api/telegram/hook') return await telegramHook(request, env, url);
       if (route === 'POST /api/chat/reply') return await liveReply(request, env, url);
+      if (url.pathname.startsWith('/api/auth/')) return await socialAuth(route, request, env, url);
       if (url.pathname.startsWith('/api/account/') || url.pathname.startsWith('/api/admin/')) return await account(route, request, env, url);
       if (route === 'POST /api/chat') return await chat(request, env, url);
       return json({ error: 'not_found' }, 404);
@@ -512,7 +513,7 @@ async function startSession(env, email) {
 }
 
 async function account(route, request, env, url) {
-  if (route === 'GET /api/account/config') return json({ enabled: accountsOn(env) });
+  if (route === 'GET /api/account/config') return json({ enabled: accountsOn(env), google: accountsOn(env) && googleOn(env), apple: accountsOn(env) && appleOn(env) });
   if (route.startsWith('GET /api/admin/reset')) return adminReset(env, url);
   if (!accountsOn(env)) return json({ error: 'accounts_off' }, 503);
   const store = kv(env);
@@ -546,7 +547,7 @@ async function account(route, request, env, url) {
     const fails = Number(await store.get(failKey)) || 0;
     if (fails >= 8) return json({ error: 'locked' }, 429);
     const u = emailOk(email) ? await store.get('user:' + email, 'json') : null;
-    const ok = u && same(await pbkdf2(String(input.password || ''), u.salt), u.hash);
+    const ok = u && u.salt && u.hash && same(await pbkdf2(String(input.password || ''), u.salt), u.hash);
     if (!ok) {
       await store.put(failKey, String(fails + 1), { expirationTtl: 900 });
       return json({ error: 'login' }, 401);
@@ -587,6 +588,96 @@ async function account(route, request, env, url) {
     return json({ ref });
   }
   return json({ error: 'not_found' }, 404);
+}
+
+/* ---------------- Google and Apple sign-in (docs/11-accounts.md) ----------------
+   Off until the secrets exist: GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET; APPLE_SERVICES_ID + APPLE_TEAM_ID + APPLE_KEY_ID +
+   APPLE_PRIVATE_KEY (the .p8 file text). Flow: /api/auth/<p>/start → provider → /api/auth/<p>/callback → session cookie → /account.
+   The id_token comes straight from the provider's token endpoint over TLS (server to server), so its claims are trusted
+   after checking iss, aud and expiry. Accounts are keyed by e-mail: a verified provider e-mail signs in to the same account. */
+function googleOn(env) { return Boolean(String(secret(env, 'GOOGLE_CLIENT_ID')).trim() && String(secret(env, 'GOOGLE_CLIENT_SECRET')).trim()); }
+function appleOn(env) { return ['APPLE_SERVICES_ID', 'APPLE_TEAM_ID', 'APPLE_KEY_ID', 'APPLE_PRIVATE_KEY'].every(k => String(secret(env, k)).trim()); }
+const b64url = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const b64urlText = t => b64url(enc.encode(t));
+function jwtClaims(token) {
+  const part = String(token || '').split('.')[1] || '';
+  const bin = atob(part.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((part.length + 3) % 4));
+  return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))));
+}
+async function appleClientSecret(env) {
+  const pem = String(secret(env, 'APPLE_PRIVATE_KEY')).replace(/\\n/g, '\n').replace(/-----[^-]+-----/g, '').replace(/\s+/g, '');
+  const key = await crypto.subtle.importKey('pkcs8', Uint8Array.from(atob(pem), c => c.charCodeAt(0)), { name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign']);
+  const now = Math.floor(Date.now() / 1000);
+  const head = b64urlText(JSON.stringify({ alg: 'ES256', kid: String(secret(env, 'APPLE_KEY_ID')).trim() }));
+  const body = b64urlText(JSON.stringify({ iss: String(secret(env, 'APPLE_TEAM_ID')).trim(), iat: now, exp: now + 300, aud: 'https://appleid.apple.com', sub: String(secret(env, 'APPLE_SERVICES_ID')).trim() }));
+  const sig = await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, key, enc.encode(head + '.' + body));
+  return head + '.' + body + '.' + b64url(sig);
+}
+function accountPage(lang, result) {
+  return (lang === 'ka' ? '' : '/' + lang) + '/account' + (result ? '?auth=' + result : '');
+}
+function goTo(location, cookies = []) {
+  const h = new Headers({ Location: location, 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' });
+  cookies.forEach(c => h.append('Set-Cookie', c));
+  return new Response(null, { status: 303, headers: h });
+}
+// SameSite=None: Apple returns with a cross-site POST (form_post), which never carries Lax cookies.
+const stateCookie = (v, age) => `pdg_oauth=${v}; Path=/api/auth/; HttpOnly; Secure; SameSite=None; Max-Age=${age}`;
+
+async function socialAuth(route, request, env, url) {
+  const m = route.match(/^(GET|POST) \/api\/auth\/(google|apple)\/(start|callback)$/);
+  if (!m) return json({ error: 'not_found' }, 404);
+  const [, method, provider, step] = m;
+  const on = accountsOn(env) && (provider === 'google' ? googleOn(env) : appleOn(env));
+  const redirectUri = url.origin + '/api/auth/' + provider + '/callback';
+  if (step === 'start') {
+    const lang = LANGS.includes(url.searchParams.get('lang')) ? url.searchParams.get('lang') : 'ka';
+    if (!on || method !== 'GET') return goTo(accountPage(lang, 'off'));
+    const state = randomHex(16);
+    const q = provider === 'google'
+      ? { client_id: String(secret(env, 'GOOGLE_CLIENT_ID')).trim(), redirect_uri: redirectUri, response_type: 'code', scope: 'openid email profile', state, prompt: 'select_account' }
+      : { client_id: String(secret(env, 'APPLE_SERVICES_ID')).trim(), redirect_uri: redirectUri, response_type: 'code', response_mode: 'form_post', scope: 'name email', state };
+    const base = provider === 'google' ? 'https://accounts.google.com/o/oauth2/v2/auth' : 'https://appleid.apple.com/auth/authorize';
+    return goTo(base + '?' + new URLSearchParams(q), [stateCookie(state + '.' + lang, 600)]);
+  }
+  // Callback: Google = GET with ?code&state, Apple = POST form (code, state, user on the first sign-in only).
+  const [want, langRaw] = cookie(request, 'pdg_oauth').split('.');
+  const lang = LANGS.includes(langRaw) ? langRaw : 'ka';
+  const fail = why => { console.log('social sign-in failed', provider, why); return goTo(accountPage(lang, 'error'), [stateCookie('x', 0)]); };
+  if (!on) return goTo(accountPage(lang, 'off'), [stateCookie('x', 0)]);
+  let params;
+  if (method === 'POST') {
+    if (Number(request.headers.get('Content-Length') || 0) > 20000) return fail('too_large');
+    params = new URLSearchParams((await request.text()).slice(0, 20000));
+  } else params = url.searchParams;
+  if (params.get('error')) return goTo(accountPage(lang, params.get('error') === 'access_denied' || params.get('error') === 'user_cancelled_authorize' ? '' : 'error'), [stateCookie('x', 0)]);
+  const got = params.get('state') || '', code = params.get('code') || '';
+  if (!/^[a-f0-9]{32}$/.test(want || '') || !same(got, want)) return fail('state');
+  if (!code || code.length > 2000) return fail('code');
+  const clientId = String(secret(env, provider === 'google' ? 'GOOGLE_CLIENT_ID' : 'APPLE_SERVICES_ID')).trim();
+  const form = { code, client_id: clientId, redirect_uri: redirectUri, grant_type: 'authorization_code',
+    client_secret: provider === 'google' ? String(secret(env, 'GOOGLE_CLIENT_SECRET')).trim() : await appleClientSecret(env) };
+  const res = await fetch(provider === 'google' ? 'https://oauth2.googleapis.com/token' : 'https://appleid.apple.com/auth/token',
+    { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json' }, body: new URLSearchParams(form) });
+  const tok = await res.json().catch(() => ({}));
+  if (!res.ok || !tok.id_token) return fail('token ' + res.status + ' ' + (tok.error || ''));
+  let c;
+  try { c = jwtClaims(tok.id_token); } catch (e) { return fail('id_token'); }
+  const iss = provider === 'google' ? ['https://accounts.google.com', 'accounts.google.com'] : ['https://appleid.apple.com'];
+  if (!iss.includes(c.iss) || c.aud !== clientId || !(Number(c.exp) * 1000 > Date.now()) || !c.sub) return fail('claims');
+  const email = clean(c.email, 254).toLowerCase();
+  if (!emailOk(email) || !(c.email_verified === true || c.email_verified === 'true')) return fail('email');
+  let name = provider === 'google' ? clean(c.name, 100) : '';
+  if (provider === 'apple') { try { const u = JSON.parse(params.get('user') || '{}').name || {}; name = clean([u.firstName, u.lastName].filter(Boolean).join(' '), 100); } catch (e) { } }
+  const store = kv(env);
+  let u = await store.get('user:' + email, 'json');
+  if (!u) {
+    u = { name: name || email.split('@')[0], email, phone: '', company: '', address: '', created: new Date().toISOString(), orders: [] };
+  } else if (!u.name && name) u.name = name;
+  u[provider] = String(c.sub).slice(0, 200);
+  await store.put('user:' + email, JSON.stringify(u));
+  const token = await startSession(env, email);
+  return goTo(accountPage(lang, ''), [sessionCookie(token, 60 * 60 * 24 * SESSION_DAYS), stateCookie('x', 0)]);
 }
 
 async function adminReset(env, url) {

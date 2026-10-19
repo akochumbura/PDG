@@ -221,3 +221,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   descriptions). Only Starter / Pro / Business, batteries, chargers, RTK (— when not included), price, "კომპლექტაციის ნახვა". Desktop table, phone = 3 stacked
   cards; Pro accented in red. Package contents labels are the short names (XAG SRC5 მართვის პულტი etc.).
 - (owner, 19 Oct 2026, 02:42) Home page has NO packages section (no platform row, kit cards or comparison): hero, dealer strip, capabilities, ecosystem, why PDG, contact. Hero primary 'ფასები და კომპლექტაციები' → /shop#kits. Comparison stays on /p150-max (#compare).
+
+- (owner, 19 Oct 2026) Google + Apple sign-in on /account (socialAuth in worker.template.js, account.js, docs/11-accounts.md). Off until secrets:
+  GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET; APPLE_SERVICES_ID/APPLE_TEAM_ID/APPLE_KEY_ID/APPLE_PRIVATE_KEY. Accounts keyed by verified e-mail; profile asks for phone.
+  Menu: 'ყველა ნაწილი' is the first link under 'ნაწილები და ენერგია'. Home hero button text = 'კომპლექტაციები'.

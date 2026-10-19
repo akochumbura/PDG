@@ -52,6 +52,7 @@ for path,doc in documents.items():
             if attr=='srcset':raw=raw.split()[0]
             parts=urlsplit(raw)
             if parts.scheme or parts.netloc:continue
+            if parts.path.startswith('/api/auth/'):continue  # served by dist/_worker.js (Google / Apple sign-in)
             if not parts.path:target=path
             else:target=(PUBLIC/unquote(parts.path).lstrip('/')) if parts.path.startswith('/') else path.parent/unquote(parts.path)
             if target.is_dir():target/= 'index.html'
