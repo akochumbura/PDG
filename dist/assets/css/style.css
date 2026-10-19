@@ -1642,3 +1642,7 @@ h3,.model-name{font-weight:600}
 @media(max-width:768px){.about-mission{font-size:22px}.faq-item summary{font-size:16px}}
 .model-newer{margin-top:12px;display:inline-flex}
 .pd-newer{display:inline-flex;margin-top:4px}
+
+/* Home contact band: company name as the heading (owner 19 Oct 2026) */
+.contact-inner .eyebrow{font-family:inherit;font-size:clamp(30px,3.6vw,54px);font-weight:600;line-height:1.2;margin-bottom:20px;opacity:1;letter-spacing:0;text-transform:none;color:var(--on-dark)}
+@media(max-width:768px){.contact-inner .eyebrow{font-size:32px}}
