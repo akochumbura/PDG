@@ -14,3 +14,7 @@ PAYMENTS = {'threshold': 20000, 'deposit_percent': 10}
 # Delivery in Georgia (owner, 16 Oct 2026): orders under 100 GEL pay 30 GEL delivery; from 100 GEL delivery is free.
 # Pickup from the Tbilisi storage (by appointment) is always free.
 SHIPPING = {'fee': 30, 'free_from': 100}
+
+# Analytics (owner, 19 Oct 2026): Google Analytics 4 Measurement ID (G-XXXXXXXXXX). Empty = no Google script is loaded.
+# Cloudflare Web Analytics is switched on in the Cloudflare dashboard (Pages > pdg > Metrics), not here.
+GA_ID = ''

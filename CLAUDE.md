@@ -225,3 +225,5 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 19 Oct 2026) Google + Apple sign-in on /account (socialAuth in worker.template.js, account.js, docs/11-accounts.md). Off until secrets:
   GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET; APPLE_SERVICES_ID/APPLE_TEAM_ID/APPLE_KEY_ID/APPLE_PRIVATE_KEY. Accounts keyed by verified e-mail; profile asks for phone.
   Menu: 'ყველა ნაწილი' is the first link under 'ნაწილები და ენერგია'. Home hero button text = 'კომპლექტაციები'.
+
+- (owner, 19 Oct 2026) Analytics: Cloudflare Web Analytics (dashboard toggle, CSP already allows its beacon) + Google Analytics 4 via scripts/site_config.py GA_ID (build writes dist/assets/js/analytics.js and opens the CSP for Google only when GA_ID is set). No cookie banner yet.

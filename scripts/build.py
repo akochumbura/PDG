@@ -14,7 +14,11 @@ run(py,'scripts/build-shop.py'); run(py,'scripts/build-specs.py'); run(py,'scrip
 # Cache busting: every page asks for the current CSS/JS (assets are cached for an hour by Cloudflare and browsers).
 import hashlib,re
 D=ROOT/'dist'
-ver={p:hashlib.sha1((D/p.lstrip('/')).read_bytes()).hexdigest()[:10] for p in ['/assets/css/style.css']+[f'/assets/js/{n}' for n in ('content.js','script.js','shop.js','payments-config.js','chat.js','account.js')] if (D/p.lstrip('/')).exists()}
+# analytics.js is generated from site_config.GA_ID (empty ID = file does nothing and the CSP does not open Google hosts)
+import site_config as _sc
+GA=getattr(_sc,'GA_ID','').strip()
+(D/'assets/js/analytics.js').write_text(("window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','"+GA+"',{anonymize_ip:true});var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id="+GA+"';document.head.appendChild(s);\n") if GA else "/* analytics off: set GA_ID in scripts/site_config.py */\n",encoding='utf-8')
+ver={p:hashlib.sha1((D/p.lstrip('/')).read_bytes()).hexdigest()[:10] for p in ['/assets/css/style.css']+[f'/assets/js/{n}' for n in ('content.js','script.js','shop.js','payments-config.js','chat.js','account.js','analytics.js')] if (D/p.lstrip('/')).exists()}
 # Images too (logos, product photos): a recoloured or replaced picture must reach visitors at once, not after the cache expires.
 def img_ver(p):
     f=D/p.lstrip('/')
@@ -35,8 +39,9 @@ def csp_hashes():
             if 'json' in m.group(1): continue
             found.add("'sha256-"+base64.b64encode(hashlib.sha256(m.group(2).encode('utf-8')).digest()).decode()+"'")
     return sorted(found)
-CSP=("default-src 'self'; script-src 'self' "+' '.join(csp_hashes())+"; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; "
-     "connect-src 'self'; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests")
+GAH=" https://static.cloudflareinsights.com"+(" https://www.googletagmanager.com" if GA else "")  # Cloudflare Web Analytics beacon is always allowed
+CSP=("default-src 'self'; script-src 'self' "+' '.join(csp_hashes())+GAH+"; style-src 'self' 'unsafe-inline'; img-src 'self' data:"+(" https://www.google-analytics.com https://www.googletagmanager.com" if GA else "")+"; font-src 'self'; "
+     "connect-src 'self' https://cloudflareinsights.com"+(" https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com" if GA else "")+"; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests")
 hp=D/'_headers'; hs=hp.read_text(encoding='utf-8')
 hs=re.sub(r'^  (Content-Security-Policy|Strict-Transport-Security):.*\n','',hs,flags=re.M)
 hs=hs.replace('/*\n','/*\n  Strict-Transport-Security: max-age=31536000\n  Content-Security-Policy: '+CSP+'\n',1)
