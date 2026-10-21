@@ -10,7 +10,7 @@ def run(*a):
     r=subprocess.run(list(a),cwd=ROOT)
     if r.returncode: sys.exit(r.returncode)
 py=sys.executable
-run(py,'scripts/build-shop.py'); run(py,'scripts/build-specs.py'); run(py,'scripts/build-products.py'); run(py,'scripts/build-pages.py',pricing.SITE_URL); run(py,'scripts/build-search.py')
+run(py,'scripts/build-shop.py'); run(py,'scripts/build-specs.py'); run(py,'scripts/build-products.py'); run(py,'scripts/build-pages.py',pricing.SITE_URL); run(py,'scripts/build-search.py'); run(py,'scripts/build-feed.py')
 # Cache busting: every page asks for the current CSS/JS (assets are cached for an hour by Cloudflare and browsers).
 import hashlib,re
 D=ROOT/'dist'
