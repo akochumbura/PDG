@@ -1736,3 +1736,4 @@ h3,.model-name{font-weight:600}
 .why-compact .why-item p{font-size:15px;line-height:1.55}
 .contact-band{padding-block:clamp(40px,5vw,64px)}
 .dealer-band .dealer-about{margin-top:6px}
+@media(max-width:820px){.eco-link{min-height:120px}.eco-link img{aspect-ratio:auto;height:0;min-height:100%;width:36%;flex:0 0 36%}}
