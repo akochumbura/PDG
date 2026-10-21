@@ -254,7 +254,10 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   out of stock). Menu column "სასოფლო-სამეურნეო დრონები" = "ყველა დრონი" (/drones) + "XAG P150 MAX" only. Old pages/anchors are kept (no broken links).
 
 ## STILL TO DO (owner side, as of 19 Oct 2026 night)
-- RESEND_API_KEY (+ verify premium-drones.ge sender in Resend; add its DNS records without touching the email records) → password reset + consultation e-mails; then test real delivery.
+- DONE 21 Oct 2026: Resend domain premium-drones.ge verified (region Tokyo, owner chose to keep it; DNS: TXT resend._domainkey, CNAME send + rsend, DNS only),
+  sending-only key "premium-drones website" saved as secret RESEND_API_KEY (owner pasted it), deployment retried; /api/account/config reset:true. Still to do: one real test e-mail (owner submits the consultation form once).
+  OPENAI_API_KEY secret exists on pdg (chat AI key) — confirm a live AI reply.
+- Note: a GitHub incident (21 Oct 2026) stopped push-triggered deploys; Cloudflare → pdg → Deployments → ⋯ → Retry deployment redeploys.
 - Google sign-in: GOOGLE_CLIENT_ID/SECRET (redirect https://premium-drones.ge/api/auth/google/callback). Apple: APPLE_SERVICES_ID/TEAM_ID/KEY_ID/PRIVATE_KEY (paid developer account,
   return URL https://premium-drones.ge/api/auth/apple/callback). Untested with real accounts; buttons stay hidden until secrets exist.
 - Bing Webmaster sign-in + import from Search Console; Instagram/YouTube/TikTok bio links; GA key event (generate_lead) once received; XAG/NIK message and 7 post drafts (not sent);
@@ -264,3 +267,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   footer link nav_faq). The owner wants the FAQ UPDATED FROM REAL customer questions (chat, WhatsApp, consultation inbox): add/replace items there, ka/en/ru.
   Georgian "საქშენი" is never used: always "გამფრქვევი". Previous-generation models (cards on /drones and /shop, their own pages) carry the link "ახალი თაობა: XAG P150 MAX" → /p150-max (lg_newer).
 - (owner, 19 Oct 2026) Home hero primary button = 'დეტალები' (hero_prices; en Details, ru Подробнее) → /p150-max (the P150 MAX details page, top; packages with prices are lower down at #kits). Same button on the P150 MAX card of /drones.
+
+- (21 Oct 2026) FAQ faq_q9/faq_a9 (spraying price: depends on crop + area, small areas in Lagodekhi district, no prices published) and faq_q10/faq_a10 (how to buy) from real Messenger questions.
+  YouTube channel: description, link premium-drones.ge, e-mail info@premium-drones.ge added. GA4 key events: call_click, whatsapp_click (generate_lead once it arrives).
+  Meta Business Agent: clean "ფასი" disambiguation instruction + location rule (never confirm service location/area; ask crop, ha, location; hand off). Owner's older instructions conflict on service area (5 ha Lagodekhi / 10 ha Kakheti / 50 ha Kakheti) — owner to decide.
