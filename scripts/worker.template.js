@@ -768,13 +768,14 @@ async function contactBudget(env, ip) {
 }
 function contactValidate(input) {
   const fields = {};
-  const name = clean(input.name, 100), phone = clean(input.phone, 30), topic = String(input.topic || ''), message = String(input.message || '').replace(/[\u0000-\u0008\u000b-\u001f\u007f<>]/g, ' ').replace(/[ \t]+/g, ' ').trim().slice(0, 3000);
+  const name = clean(input.name, 100), phone = clean(input.phone, 30), email = clean(input.email, 120).toLowerCase(), topic = String(input.topic || ''), message = String(input.message || '').replace(/[\u0000-\u0008\u000b-\u001f\u007f<>]/g, ' ').replace(/[ \t]+/g, ' ').trim().slice(0, 3000);
   const digits = phone.replace(/\D/g, '').length;
   if (name.length < 2) fields.name = 'required';
   if (!/^[+()\d\s.\-]+$/.test(phone) || digits < 9 || digits > 15) fields.phone = 'phone';
+  if (email && !/^[^\s@<>",;]+@[^\s@<>",;]+\.[a-z]{2,}$/i.test(email)) fields.email = 'email';
   if (!CONTACT_TOPICS.includes(topic)) fields.topic = 'topic';
   if ((message.match(/https?:\/\/|www\./gi) || []).length > 2) fields.message = 'links';
-  return { fields, ok: !Object.keys(fields).length, rec: { name, phone, topic, message } };
+  return { fields, ok: !Object.keys(fields).length, rec: { name, phone, email: fields.email ? '' : email, topic, message } };
 }
 const RESET_TEXT = {
   ka: ['პაროლის აღდგენა — საქართველოს პრემიუმ დრონები', 'პაროლის შესაცვლელად გახსენით ბმული (მოქმედებს 1 საათი, ერთჯერადად):', 'თუ ეს მოთხოვნა თქვენ არ გაგიგზავნიათ, უბრალოდ უგულებელყავით წერილი.'],
@@ -802,10 +803,10 @@ async function contactMail(env, rec, id) {
   const key = String(secret(env, 'RESEND_API_KEY')).trim();
   const to = String(env.CONTACT_TO || 'info@premium-drones.ge').trim();
   const from = String(env.CONTACT_FROM || 'Premium Drones Georgia <no-reply@premium-drones.ge>').trim();
-  const text = `New consultation request (${rec.lang})\nRequest: ${id}\nTime (UTC): ${rec.at}\n\nName: ${rec.name}\nPhone: ${rec.phone}\nTopic: ${rec.topic}\nPage: ${rec.page || '-'}\n\n${rec.message || '(no message)'}\n`;
+  const text = `New consultation request (${rec.lang})\nRequest: ${id}\nTime (UTC): ${rec.at}\n\nName: ${rec.name}\nPhone: ${rec.phone}\nE-mail: ${rec.email || '-'}\nTopic: ${rec.topic}\nPage: ${rec.page || '-'}\n\n${rec.message || '(no message)'}\n`;
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key },
-    body: JSON.stringify({ from, to: [to], subject: ('PDG consultation request: ' + rec.name).replace(/[\r\n]+/g, ' ').slice(0, 120), text }),
+    body: JSON.stringify({ from, to: [to], ...(rec.email ? { reply_to: rec.email } : {}), subject: ('PDG consultation request: ' + rec.name).replace(/[\r\n]+/g, ' ').slice(0, 120), text }),
     signal: AbortSignal.timeout(8000)
   });
   await mailNote(env, 'contact', res);
@@ -813,7 +814,7 @@ async function contactMail(env, rec, id) {
   return true;
 }
 async function contactAlert(env, url, rec) {
-  const msg = `PDG consultation request (${rec.lang}) · ${rec.topic}\n${rec.name} · ${rec.phone}\n\n${rec.message.slice(0, 400)}\n\nAll requests: ${url.origin}/api/contact/inbox`;
+  const msg = `PDG consultation request (${rec.lang}) · ${rec.topic}\n${rec.name} · ${rec.phone}${rec.email ? ' · ' + rec.email : ''}\n\n${rec.message.slice(0, 400)}\n\nAll requests: ${url.origin}/api/contact/inbox`;
   const jobs = [];
   jobs.push(tgSend(env, msg));
   if (env.WHATSAPP_ALERT_PHONE && env.WHATSAPP_ALERT_KEY) {

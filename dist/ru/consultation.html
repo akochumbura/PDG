@@ -19,9 +19,9 @@
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=dea93b4c62">
   <script>try{var t=localStorage.getItem("pdge-theme")||"light";document.documentElement.dataset.theme=t}catch(e){}</script>
   <link rel="preload" href="/assets/fonts/NotoSansGeorgian-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/assets/css/style.css?v=fee48e51cf">
-  <script src="/assets/js/content-ru.js?v=a59a8d90b0" defer></script>
-  <script src="/assets/js/script.js?v=d0c0e733df" defer></script>
+  <link rel="stylesheet" href="/assets/css/style.css?v=4e05fdfed3">
+  <script src="/assets/js/content-ru.js?v=aa41de948a" defer></script>
+  <script src="/assets/js/script.js?v=a9f8381923" defer></script>
   <script src="/assets/js/payments-config.js?v=156ada99b6" defer></script>
   <script src="/assets/js/shop.js?v=9a8d6624af" defer></script>
   <script src="/assets/js/chat.js?v=c7a8f32027" defer></script>
@@ -84,6 +84,9 @@
 </div>
         <a href="/ru/about" data-local class="nav-top-about" data-i18n="nav_about">О нас</a>
         <a class="nav-account-m" href="/ru/account" data-local data-i18n="nav_account">Аккаунт</a>
+        <div class="nav-lang-m" role="group" aria-label="Язык" data-i18n-aria="language_label">
+<a href="/consultation" data-lang="ka" lang="ka">ქართული</a><a href="/en/consultation" data-lang="en" lang="en">English</a><a href="/ru/consultation" data-lang="ru" lang="ru" aria-current="page">Русский</a>
+</div>
       </nav>
       <div class="header-actions">
         <div class="lang-menu">
@@ -135,6 +138,9 @@
 </div>
         <div class="form-field">
 <label for="contactPhone" data-i18n="form_phone">Телефон</label><input id="contactPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="30" aria-describedby="err-contactPhone"><span class="field-error" id="err-contactPhone" aria-live="polite"></span>
+</div>
+        <div class="form-field full">
+<label for="contactEmail" data-i18n="form_email">E-mail (необязательно)</label><input id="contactEmail" name="email" type="email" autocomplete="email" inputmode="email" maxlength="120" aria-describedby="err-contactEmail"><span class="field-error" id="err-contactEmail" aria-live="polite"></span>
 </div>
         <div class="form-field full">
 <label for="contactTopic" data-i18n="form_topic">Чем мы можем помочь?</label><select id="contactTopic" name="topic"><option value="drone" data-i18n="topic_drone">Выбор дрона</option>

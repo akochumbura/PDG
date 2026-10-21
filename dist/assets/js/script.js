@@ -251,6 +251,7 @@
       return error;
     }
     const fields = [document.getElementById("contactName"), document.getElementById("contactPhone")];
+    const emailField = document.getElementById("contactEmail");
     fields.forEach((field) => field.addEventListener("blur", () => validate(field)));
     const loadedAt = Date.now(), status = document.getElementById("formStatus"), sendBtn = form.querySelector('button[type="submit"]');
     const lang = (document.documentElement.lang || "ka").slice(0, 2);
@@ -258,11 +259,12 @@
       event.preventDefault();
       if (sendBtn.disabled) return;
       status.classList.remove("is-error", "is-ok");
+      if (emailField) { const ev = emailField.value.trim(); const bad = ev && !/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(ev); emailField.setAttribute("aria-invalid", String(Boolean(bad))); document.getElementById("err-contactEmail").textContent = bad ? t("error_email") : ""; if (bad) { status.textContent = t("form_check"); status.classList.add("is-error"); emailField.focus(); return; } }
       const invalid = fields.map((field) => ({ field, error: validate(field) })).find((result) => result.error);
       if (invalid) { status.textContent = t("form_check"); status.classList.add("is-error"); invalid.field.focus(); return; }
       sendBtn.disabled = true; status.textContent = t("form_sending");
       const payload = {
-        name: fields[0].value.trim(), phone: fields[1].value.trim(), topic: topic.value,
+        name: fields[0].value.trim(), phone: fields[1].value.trim(), email: emailField ? emailField.value.trim() : "", topic: topic.value,
         message: document.getElementById("contactMessage").value.trim(), website: document.getElementById("contactWebsite").value,
         elapsed: Date.now() - loadedAt, lang, page: location.pathname
       };
