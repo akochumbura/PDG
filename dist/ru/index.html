@@ -21,8 +21,8 @@
   <link rel="preload" href="/assets/fonts/NotoSansGeorgian-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/img/p150-max-flight.webp?v=a092c97404" as="image" media="(min-width: 701px)" imagesrcset="/assets/img/p150-max-flight-2048.webp?v=722dac8934 2048w, /assets/img/p150-max-flight.webp 3840w" imagesizes="100vw" fetchpriority="high">
   <link rel="preload" href="/assets/img/p150-max-flight-1200.webp?v=b2d9e74c15" as="image" media="(max-width: 700px)" fetchpriority="high">
-  <link rel="stylesheet" href="/assets/css/style.css?v=056b729f63">
-  <script src="/assets/js/content-ru.js?v=190bdfda7e" defer></script>
+  <link rel="stylesheet" href="/assets/css/style.css?v=70dba581fd">
+  <script src="/assets/js/content-ru.js?v=dd9b908fa1" defer></script>
   <script src="/assets/js/script.js?v=55844b81e9" defer></script>
   <script src="/assets/js/payments-config.js?v=156ada99b6" defer></script>
   <script src="/assets/js/shop.js?v=9a8d6624af" defer></script>
@@ -136,14 +136,49 @@
     <section class="cap-section" id="drones" aria-labelledby="product-title">
       <div class="container">
         <h2 id="product-title" data-i18n="cap_title">Одна платформа. Четыре возможности.</h2>
-        <p class="flow-line"><a href="/ru/p150-max#map" data-local data-i18n="app_map_t">Картографирование</a>, <a href="/ru/p150-max#spray" data-local data-i18n="app_spray_t">Опрыскивание</a>, <a href="/ru/p150-max#spread" data-local data-i18n="app_spread_t">Разбрасывание гранул</a> <span data-i18n="cap_and">и</span> <a href="/ru/p150-max#cargo" data-local data-i18n="app_cargo_t">Перевозка грузов</a>.</p>
+        <ul class="cap-grid">
+<li>
+<h3 data-i18n="app_map_t">Картографирование</h3>
+<p data-i18n="cap_map_d">Дрон сам составляет карту поля встроенной камерой.</p>
+</li>
+<li>
+<h3 data-i18n="app_spray_t">Опрыскивание</h3>
+<p data-i18n="cap_spray_d">Точное опрыскивание полей, садов и виноградников.</p>
+</li>
+<li>
+<h3 data-i18n="app_spread_t">Разбрасывание гранул</h3>
+<p data-i18n="cap_spread_d">Разбрасывание удобрений и семян с модулем (продаётся отдельно).</p>
+</li>
+<li>
+<h3 data-i18n="app_cargo_t">Перевозка грузов</h3>
+<p data-i18n="cap_cargo_d">Доставка материалов и оборудования в труднодоступные места со специальной системой (продаётся отдельно).</p>
+</li>
+</ul>
+        <a class="text-link cap-link" href="/ru/p150-max#specifications" data-local><span data-i18n="app_cta">Все характеристики</span><span aria-hidden="true">→</span></a>
       </div>
     </section>
-    <section class="flow-section" id="services" aria-labelledby="why-title">
+    <section class="eco-flow-section" id="services" aria-label="Запчасти, сервис, академия" data-i18n-aria="eco_aria">
       <div class="container">
-        <p class="flow-line flow-dark" id="service"><a href="/ru/shop#parts" data-local data-i18n="eco_s_parts">Оригинальные запчасти</a>, <a href="/ru/service" data-local data-i18n="eco_s_serv">технический сервис</a> <span data-i18n="cap_and">и</span> <a href="/ru/academy" data-local data-i18n="eco_s_acad">практическое обучение</a> <span data-i18n="eco_s_tail">— в Грузии.</span></p>
-        <h2 class="flow-h" id="why-title" data-i18n="why_eyebrow">Почему PDG?</h2>
-        <p class="flow-line flow-dark" id="why-pdg"><a href="/ru/about#about-story" data-local data-i18n="why_s1">Специалисты, прошедшие обучение в XAG Academy</a>, <a href="/ru/about#about-story" data-local data-i18n="why_s2">опыт работы в поле с 2023 года</a> <span data-i18n="cap_and">и</span> <a href="/ru/service" data-local data-i18n="why_s3">местная техническая поддержка</a>.</p>
+        <p class="eco-flow" id="service"><a href="/ru/shop#parts" data-local data-i18n="eco_s_parts">Оригинальные запчасти</a>, <a href="/ru/service" data-local data-i18n="eco_s_serv">технический сервис</a> <span data-i18n="cap_and">и</span> <a href="/ru/academy" data-local data-i18n="eco_s_acad">практическое обучение</a> <span data-i18n="eco_s_tail">— в одном месте.</span></p>
+      </div>
+    </section>
+    <section class="why-pdg why-compact" id="why-pdg" aria-labelledby="why-title">
+      <div class="container">
+        <h2 id="why-title" data-i18n="why_eyebrow">Почему PDG?</h2>
+        <div class="why-grid">
+          <div class="why-item">
+<h3 data-i18n="why_1_t">Обучение в XAG Academy</h3>
+<p data-i18n="why_1_p">Наши специалисты прошли обучение в XAG Academy и имеют сертификаты XAG тренера, пилота и техника.</p>
+</div>
+          <div class="why-item">
+<h3 data-i18n="why_2_t">Опыт в поле</h3>
+<p data-i18n="why_2_p">Мы работаем с дронами XAG в полевых условиях с 2023 года.</p>
+</div>
+          <div class="why-item">
+<h3 data-i18n="why_3_t">Склад и поддержка</h3>
+<p data-i18n="why_3_p">Местный склад, оригинальные запчасти и техническая поддержка в Грузии.</p>
+</div>
+        </div>
       </div>
     </section>
     <section class="contact-band section" id="contact" aria-labelledby="contact-eyebrow">
