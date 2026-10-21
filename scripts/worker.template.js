@@ -60,7 +60,7 @@ async function api(request, env, url) {
       if (route === 'POST /api/payments/callback') return await callback(request, env);
       if (route === 'GET /api/orders') return await orders(env, url);
       if (route === 'POST /api/contact') return await contactSubmit(request, env, url);
-      if (route === 'GET /api/contact/config') return json({ enabled: contactReady(env) });
+      if (route === 'GET /api/contact/config') { let last = null; try { last = kv(env) ? JSON.parse(await kv(env).get('mail:last') || 'null') : null; } catch (e) { last = null; } return json({ enabled: contactReady(env), mail: contactMailOn(env), last }); }
       if (route === 'GET /api/contact/inbox') return await contactInbox(env, url);
       if (route === 'GET /api/chat/config') return json({ enabled: chatEnabled(env), live: liveOn(env), alerts: Boolean(String(env.TELEGRAM_BOT_TOKEN || '').trim() && await tgChat(env)), v: 3 });
       if (route === 'POST /api/chat/send') return await liveSend(request, env, url);
@@ -788,7 +788,15 @@ async function resetMail(env, to, link, lang) {
     method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + String(secret(env, 'RESEND_API_KEY')).trim() },
     body: JSON.stringify({ from, to: [to], subject, text: `${line}\n${link}\n\n${ignore}\n` }), signal: AbortSignal.timeout(8000)
   }).catch(() => null);
+  await mailNote(env, 'reset', res);
   if (!res || !res.ok) console.error('reset mail failed', res && res.status);
+}
+/* Last Resend result (kind, HTTP status, Resend error name/message, time) for /api/contact/config. Never stores the key or the e-mail. */
+async function mailNote(env, kind, res) {
+  const store = kv(env); if (!store) return;
+  let err = '';
+  if (res && !res.ok) { try { const j = await res.clone().json(); err = String(j.name || '') + ': ' + String(j.message || '').slice(0, 160); } catch (e) { err = ''; } }
+  await store.put('mail:last', JSON.stringify({ kind, status: res ? res.status : 0, err, at: new Date().toISOString() }), { expirationTtl: 60 * 60 * 24 * 30 }).catch(() => null);
 }
 async function contactMail(env, rec, id) {
   const key = String(secret(env, 'RESEND_API_KEY')).trim();
@@ -800,6 +808,7 @@ async function contactMail(env, rec, id) {
     body: JSON.stringify({ from, to: [to], subject: ('PDG consultation request: ' + rec.name).replace(/[\r\n]+/g, ' ').slice(0, 120), text }),
     signal: AbortSignal.timeout(8000)
   });
+  await mailNote(env, 'contact', res);
   if (!res.ok) { console.error('contact mail failed', res.status); return false; }
   return true;
 }
@@ -835,7 +844,7 @@ async function contactSubmit(request, env, url) {
   const store = kv(env), dupKey = store ? 'contactdup:' + await contactHash(rec.phone + '|' + rec.message) : '';
   if (store && await store.get(dupKey)) return json({ ok: true, id });  // the same request sent twice within 15 minutes
   let stored = false, mailed = false;
-  if (contactMailOn(env)) { try { mailed = await contactMail(env, rec, id); } catch (err) { console.error('contact mail', err && err.name); } rec.mail = mailed ? 'sent' : 'failed'; }
+  if (contactMailOn(env)) { try { mailed = await contactMail(env, rec, id); } catch (err) { console.error('contact mail', err && err.name); await mailNote(env, 'contact-' + String(err && err.name || 'error'), null); } rec.mail = mailed ? 'sent' : 'failed'; }
   if (store) {
     try { await store.put('contact:' + rec.at.replace(/[^\d]/g, '') + '-' + id, JSON.stringify(rec), { expirationTtl: 60 * 60 * 24 * 365 }); stored = true; } catch (err) { console.error('contact store', err && err.name); }
   }
