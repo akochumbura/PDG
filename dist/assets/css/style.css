@@ -1658,3 +1658,4 @@ h3,.model-name{font-weight:600}
   .header-actions{gap:0}
   .header-actions .lang-btn,.header-actions .cart-link{min-width:40px}
 }
+@media(max-width:430px){.header-inner>.brand{width:106px}.header-actions .account-link,.header-actions .lang-btn,.header-actions .cart-link{width:38px;min-width:38px}.header-actions .cart-link{margin-right:-6px}}
