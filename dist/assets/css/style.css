@@ -1651,3 +1651,10 @@ h3,.model-name{font-weight:600}
 .hero .hero-actions .button{justify-content:center;gap:14px}
 .hero .hero-actions .button .arrow{display:inline-block;line-height:1;transform:translateY(0)}
 .hero .hero-actions .button-red{justify-content:center;padding-inline:32px}
+
+/* Account icon on phones, between language and cart (owner 22 Oct 2026) */
+@media(max-width:900px){
+  .header-actions .account-link{display:inline-flex;width:40px;height:44px;margin:0}
+  .header-actions{gap:0}
+  .header-actions .lang-btn,.header-actions .cart-link{min-width:40px}
+}
