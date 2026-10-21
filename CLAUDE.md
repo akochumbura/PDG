@@ -258,7 +258,8 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   sending-only key "premium-drones website" saved as secret RESEND_API_KEY (owner pasted it), deployment retried; /api/account/config reset:true. Still to do: one real test e-mail (owner submits the consultation form once).
   OPENAI_API_KEY secret exists on pdg (chat AI key) — confirm a live AI reply.
 - Note: a GitHub incident (21 Oct 2026) stopped push-triggered deploys; Cloudflare → pdg → Deployments → ⋯ → Retry deployment redeploys.
-- Google sign-in: GOOGLE_CLIENT_ID/SECRET (redirect https://premium-drones.ge/api/auth/google/callback). Apple: APPLE_SERVICES_ID/TEAM_ID/KEY_ID/PRIVATE_KEY (paid developer account,
+- DONE 21 Oct 2026: Google sign-in LIVE. Google Cloud project "premium-drones-georgia" (no billing), Auth Platform External, In production, branding: home https://premium-drones.ge, privacy https://premium-drones.ge/terms#privacy, terms /terms, developer contact info@premium-drones.ge; Web client redirect https://premium-drones.ge/api/auth/google/callback; owner pasted GOOGLE_CLIENT_ID/SECRET as Cloudflare secrets. /terms#privacy section (terms_h7, terms_p7..p10: what is collected, Google name+email, hashed passwords, chat via OpenAI, GA + Cloudflare analytics, Resend, no selling, deletion via info@). Not yet tested with a real sign-in.
+- Apple: APPLE_SERVICES_ID/TEAM_ID/KEY_ID/PRIVATE_KEY (paid developer account,
   return URL https://premium-drones.ge/api/auth/apple/callback). Untested with real accounts; buttons stay hidden until secrets exist.
 - Bing Webmaster sign-in + import from Search Console; Instagram/YouTube/TikTok bio links; GA key event (generate_lead) once received; XAG/NIK message and 7 post drafts (not sent);
   Merchant Center (deferred); BOG payment agreement; AI chat key; exact XAG certificate names; product photos.
