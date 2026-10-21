@@ -270,4 +270,4 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 
 - (21 Oct 2026) FAQ faq_q9/faq_a9 (spraying price: depends on crop + area, small areas in Lagodekhi district, no prices published) and faq_q10/faq_a10 (how to buy) from real Messenger questions.
   YouTube channel: description, link premium-drones.ge, e-mail info@premium-drones.ge added. GA4 key events: call_click, whatsapp_click (generate_lead once it arrives).
-  Meta Business Agent: clean "ფასი" disambiguation instruction + location rule (never confirm service location/area; ask crop, ha, location; hand off). Owner's older instructions conflict on service area (5 ha Lagodekhi / 10 ha Kakheti / 50 ha Kakheti) — owner to decide.
+  Meta Business Agent: clean "ფასი" disambiguation instruction + location rule (never confirm service location/area; ask crop, ha, location; hand off). Spraying service area (owner, 21 Oct 2026): up to 5 ha only Lagodekhi district; 5–50 ha Kakheti; over 50 ha anywhere in Georgia. Main instruction + the two old 'always say არ არის პრობლემა' location instructions rewritten to follow it; tested (3 ha Kvareli declined, 100 ha Gori accepted).
