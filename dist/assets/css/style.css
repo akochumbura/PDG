@@ -1681,3 +1681,8 @@ h3,.model-name{font-weight:600}
   .nav-lang-d .nav-lang-opts a[aria-current=page]{color:var(--accent);font-weight:500}
   .nav-lang-d .nav-lang-opts a[aria-current=page]::after{content:"✓";font-size:13px}
 }
+/* Phone menu top rows: one size, bolder (owner 22 Oct 2026) */
+@media(max-width:900px){
+  .site-nav.is-open>a,.site-nav.is-open .nav-group-btn{font-size:15px;font-weight:600;min-height:50px}
+  .nav-lang-d summary{font-size:15px;font-weight:600;min-height:50px}
+}
