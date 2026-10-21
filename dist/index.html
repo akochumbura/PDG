@@ -21,7 +21,7 @@
   <link rel="preload" href="/assets/fonts/NotoSansGeorgian-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/img/p150-max-flight.webp?v=a092c97404" as="image" media="(min-width: 701px)" imagesrcset="/assets/img/p150-max-flight-2048.webp?v=722dac8934 2048w, /assets/img/p150-max-flight.webp 3840w" imagesizes="100vw" fetchpriority="high">
   <link rel="preload" href="/assets/img/p150-max-flight-1200.webp?v=b2d9e74c15" as="image" media="(max-width: 700px)" fetchpriority="high">
-  <link rel="stylesheet" href="/assets/css/style.css?v=7547fe5ceb">
+  <link rel="stylesheet" href="/assets/css/style.css?v=c7fec98846">
   <script src="/assets/js/content-ka.js?v=8403d3ccb3" defer></script>
   <script src="/assets/js/script.js?v=bd9f5f4116" defer></script>
   <script src="/assets/js/payments-config.js?v=156ada99b6" defer></script>
@@ -159,13 +159,23 @@
     </section>
     <section class="eco-rows-section why-compact" id="services">
       <div class="container">
-        <details class="why-acc eco-acc">
-          <summary><span id="eco-title" data-i18n="eco_acc">ნაწილები, სერვისი და სწავლება</span><span class="acc-sign" aria-hidden="true"></span></summary>
-          <nav class="eco-rows" id="service" aria-labelledby="eco-title">
-            <a href="/shop#parts" data-local><span data-i18n="eco_s_parts">ორიგინალი ნაწილები</span><span class="row-arrow" aria-hidden="true">↗</span></a>
-            <a href="/service" data-local><span data-i18n="eco_s_serv">ტექნიკური სერვისი</span><span class="row-arrow" aria-hidden="true">↗</span></a>
-            <a href="/academy" data-local><span data-i18n="eco_s_acad">პრაქტიკული სწავლება</span><span class="row-arrow" aria-hidden="true">↗</span></a>
-          </nav>
+        <details class="why-acc eco-acc" id="parts-acc">
+          <summary><span data-i18n="eco_s_parts">ორიგინალი ნაწილები</span><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-links">
+<a href="/shop#parts" data-local data-i18n="mm_all_parts">ყველა ნაწილი</a><a href="/shop?cat=power#parts" data-local data-i18n="cat_power">აკუმულატორები და დატენვა</a><a href="/shop?cat=spray#parts" data-local data-i18n="cat_spray">შეწამვლა და გაფანტვა</a><a href="/shop?cat=control#parts" data-local data-i18n="cat_control">მართვა და RTK</a><a href="/shop?cat=spare#parts" data-local data-i18n="cat_spare">სათადარიგო ნაწილები</a>
+</div>
+        </details>
+        <details class="why-acc eco-acc" id="service">
+          <summary><span data-i18n="eco_s_serv">ტექნიკური სერვისი</span><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-links">
+<a href="/service" data-local data-i18n="nav_service_repair">სერვისი და შეკეთება</a><a href="/consultation?topic=service" data-local data-i18n="service_cta">სერვისის მოთხოვნა</a>
+</div>
+        </details>
+        <details class="why-acc eco-acc" id="academy-acc">
+          <summary><span data-i18n="eco_s_acad">პრაქტიკული სწავლება</span><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-links">
+<a href="/academy" data-local data-i18n="nav_academy">აკადემია</a><a href="/consultation?topic=academy" data-local data-i18n="mm_academy_signup">სწავლებაზე ჩაწერა</a>
+</div>
         </details>
       </div>
     </section>

@@ -21,7 +21,7 @@
   <link rel="preload" href="/assets/fonts/D-DIN.woff" as="font" type="font/woff" crossorigin>
   <link rel="preload" href="/assets/img/p150-max-flight.webp?v=a092c97404" as="image" media="(min-width: 701px)" imagesrcset="/assets/img/p150-max-flight-2048.webp?v=722dac8934 2048w, /assets/img/p150-max-flight.webp 3840w" imagesizes="100vw" fetchpriority="high">
   <link rel="preload" href="/assets/img/p150-max-flight-1200.webp?v=b2d9e74c15" as="image" media="(max-width: 700px)" fetchpriority="high">
-  <link rel="stylesheet" href="/assets/css/style.css?v=7547fe5ceb">
+  <link rel="stylesheet" href="/assets/css/style.css?v=c7fec98846">
   <script src="/assets/js/content-en.js?v=c2471649a6" defer></script>
   <script src="/assets/js/script.js?v=bd9f5f4116" defer></script>
   <script src="/assets/js/payments-config.js?v=156ada99b6" defer></script>
@@ -159,13 +159,23 @@
     </section>
     <section class="eco-rows-section why-compact" id="services">
       <div class="container">
-        <details class="why-acc eco-acc">
-          <summary><span id="eco-title" data-i18n="eco_acc">Parts, service and training</span><span class="acc-sign" aria-hidden="true"></span></summary>
-          <nav class="eco-rows" id="service" aria-labelledby="eco-title">
-            <a href="/en/shop#parts" data-local><span data-i18n="eco_s_parts">Original parts</span><span class="row-arrow" aria-hidden="true">↗</span></a>
-            <a href="/en/service" data-local><span data-i18n="eco_s_serv">technical service</span><span class="row-arrow" aria-hidden="true">↗</span></a>
-            <a href="/en/academy" data-local><span data-i18n="eco_s_acad">hands-on training</span><span class="row-arrow" aria-hidden="true">↗</span></a>
-          </nav>
+        <details class="why-acc eco-acc" id="parts-acc">
+          <summary><span data-i18n="eco_s_parts">Original parts</span><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-links">
+<a href="/en/shop#parts" data-local data-i18n="mm_all_parts">All parts</a><a href="/en/shop?cat=power#parts" data-local data-i18n="cat_power">Batteries &amp; charging</a><a href="/en/shop?cat=spray#parts" data-local data-i18n="cat_spray">Spraying &amp; spreading</a><a href="/en/shop?cat=control#parts" data-local data-i18n="cat_control">Control &amp; RTK</a><a href="/en/shop?cat=spare#parts" data-local data-i18n="cat_spare">Spare parts</a>
+</div>
+        </details>
+        <details class="why-acc eco-acc" id="service">
+          <summary><span data-i18n="eco_s_serv">technical service</span><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-links">
+<a href="/en/service" data-local data-i18n="nav_service_repair">Service and repair</a><a href="/en/consultation?topic=service" data-local data-i18n="service_cta">Request service</a>
+</div>
+        </details>
+        <details class="why-acc eco-acc" id="academy-acc">
+          <summary><span data-i18n="eco_s_acad">hands-on training</span><span class="acc-sign" aria-hidden="true"></span></summary>
+          <div class="acc-links">
+<a href="/en/academy" data-local data-i18n="nav_academy">Academy</a><a href="/en/consultation?topic=academy" data-local data-i18n="mm_academy_signup">Sign up for training</a>
+</div>
         </details>
       </div>
     </section>
