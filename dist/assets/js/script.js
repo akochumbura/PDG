@@ -86,6 +86,13 @@
     }
     pageParts.forEach((el) => { if (on) el.setAttribute("inert", ""); else el.removeAttribute("inert"); });
   }
+  /* "Why PDG" accordion: keep the opened text clear of the phone bottom bar */
+  document.querySelectorAll(".why-acc").forEach((d) => d.addEventListener("toggle", () => {
+    if (!d.open) return;
+    const need = d.getBoundingClientRect().bottom - (window.innerHeight - 96);
+    if (need > 0) window.scrollBy({ top: need, behavior: "smooth" });
+  }));
+
   /* Current page in the menu: brand red (and its group button) */
   (function markCurrent() {
     const clean = (p) => p.replace(/^\/(en|ru)(?=\/|$)/, "").replace(/\.html$/, "").replace(/\/+$/, "") || "/";
