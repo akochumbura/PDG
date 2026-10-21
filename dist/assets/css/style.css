@@ -1766,3 +1766,10 @@ h3,.model-name{font-weight:600}
 .why-acc .why-item h3{font-size:15px;font-weight:700;margin:0 0 3px;color:var(--text)}
 .why-acc .why-item p{margin:0;font-size:15px;line-height:1.55;color:var(--muted)}
 .why-acc{scroll-margin-bottom:96px}
+
+/* Parts / service / training as an accordion like "Why PDG"; footer contact is one link (owner 22 Oct 2026) */
+.eco-rows-section{padding-block:0;border-top:0}
+.eco-acc .eco-rows{padding:2px 0 14px}
+.eco-acc .eco-rows a{font-size:16px;font-weight:600;min-height:46px}
+.footer-contact-link{display:inline-block;font-weight:600;color:var(--text)}
+.footer-contact .footer-social{margin-top:14px}
