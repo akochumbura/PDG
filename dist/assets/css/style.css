@@ -1680,3 +1680,6 @@ h3,.model-name{font-weight:600}
   .site-nav.is-open .nav-lang-m a+a{border-left:1px solid var(--border)}
   .site-nav.is-open .nav-lang-m a[aria-current=page]{background:var(--text);color:var(--bg,#fff)}
 }
+@media(max-width:900px){
+  .site-nav.is-open .nav-lang-m a{min-width:0;min-height:34px;padding:0 13px;font-size:12px;font-weight:500}
+}
