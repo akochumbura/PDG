@@ -1686,3 +1686,7 @@ h3,.model-name{font-weight:600}
   .site-nav.is-open>a,.site-nav.is-open .nav-group-btn{font-size:15px;font-weight:600;min-height:50px}
   .nav-lang-d summary{font-size:15px;font-weight:600;min-height:50px}
 }
+@media(max-width:900px){
+  .site-nav.is-open>a:not(.nav-account-m),.site-nav.is-open .nav-group-btn{font-size:15px;font-weight:600;min-height:50px}
+  .nav-lang-d summary .nav-chev{width:10px;height:10px}
+}

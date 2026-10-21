@@ -90,7 +90,7 @@
   (function markCurrent() {
     const clean = (p) => p.replace(/^\/(en|ru)(?=\/|$)/, "").replace(/\.html$/, "").replace(/\/+$/, "") || "/";
     const here = clean(location.pathname);
-    document.querySelectorAll("#site-nav a[href]").forEach((a) => {
+    document.querySelectorAll("#site-nav a[href]:not([data-lang])").forEach((a) => {
       const u = new URL(a.getAttribute("href"), location.origin);
       if (u.origin !== location.origin || u.hash || u.search) return;
       if (clean(u.pathname) !== here) return;
