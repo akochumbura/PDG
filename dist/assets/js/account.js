@@ -4,6 +4,13 @@
   "use strict";
   var page = document.getElementById("account");
   var cartForm = document.getElementById("cartForm");
+  /* Header icon: small dot when signed in (flag is cosmetic; the server decides access). */
+  var accLink = document.querySelector(".account-link");
+  function setIn(on) {
+    try { if (on) localStorage.setItem("pdg_in", "1"); else localStorage.removeItem("pdg_in"); } catch (e) {}
+    if (accLink) accLink.classList.toggle("is-in", !!on);
+  }
+  try { if (localStorage.getItem("pdg_in")) setIn(true); } catch (e) {}
   if (!page && !cartForm) return;
   function lb(k) { var e = document.getElementById("lb_" + k); return e ? e.textContent.trim() : ""; }
   function api(path, body) {
@@ -16,6 +23,7 @@
   /* Cart: fill in saved details and keep WhatsApp/e-mail orders in the account history. */
   if (cartForm) {
     api("me").then(function (d) {
+      setIn(!!d.user);
       if (!d.user) return;
       ["name", "phone", "address"].forEach(function (k) { var f = cartForm.elements[k]; if (f && !f.value) f.value = d.user[k] || ""; });
       var cart = function () { try { return JSON.parse(localStorage.getItem("pdg_cart") || "{}") || {}; } catch (e) { return {}; } };
@@ -42,6 +50,7 @@
   function errText(d) { return lb(ERR[d && d.error] || "acc_err_server"); }
 
   function showUser(d) {
+    setIn(true);
     page.setAttribute("data-state", "user"); guest.hidden = true; user.hidden = false; off.hidden = true; if (social) social.hidden = true;
     document.getElementById("accHello").textContent = lb("acc_hello").replace("{name}", d.user.name);
     var pf = document.getElementById("profileForm");
@@ -64,7 +73,7 @@
       li.append(top, meta, items); list.appendChild(li);
     });
   }
-  function showGuest() { page.setAttribute("data-state", "guest"); guest.hidden = false; user.hidden = true; view(resetToken ? "reset" : "login"); }
+  function showGuest() { setIn(false); page.setAttribute("data-state", "guest"); guest.hidden = false; user.hidden = true; view(resetToken ? "reset" : "login"); }
 
   var login = document.getElementById("loginForm"), reg = document.getElementById("registerForm"), pf = document.getElementById("profileForm");
   var forgot = document.getElementById("forgotForm"), reset = document.getElementById("resetForm");
