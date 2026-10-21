@@ -1690,3 +1690,4 @@ h3,.model-name{font-weight:600}
   .site-nav.is-open>a:not(.nav-account-m),.site-nav.is-open .nav-group-btn{font-size:15px;font-weight:600;min-height:50px}
   .nav-lang-d summary .nav-chev{width:10px;height:10px}
 }
+@media(max-width:900px){.nav-lang-d summary .nav-chev{flex:0 0 12px;width:12px;height:12px;overflow:visible;margin-left:auto}}
