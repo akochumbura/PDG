@@ -53,9 +53,13 @@ out = ['  <section class="section spec-full-section" id="specifications" aria-la
        f'<div class="section-heading"><h2 id="specs-full-title"><span data-i18n="ps_heading">{html.escape(S.HEADING[0])}</span></h2></div>',
        f'<p class="page-intro" data-i18n="ps_intro">{html.escape(S.INTRO[0])}</p>',
        '<div class="spec-full">']
+SPEC_IMG = {'platform': 'platform/platform-front', 'revospray': 'platform/platform-field', 'revocast': 'products/09-023-00145',
+            'revosling': 'products/05-002-02682', 'power': 'products/09-017-00073'}
 for i, g in enumerate(S.SPECS):
     gid = g['id']
     out.append(f'<details class="spec-cat"{" open" if i == 0 else ""}><summary>{label("span", f"ps_{gid}", g["title"])}</summary><div class="spec-cat-body">')
+    if g['id'] in SPEC_IMG:
+        out.append(f'<figure class="spec-fig"><img src="/assets/img/{SPEC_IMG[g["id"]]}.webp" alt="" loading="lazy" decoding="async" width="1200" height="900"></figure>')
     for b, (sub, rows) in enumerate(g['blocks']):
         out.append('<div class="spec-block">' + (label('h3', f'ps_{gid}_{b}', sub) if sub else '') + '<dl>')
         for r, (lab, val) in enumerate(rows):

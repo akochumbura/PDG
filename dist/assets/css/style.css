@@ -1780,3 +1780,6 @@ h3,.model-name{font-weight:600}
 .eco-acc .acc-links a{display:inline-flex;align-items:center;min-height:40px;font-size:16px;line-height:1.4;font-weight:500;color:var(--text);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.22em;text-decoration-color:var(--muted);transition:color var(--ease)}
 .eco-acc .acc-links a:hover{color:var(--accent);text-decoration-color:currentColor}
 .eco-acc .acc-links a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.spec-fig{margin:0 0 20px;background:var(--surface,#f4f3ef);border-radius:8px;overflow:hidden}
+.spec-fig img{display:block;width:100%;max-height:340px;object-fit:contain;aspect-ratio:4/3}
+@media(min-width:900px){.spec-cat-body:has(>.spec-fig){display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:28px;align-items:start}.spec-fig{margin:0;position:sticky;top:96px}.spec-cat-body:has(>.spec-fig)>.spec-block{grid-column:2}.spec-cat-body:has(>.spec-fig)>.spec-fig{grid-column:1;grid-row:1/span 6}}
