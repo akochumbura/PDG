@@ -58,6 +58,9 @@ SPEC_IMG = {'platform': 'platform/platform-front', 'revospray': 'platform/platfo
 for i, g in enumerate(S.SPECS):
     gid = g['id']
     out.append(f'<details class="spec-cat"{" open" if i == 0 else ""}><summary>{label("span", f"ps_{gid}", g["title"])}</summary><div class="spec-cat-body">')
+    if g.get('note'):
+        put(f'ps_{gid}_note', g['note'])
+        out.append(f'<p class="spec-cat-note" data-i18n="ps_{gid}_note">{html.escape(g["note"][0])}</p>')
     if g['id'] in SPEC_IMG:
         out.append(f'<figure class="spec-fig"><img src="/assets/img/{SPEC_IMG[g["id"]]}.webp" alt="" loading="lazy" decoding="async" width="1200" height="900"></figure>')
     for b, (sub, rows) in enumerate(g['blocks']):

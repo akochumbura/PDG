@@ -178,17 +178,12 @@ SPECS = [
             (('წყლის ხარჯი', 'Water consumption', 'Расход воды'), ('≤ 500 მლ/სთ', '≤ 500 ml/h', '≤ 500 мл/ч')),
         ]),
     ]},
-    {'id': 'control', 'title': ('კავშირი და მართვა', 'Communication & control', 'Связь и управление'), 'blocks': [
-        (('XAG ACS4 მართვის ჯოისტიკი', 'XAG ACS4 Control Stick', 'Джойстик управления XAG ACS4'), [
-            (MODEL, 'M3ACS4AH'),
-            (('სამუშაო სიხშირე', 'Operating frequency', 'Рабочая частота'), '2.400–2.4835 GHz; 5.725–5.850 GHz'),
-            (('ბატარეის ტევადობა', 'Battery capacity', 'Емкость батареи'), '2600 mAh'),
-            (('სიგნალის დიაპაზონი (ჩარევის გარეშე)', 'Signal range (no interference)', 'Дальность сигнала (без помех)'), 'FCC: 2000 m; SRRC: 2000 m; CE/MIC: 1000 m'),
-            (EIRP, EIRP_V),
-            (OPT, '-10 ~ 40 ℃'),
-            (CHT, '5 ~ 40 ℃'),
-            (('თავსებადი', 'Compatible products', 'Совместимость'), 'XAG P150 Max, XAG P150, XAG P60'),
-        ]),
+    {'id': 'control', 'title': ('კავშირი და მართვა', 'Communication & control', 'Связь и управление'),
+     # owner, 23 Oct 2026: PDG stocks and supplies the SRC5; ACS4 is on XAG's official list as a compatible control stick only.
+     'note': ('PDG-ის Starter, Pro და Business კომპლექტებში შედის XAG SRC5 ჭკვიანი მართვის პულტი. XAG ACS4 ჯოისტიკი XAG-ის ოფიციალურ მახასიათებლებში თავსებად აქსესუარადაა მითითებული; PDG მას არ აწვდის.',
+              'PDG Starter, Pro and Business packages include the XAG SRC5 Smart Remote Controller. The XAG ACS4 Control Stick is listed in XAG\'s official specifications as a compatible accessory; PDG does not supply it.',
+              'В комплекты PDG Starter, Pro и Business входит умный пульт XAG SRC5. Джойстик XAG ACS4 указан в официальных характеристиках XAG как совместимый аксессуар; PDG его не поставляет.'),
+     'blocks': [
         (('XAG SRC5 ჭკვიანი მართვის პულტი', 'XAG SRC5 Smart Remote Controller', 'Умный пульт XAG SRC5'), [
             (MODEL, 'M3SRC5A'),
             (('სამუშაო სიხშირე', 'Operating frequency', 'Рабочая частота'), '2.4000–2.4835 GHz; 5.725–5.850 GHz'),
@@ -204,6 +199,16 @@ SPECS = [
             (('დაცვის კლასი', 'Protection rating', 'Класс защиты'), 'IP65'),
             (('ბატარეის ტევადობა', 'Battery capacity', 'Емкость батареи'), '10000 mAh'),
             (('სიგნალის დიაპაზონი (ჩარევის გარეშე)', 'Signal range (no interference)', 'Дальность сигнала (без помех)'), u(2000, M)),
+        ]),
+        (('XAG ACS4 მართვის ჯოისტიკი — თავსებადი, PDG არ აწვდის', 'XAG ACS4 Control Stick — compatible, not supplied by PDG', 'Джойстик управления XAG ACS4 — совместим, PDG не поставляет'), [
+            (MODEL, 'M3ACS4AH'),
+            (('სამუშაო სიხშირე', 'Operating frequency', 'Рабочая частота'), '2.400–2.4835 GHz; 5.725–5.850 GHz'),
+            (('ბატარეის ტევადობა', 'Battery capacity', 'Емкость батареи'), '2600 mAh'),
+            (('სიგნალის დიაპაზონი (ჩარევის გარეშე)', 'Signal range (no interference)', 'Дальность сигнала (без помех)'), 'FCC: 2000 m; SRRC: 2000 m; CE/MIC: 1000 m'),
+            (EIRP, EIRP_V),
+            (OPT, '-10 ~ 40 ℃'),
+            (CHT, '5 ~ 40 ℃'),
+            (('თავსებადი', 'Compatible products', 'Совместимость'), 'XAG P150 Max, XAG P150, XAG P60'),
         ]),
     ]},
 ]

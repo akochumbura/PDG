@@ -1783,3 +1783,60 @@ h3,.model-name{font-weight:600}
 .spec-fig{margin:0 0 20px;background:var(--surface,#f4f3ef);border-radius:8px;overflow:hidden}
 .spec-fig img{display:block;width:100%;max-height:340px;object-fit:contain;aspect-ratio:4/3}
 @media(min-width:900px){.spec-cat-body:has(>.spec-fig){display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:28px;align-items:start}.spec-fig{margin:0;position:sticky;top:96px}.spec-cat-body:has(>.spec-fig)>.spec-block{grid-column:2}.spec-cat-body:has(>.spec-fig)>.spec-fig{grid-column:1;grid-row:1/span 6}}
+/* Navigation: prices link + direct phone links (23 Oct 2026) */
+.site-nav>.nav-prices{color:var(--accent);font-weight:600}
+@media(min-width:901px){.site-nav>a[data-home],.site-nav>.nav-m{display:none}}
+@media(max-width:900px){.site-nav.is-open>.nav-group-services{display:none}.site-nav.is-open>a.nav-prices:not([aria-current]){color:var(--text)}}
+/* Header fit with the prices link: Georgian labels fit one row 901–1920px (23 Oct 2026) */
+@media(min-width:901px){.header-inner{gap:24px}.site-nav{gap:clamp(14px,1.5vw,24px)}.header-actions{gap:14px}}
+@media(min-width:1280px) and (max-width:1439px){.site-header .brand.brand-duo{--logo-h:30px}}
+@media(min-width:901px) and (max-width:1279px){.site-header .brand.brand-duo{--logo-h:24px;gap:6px}.header-actions{gap:12px}.site-nav{gap:14px}.site-nav>a,.nav-group-btn{font-size:13px}.header-contact{display:none}}
+@media(min-width:901px) and (max-width:1023px){.site-nav>.nav-top-about{display:none}}
+@media(min-width:901px) and (max-width:979px){.site-nav{gap:10px}.header-inner{gap:14px}.header-actions{gap:10px}}
+/* ===== Type scale (23 Oct 2026) =====
+   One scale for comparable elements. Hero titles (Barlow), P150 MAX chapter headings, the contact band
+   and article prose keep their own intentional sizes. Font stack everywhere: D-DIN (Latin) -> Noto Sans Georgian -> IBM Plex Sans (Cyrillic). */
+:root{--fs-h2:clamp(26px,2.6vw,36px);--fs-product:clamp(28px,2.6vw,36px);--fs-price:clamp(28px,2.6vw,36px);--fs-card-title:20px;--fs-card-price:24px;--fs-label:12px;--btn-h:48px;--btn-fs:14px}
+/* section headings: same size and weight on every page */
+h2,.section-heading h2,.shop-section h2,.system-intro h2,.eco-title,.models-head h2,.parts-energy h2,.about-text h2,.about-do h2,.faq-layout h2,.why-title,
+.page-steps-title,.pd-page+.pd-specs h2,.cap-section h2{font-size:var(--fs-h2);font-weight:600;line-height:1.2}
+/* product / package / platform titles and their prices */
+.pp-title,.pd-page .pp-title{font-size:var(--fs-product);font-weight:600;line-height:1.15}
+.pp-price .product-price,.pd-page .product-price,.pd-page .pd-price .product-price{font-size:var(--fs-price);font-weight:600;line-height:1.05}
+/* equivalent listings: package cards, platform row, package tiles */
+.product-kit h3,.platform-row-body h3,.pkg-tile-name{font-size:var(--fs-card-title);font-weight:600;line-height:1.25}
+.pkg-tile.is-pick .pkg-tile-name{color:var(--text)}
+.product-kit .product-price,.platform-row-body .product-price,.pkg-tile-price{font-size:var(--fs-card-price);font-weight:600;line-height:1}
+/* small labels above titles */
+.pd-page .eyebrow,.product-cat,.pkg-tile-model,.page-hero .eyebrow,.page-hero h1.eyebrow{font-size:var(--fs-label);font-weight:600;line-height:1.4}
+/* buttons, add-to-cart and quantity: one height and text size */
+.button,.add-btn,.pd-page .buy-actions .add-btn{min-height:var(--btn-h);font-size:var(--btn-fs);font-weight:600;line-height:1.3}
+.button{padding-top:12px;padding-bottom:12px}
+.add-btn,.pd-page .buy-actions .add-btn{height:var(--btn-h)}
+.qty-stepper,.kit-row .buy-actions .qty-stepper,.pd-page .buy-actions .qty-stepper{height:var(--btn-h);min-height:var(--btn-h)}
+.acc-submit{min-height:var(--btn-h)}
+@media(max-width:600px){:root{--fs-h2:26px;--fs-product:26px;--fs-price:30px;--fs-card-title:19px;--fs-card-price:22px}}
+/* Georgian wrapping: no hyphen splitting of Georgian words; balance short headings */
+html[lang=ka] .pp-title,html[lang=ka] h2,html[lang=ka] .pkg-tile-name{hyphens:manual;overflow-wrap:normal;word-break:normal}
+.pp-title,.pkg-tile-name,.product-kit h3,.platform-row-body h3{text-wrap:balance}
+/* P150 MAX hero: platform price vs complete packages (23 Oct 2026) */
+.pm-pricebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;max-width:520px;margin-top:28px;border-top:1px solid var(--border)}
+.pm-price-item{display:flex;flex-direction:column;gap:6px;padding:16px 16px 14px 0;text-decoration:none;color:inherit}
+.pm-price-item+.pm-price-item{padding-left:16px;border-left:1px solid var(--border)}
+.pm-price-label{font-size:var(--fs-label);font-weight:600;line-height:1.4;color:var(--muted)}
+.pm-price-val{font:600 24px/1 var(--font-latin);color:var(--text)}
+.pm-price-item:hover .pm-price-val,.pm-price-item:focus-visible .pm-price-val{color:var(--accent)}
+.pm-pricebar-note{grid-column:1/-1;margin:0;padding-top:12px;border-top:1px solid var(--border);font-size:14px;line-height:1.5;color:var(--muted)}
+@media(max-width:600px){.pm-pricebar{margin-top:20px}.pm-price-val{font-size:22px}}
+/* specification category note (supplied vs compatible equipment) */
+.spec-cat-note{margin:0 0 20px;max-width:72ch;font-size:15px;line-height:1.6;color:var(--muted)}
+/* platform page: included vs not included (23 Oct 2026) */
+.pp-buy .pk-in-title{margin:22px 0 0;font-size:14px;font-weight:600;line-height:1.3}
+.pp-buy .pk-in{margin:8px 0 0;padding:0;list-style:none;border-top:1px solid var(--border)}
+.pp-buy .pk-in li{display:flex;align-items:baseline;gap:8px;padding:10px 0;border-bottom:1px solid var(--border);font-size:15px;line-height:1.45}
+.pk-out li{justify-content:space-between}
+.pk-out-price{flex:none;font:600 15px/1.2 var(--font-latin);white-space:nowrap}
+.pp-buy .pd-links{margin-top:12px}
+.pm-hero-actions .pm-pricebar{flex:1 1 100%;margin-top:8px}
+.pp-buy .pk-in{width:100%;max-width:420px}.pp-buy .pk-in-title{max-width:420px}
+.kit-contents .is-none dt,.kit-contents .is-none dd{color:var(--muted)}

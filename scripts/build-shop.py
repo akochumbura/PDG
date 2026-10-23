@@ -65,8 +65,10 @@ HOME_PARTS = ['09-017-00073', '09-017-00109', '09-017-00069', '05-002-02311', '0
 
 def contents(r, cls='kit-contents'):
     """Package contents from the catalog columns batteries / chargers / generators (empty = not shown)."""
-    parts = [f'<div><dt data-i18n="{key}">{ka}</dt><dd>{r.get(col, "").strip()}</dd></div>'
-             for col, key, ka in CONTENTS if (r.get(col) or '').strip()]
+    # package cards (23 Oct 2026): the RTK row is always shown, '—' when not included, so the three cards compare line by line
+    parts = [f'<div><dt data-i18n="{key}">{ka}</dt><dd>{r.get(col, "").strip()}</dd></div>' if (r.get(col) or '').strip()
+             else f'<div class="is-none"><dt data-i18n="{key}">{ka}</dt><dd><span aria-hidden="true">—</span><span class="visually-hidden" data-i18n="cmp_none">არ შედის</span></dd></div>'
+             for col, key, ka in CONTENTS if (r.get(col) or '').strip() or (col == 'rtk' and r.get('group') == 'kit')]
     return f'<dl class="{cls}">{"".join(parts)}</dl>' if parts else ''
 
 
@@ -350,12 +352,19 @@ PLATFORM_TEXT.update({
     'pp_notice': ('ფასში შედის დრონი RevoSpray 5 სისტემით. მართვის პულტი, აკუმულატორები და დამტენები იყიდება ცალკე. ეს არ არის სრული სამუშაო კომპლექტი.',
                   'The price includes the drone with the RevoSpray 5 system. The remote controller, batteries and chargers are sold separately. This is not a complete working set.',
                   'В цену входит дрон с системой RevoSpray 5. Пульт управления, аккумуляторы и зарядные устройства продаются отдельно. Это не полный рабочий комплект.'),
-    'pp_sub': ('სასოფლო-სამეურნეო დრონი · RevoSpray 5', 'Agricultural drone · RevoSpray 5', 'Сельскохозяйственный дрон · RevoSpray 5'),
+    'pp_sub': ('სასოფლო-სამეურნეო დრონი · RevoSpray\u00a05', 'Agricultural drone · RevoSpray\u00a05', 'Сельскохозяйственный дрон · RevoSpray\u00a05'),
     'pp_back': ('← მაღაზია', '← Shop', '← Магазин'),
     'pm_cfg_link': tuple(t.format(int([r for r in csv.DictReader(open(ROOT / 'scripts/catalog.csv', encoding='utf-8')) if r['sku'] == _pc.PLATFORM][0]['gel']))
                          for t in ('კონფიგურაციის აწყობა — ₾{:,}-დან', 'Build your configuration — from ₾{:,}', 'Собрать конфигурацию — от ₾{:,}')),
     'pm_cfg_note': ('საწყისი ფასი — მხოლოდ დრონი RevoSpray 5 სისტემით.', 'Starting price: the drone with RevoSpray 5 only.', 'Начальная цена — только дрон с RevoSpray 5.'),
-    'pp_configure': ('კონფიგურაციის აწყობა', 'Build your configuration', 'Собрать конфигурацию')})
+    'pp_configure': ('კონფიგურაციის აწყობა', 'Build your configuration', 'Собрать конфигурацию'),
+    'pm_pl_platform': ('პლატფორმა (მხოლოდ დრონი)', 'Platform (drone only)', 'Платформа (только дрон)'),
+    'pm_pl_kits': ('სრული კომპლექტები', 'Complete packages', 'Полные комплекты'),
+    'pm_pl_kits_v': tuple(t.format(min(int(r['gel']) for r in csv.DictReader(open(ROOT / 'scripts/catalog.csv', encoding='utf-8')) if r['group'] == 'kit'))
+                          for t in ('₾{:,}-დან', 'from ₾{:,}', 'от ₾{:,}')),
+    'pm_pl_note': ('კომპლექტებში შედის SRC5 პულტი, აკუმულატორები და დამტენები; პლატფორმაში — არა.',
+                   'Packages include the SRC5 remote, batteries and chargers; the platform does not.',
+                   'В комплекты входят пульт SRC5, аккумуляторы и зарядные устройства; в платформу — нет.')})
 import json as _json
 _cj = ROOT / 'dist/assets/js/content.js'
 _c = _json.loads(_cj.read_text(encoding='utf-8').split('=', 1)[1].strip().removesuffix(';'))
@@ -406,10 +415,13 @@ import configurator as PCFG
 
 
 def platform_link():
-    """P150 MAX page, under the introduction: one link to the platform configurator with the starting price (catalog)."""
+    """P150 MAX page hero (23 Oct 2026): the two price levels side by side - platform only vs complete packages (catalog prices)."""
     p = price(by_sku_all[PCFG.PLATFORM], False)
-    return (f'<p class="pm-cfg"><a class="text-link" href="/p150-max-platform#configurator" data-local><span data-i18n="pm_cfg_link">კონფიგურაციის აწყობა — <span class="nowrap">₾{p:,}-დან</span></span>'
-            '<span aria-hidden="true">→</span></a><span class="pm-cfg-note" data-i18n="pm_cfg_note">საწყისი ფასი — მხოლოდ დრონი RevoSpray 5 სისტემით.</span></p>')
+    k = min(price(r, True) for r in kits)
+    return ('<div class="pm-pricebar">'
+            f'<a class="pm-price-item" href="/p150-max-platform" data-local><span class="pm-price-label" data-i18n="pm_pl_platform">პლატფორმა (მხოლოდ დრონი)</span><span class="pm-price-val">₾{p:,}</span></a>'
+            f'<a class="pm-price-item" href="#kits"><span class="pm-price-label" data-i18n="pm_pl_kits">სრული კომპლექტები</span><span class="pm-price-val" data-i18n="pm_pl_kits_v">₾{k:,}-დან</span></a>'
+            '<p class="pm-pricebar-note" data-i18n="pm_pl_note">კომპლექტებში შედის SRC5 პულტი, აკუმულატორები და დამტენები; პლატფორმაში — არა.</p></div>')
 
 
 def platform_kit_row(r):
@@ -503,6 +515,8 @@ _pd = _pc.data()
 know += ['', '## Standalone platform and configurator (owner, 16 Oct 2026)',
          f"The XAG P150 MAX Platform ({_pd['platform']['price']:,} GEL, code {_pd['platform']['sku']}) is the drone with the RevoSpray 5 system only: the SRC5 remote controller, batteries and chargers are NOT included and it is not a complete working set. "
          "It suits operators who already own compatible equipment; others should add a controller, batteries and chargers in the configurator (https://premium-drones.ge/p150-max-platform) or choose a package. Generator and RTK are optional.",
+         "Controller (owner, 23 Oct 2026): PDG stocks and supplies the XAG SRC5 Smart Remote Controller; it is in the Starter, Pro and Business packages and also sold separately. "
+         "The XAG ACS4 Control Stick appears in XAG's official P150 MAX specifications as a compatible accessory, but PDG does not supply it: never offer it or say it is included.",
          'Packages are cheaper than the same equipment bought item by item: ' + '; '.join(f"{p['name']} {p['price']:,} GEL instead of {p['single']:,} GEL" for p in _pd['packages']) + '.']
 know += ['', '## Buying and payment',
          "Online card payment is NOT available on the website at the moment; do not tell customers they can pay online. Do not mention deposit percentages.",

@@ -208,6 +208,16 @@ put('pd_pf_front', ('XAG P150 MAX RevoSpray 5 სისტემით — წ�
 put('pd_pf_field', ('XAG P150 MAX შეწამვლისას მინდორზე', 'XAG P150 MAX spraying a field', 'XAG P150 MAX при опрыскивании поля'))
 put('pd_pf_included', ('შედის', 'Included', 'Входит'))
 put('pd_pf_included_v', ('P150 MAX პლატფორმა, RevoSpray 5', 'P150 MAX platform, RevoSpray 5', 'Платформа P150 MAX, RevoSpray 5'))
+# Platform contents (23 Oct 2026): exactly what is in the box, then the compatible equipment it needs (sold separately, catalog prices).
+put('pd_pf_in_t', ('პლატფორმაში შედის', 'The platform includes', 'В платформу входит'))
+put('pd_pf_out_t', ('არ შედის — თავსებადი აღჭურვილობა (იყიდება ცალკე)', 'Not included — compatible equipment (sold separately)', 'Не входит — совместимое оборудование (продается отдельно)'))
+put('pd_pf_add', ('აღჭურვილობის დამატება კონფიგურატორში', 'Add equipment in the configurator', 'Добавить оборудование в конфигураторе'))
+_pf_in = f'<li><span class="pk-qty">1 ×</span> <a href="/p150-max.html" data-local><span data-i18n="kit_drone">{html.escape(c["ka"]["kit_drone"])}</span></a></li>'
+_pf_out = ''.join(f'<li><a href="{P.url(LINK[col])}" data-local><span data-i18n="{key}">{html.escape(c["ka"][key])}</span></a><span class="pk-out-price">₾{int(rows[LINK[col]]["gel"]):,}</span></li>'
+                  for col, key in CONTENTS if col in ('remotes', 'batteries', 'chargers', 'towers'))
+_pf_box = (f'<h2 class="pk-in-title" data-i18n="pd_pf_in_t">პლატფორმაში შედის</h2><ul class="pk-in">{_pf_in}</ul>'
+           f'<h2 class="pk-in-title" data-i18n="pd_pf_out_t">{html.escape(c["ka"]["pd_pf_out_t"])}</h2><ul class="pk-in pk-out">{_pf_out}</ul>'
+           f'<p class="pd-links"><a href="#configurator"><span data-i18n="pd_pf_add">აღჭურვილობის დამატება კონფიგურატორში</span> <span aria-hidden="true">↓</span></a></p>')
 _pics = [(f'/assets/img/{f}', f'/assets/img/{f.replace(".webp", "-t.webp")}', key, c['ka'][key]) for f, key in P.PLATFORM_GALLERY]
 _thumbs = ''.join(f'<button type="button" class="pk-thumb{" is-on" if j == 0 else ""}" data-full="{full}" aria-label="{html.escape(alt, quote=True)}" data-i18n-aria="{key}"{" aria-current=\"true\"" if j == 0 else ""}>'
                   f'<img src="{th}" width="240" height="180" alt="" loading="lazy" decoding="async"></button>' for j, (full, th, key, alt) in enumerate(_pics))
@@ -225,8 +235,8 @@ out.append(
     f'<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
     f'<a class="button button-red pp-cta" href="#configurator"><span data-i18n="pp_configure">კონფიგურაციის აწყობა</span></a>'
     f'<p class="pp-secondary"><a class="text-link" href="#configurator" data-preset-link="PDG-P150MAX-STARTER"><span data-i18n="pd_platform_pkgs">{html.escape(c["ka"]["pd_platform_pkgs"])}</span></a></p>'
-    f'<dl class="pp-details"><div><dt data-i18n="pd_pf_included">შედის</dt><dd data-i18n="pd_pf_included_v">P150 MAX პლატფორმა, RevoSpray 5</dd></div>'
-    f'<div><dt data-i18n="pd_code">მწარმოებლის კოდი</dt><dd>{P.PLATFORM}</dd></div></dl>'
+    f'{_pf_box}'
+    f'<dl class="pp-details"><div><dt data-i18n="pd_code">მწარმოებლის კოდი</dt><dd>{P.PLATFORM}</dd></div></dl>'
     f'<p class="pp-links"><a class="text-link" href="/p150-max.html#specifications" data-local><span data-i18n="pd_pk_specs">P150 MAX-ის სრული მახასიათებლები</span><span aria-hidden="true">→</span></a>'
     f'</p>'
     f'</article></div></section>\n'

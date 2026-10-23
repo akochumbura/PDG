@@ -280,3 +280,16 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   Footer contact column = ONE link 'კონტაქტი' → /consultation (phone, e-mail, address, hours, WhatsApp live there) + social links, sitewide.
   Phone header: PDG~XAG logo, account icon (green dot when signed in, flag pdg_in) and cart; language = dropdown row at the bottom of the phone menu (desktop keeps the globe).
   Consultation form has an optional e-mail field (reply_to in the Resend mail, shown in Telegram alert). Preview flow: push a branch, Cloudflare gives https://<branch>.pdg-8jc.pages.dev; merge to main only after the owner says yes.
+
+## Navigation, prices, controller, type scale (23 Oct 2026, preview branch nav-prices; NOT live until the owner approves)
+- Header: first nav item "ფასები და კომპლექტაციები" (nav_prices, red on desktop) → /shop#kits (platform row + Starter/Pro/Business with exact contents, prices, cart).
+  "XAG P150 MAX" → /p150-max (presentation + #specifications). Desktop hides "მთავარი" (logo = home); header fits one row 901–1920px in ka/en/ru
+  (logo 30px at 1280–1439, 24px at 901–1279; header "კონტაქტი" hidden ≤1279; "ჩვენ შესახებ" hidden 901–1023). Phone menu: flat links (.nav-m)
+  მთავარი, prices, XAG P150 MAX, ნაწილები, სერვისი, აკადემია, then პროდუქცია ▸, მედია ▸, ჩვენ შესახებ, კონტაქტი; the Services dropdown is hidden on phones.
+- P150 MAX hero: red "ფასები და კომპლექტაციები ↓" (#kits) + "მახასიათებლები ↓"; price bar (build-shop platform_link): platform (drone only) ₾41,999 vs complete packages from ₾75,999.
+- Platform page: "პლატფორმაში შედის" (1 × drone RevoSpray 5) and "არ შედის — თავსებადი აღჭურვილობა" (SRC5, B141050, CM13600S, cooling tank with catalog prices) + configurator link.
+- Shop package cards always show the RTK row ('—' when not included) so contents compare line by line.
+- Controller: PDG supplies SRC5 (all packages + sold separately). ACS4 stays ONLY in the detailed spec table as XAG's official compatible accessory,
+  titled "— თავსებადი, PDG არ აწვდის", listed after SRC5 and XRTK7, with a category note (p150_specs 'note'). Chat knowledge says the same. SRC5 specs = xa.com (checked 23 Oct 2026).
+- Type scale (end of style.css, tokens --fs-*): section h2 clamp(26px,2.6vw,36px)/600; product titles and product-page prices clamp(28px,2.6vw,36px)/600;
+  card titles 20px/600, card prices 24px/600; labels 12px/600; buttons, add-to-cart and quantity 48px high, 14px/600. Hero titles, P150 chapters, contact band, article prose keep their own sizes.
