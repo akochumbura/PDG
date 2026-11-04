@@ -25,6 +25,15 @@ What the site does (scripts/worker.template.js -> dist/_worker.js; prices always
 - Chat: when the keys exist, the AI says online payment is available (and installment when switched on) instead of "not available".
 - CSP allows *.bog.ge for the calculator (script, frame, connect, img, style, font).
 
+Facts from the BOG docs (read in full 4 Nov 2026) that the code follows:
+- Live: oauth2.bog.ge / api.bog.ge / payment.bog.ge. Sandbox: oauth2-sandbox.bog.ge / api-sandbox.bog.ge / payment-sandbox.bog.ge,
+  with its OWN callback public key (both keys are built in; BOG_ENV=sandbox switches everything). Sandbox needs sandbox credentials.
+- Installment: 45–15,000 GEL, 3–48 months, Georgian citizens 18+, not between 00:00 and 05:00, cancellable within 14 days
+  (BOG installment regulation page). So the button shows only for carts of ₾45–15,000: NOT for the P150 MAX packages.
+- Refunds through the API only for card, Apple Pay, Google Pay, BOG internet bank and points. Installment / BNPL / gift card: via the bank.
+- After a refund the bank lowers transfer_amount; the refundable rest = transfer_amount.
+- The SDK calculator gives discount_code + month; they go to config.loan.type / config.loan.month.
+
 To switch it on (owner):
 1. Sign the BOG e-commerce agreement (businessmanager.bog.ge). Ask BOG to activate: card, Apple Pay, Google Pay, BOG internet bank (P2P),
    MR/Plus points, gift cards, and online installment + BNPL (ნაწილ-ნაწილ). Ask BOG for sandbox (test) credentials first.

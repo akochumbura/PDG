@@ -121,6 +121,8 @@
       document.getElementById("cartPayNote").hidden = !payReady;
       var inst = payReady && PAY.inst, ln = document.getElementById("cartLoan");
       if (ln) {
+        // BOG installment is only for 45–15,000 GEL; outside that the button is not shown.
+        if (inst && (total < (inst.min || 45) || total > (inst.max || 15000))) inst = null;
         ln.hidden = !inst;
         /* One installment button: Bank of Georgia installment, or pay in parts when only that is switched on. */
         document.getElementById("cartLoanBtn").hidden = !(inst && inst.loan);
@@ -323,6 +325,7 @@
       if (paying || !payReady || !PAY.inst || !Object.keys(cart).length || !valid()) return;
       payErr.hidden = true;
       var T = totals(), total = T[0] + ship(T[0]);
+      if (total < (PAY.inst.min || 45) || total > (PAY.inst.max || 15000)) return;
       loadSdk().then(function () {
         /* The cart is a modal <dialog> (browser top layer): close it, or the bank's calculator would open underneath it. */
         if (dlg && dlg.open) { dlg.close(); document.body.classList.remove("modal-open"); }
@@ -351,7 +354,7 @@
 
   /* Online payment switches itself on when the server has the bank keys. */
   if (DEMO && dlg) {
-    PAY.inst = { loan: true, bnpl: true, clientId: "demo" }; payReady = true; render();
+    PAY.inst = { loan: true, bnpl: true, min: 45, max: 15000, clientId: "demo" }; payReady = true; render();
     var toD = document.getElementById("termsOnline"); if (toD) toD.hidden = false;
   } else if (PAY.endpoint && dlg) {
     fetch(PAY.endpoint + "/payments/config", { headers: { Accept: "application/json" } })
