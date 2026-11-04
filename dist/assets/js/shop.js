@@ -41,6 +41,17 @@
   save();
 
   var PAY = window.PDG_PAY || {}, payReady = false, paying = false;
+  /* Payment TEST MODE, preview addresses (*.pages.dev) only: open any preview page with ?paydemo=1. A pretend bank answers in
+     the browser; nothing reaches Bank of Georgia or the PDG server, no money moves. Never active on premium-drones.ge. */
+  var DEMO = false;
+  try {
+    if (/\.pages\.dev$/.test(location.hostname)) {
+      if (/[?&]paydemo=1/.test(location.search)) sessionStorage.setItem("pdg_paydemo", "1");
+      if (/[?&]paydemo=0/.test(location.search)) sessionStorage.removeItem("pdg_paydemo");
+      DEMO = sessionStorage.getItem("pdg_paydemo") === "1";
+    }
+  } catch (e) { DEMO = false; }
+  var demoRef = function () { var d = new Date(); return "PDG-" + String(d.getFullYear()).slice(2) + ("0" + (d.getMonth() + 1)).slice(-2) + ("0" + d.getDate()).slice(-2) + "-DEMO01"; };
   /* Delivery (owner, 16 Oct 2026): PAY.shippingFee under PAY.freeFrom, free from it; pickup in Tbilisi is free. The server applies the same rule. */
   var FEE = PAY.shippingFee || 30, FREE = PAY.freeFrom || 100;
   function pickup() { var f = document.getElementById("cartForm"), r = f && f.elements.delivery; return !!(r && r.value === "pickup"); }
@@ -241,6 +252,12 @@
         customer: { name: form.elements.name.value.trim(), phone: form.elements.phone.value.trim(), address: form.elements.address.value.trim() }
       };
       if (plan) order.plan = plan;
+      if (DEMO) {
+        var T = totals(), tot = T[0] + ship(T[0]), dep = !plan && T[0] >= PAY.threshold, ref = demoRef();
+        var d0 = { id: "demo", ref: ref, mode: plan ? plan.kind : dep ? "deposit" : "full", total: tot, amount: plan ? tot : payAmount(T[0], tot), url: (document.documentElement.lang === "ka" ? "" : "/" + document.documentElement.lang) + "/payment?ref=" + ref };
+        try { localStorage.setItem("pdg_pay", JSON.stringify({ id: d0.id, ref: d0.ref, mode: d0.mode, total: d0.total, amount: d0.amount, t: Date.now() })); } catch (e) { /* private mode */ }
+        return new Promise(function (ok) { setTimeout(function () { ok(d0); }, 500); });
+      }
       return fetch(PAY.endpoint + "/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(order) })
         .then(function (r) { return r.json().then(function (d) { return [r.ok, d]; }); })
         .then(function (x) {
@@ -260,6 +277,31 @@
        created on our server with that term (full amount, no deposit) and the SDK continues with the bank's application. */
     var sdk = null;
     var loadSdk = function () {
+      if (DEMO && !(window.BOG && window.BOG.Calculator)) {
+        /* Pretend calculator (TEST MODE): the real one comes from Bank of Georgia once the keys exist. */
+        window.BOG = { Calculator: { open: function (o) {
+          var box = document.createElement("div");
+          box.setAttribute("style", "position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:grid;place-items:center;padding:16px");
+          var months = o.bnpl ? [4] : [6, 12, 24, 36];
+          box.innerHTML = '<div style="background:#fff;color:#1c1c1c;max-width:380px;width:100%;padding:20px;border-radius:8px;font:15px/1.45 system-ui,sans-serif">'
+            + '<p style="margin:0 0 4px;font-size:12px;color:#c00;font-weight:600">TEST — pretend Bank of Georgia calculator</p>'
+            + '<h3 style="margin:0 0 12px">' + (o.bnpl ? "ნაწილ-ნაწილ გადახდა" : "განვადება") + ' · ₾' + o.amount.toLocaleString("en-US") + '</h3>'
+            + months.map(function (m, i) { return '<label style="display:block;padding:8px 0"><input type="radio" name="dm" value="' + m + '"' + (i ? "" : " checked") + '> ' + m + ' თვე</label>'; }).join("")
+            + '<p style="font-size:12px;color:#666">Real terms and monthly amounts come only from the bank.</p>'
+            + '<div style="display:flex;gap:8px;margin-top:12px"><button type="button" data-go style="flex:1;min-height:44px;background:#c00;color:#fff;border:0;border-radius:4px;font:inherit">გაგრძელება</button>'
+            + '<button type="button" data-x style="flex:1;min-height:44px;background:#fff;border:1px solid #1c1c1c;border-radius:4px;font:inherit">დახურვა</button></div></div>';
+          document.body.appendChild(box);
+          box.querySelector("[data-x]").onclick = function () { box.remove(); if (o.onClose) o.onClose(); };
+          box.querySelector("[data-go]").onclick = function () {
+            var m = Number(box.querySelector("input[name=dm]:checked").value);
+            o.onRequest({ month: m, discount_code: o.bnpl ? "zero" : "standard", amount: 0 }, function () {
+              var saved = {}; try { saved = JSON.parse(localStorage.getItem("pdg_pay") || "{}"); } catch (e) { saved = {}; }
+              location.href = (document.documentElement.lang === "ka" ? "" : "/" + document.documentElement.lang) + "/payment?ref=" + saved.ref;
+            }, function () { box.remove(); });
+          };
+        } } };
+        return Promise.resolve();
+      }
       if (window.BOG && window.BOG.Calculator) return Promise.resolve();
       if (sdk) return sdk;
       sdk = new Promise(function (ok, no) {
@@ -276,13 +318,16 @@
       payErr.hidden = true;
       var T = totals(), total = T[0] + ship(T[0]);
       loadSdk().then(function () {
+        /* The cart is a modal <dialog> (browser top layer): close it, or the bank's calculator would open underneath it. */
+        if (dlg && dlg.open) { dlg.close(); document.body.classList.remove("modal-open"); }
         window.BOG.Calculator.open({
           amount: total,
           bnpl: kind === "bnpl",
+          onClose: function () { openCart(); },
           onRequest: function (sel, successCb, closeCb) {
             startCheckout({ kind: kind, month: Number(sel && sel.month), code: String(sel && sel.discount_code || "") })
               .then(function (d) { successCb(d.id); })
-              .catch(function () { closeCb(); payErr.hidden = false; });
+              .catch(function () { closeCb(); openCart(); payErr.hidden = false; });
           },
           onComplete: function () { /* the bank sends the visitor to our /payment page (redirect_urls) */ }
         });
@@ -297,7 +342,10 @@
   render();
 
   /* Online payment switches itself on when the server has the bank keys. */
-  if (PAY.endpoint && dlg) {
+  if (DEMO && dlg) {
+    PAY.inst = { loan: true, bnpl: true, clientId: "demo" }; payReady = true; render();
+    var toD = document.getElementById("termsOnline"); if (toD) toD.hidden = false;
+  } else if (PAY.endpoint && dlg) {
     fetch(PAY.endpoint + "/payments/config", { headers: { Accept: "application/json" } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (c) {
@@ -330,6 +378,16 @@
       document.getElementById("payRetry").hidden = state !== "failed";
     };
     var tries = 0;
+    if (DEMO && okRef && /-DEMO01$/.test(ref)) {
+      var m = saved.mode;
+      if (m === "loan" || m === "bnpl") show("pending", "lb_pay_pending", label("lb_pay_loan_text"));
+      else if (m === "deposit") show("paid", "lb_pay_dep_done", label("lb_pay_dep_text").replace("{deposit}", fmt(saved.amount)) + " " + label("lb_pay_rest").replace("{rest}", fmt(saved.total - saved.amount)));
+      else show("paid", "lb_pay_done", label("lb_pay_done_text"));
+      var tn = document.createElement("p"); tn.setAttribute("style", "color:#c00;font-weight:600");
+      tn.textContent = "TEST MODE — pretend bank, no money moved. (Open the page with ?paydemo=0 to leave test mode.)";
+      ps.insertBefore(tn, ps.firstChild);
+      okRef = false; tries = -1;
+    }
     var check = function () {
       fetch(PAY.endpoint + "/payments/status?" + (saved.id ? "id=" + encodeURIComponent(saved.id) : "ref=" + encodeURIComponent(ref)), { headers: { Accept: "application/json" } })
         .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error("status")); })
@@ -360,7 +418,7 @@
           else show("unknown", "lb_pay_unknown", label("lb_pay_unknown_text"));
         });
     };
-    if (okRef && PAY.endpoint) check(); else show("unknown", "lb_pay_unknown", label("lb_pay_unknown_text"));
+    if (tries === -1) { /* test mode answered */ } else if (okRef && PAY.endpoint) check(); else show("unknown", "lb_pay_unknown", label("lb_pay_unknown_text"));
   }
 
   /* Quantity fields: keep them positive whole numbers. */
