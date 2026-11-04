@@ -304,7 +304,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 4 Nov 2026, LIVE) "Packages give discounts, the RTK must come with Pro": chat KNOWLEDGE has "Package upgrades" lines generated in build-shop.py for every
   package that contains a smaller one (smaller + extra items vs the bigger package, with and without RTK); chatSystem tells the AI to recommend the package
   (e.g. Starter + 2 batteries ₾87,997 vs Pro ₾87,999 with XRTK7). Configurator pricing unchanged.
-- (owner, 4 Nov 2026; preview branch cfg-hint until approved) Configurator package suggestion (#pcHint, shop.js pcUpgrade): suggests the package that holds
+- (owner, 4 Nov 2026, LIVE) Configurator package suggestion (#pcHint, shop.js pcUpgrade): suggests the package that holds
   everything selected when it is cheaper, or costs at most half of the value it adds (Starter + 2 batteries ₾87,997 -> "Pro only ₾2 more, + XRTK7";
   Starter + 2 chargers -> Plus +₾1,002; Starter + 4b + 2c -> Business ₾1,994 cheaper; platform + SRC5 + 4b + 2c without tanks -> Starter ₾1,993 cheaper).
   One button applies the package (extras kept). Keys pc_hint_more / pc_hint_less / pc_hint_btn (configurator.TEXT). Pricing rules unchanged.
