@@ -281,7 +281,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   Phone header: PDG~XAG logo, account icon (green dot when signed in, flag pdg_in) and cart; language = dropdown row at the bottom of the phone menu (desktop keeps the globe).
   Consultation form has an optional e-mail field (reply_to in the Resend mail, shown in Telegram alert). Preview flow: push a branch, Cloudflare gives https://<branch>.pdg-8jc.pages.dev; merge to main only after the owner says yes.
 
-## Navigation, prices, controller, type scale (23 Oct 2026, preview branch nav-prices; NOT live until the owner approves)
+## Navigation, prices, controller, type scale (23 Oct 2026; owner approved, LIVE 4 Nov 2026)
 - Header: first nav item "ფასები და კომპლექტაციები" (nav_prices, red on desktop) → /shop#kits (platform row + Starter/Pro/Business with exact contents, prices, cart).
   "XAG P150 MAX" → /p150-max (presentation + #specifications). Desktop hides "მთავარი" (logo = home); header fits one row 901–1920px in ka/en/ru
   (logo 30px at 1280–1439, 24px at 901–1279; header "კონტაქტი" hidden ≤1279; "ჩვენ შესახებ" hidden 901–1023). Phone menu: flat links (.nav-m)
@@ -293,3 +293,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   titled "— თავსებადი, PDG არ აწვდის", listed after SRC5 and XRTK7, with a category note (p150_specs 'note'). Chat knowledge says the same. SRC5 specs = xa.com (checked 23 Oct 2026).
 - Type scale (end of style.css, tokens --fs-*): section h2 clamp(26px,2.6vw,36px)/600; product titles and product-page prices clamp(28px,2.6vw,36px)/600;
   card titles 20px/600, card prices 24px/600; labels 12px/600; buttons, add-to-cart and quantity 48px high, 14px/600. Hero titles, P150 chapters, contact band, article prose keep their own sizes.
+- (owner, 4 Nov 2026, LIVE) Website chat price answers: for the platform or a package ALWAYS list contents, say it is a complete working set, give the item-by-item total and saving
+  (KNOWLEDGE, from configurator data), end with the package page link; "კომპლექტი" never "პაკეტი"; never "დაახლოებით" next to a price; "104"/"105" from a visitor = exact ₾104,999.
+  Example answer is generated in build-shop.py from the catalog (Business). Rule text in chatSystem (worker.template.js).
