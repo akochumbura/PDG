@@ -84,6 +84,7 @@
       list.appendChild(li);
     });
     var sh = ship(T[0]), total = T[0] + sh;
+    showCartOffer(T[0]);
     document.getElementById("cartGoods").textContent = fmt(T[0]);
     document.getElementById("cartShip").textContent = pickup() ? label("lbFreeWord") : (sh ? fmt(sh) : label("lbFreeWord"));
     var fr = document.getElementById("cartFree");
@@ -103,6 +104,63 @@
       document.getElementById("cartPayNote").hidden = !payReady;
     }
   }
+  /* Cart package offer (owner brief, 4 Nov 2026): the components in the cart - loose items and the contents of package lines, each counted
+     once - are compared with every combination of approved packages (one drone each). When a valid combination is cheaper, one inline
+     offer shows it with the exact saving; the cart changes only when the customer presses the button. Other items are untouched. */
+  var PKG = window.PDG_PKGS || null;
+  function cartBest() {
+    if (!PKG) return null;
+    var keys = Object.keys(PKG.items), pool = {}, drones = 0, cur = 0, involved = [], bySku = {}, pk = {};
+    keys.forEach(function (k) { pool[k] = 0; bySku[PKG.items[k].sku] = k; });
+    PKG.packages.forEach(function (p) { pk[p.sku] = p; });
+    Object.keys(cart).forEach(function (s) {
+      var it = cart[s];
+      if (s === PKG.platform.sku) { drones += it.q; cur += it.p * it.q; involved.push(s); }
+      else if (bySku[s]) { pool[bySku[s]] += it.q; cur += it.p * it.q; involved.push(s); }
+      else if (pk[s]) { drones += it.q; keys.forEach(function (k) { pool[k] += (pk[s].q[k] || 0) * it.q; }); cur += it.p * it.q; involved.push(s); }
+    });
+    if (!drones || drones > 12) return null;
+    var P = PKG.packages, best = null;
+    function cost(counts) {
+      var need = {}, n = 0, t = 0;
+      keys.forEach(function (k) { need[k] = 0; });
+      P.forEach(function (p, i) { if (!counts[i]) return; n += counts[i]; t += p.price * counts[i]; keys.forEach(function (k) { need[k] += (p.q[k] || 0) * counts[i]; }); });
+      if (keys.some(function (k) { return need[k] > pool[k]; })) return null;
+      t += (drones - n) * PKG.platform.price;
+      keys.forEach(function (k) { t += (pool[k] - need[k]) * PKG.items[k].price; });
+      return t;
+    }
+    (function rec(i, left, counts) {
+      if (i === P.length) { var t = cost(counts); if (t !== null && (!best || t < best.t)) best = { t: t, counts: counts.slice() }; return; }
+      for (var c = 0; c <= left; c++) { counts[i] = c; rec(i + 1, left - c, counts); }
+      counts[i] = 0;
+    })(0, drones, []);
+    if (!best || best.t >= cur) return null;
+    var same = P.every(function (p, i) { return (best.counts[i] || 0) === ((cart[p.sku] || {}).q || 0); });
+    if (same) return null;
+    return { t: best.t, saving: cur - best.t, counts: best.counts, pool: pool, drones: drones, involved: involved, keys: keys };
+  }
+  function cartApply(o) {
+    o.involved.forEach(function (s) { delete cart[s]; });
+    var n = 0, need = {};
+    o.keys.forEach(function (k) { need[k] = 0; });
+    PKG.packages.forEach(function (p, i) {
+      var c = o.counts[i]; if (!c) return;
+      n += c; cart[p.sku] = { n: p.name, p: p.price, q: c, m: p.max };
+      o.keys.forEach(function (k) { need[k] += (p.q[k] || 0) * c; });
+    });
+    if (o.drones - n > 0) cart[PKG.platform.sku] = { n: PKG.platform.name, p: PKG.platform.price, q: o.drones - n, m: PKG.platform.max };
+    o.keys.forEach(function (k) { var r = o.pool[k] - need[k], it = PKG.items[k]; if (r > 0) cart[it.sku] = { n: it.name, p: it.price, q: r, m: it.max }; });
+    save(); render();
+  }
+  var cartOffer = null;
+  function showCartOffer(goods) {
+    var box = document.getElementById("cartOffer"); if (!box) return;
+    cartOffer = cartBest(); box.hidden = !cartOffer; if (!cartOffer) return;
+    var names = PKG.packages.map(function (p, i) { var c = cartOffer.counts[i]; return c ? (c > 1 ? c + " × " : "") + p.short : ""; }).filter(Boolean).join(" + ");
+    document.getElementById("cartOfferText").textContent = tx("cart_offer").replace("{names}", names).replace("{total}", fmt(goods - cartOffer.saving)).replace("{saving}", fmt(cartOffer.saving));
+  }
+  document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("#cartOfferBtn") && cartOffer) cartApply(cartOffer); });
   function change(k, d) {
     if (!cart[k]) return;
     var q = cart[k].q + d;
@@ -261,28 +319,40 @@
     inp.dispatchEvent(new Event("input", { bubbles: true }));
   });
 
-  /* XAG P150 MAX configurator (only on /p150-max-platform; markup from scripts/configurator.py, prices from the catalog).
-     Pricing (owner, 16 Oct 2026, second brief): item-by-item total; every package whose complete contents are selected is
-     checked (package price + only the additional items) and the lowest valid total is used automatically. At most one package,
-     quantities are never changed, nothing is prorated. The summary, mobile bar, cart and WhatsApp all use pcState(). */
+  /* XAG P150 MAX configurator (markup and data from scripts/configurator.py; used on /p150-max-platform and /shop).
+     Pricing (owner brief, 4 Nov 2026): items are priced one by one until the customer picks a package (preset) or accepts the offer.
+     A chosen package stays applied while the selection still holds all its components (extras are priced on top); if a component
+     falls below the package, pricing switches to item-by-item with a short note. When the selection holds every component of a
+     package and that is cheaper than the displayed total, one inline offer shows the package total and the exact saving.
+     The offer never changes quantities. Summary, phone bar, cart, WhatsApp message and the address (?c=…&m=…) use pcState(). */
   var pcBox = document.getElementById("platformConfig");
   if (pcBox) {
-    var pcSec = pcBox.closest("section") || document, PC = JSON.parse(pcBox.dataset.config), pcRows = pcBox.querySelectorAll(".pcfg-row[data-key]");
+    var PC = JSON.parse(pcBox.dataset.config), pcRows = pcBox.querySelectorAll(".pcfg-row[data-key]");
     var pcKeys = Object.keys(PC.items);
+    var pcMode = "", pcBroken = "", pcReady = false, pcOfferPkg = null;
     function pcInput(k) { return pcBox.querySelector('.pcfg-row[data-key="' + k + '"] .qty-input'); }
     function pcQ() { var q = {}; pcKeys.forEach(function (k) { var i = pcInput(k); q[k] = clampInt(i.value, 0, Number(i.max) || 0); }); return q; }
     function rowLabel(k) { var r = pcBox.querySelector('.pcfg-row[data-key="' + k + '"] .pcfg-label'); return r ? r.textContent.trim() : PC.items[k].name; }
     function fits(p, q) { return Object.keys(p.q).every(function (k) { return (q[k] || 0) >= p.q[k]; }); }
+    function pkgBy(v) { return PC.packages.filter(function (x) { return x.sku === v || x.key === v; })[0] || null; }
+    function withPkg(p, q) {
+      var extras = [], t = p.price;
+      pcKeys.forEach(function (k) { var d = q[k] - (p.q[k] || 0); if (d > 0) { extras.push([k, d]); t += d * PC.items[k].price; } });
+      return { p: p, total: t, extras: extras };
+    }
     function pcState() {
-      var q = pcQ(), single = PC.platform.price, best = null;
+      var q = pcQ(), single = PC.platform.price, pkg = null, offer = null;
       pcKeys.forEach(function (k) { single += q[k] * PC.items[k].price; });
+      var chosen = pcMode ? pkgBy(pcMode) : null;
+      if (chosen && fits(chosen, q)) pkg = withPkg(chosen, q);
+      var total = pkg ? pkg.total : single;
       PC.packages.forEach(function (p) {
-        if (!fits(p, q)) return;
-        var extras = [], t = p.price;
-        pcKeys.forEach(function (k) { var d = q[k] - (p.q[k] || 0); if (d > 0) { extras.push([k, d]); t += d * PC.items[k].price; } });
-        if (t < single && (!best || t < best.total)) best = { p: p, total: t, extras: extras };
+        if (!fits(p, q) || (pkg && pkg.p === p)) return;
+        var c = withPkg(p, q);
+        if (c.total < total && (!offer || c.total < offer.total)) offer = c;
       });
-      return { q: q, single: single, pkg: best, total: best ? best.total : single };
+      if (offer) offer.saving = total - offer.total;
+      return { q: q, single: single, pkg: pkg, total: total, offer: offer };
     }
     /* Lines to show / send / add to the cart: one package SKU + extras, or the platform + items. */
     function pcLines(st) {
@@ -308,57 +378,26 @@
       if (!st.q.chargers) m.push(tx("pc_need_chargers"));
       return m;
     }
+    function pcParts(st) { var parts = []; pcKeys.forEach(function (k) { if (st.q[k] > 0) parts.push(k + "-" + st.q[k]); }); return parts; }
     function pcLink(st) {
-      var parts = [];
-      pcKeys.forEach(function (k) { if (st.q[k] > 0) parts.push(k + "-" + st.q[k]); });
-      var lang = document.documentElement.lang, pre = lang && lang !== "ka" ? "/" + lang : "";
-      return location.origin + pre + PC.page + (parts.length ? "?c=" + parts.join("_") : "") + "#configurator";
+      var parts = pcParts(st), lang = document.documentElement.lang, pre = lang && lang !== "ka" ? "/" + lang : "", qs = [];
+      if (parts.length) qs.push("c=" + parts.join("_"));
+      if (st.pkg) qs.push("m=" + st.pkg.p.key);
+      var page = location.pathname.replace(/^\/(en|ru)(?=\/)/, "") || PC.page;
+      return location.origin + pre + page + (qs.length ? "?" + qs.join("&") : "") + "#configurator";
     }
-    /* The selection lives in the address (?c=…), so reloading, sharing and switching language keep it. */
-    var pcReady = false;
+    /* The selection and the pricing mode live in the address (?c=…&m=…), so reloading, sharing and switching language keep them. */
     function pcRemember(st) {
-      var parts = [];
-      pcKeys.forEach(function (k) { if (st.q[k] > 0) parts.push(k + "-" + st.q[k]); });
-      var u = new URL(location.href);
+      var parts = pcParts(st), u = new URL(location.href);
       u.searchParams.delete("kit"); u.searchParams.delete("p");
       if (parts.length) u.searchParams.set("c", parts.join("_")); else u.searchParams.delete("c");
+      if (st.pkg) u.searchParams.set("m", st.pkg.p.key); else u.searchParams.delete("m");
       var next = u.pathname + (u.search ? decodeURIComponent(u.search) : "") + u.hash;
       if (next !== location.pathname + location.search + location.hash) { try { history.replaceState(history.state, "", next); } catch (e) { /* ignore */ } }
     }
-    function presetMatch(q) {
-      if (pcKeys.every(function (k) { return !q[k]; })) return "none";
-      var hit = PC.packages.filter(function (p) { return pcKeys.every(function (k) { return (p.q[k] || 0) === q[k]; }); })[0];
-      return hit ? hit.sku : "";
-    }
-    /* Owner, 4 Nov 2026: packages give discounts. Suggest the package that holds everything selected when it is cheaper than the selection,
-       or costs at most half of what it adds (e.g. Starter + 2 batteries -> Pro: ₾2 more, the XRTK7 RTK station included). */
-    function pcUpgrade(st) {
-      if (!pcKeys.some(function (k) { return st.q[k] > 0; })) return null;
-      var best = null;
-      PC.packages.forEach(function (p) {
-        if (st.pkg && st.pkg.p.sku === p.sku) return;
-        var tq = {}, add = [], addVal = 0, t = p.price;
-        pcKeys.forEach(function (k) {
-          var cur = st.q[k] || 0, need = p.q[k] || 0;
-          tq[k] = Math.max(cur, need);
-          if (need > cur) { add.push([k, need - cur]); addVal += (need - cur) * PC.items[k].price; }
-          if (tq[k] > need) t += (tq[k] - need) * PC.items[k].price;
-        });
-        if (!add.length || Object.keys(tq).some(function (k) { return tq[k] > (Number(pcInput(k).max) || 0); })) return;
-        var gap = t - st.total;
-        if (gap <= addVal / 2 && (!best || gap < best.gap)) best = { p: p, tq: tq, add: add, gap: gap };
-      });
-      return best;
-    }
-    var pcHintQ = null;
-    function pcShowHint(st) {
-      var box = document.getElementById("pcHint"); if (!box) return;
-      var u = pcUpgrade(st); box.hidden = !u; pcHintQ = u ? u.tq : null; if (!u) return;
-      var items = u.add.map(function (x) { return rowLabel(x[0]) + (x[1] > 1 ? " × " + x[1] : ""); }).join(", ");
-      document.getElementById("pcHintText").textContent = tx(u.gap > 0 ? "pc_hint_more" : "pc_hint_less").replace("{name}", u.p.short).replace("{gap}", fmt(Math.abs(u.gap))).replace("{items}", items);
-      document.getElementById("pcHintBtn").textContent = tx("pc_hint_btn").replace("{name}", u.p.short);
-    }
     function pcShow() {
+      var chosen = pcMode ? pkgBy(pcMode) : null;
+      if (chosen && !fits(chosen, pcQ())) { pcBroken = chosen.short; pcMode = ""; }
       var st = pcState(), list = document.getElementById("pcList");
       pcRows.forEach(function (r) { r.classList.toggle("is-on", st.q[r.dataset.key] > 0); });
       list.textContent = "";
@@ -371,23 +410,32 @@
         v.className = "pcfg-li-price"; v.textContent = fmt(l.q * l.unit);
         li.append(n, v); list.appendChild(li);
       });
-      pcShowHint(st);
       var ap = document.getElementById("pcApplied");
-      ap.hidden = !st.pkg; if (st.pkg) ap.textContent = tx("pc_applied").replace("{name}", st.pkg.p.short);
+      ap.classList.toggle("is-note", !st.pkg && !!pcBroken);
+      ap.hidden = !st.pkg && !pcBroken;
+      ap.textContent = st.pkg ? tx("pc_applied").replace("{name}", st.pkg.p.short) : (pcBroken ? tx("pc_broken").replace("{name}", pcBroken) : "");
+      var ob = document.getElementById("pcOffer");
+      pcOfferPkg = st.offer ? st.offer.p : null;
+      if (ob) {
+        ob.hidden = !st.offer;
+        if (st.offer) document.getElementById("pcOfferText").textContent = tx("pc_offer").replace("{name}", st.offer.p.short).replace("{total}", fmt(st.offer.total)).replace("{saving}", fmt(st.offer.saving))
+          + (st.offer.extras.length ? " " + tx("pc_offer_extras") : "");
+      }
       var m = missing(st), rm = document.getElementById("pcRemind");
       rm.hidden = !m.length; if (m.length) rm.textContent = tx("pc_remind").replace("{list}", m.join(", "));
       document.getElementById("pcTotal").textContent = fmt(st.total);
       document.getElementById("pcBarTotal").textContent = fmt(st.total);
-      var pm = presetMatch(st.q);
-      pcBox.querySelectorAll(".pcfg-preset").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.preset === pm ? "true" : "false"); });
+      var pressed = st.pkg ? st.pkg.p.sku : (pcKeys.every(function (k) { return !st.q[k]; }) ? "none" : "");
+      pcBox.querySelectorAll(".pcfg-preset").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.preset === pressed ? "true" : "false"); });
       if (pcReady) pcRemember(st);
       return st;
     }
     function setQ(q) { pcKeys.forEach(function (k) { var i = pcInput(k); i.value = clampInt(q[k] || 0, 0, Number(i.max) || 0); }); }
+    /* Presets load exactly the package contents at the advertised price ("platform only" clears the selection); extras can be added afterwards. */
     function preset(v) {
-      var p = PC.packages.filter(function (x) { return x.sku === v || x.key === v; })[0], q = {};
+      var p = pkgBy(v), q = {};
       if (p) Object.keys(p.q).forEach(function (k) { q[k] = p.q[k]; });
-      setQ(q); pcShow();
+      pcMode = p ? p.sku : ""; pcBroken = ""; setQ(q); pcShow();
     }
     function pcSend() {
       var st = pcShow(), msg = [tx("pc_msg_title")];
@@ -408,7 +456,8 @@
       var a = e.target.closest ? e.target.closest("[data-preset-link]") : null;
       if (a) preset(a.getAttribute("data-preset-link"));
     });
-    var hb = document.getElementById("pcHintBtn"); if (hb) hb.addEventListener("click", function () { if (pcHintQ) { setQ(pcHintQ); pcShow(); } });
+    var ob0 = document.getElementById("pcOfferBtn");
+    if (ob0) ob0.addEventListener("click", function () { if (pcOfferPkg) { pcMode = pcOfferPkg.sku; pcBroken = ""; pcShow(); } });
     document.getElementById("pcWa").addEventListener("click", pcSend);
     document.getElementById("pcBarSend").addEventListener("click", pcSend);
     document.getElementById("pcCart").addEventListener("click", function () {
@@ -417,20 +466,23 @@
       save(); render();
       var b = this; b.classList.add("is-added"); setTimeout(function () { b.classList.remove("is-added"); }, 900);
     });
-    /* Shared links (?c=batteries-4_chargers-2) and package pages (?kit=starter); older links may still carry &p=. */
-    var qs = new URLSearchParams(location.search), q0 = {}, kit = (qs.get("kit") || "").toLowerCase();
+    /* Shared links (?c=batteries-4_chargers-2&m=pro) and package pages (?kit=starter); older links may still carry &p=. */
+    var qs = new URLSearchParams(location.search), q0 = {}, kit = (qs.get("kit") || "").toLowerCase(), mode0 = (qs.get("m") || "").toLowerCase();
     String(qs.get("c") || "").split("_").forEach(function (x) { var m = /^([a-z0-9]+)-(\d+)$/.exec(x); if (m && PC.items[m[1]]) q0[m[1]] = Number(m[2]); });
-    var kp = PC.packages.filter(function (x) { return x.key === kit; })[0];
-    if (kp && !qs.get("c")) Object.keys(kp.q).forEach(function (k) { q0[k] = kp.q[k]; });
+    var kp = pkgBy(kit);
+    if (kp && !qs.get("c")) { Object.keys(kp.q).forEach(function (k) { q0[k] = kp.q[k]; }); pcMode = kp.sku; }
+    var mp = pkgBy(mode0); if (mp && fits(mp, q0)) pcMode = mp.sku;
     setQ(q0);
     pcShow();
     pcReady = true;
-    /* Phones: a slim total + send bar replaces the call/chat bar while the options are on screen and the summary total/actions are not. */
+    /* Phones: a slim total + send bar replaces the call/chat bar while the options are on screen and the summary total is not.
+       It hides while the menu, chat, cart or the on-screen keyboard are open. */
     var bar = document.getElementById("pcBar"), sumEl = document.querySelector("#pcSummary .pcfg-total-row"), optEl = pcBox.querySelector(".pcfg-options");
     if (bar && "IntersectionObserver" in window) {
-      var vis = { sum: false, opt: false };
+      var vis = { sum: false, opt: false }, typing = false;
       var upd = function () {
-        var on = vis.opt && !vis.sum && window.matchMedia("(max-width: 768px)").matches;
+        var b = document.body, busy = b.classList.contains("nav-lock") || b.classList.contains("chat-open") || b.classList.contains("modal-open") || typing;
+        var on = vis.opt && !vis.sum && !busy && window.matchMedia("(max-width: 768px)").matches;
         bar.classList.toggle("is-on", on); bar.setAttribute("aria-hidden", on ? "false" : "true");
         document.getElementById("pcBarSend").tabIndex = on ? 0 : -1;
         document.body.classList.toggle("pcfg-bar-on", on);
@@ -438,6 +490,9 @@
       new IntersectionObserver(function (es) { es.forEach(function (e) { vis.sum = e.isIntersecting; }); upd(); }, { threshold: 0 }).observe(sumEl);
       new IntersectionObserver(function (es) { es.forEach(function (e) { vis.opt = e.isIntersecting; }); upd(); }, { threshold: 0 }).observe(optEl);
       window.addEventListener("resize", upd);
+      new MutationObserver(upd).observe(document.body, { attributes: true, attributeFilter: ["class"] });
+      document.addEventListener("focusin", function (e) { if (e.target.matches && e.target.matches("input:not([type=button]), textarea, select")) { typing = true; upd(); } });
+      document.addEventListener("focusout", function () { typing = false; setTimeout(upd, 50); });
     }
   }
 

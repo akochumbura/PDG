@@ -308,3 +308,21 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   everything selected when it is cheaper, or costs at most half of the value it adds (Starter + 2 batteries ₾87,997 -> "Pro only ₾2 more, + XRTK7";
   Starter + 2 chargers -> Plus +₾1,002; Starter + 4b + 2c -> Business ₾1,994 cheaper; platform + SRC5 + 4b + 2c without tanks -> Starter ₾1,993 cheaper).
   One button applies the package (extras kept). Keys pc_hint_more / pc_hint_less / pc_hint_btn (configurator.TEXT). Pricing rules unchanged.
+
+## Buying refinement (owner brief, 4 Nov 2026; preview branch buying-refine until approved) — REPLACES the automatic package pricing and the #pcHint suggestion
+- Pricing: items are priced one by one until the customer picks a package (preset) or presses "კომპლექტის არჩევა" on the offer. A chosen package stays while
+  the selection holds all its components (extras priced on top); below that the configurator switches to item pricing with note pc_broken. Presets load exactly
+  the package contents (platform only clears everything). Offer (#pcOffer) = only packages whose complete contents are selected, lowest total, saving vs the
+  displayed total; never changes quantities. Mode is in the address (?c=…&m=pro), WhatsApp message (+link), cart lines (package SKU + extras).
+  Verified: Starter + 2 batteries + RTK = ₾91,996 until Pro (₾87,999, saving ₾3,997) is accepted; Business + 2 GC4000+ = ₾116,797; custom exact Starter
+  ₾79,590 -> offer Starter (saving ₾3,591); several fit -> lowest (6b 4c RTK -> Pro + 2 chargers ₾94,997).
+- Cart offer (#cartOffer, shop.js cartBest): components from loose items and package lines are pooled (each counted once), every combination of approved packages
+  (one drone each) is tried, the cheapest valid one is offered with the saving; applied only on click; other items untouched. Package data for the cart:
+  window.PDG_PKGS in payments-config.js (generated from configurator.data()).
+- /shop: #kits = h2 + compact platform row (no button) + shortcuts .buy-jumps (კონფიგურატორი / მზა კომპლექტები) -> shared configurator block
+  (<!--shopCfg-->, PCFG.block(), section #configurator) -> section #packages "მზა კომპლექტები" with the cards. /p150-max-platform keeps its configurator.
+  Package cards: name, price + "დღგ-ს ჩათვლით" first, then .kit-keys (batteries | chargers | RTK, '—' when not included), then full contents.
+- Configurator CSS is ONE block (search "Configurator (one block"). Presets: platform only full width, packages 4 across (2 across ≤768px), equal cells, selected =
+  black border + red dot. Phone bar: total + "დღგ-ს ჩათვლით", button "გაგზავნა" (aria-label pc_send_aria), hidden while menu/chat/cart/keyboard are open.
+- Audit fixes: Escape closes the desktop mega menu even under the pointer; dialog focus outline removed (controls keep theirs); pages.dev previews send
+  X-Robots-Tag: noindex (dist/_headers host rules); fuller search descriptions for /terms (terms_meta) and the first guide (article_1_meta).

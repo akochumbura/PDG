@@ -2,11 +2,10 @@
 
 One builder, used on the standalone platform page (/p150-max-platform, build-products.py). Every price comes from scripts/catalog.csv (the owner's price list), every
 stock limit from scripts/stock.csv, the package contents from the catalog kit rows: listings, cart, worker and configurator
-read the same numbers. Pricing rule (owner, 16 Oct 2026, second brief): total at individual shop prices; every approved
-package whose complete contents are in the selection is checked (package price + only the additional items) and the
-lowest valid total is used automatically ("გამოყენებულია Pro კომპლექტის ფასი"). At most one package; quantities are
-never changed; no prorating or partial discounts. Starts with the platform only; nothing paid is preselected.
-Only the platform page shows the configurator (the P150 MAX page links to it).
+read the same numbers. Pricing rule (owner brief, 4 Nov 2026, replaces the automatic rule of 16 Oct): a package price applies only after the customer
+picks a package or accepts the offer; otherwise items are priced one by one. When the selection holds every component of a package
+and that is cheaper, one inline offer shows the package total and the saving. Quantities are never changed by an offer.
+Used on the platform page (/p150-max-platform) and on the shop (/shop#configurator), same markup and data.
 Georgian text is here (data-i18n keys); en/ru are written to content.js by build-shop.py (TEXT).
 """
 import csv, html, json
@@ -22,7 +21,7 @@ ENERGY = [('remotes', '05-002-02725', 'pc_remote', 'მართვის პუ
           ('towers', '09-017-00065', 'pc_tower', 'აკუმულატორის გამაგრილებელი ავზი', False)]
 EXTRA = [('generators', '09-017-00109', 'pc_generator', 'დამუხტვის სადგური (გენერატორი) GC4000+', True),
          ('rtk', '09-016-00083', 'pc_rtk', 'მობილური RTK სადგური XRTK7', True),
-         ('spreader', '09-023-00145', 'pc_revocast', 'გრანულების გამფანტველი RevoCast 5', True),
+         ('spreader', '09-023-00145', 'pc_revocast', 'გრანულების გამფანტველი RevoCast\u00a05', True),
          ('sling', '05-002-02682', 'pc_revosling', 'ტვირთის საკიდი სისტემა RevoSling (შასით)', True),
          ('nozzle4', '05-002-02640', 'pc_nozzle4', '4-გამფრქვევიანი განახლების კომპლექტი (P150 MAX)', True),
          ('led', '09-027-00003', 'pc_led', 'LED ფარი 90 ვტ', True)]  # owner, 18 Oct 2026: LED lights as an option for every setup
@@ -37,17 +36,17 @@ TEXT = {  # key: (ka, en, ru)
     'pc_tower': ('აკუმულატორის გამაგრილებელი ავზი', 'Battery cooling tank', 'Охлаждающий бак для аккумуляторов'),
     'pc_generator': ('დამუხტვის სადგური (გენერატორი) GC4000+', 'GC4000+ charging station (generator)', 'Зарядная станция (генератор) GC4000+'),
     'pc_rtk': ('მობილური RTK სადგური XRTK7', 'XRTK7 mobile RTK station', 'Мобильная RTK-станция XRTK7'),
-    'pc_revocast': ('გრანულების გამფანტველი RevoCast 5', 'RevoCast 5 granule spreader', 'Разбрасыватель гранул RevoCast 5'),
+    'pc_revocast': ('გრანულების გამფანტველი RevoCast\u00a05', 'RevoCast\u00a05 granule spreader', 'Разбрасыватель гранул RevoCast\u00a05'),
     'pc_revosling': ('ტვირთის საკიდი სისტემა RevoSling (შასით)', 'RevoSling cargo system (with landing gear)', 'Грузовая система RevoSling (с шасси)'),
     'pc_nozzle4': ('4-გამფრქვევიანი განახლების კომპლექტი (P150 MAX)', '4-Nozzle Upgrade Kit (P150 MAX)', 'Комплект модернизации на 4 форсунки (P150 MAX)'),
     'pc_led': ('LED ფარი 90 ვტ', '90 W LED headlight', 'Светодиодная фара 90 Вт'),
     'pc_title': ('კონფიგურატორი', 'Configurator', 'Конфигуратор'),
-    'pc_intro': ('დაიწყეთ მხოლოდ პლატფორმით ან აირჩიეთ კომპლექტი. თუ არჩევანი კომპლექტის სრულ შემადგენლობას შეიცავს, კომპლექტის ფასი ავტომატურად გამოიყენება.',
-                 'Start with the platform only or pick a package. When your selection contains a complete package, the package price is applied automatically.',
-                 'Начните только с платформы или выберите комплект. Если выбор содержит полный состав комплекта, цена комплекта применяется автоматически.'),
+    'pc_intro': ('დაიწყეთ მხოლოდ პლატფორმით ან აირჩიეთ კომპლექტი. თუ თქვენი არჩევანი სრულ კომპლექტს შეიცავს, შემოგთავაზებთ კომპლექტის ფასს.',
+                 'Start with the platform only or pick a package. If your selection contains a complete package, we offer you the package price.',
+                 'Начните только с платформы или выберите комплект. Если ваш выбор содержит полный комплект, мы предложим цену комплекта.'),
     'pc_presets': ('სწრაფი არჩევანი', 'Quick choice', 'Быстрый выбор'),
     'pc_preset_none': ('მხოლოდ პლატფორმა', 'Platform only', 'Только платформа'),
-    'pc_platform': ('XAG P150 MAX პლატფორმა (RevoSpray 5)', 'XAG P150 MAX platform (RevoSpray 5)', 'Платформа XAG P150 MAX (RevoSpray 5)'),
+    'pc_platform': ('XAG P150 MAX პლატფორმა (RevoSpray\u00a05)', 'XAG P150 MAX platform (RevoSpray\u00a05)', 'Платформа XAG P150 MAX (RevoSpray\u00a05)'),
     'pc_energy': ('მართვა და ენერგია', 'Control and power', 'Управление и питание'),
     'pc_extra': ('დამატებითი აღჭურვილობა', 'Additional equipment', 'Дополнительное оборудование'),
     'pc_more_count': ('არჩეულია: {n}', 'selected: {n}', 'выбрано: {n}'),
@@ -58,12 +57,18 @@ TEXT = {  # key: (ka, en, ru)
     'pc_send': ('კონფიგურაციის გაგზავნა', 'Send configuration', 'Отправить конфигурацию'),
     'pc_cart': ('კალათაში დამატება', 'Add to cart', 'В корзину'),
     'pc_applied': ('გამოყენებულია {name} კომპლექტის ფასი', '{name} package price applied', 'Применена цена комплекта {name}'),
-    # owner, 4 Nov 2026: packages are the better deal - suggest the package when it is cheaper or costs only a little more
-    'pc_hint_more': ('{name} კომპლექტი მხოლოდ {gap}-ით მეტი ღირს და დამატებით შედის: {items}.', 'The {name} package costs only {gap} more and also includes: {items}.',
-                     'Комплект {name} стоит всего на {gap} больше и дополнительно включает: {items}.'),
-    'pc_hint_less': ('{name} კომპლექტი {gap}-ით ნაკლები ღირს და დამატებით შედის: {items}.', 'The {name} package costs {gap} less and also includes: {items}.',
-                     'Комплект {name} стоит на {gap} меньше и дополнительно включает: {items}.'),
-    'pc_hint_btn': ('აირჩიეთ {name}', 'Choose {name}', 'Выбрать {name}'),
+    # owner brief, 4 Nov 2026 (buying refinement): package prices apply only after the customer chooses or accepts a package
+    'pc_offer': ('{name} კომპლექტით ჯამი იქნება {total} — დაზოგავთ {saving}.', 'With the {name} package the total is {total}, you save {saving}.',
+                 'С комплектом {name} итого {total}, экономия {saving}.'),
+    'pc_offer_extras': ('დანარჩენი ნივთები ცალკე ფასით რჩება.', 'The other items stay at their own prices.', 'Остальное остается по отдельным ценам.'),
+    'pc_offer_btn': ('კომპლექტის არჩევა', 'Choose the package', 'Выбрать комплект'),
+    'pc_broken': ('{name} კომპლექტის შემადგენლობა აღარ არის სრული, ამიტომ ფასი ცალ-ცალკეა დათვლილი.', 'The {name} package is no longer complete, so items are priced individually.',
+                  'Комплект {name} больше не полный, поэтому цена рассчитана поштучно.'),
+    'pc_send_short': ('გაგზავნა', 'Send', 'Отправить'),
+    'pc_send_aria': ('კონფიგურაციის გაგზავნა WhatsApp-ით', 'Send the configuration by WhatsApp', 'Отправить конфигурацию в WhatsApp'),
+    'pc_vat_short': ('დღგ-ს ჩათვლით', 'incl. VAT', 'с НДС'),
+    'pc_jump_cfg': ('კონფიგურატორი', 'Configurator', 'Конфигуратор'),
+    'pc_jump_pkgs': ('მზა კომპლექტები', 'Ready packages', 'Готовые комплекты'),
     'pc_pkg_line': ('{name} კომპლექტი', '{name} package', 'Комплект {name}'),
     'pc_extras': ('დამატებით', 'In addition', 'Дополнительно'),
     'pc_remind': ('არ არის არჩეული: {list}. თუ თავსებადი აღჭურვილობა უკვე გაქვთ, შეგიძლიათ ასე გააგრძელოთ.',
@@ -161,11 +166,12 @@ def block(heading='h2'):
             f'<aside class="pcfg-summary" id="pcSummary" aria-labelledby="pcSumTitle"><h3 id="pcSumTitle" data-i18n="pc_summary">{t["pc_summary"]}</h3>'
             f'<ul class="pcfg-list" id="pcList"></ul>'
             f'<p class="pcfg-applied" id="pcApplied" hidden></p>'
-            f'<div class="pcfg-hint" id="pcHint" role="status" hidden><p id="pcHintText"></p><button class="button button-line pcfg-hint-btn" id="pcHintBtn" type="button"></button></div>'
+            f'<div class="pcfg-offer" id="pcOffer" hidden><p id="pcOfferText"></p><button class="button button-line pcfg-offer-btn" id="pcOfferBtn" type="button" data-i18n="pc_offer_btn">{t["pc_offer_btn"]}</button></div>'
             f'<p class="pcfg-remind" id="pcRemind" role="status" hidden></p>'
             f'<div class="pcfg-total-row"><span class="pcfg-total-label" data-i18n="pc_total">{t["pc_total"]}</span><strong class="pcfg-total" id="pcTotal" aria-live="polite">₾{d["platform"]["price"]:,}</strong></div>'
             f'<div class="pcfg-actions"><button class="button button-red" id="pcWa" type="button"><span data-i18n="pc_send">{t["pc_send"]}</span></button>'
             f'<button class="button button-line" id="pcCart" type="button"><span data-i18n="pc_cart">{t["pc_cart"]}</span></button></div></aside></div>'
-            f'<div class="pcfg-bar" id="pcBar" aria-hidden="true"><div class="pcfg-bar-sum"><span class="pcfg-bar-label" data-i18n="pc_total">{t["pc_total"]}</span>'
-            f'<strong id="pcBarTotal">₾{d["platform"]["price"]:,}</strong></div><button class="button button-red" type="button" id="pcBarSend" tabindex="-1"><span data-i18n="pc_send">{t["pc_send"]}</span></button></div>'
+            f'<div class="pcfg-bar" id="pcBar" aria-hidden="true"><div class="pcfg-bar-sum"><strong id="pcBarTotal">₾{d["platform"]["price"]:,}</strong>'
+            f'<span class="pcfg-bar-label" data-i18n="pc_vat_short">{t["pc_vat_short"]}</span></div>'
+            f'<button class="button button-red" type="button" id="pcBarSend" tabindex="-1" aria-label="{t["pc_send_aria"]}" data-i18n-aria="pc_send_aria"><span data-i18n="pc_send_short">{t["pc_send_short"]}</span></button></div>'
             f'</div></section>')

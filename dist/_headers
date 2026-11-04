@@ -10,3 +10,8 @@
   Cache-Control: public, max-age=3600
 /assets/fonts/*
   Cache-Control: public, max-age=2592000
+# Preview and pages.dev addresses stay out of search engines (Cloudflare Pages host rules); premium-drones.ge is not affected.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex

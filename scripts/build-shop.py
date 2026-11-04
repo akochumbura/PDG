@@ -169,6 +169,20 @@ def search_k(r):
     return f' data-k="{html.escape(full, quote=True)}"' if full and full != r.get('name_ka') else ''
 
 
+KEY_TEXT = {'kk_bat': ('აკუმულატორი', 'batteries', 'аккумуляторы'), 'kk_chg': ('დამტენი', 'chargers', 'зарядные'),
+            'kk_rtk': ('RTK სადგური', 'RTK station', 'RTK-станция'), 'kk_vat': ('დღგ-ს ჩათვლით', 'incl. VAT', 'с НДС')}
+
+
+def kit_keys(r, p):
+    """Package card (owner brief, 4 Nov 2026): name and price first, then batteries / chargers / XRTK7 side by side so packages compare at a glance."""
+    cell = lambda v, k: f'<li><strong>{v}</strong><span data-i18n="{k}">{KEY_TEXT[k][0]}</span></li>'
+    rtk = _n(r, 'rtk')
+    return (f'<p class="kit-price"><span class="product-price">₾{p:,}</span> <span class="pd-vat" data-i18n="kk_vat">{KEY_TEXT["kk_vat"][0]}</span></p>'
+            f'<ul class="kit-keys">{cell(_n(r, "batteries"), "kk_bat")}{cell(_n(r, "chargers"), "kk_chg")}'
+            + (cell(rtk, 'kk_rtk') if rtk else f'<li class="is-none"><strong aria-hidden="true">—</strong><span class="visually-hidden" data-i18n="cmp_none">არ შედის</span> <span data-i18n="kk_rtk">{KEY_TEXT["kk_rtk"][0]}</span></li>')
+            + '</ul>')
+
+
 def card(r):
     kit = r['group'] == 'kit'
     n = html.escape(r['name'], quote=True)
@@ -187,7 +201,7 @@ def card(r):
         mk, mt = ('pd_pk_more', 'შემადგენლობა და ფოტოები') if kit else ('pd_more', 'მახასიათებლები')
         more = f'<a class="text-link product-more" href="{page}" data-local><span data-i18n="{mk}">{mt}</span><span aria-hidden="true">→</span></a>'
     head = (f'<article class="product{" product-kit" if kit else ""}{" product-out" if st == "out" else ""}" data-cat="{r["group"]}" data-avail="{st}"{search_k(r)}>{pic}'
-            f'<div class="product-body">{cat(r)}<p class="product-sku">{s}</p>{ttl}{contents(r) if kit else ""}{more}')
+            f'<div class="product-body">{cat(r)}<p class="product-sku">{s}</p>{ttl}{kit_keys(r, p) if kit else ""}{contents(r) if kit else ""}{more}')
     if st == 'out':  # previous-generation model: no price, no purchase, consultation instead
         spec = LEGACY_SPECS.get(s)
         return (head + (f'<p class="product-specs" data-i18n="{pkey(s)}_spec">{html.escape(spec[0])}</p>' if spec else '')
@@ -199,7 +213,7 @@ def card(r):
                 + '<div class="product-buy"><span class="product-price product-price-quote" data-i18n="price_on_request">ფასი მოთხოვნით</span>'
                 + f'<button type="button" class="quote-btn" data-sku="{s}" data-name="{n}" data-i18n="request_quote">ფასის მოთხოვნა</button></div></div></article>\n')
     return (head + '<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
-            f'<div class="product-buy"><span class="product-price">₾{p:,}</span><div class="buy-actions">{stepper(s, n, stock_max(r))}'
+            f'<div class="product-buy">{"" if kit else f"<span class=\"product-price\">₾{p:,}</span>"}<div class="buy-actions">{stepper(s, n, stock_max(r))}'
             f'<button type="button" class="add-btn" data-sku="{s}" data-name="{n}" data-price="{p}" data-i18n="add_to_cart">კალათაში</button></div></div></div></article>\n')
 
 
@@ -397,7 +411,7 @@ kits = [r for r in rows if r['group'] == 'kit']
 parts = [r for r in rows if r['group'] not in ('kit', 'legacy', 'drone')]
 platform = [r for r in rows if r['group'] == 'drone']  # owner, 16 Oct 2026: standalone P150 MAX platform (own row below the packages)
 legacy = [r for r in rows if r['group'] == 'legacy']
-for _k, _v in TILE_TEXT.items():
+for _k, _v in list(TILE_TEXT.items()) + list(KEY_TEXT.items()):
     _c['ka'][_k], _c['en'][_k], _c['ru'][_k] = _v
 for _r in kits:
     _k = f'tile_desc_{_r["sku"].split("-")[-1].lower()}'
@@ -427,7 +441,7 @@ def platform_link():
 def platform_kit_row(r):
     """P150 MAX page package table: the platform-only option first (owner, 18 Oct 2026), opening the configurator."""
     p = price(r, False)
-    return ('<li class="kit-row kit-row-platform"><div class="kit-row-name"><span class="kit-row-title"><a href="/p150-max-platform" data-local data-i18n="pc_platform">XAG P150 MAX პლატფორმა (RevoSpray 5)</a></span>'
+    return ('<li class="kit-row kit-row-platform"><div class="kit-row-name"><span class="kit-row-title"><a href="/p150-max-platform" data-local data-i18n="pc_platform">XAG P150 MAX პლატფორმა (RevoSpray 5)</a></span>'
             '<span class="kit-row-note" data-i18n="pp_notice">ფასში შედის დრონი RevoSpray 5 სისტემით. მართვის პულტი, აკუმულატორები და დამტენები იყიდება ცალკე. ეს არ არის სრული სამუშაო კომპლექტი.</span></div>'
             f'<span class="kit-row-price">₾{p:,}</span><a class="button button-line kit-row-cfg" href="/p150-max-platform#configurator" data-local><span data-i18n="pp_configure">კონფიგურაციის აწყობა</span></a></li>\n')
 
@@ -438,10 +452,9 @@ def platform_row(r):
     return ('<div class="platform-row"><a class="platform-row-photo" href="/p150-max-platform" data-local>'
             f'<img src="/assets/img/products/{r["sku"]}.webp" width="1200" height="900" alt="{html.escape(r["name"], quote=True)}" loading="lazy" decoding="async"></a>'
             '<div class="platform-row-body"><p class="product-cat" data-i18n="pp_eyebrow">ცალკე პლატფორმა</p>'
-            f'<h3><a class="product-link" href="/p150-max-platform" data-local data-i18n="pc_platform">XAG P150 MAX პლატფორმა (RevoSpray 5)</a></h3>'
+            f'<h3><a class="product-link" href="/p150-max-platform" data-local data-i18n="pc_platform">XAG P150 MAX პლატფორმა (RevoSpray 5)</a></h3>'
             '<div class="pp-price-row"><p class="pp-price"><span class="product-price">₾{0:,}</span> <span class="pd-vat" data-i18n="pd_vat">ფასი დღგ-ს ჩათვლით</span></p>'.format(p) +
             '<p class="pp-notice" data-i18n="pp_notice">ფასში შედის დრონი RevoSpray 5 სისტემით. მართვის პულტი, აკუმულატორები და დამტენები იყიდება ცალკე. ეს არ არის სრული სამუშაო კომპლექტი.</p></div>'
-            '<a class="button button-line" href="/p150-max-platform#configurator" data-local><span data-i18n="pp_configure">კონფიგურაციის აწყობა</span><span aria-hidden="true">→</span></a>'
             '</div></div>')
 
 
@@ -452,6 +465,7 @@ t = pb.read_text(encoding='utf-8')
 subs = [
     (r'(<div class="shop-grid kit-grid">\n).*?(</div>\n<!--/kitGrid-->)', ''.join(card(r) for r in kits)),
     (r'(<!--platformRow-->\n).*?(<!--/platformRow-->)', ''.join(platform_row(r) for r in platform) + '\n'),
+    (r'(<!--shopCfg-->).*?(<!--/shopCfg-->)', '\n' + PCFG.block() + '\n'),  # owner brief, 4 Nov 2026: the shop configurator comes before the ready packages
     (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div>\n<!--partsMore-->)', ''.join(card(r).replace('<article class="product"', '<article hidden class="product"', 1) if i >= 24 else card(r) for i, r in enumerate(parts))),  # first 24 visible, the rest revealed by "Load more" (shop.js PAGE)
     (r'(<div class="shop-grid" id="legacyGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in legacy)),
     # Owner, 16 Oct 2026 (second brief): the full configurator lives only on /p150-max-platform; the P150 MAX page links to it.
@@ -565,5 +579,10 @@ for marker, value in (('__CATALOG__', json.dumps(cat, ensure_ascii=False)), ('__
 pc = ROOT / 'dist/assets/js/payments-config.js'
 pc.write_text('/* Generated by scripts/build-shop.py from scripts/site_config.py (PAYMENTS). Online payment turns on by itself\n'
               '   once the Bank of Georgia keys are saved in Cloudflare (see docs/07-payments.md). */\n'
-              f'window.PDG_PAY={{endpoint:"/api",threshold:{rules["threshold"]},depositPercent:{rules["depositPercent"]},shippingFee:{rules["shippingFee"]},freeFrom:{rules["freeFrom"]}}};\n', encoding='utf-8')
+              f'window.PDG_PAY={{endpoint:"/api",threshold:{rules["threshold"]},depositPercent:{rules["depositPercent"]},shippingFee:{rules["shippingFee"]},freeFrom:{rules["freeFrom"]}}};\n'
+              # package definitions for the cart's package offer (same data as the configurator, scripts/configurator.py)
+              + 'window.PDG_PKGS=' + json.dumps({'platform': {k: _pd['platform'][k] for k in ('sku', 'name', 'price', 'max')},
+                                                 'items': {k: {f: v[f] for f in ('sku', 'name', 'price', 'max')} for k, v in _pd['items'].items() if any(k in p['q'] for p in _pd['packages'])},
+                                                 'packages': [{f: p[f] for f in ('sku', 'name', 'short', 'price', 'max', 'q')} for p in _pd['packages']]},
+                                                ensure_ascii=False, separators=(',', ':')) + ';\n', encoding='utf-8')
 print(f'payments: worker with {len(cat)} prices; full payment under GEL {rules["threshold"]:,}, {rules["depositPercent"]}% deposit above')

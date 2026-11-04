@@ -134,7 +134,15 @@
     closeGroups(b); b.setAttribute("aria-expanded", String(open));
   }));
   document.addEventListener("click", (event) => { if (!event.target.closest(".nav-group")) closeGroups(); });
-  document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeGroups(); });
+  /* Escape also wins over hover: the hovered menu stays closed until the pointer leaves it. */
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    const open = groups.find((b) => b.getAttribute("aria-expanded") === "true");
+    closeGroups();
+    document.querySelectorAll(".nav-group:hover").forEach((g) => g.classList.add("nav-hover-off"));
+    if (open && open.closest(".nav-group").contains(document.activeElement)) open.focus();
+  });
+  document.querySelectorAll(".nav-group").forEach((g) => g.addEventListener("mouseleave", () => g.classList.remove("nav-hover-off")));
   const desktop = window.matchMedia("(min-width: 901px)");
   desktop.addEventListener?.("change", (event) => { if (event.matches) closeNav(); });
 
