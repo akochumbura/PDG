@@ -76,7 +76,7 @@ for lang in ('ka', 'en', 'ru'):
         pages.append(entry)
     products = []
     prefix = '' if lang == 'ka' else '/' + lang
-    for r in rows:
+    for r in [x for x in rows if x['group'] != 'drone']:  # owner, 4 Nov 2026: the drone alone is not offered
         g = r['group']
         key = CAT[g]
         cat = KA.get(key, '') if lang == 'ka' else T[lang].get(key, '')

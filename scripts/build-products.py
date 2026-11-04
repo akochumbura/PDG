@@ -189,7 +189,7 @@ for sku, slug in P.KITS.items():
         f'<button type="button" class="qty-btn" data-step="1" aria-label="რაოდენობის გაზრდა" data-i18n-aria="qty_more">+</button></div>'
         f'<button type="button" class="add-btn" data-sku="{sku}" data-name="{name}" data-price="{gel}" data-i18n="add_to_cart">კალათაში</button></div>'
         f'<p class="pd-links"><a href="/p150-max.html#specifications" data-local><span data-i18n="pd_pk_specs">P150 MAX-ის სრული მახასიათებლები</span></a>'
-        f'<a href="/p150-max-platform?kit={sku.split('-')[-1].lower()}#configurator" data-local><span data-i18n="pd_pk_cfg">კომპლექტის შეცვლა კონფიგურატორში</span></a></p>'
+        f'<a href="/shop?kit={sku.split('-')[-1].lower()}#configurator" data-local><span data-i18n="pd_pk_cfg">კომპლექტის შეცვლა კონფიგურატორში</span></a></p>'
         f'</article></div></section>\n</template>\n')
 
 # ---- Standalone P150 MAX platform page (owner, 16 Oct 2026, second brief): compact first screen —
@@ -198,15 +198,7 @@ for sku, slug in P.KITS.items():
 import configurator as PCFG
 _pr = rows[P.PLATFORM]
 _pgel = int(_pr['gel'])
-put('pd_platform_title', ('XAG P150 MAX პლატფორმა (RevoSpray 5) — ფასი და კონფიგურატორი', 'XAG P150 MAX platform (RevoSpray 5) — price and configurator',
-                          'Платформа XAG P150 MAX (RevoSpray 5) — цена и конфигуратор'))
-put('pd_platform_intro', ('XAG P150 MAX RevoSpray 5 შეწამვლის სისტემით — ₾{0:,}. შეარჩიეთ მართვის პულტი, ენერგოსისტემა და დამატებითი აღჭურვილობა კონფიგურატორში.'.format(_pgel),
-                          'XAG P150 MAX with the RevoSpray 5 spraying system — ₾{0:,}. Choose the controller, power system and extra equipment in the configurator.'.format(_pgel),
-                          'XAG P150 MAX с системой опрыскивания RevoSpray 5 — ₾{0:,}. Выберите пульт, систему питания и дополнительное оборудование в конфигураторе.'.format(_pgel)))
-put('pd_platform_in', ('შედის: P150 MAX პლატფორმა და RevoSpray 5 შეწამვლის სისტემა.', 'Included: the P150 MAX platform and the RevoSpray 5 spraying system.',
-                       'Входит: платформа P150 MAX и система опрыскивания RevoSpray 5.'))
 _kmin = min(int(r['gel']) for r in rows.values() if r['group'] == 'kit')
-put('pd_platform_pkgs', ('სრული კომპლექტები — ₾{0:,}-დან'.format(_kmin), 'Complete packages from ₾{0:,}'.format(_kmin), 'Полные комплекты от ₾{0:,}'.format(_kmin)))
 put('pd_pf_front', ('XAG P150 MAX RevoSpray 5 სისტემით — წინა ხედი', 'XAG P150 MAX with RevoSpray 5 — front view', 'XAG P150 MAX с RevoSpray 5 — вид спереди'))
 put('pd_pf_field', ('XAG P150 MAX შეწამვლისას მინდორზე', 'XAG P150 MAX spraying a field', 'XAG P150 MAX при опрыскивании поля'))
 put('pd_pf_included', ('შედის', 'Included', 'Входит'))
@@ -225,25 +217,17 @@ _pics = [(f'/assets/img/{f}', f'/assets/img/{f.replace(".webp", "-t.webp")}', ke
 _thumbs = ''.join(f'<button type="button" class="pk-thumb{" is-on" if j == 0 else ""}" data-full="{full}" aria-label="{html.escape(alt, quote=True)}" data-i18n-aria="{key}"{" aria-current=\"true\"" if j == 0 else ""}>'
                   f'<img src="{th}" width="240" height="180" alt="" loading="lazy" decoding="async"></button>' for j, (full, th, key, alt) in enumerate(_pics))
 _wa = 'https://wa.me/995550004333?text=' + quote(f'გამარჯობა! მაინტერესებს {_pr["name"]} ({P.PLATFORM}).')
+# Owner, 4 Nov 2026: no standalone platform offer. The old address stays as a small forwarding page (script.js sends the visitor to
+# /shop#configurator with the same ?c=…&m=…&kit=…); noindex, not in the sitemap, no Product/Offer.
+put('pd_fwd_title', ('XAG P150 MAX კონფიგურატორი', 'XAG P150 MAX configurator', 'Конфигуратор XAG P150 MAX'))
+put('pd_fwd_intro', ('კონფიგურატორი გადავიდა მაღაზიის გვერდზე.', 'The configurator has moved to the shop page.', 'Конфигуратор перенесен на страницу магазина.'))
+put('pd_fwd_link', ('კონფიგურატორზე გადასვლა', 'Go to the configurator', 'Перейти к конфигуратору'))
 out.append(
-    f'<template data-page="p150-max-platform.html" data-ka-title="{html.escape("XAG P150 MAX პლატფორმა (RevoSpray 5) — ფასი და კონფიგურატორი | საქართველოს პრემიუმ დრონები", quote=True)}" data-title="pd_platform_title" data-description="pd_platform_intro">\n'
-    f'  <section class="section pp-main"><div class="container pp-grid">'
-    f'<div class="pp-head"><a class="back-link pp-back" href="/shop.html#kits" data-local data-i18n="pp_back">← მაღაზია</a>'
-    f'<h1 class="pp-title">XAG P150 MAX</h1><p class="pp-sub" data-i18n="pp_sub">სასოფლო-სამეურნეო დრონი · RevoSpray 5</p></div>'
-    f'<div class="pk-gallery pp-gallery"><div class="product-photo pd-photo pk-main"><img id="pkMain" src="{_pics[0][0]}" width="1200" height="900" alt="{html.escape(_pics[0][3], quote=True)}" data-i18n-alt="{_pics[0][2]}" fetchpriority="high" decoding="async"></div>'
-    f'<div class="pk-thumbs" aria-label="ფოტო" data-i18n-aria="pd_pk_photo">{_thumbs}</div></div>'
-    f'<article class="pp-buy" data-cat="drone" data-avail="in_stock" data-sku="{P.PLATFORM}" data-name="{html.escape(_pr["name"], quote=True)}" data-price="{_pgel}" data-img="/assets/img/products/{P.PLATFORM}.webp">'
-    f'<p class="pp-price"><span class="product-price">₾{_pgel:,}</span><span class="pd-vat" data-i18n="pd_vat">ფასი დღგ-ს ჩათვლით</span></p>'
-    f'<p class="pp-notice" data-i18n="pp_notice">{html.escape(c["ka"]["pp_notice"])}</p>'
-    f'<p class="product-stock" data-i18n="in_stock">საწყობშია</p>'
-    f'<a class="button button-red pp-cta" href="#configurator"><span data-i18n="pp_configure">კონფიგურაციის აწყობა</span></a>'
-    f'<p class="pp-secondary"><a class="text-link" href="#configurator" data-preset-link="PDG-P150MAX-STARTER"><span data-i18n="pd_platform_pkgs">{html.escape(c["ka"]["pd_platform_pkgs"])}</span></a></p>'
-    f'{_pf_box}'
-    f'<dl class="pp-details"><div><dt data-i18n="pd_code">მწარმოებლის კოდი</dt><dd>{P.PLATFORM}</dd></div></dl>'
-    f'<p class="pp-links"><a class="text-link" href="/p150-max.html#specifications" data-local><span data-i18n="pd_pk_specs">P150 MAX-ის სრული მახასიათებლები</span><span aria-hidden="true">→</span></a>'
-    f'</p>'
-    f'</article></div></section>\n'
-    f'  {PCFG.block()}\n</template>\n')
+    '<template data-page="p150-max-platform.html" data-ka-title="XAG P150 MAX კონფიგურატორი" data-title="pd_fwd_title" data-description="pd_fwd_intro">\n'
+    '  <section class="page-hero page-hero-compact"><div class="container"><h1 data-i18n="pd_fwd_title">XAG P150 MAX კონფიგურატორი</h1>'
+    '<p class="page-intro" data-i18n="pd_fwd_intro">კონფიგურატორი გადავიდა მაღაზიის გვერდზე.</p>'
+    '<p><a class="button button-red" href="/shop#configurator" data-local><span data-i18n="pd_fwd_link">კონფიგურატორზე გადასვლა</span><span class="arrow" aria-hidden="true">→</span></a></p>'
+    '</div></section>\n</template>\n')
 
 # ---- Previous-generation model pages (gallery, specs, consultation) ----
 import legacy_models as LM

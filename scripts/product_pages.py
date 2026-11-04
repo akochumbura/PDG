@@ -77,8 +77,8 @@ LEGACY = {
 
 def url(sku):
     """Clean URL of the product or package page (Cloudflare Pages serves /x.html as /x), or None."""
-    if sku == PLATFORM:
-        return '/p150-max-platform'
+    if sku == PLATFORM:  # owner, 4 Nov 2026: no platform page any more; the drone is configured on the shop
+        return '/shop#configurator'
     if sku in LEGACY:
         return '/' + LEGACY[sku]['slug']
     if sku in KITS:

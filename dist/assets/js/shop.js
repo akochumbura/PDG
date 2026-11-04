@@ -319,7 +319,7 @@
     inp.dispatchEvent(new Event("input", { bubbles: true }));
   });
 
-  /* XAG P150 MAX configurator (markup and data from scripts/configurator.py; used on /p150-max-platform and /shop).
+  /* XAG P150 MAX configurator (markup and data from scripts/configurator.py; on /shop, #configurator).
      Pricing (owner brief, 4 Nov 2026): items are priced one by one until the customer picks a package (preset) or accepts the offer.
      A chosen package stays applied while the selection still holds all its components (extras are priced on top); if a component
      falls below the package, pricing switches to item-by-item with a short note. When the selection holds every component of a
@@ -425,17 +425,17 @@
       rm.hidden = !m.length; if (m.length) rm.textContent = tx("pc_remind").replace("{list}", m.join(", "));
       document.getElementById("pcTotal").textContent = fmt(st.total);
       document.getElementById("pcBarTotal").textContent = fmt(st.total);
-      var pressed = st.pkg ? st.pkg.p.sku : (pcKeys.every(function (k) { return !st.q[k]; }) ? "none" : "");
+      var pressed = st.pkg ? st.pkg.p.sku : "";
       pcBox.querySelectorAll(".pcfg-preset").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.preset === pressed ? "true" : "false"); });
       if (pcReady) pcRemember(st);
       return st;
     }
     function setQ(q) { pcKeys.forEach(function (k) { var i = pcInput(k); i.value = clampInt(q[k] || 0, 0, Number(i.max) || 0); }); }
-    /* Presets load exactly the package contents at the advertised price ("platform only" clears the selection); extras can be added afterwards. */
+    /* Presets load exactly the package contents at the advertised price; extras can be added afterwards. */
     function preset(v) {
-      var p = pkgBy(v), q = {};
-      if (p) Object.keys(p.q).forEach(function (k) { q[k] = p.q[k]; });
-      pcMode = p ? p.sku : ""; pcBroken = ""; setQ(q); pcShow();
+      var p = pkgBy(v); if (!p) return;
+      var q = {}; Object.keys(p.q).forEach(function (k) { q[k] = p.q[k]; });
+      pcMode = p.sku; pcBroken = ""; setQ(q); pcShow();
     }
     function pcSend() {
       var st = pcShow(), msg = [tx("pc_msg_title")];
@@ -472,6 +472,8 @@
     var kp = pkgBy(kit);
     if (kp && !qs.get("c")) { Object.keys(kp.q).forEach(function (k) { q0[k] = kp.q[k]; }); pcMode = kp.sku; }
     var mp = pkgBy(mode0); if (mp && fits(mp, q0)) pcMode = mp.sku;
+    /* Owner, 4 Nov 2026: a new visit (no saved configuration in the address) starts with Starter. */
+    if (!kp && !Object.keys(q0).some(function (k) { return q0[k] > 0; })) { var st0 = PC.packages[0]; Object.keys(st0.q).forEach(function (k) { q0[k] = st0.q[k]; }); pcMode = st0.sku; }
     setQ(q0);
     pcShow();
     pcReady = true;

@@ -326,3 +326,9 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   black border + red dot. Phone bar: total + "დღგ-ს ჩათვლით", button "გაგზავნა" (aria-label pc_send_aria), hidden while menu/chat/cart/keyboard are open.
 - Audit fixes: Escape closes the desktop mega menu even under the pointer; dialog focus outline removed (controls keep theirs); pages.dev previews send
   X-Robots-Tag: noindex (dist/_headers host rules); fuller search descriptions for /terms (terms_meta) and the first guide (article_1_meta).
+- (owner, 4 Nov 2026, same preview) NO standalone "platform only" offer anywhere (overrides the 16–18 Oct platform listing notes): no "მხოლოდ პლატფორმა" preset,
+  no shop platform row, no platform tile on /p150-max and /drones, no ₾41,999 in the P150 MAX hero (price bar = packages from ₾75,999 + configurator link),
+  drone excluded from search products, chat product list and llms.txt; chat knowledge: packages or a configuration, never the drone alone.
+  The drone (09-007-00188) stays the fixed base row of the configurator at its ₾41,999 component price (item-by-item totals, cart line for custom builds, worker CATALOG).
+  New visits start with Starter (no ?c / ?kit in the address); ?c / ?m / ?kit links restore exactly. configurator.PAGE = /shop. /p150-max-platform (ka/en/ru) is a
+  noindex forwarding page (not in the sitemap, no Product/Offer); script.js sends it to /shop + the same query + #configurator. Package pages link /shop?kit=<key>#configurator.

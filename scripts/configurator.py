@@ -5,7 +5,8 @@ stock limit from scripts/stock.csv, the package contents from the catalog kit ro
 read the same numbers. Pricing rule (owner brief, 4 Nov 2026, replaces the automatic rule of 16 Oct): a package price applies only after the customer
 picks a package or accepts the offer; otherwise items are priced one by one. When the selection holds every component of a package
 and that is cheaper, one inline offer shows the package total and the saving. Quantities are never changed by an offer.
-Used on the platform page (/p150-max-platform) and on the shop (/shop#configurator), same markup and data.
+Owner, 4 Nov 2026: no standalone "platform only" offer - the drone is the base component of every configuration (its price is used
+in item-by-item totals only); new visits start with Starter. The configurator is on /shop (#configurator); /p150-max-platform forwards there.
 Georgian text is here (data-i18n keys); en/ru are written to content.js by build-shop.py (TEXT).
 """
 import csv, html, json
@@ -13,7 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PLATFORM = '09-007-00188'
-PAGE = '/p150-max-platform'
+PAGE = '/shop'  # owner, 4 Nov 2026: one configurator, on the shop (the old platform address forwards here)
 # (catalog column used by the package rows or own key, sku, i18n key, Georgian label, optional?)
 ENERGY = [('remotes', '05-002-02725', 'pc_remote', 'მართვის პულტი SRC5', False),
           ('batteries', '09-017-00073', 'pc_battery', 'აკუმულატორი B141050', False),
@@ -41,11 +42,10 @@ TEXT = {  # key: (ka, en, ru)
     'pc_nozzle4': ('4-გამფრქვევიანი განახლების კომპლექტი (P150 MAX)', '4-Nozzle Upgrade Kit (P150 MAX)', 'Комплект модернизации на 4 форсунки (P150 MAX)'),
     'pc_led': ('LED ფარი 90 ვტ', '90 W LED headlight', 'Светодиодная фара 90 Вт'),
     'pc_title': ('კონფიგურატორი', 'Configurator', 'Конфигуратор'),
-    'pc_intro': ('დაიწყეთ მხოლოდ პლატფორმით ან აირჩიეთ კომპლექტი. თუ თქვენი არჩევანი სრულ კომპლექტს შეიცავს, შემოგთავაზებთ კომპლექტის ფასს.',
-                 'Start with the platform only or pick a package. If your selection contains a complete package, we offer you the package price.',
-                 'Начните только с платформы или выберите комплект. Если ваш выбор содержит полный комплект, мы предложим цену комплекта.'),
+    'pc_intro': ('აირჩიეთ კომპლექტი და საჭიროებისამებრ შეცვალეთ აღჭურვილობის რაოდენობა. თუ თქვენი არჩევანი სრულ კომპლექტს შეიცავს, შემოგთავაზებთ კომპლექტის ფასს.',
+                 'Choose a package and adjust the equipment quantities as you need. If your selection contains a complete package, we offer you the package price.',
+                 'Выберите комплект и при необходимости измените количество оборудования. Если ваш выбор содержит полный комплект, мы предложим цену комплекта.'),
     'pc_presets': ('სწრაფი არჩევანი', 'Quick choice', 'Быстрый выбор'),
-    'pc_preset_none': ('მხოლოდ პლატფორმა', 'Platform only', 'Только платформа'),
     'pc_platform': ('XAG P150 MAX პლატფორმა (RevoSpray\u00a05)', 'XAG P150 MAX platform (RevoSpray\u00a05)', 'Платформа XAG P150 MAX (RevoSpray\u00a05)'),
     'pc_energy': ('მართვა და ენერგია', 'Control and power', 'Управление и питание'),
     'pc_extra': ('დამატებითი აღჭურვილობა', 'Additional equipment', 'Дополнительное оборудование'),
@@ -147,8 +147,7 @@ def block(heading='h2'):
     lst = {k: (ka, opt) for k, s_, l_, ka, opt in ENERGY + EXTRA}
     energy = ''.join(_row(k, d['items'][k], *lst[k]) for k, *_ in ENERGY)
     extra = ''.join(_row(k, d['items'][k], *lst[k]) for k, *_ in EXTRA)
-    presets = (f'<button type="button" class="pcfg-preset" data-preset="none" aria-pressed="true"><span data-i18n="pc_preset_none">{t["pc_preset_none"]}</span></button>'
-               + ''.join(f'<button type="button" class="pcfg-preset" data-preset="{p["sku"]}" aria-pressed="false">{html.escape(p["short"])}'
+    presets = (''.join(f'<button type="button" class="pcfg-preset" data-preset="{p["sku"]}" aria-pressed="false">{html.escape(p["short"])}'
                          f' <span class="pcfg-preset-price">₾{p["price"]:,}</span></button>' for p in d['packages']))
     cfg = html.escape(json.dumps(d, ensure_ascii=False), quote=True)
     h = heading

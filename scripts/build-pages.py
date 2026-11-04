@@ -116,7 +116,7 @@ def render(page_source, language, filename):
     doc_head=doc.find('head')
     path=page_path(filename)
     canonical=BASE_URL+prefix+path
-    if filename in ('404.html','payment.html','account.html'):
+    if filename in ('404.html','payment.html','account.html','p150-max-platform.html'):
         etree.SubElement(doc_head,'meta',name='robots',content='noindex')
     if filename=='404.html':
         pass
@@ -235,7 +235,7 @@ import datetime
 today=datetime.date.today().isoformat()
 urls=[]
 for filename in pages:
-    if filename in ('404.html','payment.html','account.html'):continue
+    if filename in ('404.html','payment.html','account.html','p150-max-platform.html'):continue
     path=page_path(filename)
     alts=''.join(f'<xhtml:link rel="alternate" hreflang="{l}" href="{BASE_URL}{"" if l in ("ka","x-default") else "/"+l}{path}"/>' for l in ['ka','en','ru','x-default'])
     for language in ['ka','en','ru']:

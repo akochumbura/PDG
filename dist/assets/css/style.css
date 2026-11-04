@@ -1858,7 +1858,7 @@ html[lang=ka] .pp-title,html[lang=ka] h2,html[lang=ka] .pkg-tile-name{hyphens:ma
 .pp-buy .pk-in{width:100%;max-width:420px}.pp-buy .pk-in-title{max-width:420px}
 .kit-contents .is-none dt,.kit-contents .is-none dd{color:var(--muted)}
 /* four packages (Plus added 4 Nov 2026): no orphan card */
-@media(min-width:1180px){.shop-section .kit-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.pkg-tiles{grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}}
+@media(min-width:1180px){.shop-section .kit-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.pkg-tiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}}
 @media(min-width:701px) and (max-width:1179px){.shop-section .kit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:1180px){.shop-section .product-kit .kit-contents div{font-size:12px}.shop-section .product-kit .buy-actions{flex-wrap:nowrap}}
 /* configurator: package suggestion (4 Nov 2026) */
@@ -1883,3 +1883,4 @@ html[lang=ka] .pp-title,html[lang=ka] h2,html[lang=ka] .pkg-tile-name{hyphens:ma
 
 @media(hover:hover) and (min-width:901px){.nav-group.nav-hover-off:hover .nav-sub{visibility:hidden;opacity:0}}
 dialog:focus,dialog:focus-visible{outline:none}
+#kits.shop-section{padding-bottom:0}#kits.shop-section+.pcfg-section{padding-top:clamp(28px,3vw,40px)}

@@ -368,11 +368,9 @@ PLATFORM_TEXT.update({
                   'В цену входит дрон с системой RevoSpray 5. Пульт управления, аккумуляторы и зарядные устройства продаются отдельно. Это не полный рабочий комплект.'),
     'pp_sub': ('სასოფლო-სამეურნეო დრონი · RevoSpray\u00a05', 'Agricultural drone · RevoSpray\u00a05', 'Сельскохозяйственный дрон · RevoSpray\u00a05'),
     'pp_back': ('← მაღაზია', '← Shop', '← Магазин'),
-    'pm_cfg_link': tuple(t.format(int([r for r in csv.DictReader(open(ROOT / 'scripts/catalog.csv', encoding='utf-8')) if r['sku'] == _pc.PLATFORM][0]['gel']))
-                         for t in ('კონფიგურაციის აწყობა — ₾{:,}-დან', 'Build your configuration — from ₾{:,}', 'Собрать конфигурацию — от ₾{:,}')),
     'pm_cfg_note': ('საწყისი ფასი — მხოლოდ დრონი RevoSpray 5 სისტემით.', 'Starting price: the drone with RevoSpray 5 only.', 'Начальная цена — только дрон с RevoSpray 5.'),
     'pp_configure': ('კონფიგურაციის აწყობა', 'Build your configuration', 'Собрать конфигурацию'),
-    'pm_pl_platform': ('პლატფორმა (მხოლოდ დრონი)', 'Platform (drone only)', 'Платформа (только дрон)'),
+    'pm_pl_cfg_v': ('აწყობა →', 'Build →', 'Собрать →'),
     'pm_pl_kits': ('სრული კომპლექტები', 'Complete packages', 'Полные комплекты'),
     'pm_pl_kits_v': tuple(t.format(min(int(r['gel']) for r in csv.DictReader(open(ROOT / 'scripts/catalog.csv', encoding='utf-8')) if r['group'] == 'kit'))
                           for t in ('₾{:,}-დან', 'from ₾{:,}', 'от ₾{:,}')),
@@ -429,13 +427,11 @@ import configurator as PCFG
 
 
 def platform_link():
-    """P150 MAX page hero (23 Oct 2026): the two price levels side by side - platform only vs complete packages (catalog prices)."""
-    p = price(by_sku_all[PCFG.PLATFORM], False)
+    """P150 MAX page hero (owner, 4 Nov 2026: no standalone platform offer): complete packages from the lowest package price + the configurator."""
     k = min(price(r, True) for r in kits)
     return ('<div class="pm-pricebar">'
-            f'<a class="pm-price-item" href="/p150-max-platform" data-local><span class="pm-price-label" data-i18n="pm_pl_platform">პლატფორმა (მხოლოდ დრონი)</span><span class="pm-price-val">₾{p:,}</span></a>'
             f'<a class="pm-price-item" href="#kits"><span class="pm-price-label" data-i18n="pm_pl_kits">სრული კომპლექტები</span><span class="pm-price-val" data-i18n="pm_pl_kits_v">₾{k:,}-დან</span></a>'
-            '<p class="pm-pricebar-note" data-i18n="pm_pl_note">კომპლექტებში შედის SRC5 პულტი, აკუმულატორები და დამტენები; პლატფორმაში — არა.</p></div>')
+            '<a class="pm-price-item" href="/shop#configurator" data-local><span class="pm-price-label" data-i18n="pc_title">კონფიგურატორი</span><span class="pm-price-val pm-price-cta" data-i18n="pm_pl_cfg_v">აწყობა →</span></a></div>')
 
 
 def platform_kit_row(r):
@@ -464,20 +460,20 @@ pb = ROOT / 'scripts/page-bodies.html'
 t = pb.read_text(encoding='utf-8')
 subs = [
     (r'(<div class="shop-grid kit-grid">\n).*?(</div>\n<!--/kitGrid-->)', ''.join(card(r) for r in kits)),
-    (r'(<!--platformRow-->\n).*?(<!--/platformRow-->)', ''.join(platform_row(r) for r in platform) + '\n'),
+    (r'(<!--platformRow-->\n).*?(<!--/platformRow-->)', ''),  # owner, 4 Nov 2026: no standalone platform card
     (r'(<!--shopCfg-->).*?(<!--/shopCfg-->)', '\n' + PCFG.block() + '\n'),  # owner brief, 4 Nov 2026: the shop configurator comes before the ready packages
     (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div>\n<!--partsMore-->)', ''.join(card(r).replace('<article class="product"', '<article hidden class="product"', 1) if i >= 24 else card(r) for i, r in enumerate(parts))),  # first 24 visible, the rest revealed by "Load more" (shop.js PAGE)
     (r'(<div class="shop-grid" id="legacyGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in legacy)),
     # Owner, 16 Oct 2026 (second brief): the full configurator lives only on /p150-max-platform; the P150 MAX page links to it.
     (r'(<!--configurator-->\n).*?(<!--/configurator-->)', ''),
     (r'(<!--platformLink-->).*?(<!--/platformLink-->)', platform_link()),
-    (r'(<!--pmCompare-->).*?(<!--/pmCompare-->)', tiles(platform, kits)),
-    (r'(<!--drKits-->).*?(<!--/drKits-->)', tiles(platform, kits).replace('data-kit="1"', 'data-kit="0"')),  # /drones (owner 19 Oct 2026): same four listings; schema stays on /p150-max
+    (r'(<!--pmCompare-->).*?(<!--/pmCompare-->)', tiles([], kits)),  # owner, 4 Nov 2026: packages only
+    (r'(<!--drKits-->).*?(<!--/drKits-->)', tiles([], kits).replace('data-kit="1"', 'data-kit="0"')),  # /drones (owner 19 Oct 2026): same four listings; schema stays on /p150-max
 ]
 home = ROOT / 'dist/index.html'
 ht = home.read_text(encoding='utf-8')
 by_sku = {r['sku']: r for r in rows}
-for pattern, body in [(r'(<!--homePlatform-->).*?(<!--/homePlatform-->)', ''.join(platform_row(r) for r in platform)),  # owner, 18 Oct 2026: platform first wherever the packages are
+for pattern, body in [(r'(<!--homePlatform-->).*?(<!--/homePlatform-->)', ''),  # owner, 18 Oct 2026: platform first wherever the packages are
                       (r'(<div class="shop-grid kit-grid" id="homePackages">).*?(</div>\s*<!--/homePackages-->)', '\n' + ''.join(card(r) for r in kits)),
                       (r'(<!--homeCompare-->).*?(<!--/homeCompare-->)', compare(kits, '/shop#kits')),
                       (r'(<ul class="part-list" id="homeParts">).*?(</ul>\s*<!--/homeParts-->)', '\n' + ''.join(part_row(by_sku[s]) for s in HOME_PARTS if s in by_sku))]:
@@ -498,7 +494,7 @@ if llms.is_file():
     def line(r):
         what = ', '.join(f"{r[c]} × {KIT_LABELS[k][0]}" for c, k, _ in CONTENTS if (r.get(c) or '').strip())
         return f"- {r['name']}: {price(r, True):,} GEL" + (f" ({what})" if what else '')
-    extra = [r for r in platform + parts if (r.get('gel') or '').strip()]
+    extra = [r for r in parts if (r.get('gel') or '').strip()]  # owner, 4 Nov 2026: no platform-only line
     block = '## Packages (prices in GEL)\n' + '\n'.join(line(r) for r in kits) + '\n' + \
             '\n'.join(f"- {r['name']}: {price(r, False):,} GEL" for r in extra) + '\n\n'
     text = llms.read_text(encoding='utf-8')
@@ -519,16 +515,17 @@ cdata = json.loads((ROOT / 'dist/assets/js/content.js').read_text(encoding='utf-
 know = [(ROOT / 'dist/llms.txt').read_text(encoding='utf-8').strip(), '',
         '## Website shop (prices in GEL incl. VAT). Availability: "listed in stock" = in stock (owner, 15 Oct 2026: nothing from the price list has been sold yet; the team still confirms the exact quantity '
         'with every order); "not in stock, price on request" = a part we do not have in stock (the team gives the price on request); "not in stock (previous model)" = consultation only.']
-for r in rows:
+for r in [r for r in rows if r['group'] != 'drone']:  # owner, 4 Nov 2026: the drone alone is not offered
     extra = ', '.join(f"{r[c]} × {KIT_LABELS[k][0]}" for c, k, _ in CONTENTS if (r.get(c) or '').strip())
     local = f" [ka: {r['name_ka']}]" if (r.get('name_ka') or '').strip() else ''
     p_ = price(r, r['group'] == 'kit'); st_ = status(r)
     what = f"{p_:,} GEL, listed in stock" if st_ == 'in_stock' else ('not in stock, price on request' if st_ == 'quote' else 'not in stock (previous model), consultation only')
     know.append(f"- {r['name']}{local} (code {r['sku']}, {CATN[r['group']]}): {what}" + (f" — contains {extra}" if extra else ''))
 _pd = _pc.data()
-know += ['', '## Standalone platform and configurator (owner, 16 Oct 2026)',
-         f"The XAG P150 MAX Platform ({_pd['platform']['price']:,} GEL, code {_pd['platform']['sku']}) is the drone with the RevoSpray 5 system only: the SRC5 remote controller, batteries and chargers are NOT included and it is not a complete working set. "
-         "It suits operators who already own compatible equipment; others should add a controller, batteries and chargers in the configurator (https://premium-drones.ge/p150-max-platform) or choose a package. Generator and RTK are optional.",
+know += ['', '## Packages and configurator (owner, 4 Nov 2026: there is NO separate platform-only offer)',
+         "The XAG P150 MAX is sold as a Starter, Plus, Pro or Business package, or as a custom configuration built in the configurator (https://premium-drones.ge/shop#configurator), "
+         f"which starts with Starter. In a custom configuration the drone with RevoSpray 5 is the base component and is counted at {_pd['platform']['price']:,} GEL; never offer or advertise the drone alone. "
+         "Package prices apply when the customer chooses a package; the configurator offers the package price when a selection contains a complete package. Generator and extra equipment are optional.",
          "Controller (owner, 23 Oct 2026): PDG stocks and supplies the XAG SRC5 Smart Remote Controller; it is in the Starter, Plus, Pro and Business packages and also sold separately. "
          "The XAG ACS4 Control Stick appears in XAG's official P150 MAX specifications as a compatible accessory, but PDG does not supply it: never offer it or say it is included.",
          'Packages are cheaper than the same equipment bought item by item: ' + '; '.join(f"{p['name']} {p['price']:,} GEL instead of {p['single']:,} GEL (saving {p['single'] - p['price']:,} GEL), page https://premium-drones.ge{product_pages.url(p['sku'])}" for p in _pd['packages']) + '.']

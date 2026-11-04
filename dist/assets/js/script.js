@@ -1,4 +1,9 @@
 (function () {
+  /* Owner, 4 Nov 2026: the standalone platform page is gone; its address (and shared configurator links) forward to the shop configurator with the same parameters. */
+  (function () {
+    var m = /^(\/(?:en|ru))?\/p150-max-platform(?:\.html)?\/?$/.exec(location.pathname);
+    if (m) location.replace((m[1] || "") + "/shop" + location.search + "#configurator");
+  })();
   "use strict";
   const root = document.documentElement;
   const lang = ["ka", "en", "ru"].includes(root.lang) ? root.lang : "ka";
