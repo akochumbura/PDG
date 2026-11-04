@@ -518,6 +518,29 @@ know += ['', '## Standalone platform and configurator (owner, 16 Oct 2026)',
          "Controller (owner, 23 Oct 2026): PDG stocks and supplies the XAG SRC5 Smart Remote Controller; it is in the Starter, Plus, Pro and Business packages and also sold separately. "
          "The XAG ACS4 Control Stick appears in XAG's official P150 MAX specifications as a compatible accessory, but PDG does not supply it: never offer it or say it is included.",
          'Packages are cheaper than the same equipment bought item by item: ' + '; '.join(f"{p['name']} {p['price']:,} GEL instead of {p['single']:,} GEL (saving {p['single'] - p['price']:,} GEL), page https://premium-drones.ge{product_pages.url(p['sku'])}" for p in _pd['packages']) + '.']
+# Package upgrades for the chat (owner, 4 Nov 2026: "packages give discounts, the RTK must come with Pro"): for every package that contains a smaller one,
+# compare "smaller package + the extra items" with the bigger package, from catalog prices, so the AI recommends the package with the numbers.
+_ITEM_KA = {'remotes': 'SRC5 პულტი', 'batteries': 'აკუმულატორი', 'chargers': 'დამტენი', 'towers': 'გამაგრილებელი ავზი', 'rtk': 'XRTK7 RTK სადგური'}
+_ITEM_EN = {'remotes': 'SRC5 remote', 'batteries': 'batteries', 'chargers': 'chargers', 'towers': 'cooling tanks', 'rtk': 'XRTK7 RTK station'}
+def _short(p): return p['name'].replace('XAG P150 MAX ', '')
+_up = []
+for _a in _pd['packages']:
+    for _b in _pd['packages']:
+        if _a is _b or not all(_b['q'].get(k, 0) >= n for k, n in _a['q'].items()) or _b['price'] <= _a['price']:
+            continue
+        _diff = {k: _b['q'].get(k, 0) - _a['q'].get(k, 0) for k in _b['q'] if _b['q'].get(k, 0) > _a['q'].get(k, 0)}
+        _full = _a['price'] + sum(n * _pd['items'][k]['price'] for k, n in _diff.items())
+        _en = ', '.join(f"{n} {_ITEM_EN[k]}" if k != 'rtk' else _ITEM_EN[k] for k, n in _diff.items())
+        _up.append(f"- {_short(_a)} + {_en} bought separately = {_full:,} GEL; {_short(_b)} package = {_b['price']:,} GEL (saves {_full - _b['price']:,} GEL). Recommend {_short(_b)}.")
+        if _diff.get('rtk') and len(_diff) > 1:
+            _no = {k: n for k, n in _diff.items() if k != 'rtk'}
+            _part = _a['price'] + sum(n * _pd['items'][k]['price'] for k, n in _no.items())
+            _en2 = ', '.join(f"{n} {_ITEM_EN[k]}" for k, n in _no.items())
+            _gap = _b['price'] - _part
+            _up.append(f"- {_short(_a)} + {_en2} (no RTK) = {_part:,} GEL; {_short(_b)} = {_b['price']:,} GEL also includes the XRTK7 RTK station (sold alone for {_pd['items']['rtk']['price']:,} GEL), "
+                       + (f"and is even {-_gap:,} GEL cheaper. Always recommend {_short(_b)}." if _gap <= 0 else
+                          f"so for only {_gap:,} GEL more the customer gets the RTK station. Always recommend {_short(_b)}." if _gap < _pd['items']['rtk']['price'] else f"{_gap:,} GEL more."))
+know += ['', '## Package upgrades (use when a visitor picks a smaller package plus extra items, or asks whether to add items)'] + _up
 _bz = next(p for p in _pd['packages'] if p['sku'].endswith('BUSINESS'))
 _bzr = next(r for r in rows if r['sku'] == _bz['sku'])
 know += ['', '## Example answer about a package price (Georgian; same structure for every package and in every language)',
