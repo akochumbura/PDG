@@ -19,11 +19,11 @@
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=dea93b4c62">
   <script>try{var t=localStorage.getItem("pdge-theme")||"light";document.documentElement.dataset.theme=t}catch(e){}</script>
   <link rel="preload" href="/assets/fonts/NotoSansGeorgian-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/assets/css/style.css?v=c724347522">
-  <script src="/assets/js/content-ru.js?v=571e09d201" defer></script>
+  <link rel="stylesheet" href="/assets/css/style.css?v=53735bbeb6">
+  <script src="/assets/js/content-ru.js?v=9782e2c5cb" defer></script>
   <script src="/assets/js/script.js?v=6e8f1b7d91" defer></script>
-  <script src="/assets/js/payments-config.js?v=ec0c784248" defer></script>
-  <script src="/assets/js/shop.js?v=27fab5b29e" defer></script>
+  <script src="/assets/js/payments-config.js?v=a77059f526" defer></script>
+  <script src="/assets/js/shop.js?v=a093811680" defer></script>
   <script src="/assets/js/chat.js?v=c7a8f32027" defer></script>
   <script src="/assets/js/account.js?v=cdadcb30ae" defer></script>
 <script src="/assets/js/analytics.js?v=85d62f6363" defer></script>
@@ -5108,21 +5108,21 @@
 <form class="cart-form" id="cartForm" novalidate>
 <label><span data-i18n="co_name">Имя</span><input name="name" autocomplete="name" required></label><label><span data-i18n="co_phone">Телефон</span><input name="phone" type="tel" autocomplete="tel" required></label><label><span data-i18n="co_address">Город / адрес</span><input name="address" autocomplete="street-address"></label><p class="cart-error" id="cartError" role="alert" hidden data-i18n="co_error">Укажите имя и телефон.</p>
 <p class="cart-deposit" id="cartDeposit" hidden></p>
-<button class="button button-red" type="button" id="cartPay" hidden><span data-i18n="pay_full">Оплатить онлайн</span></button><div class="cart-loan" id="cartLoan" hidden>
+<button class="button button-red" type="button" id="cartPay" hidden><span data-i18n="pay_full">Оплатить</span></button><div class="cart-loan" id="cartLoan" hidden>
 <div class="cart-loan-btns">
 <button class="button button-line" type="button" id="cartLoanBtn" hidden><span data-i18n="pay_loan">Рассрочка</span></button><button class="button button-line" type="button" id="cartBnplBtn" hidden><span data-i18n="pay_bnpl">Оплата частями</span></button>
 </div>
 <p class="cart-note" hidden data-i18n="cart_loan_note">Условия рассрочки или оплаты частями вы выбираете в калькуляторе Банка Грузии; заявку рассматривает банк. Распространяется на полную сумму заказа.</p>
 </div>
 <p class="cart-error" id="cartPayError" role="alert" hidden data-i18n="cart_pay_error">Не удалось открыть страницу оплаты. Попробуйте ещё раз или закажите через WhatsApp.</p>
-<button class="button button-red" type="submit" id="cartWa"><span data-i18n="order_whatsapp">Заказать в WhatsApp</span></button><a class="button button-line" id="cartMail"><span data-i18n="order_email">Заказать по почте</span></a><p class="cart-alt" id="cartAlt" hidden><span data-i18n="cart_alt">Или закажите:</span> <a href="#" id="cartAltWa">WhatsApp</a> · <a href="#" id="cartAltMail" data-i18n="cart_alt_mail">e-mail</a></p>
+<button class="button button-red" type="submit" id="cartWa"><span data-i18n="order_whatsapp">Заказать в WhatsApp</span></button><a class="button button-line" id="cartMail"><span data-i18n="order_email">Заказать по почте</span></a><p class="cart-alt" id="cartAlt" hidden><a href="#" id="cartAltWa" data-i18n="cart_alt_wa">Или закажите через WhatsApp</a></p>
 </form>
 <p class="cart-note" id="cartNote" data-i18n="cart_note">Заказ отправляется через WhatsApp или по почте. PDG подтверждает цену, наличие и доставку, затем присылает счёт; оплата банковским переводом.</p>
 <p class="cart-note" id="cartPayNote" hidden data-i18n="cart_pay_note">Карта (Visa, Mastercard), Apple Pay, Google Pay или другой способ, который предлагает банк, — на защищённой странице Банка Грузии. Данные карты мы не видим.</p>
 <p class="cart-note"><a class="text-link" href="/ru/terms" data-local><span data-i18n="terms_link">Условия доставки, возврата и оплаты</span><span aria-hidden="true">→</span></a></p>
 </div>
-<p hidden id="lbPayFull" data-i18n="pay_full">Оплатить онлайн</p>
-<p hidden id="lbPayDeposit" data-i18n="pay_deposit">Оплатить депозит онлайн</p>
+<p hidden id="lbPayFull" data-i18n="pay_full">Оплатить</p>
+<p hidden id="lbPayDeposit" data-i18n="pay_deposit">Оплатить депозит</p>
 <p hidden id="lbDeposit" data-i18n="cart_deposit_note">Для заказов от ₾20,000 вы оплачиваете онлайн депозит {pct}% ({deposit}). Остаток ({rest}) — банковским переводом по нашему счёту.</p>
 <p hidden id="lbFree" data-i18n="cart_free_note">Доставка по Грузии бесплатна от ₾{free}.</p>
 <p hidden id="lbFreeWord" data-i18n="free_label">Бесплатно</p>

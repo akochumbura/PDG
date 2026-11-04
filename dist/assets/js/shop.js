@@ -87,7 +87,10 @@
     keys.forEach(function (k) {
       var it = cart[k], li = document.createElement("li");
       function btn(txt, fn, aria) { var x = document.createElement("button"); x.type = "button"; x.textContent = txt; x.addEventListener("click", fn); if (aria) x.setAttribute("aria-label", aria); return x; }
-      var name = document.createElement("span"); name.className = "ci-name"; name.textContent = tx("pn_" + k.replace(/[^A-Za-z0-9]/g, "_")) || it.n;
+      /* Product name opens its page (owner, 4 Nov 2026); items without a page open the parts list filtered to their code. */
+      var name = document.createElement("a"); name.className = "ci-name"; name.textContent = tx("pn_" + k.replace(/[^A-Za-z0-9]/g, "_")) || it.n;
+      var lp = document.documentElement.lang === "ka" ? "" : "/" + document.documentElement.lang;
+      name.href = lp + ((window.PDG_LINKS || {})[k] || "/shop?q=" + encodeURIComponent(k) + "#parts");
       var qty = document.createElement("span"); qty.className = "ci-qty";
       var count = document.createElement("output"); count.textContent = it.q;
       qty.append(btn("−", function () { change(k, -1); }, label("lbLess")), count, btn("+", function () { change(k, 1); }, label("lbMore")));
@@ -339,9 +342,8 @@
     var lb = document.getElementById("cartLoanBtn"), bb = document.getElementById("cartBnplBtn");
     if (lb) lb.addEventListener("click", function () { openLoan("loan"); });
     if (bb) bb.addEventListener("click", function () { openLoan("bnpl"); });
-    var aw = document.getElementById("cartAltWa"), am = document.getElementById("cartAltMail");
+    var aw = document.getElementById("cartAltWa");
     if (aw) aw.addEventListener("click", function (e) { e.preventDefault(); form.requestSubmit ? form.requestSubmit() : document.getElementById("cartWa").click(); });
-    if (am) am.addEventListener("click", function (e) { e.preventDefault(); document.getElementById("cartMail").click(); });
     window.addEventListener("pageshow", function () { paying = false; payBtn.disabled = false; });
   }
   if (location.hash === "#cart") openCart();
