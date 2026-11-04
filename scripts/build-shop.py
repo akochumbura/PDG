@@ -517,7 +517,14 @@ know += ['', '## Standalone platform and configurator (owner, 16 Oct 2026)',
          "It suits operators who already own compatible equipment; others should add a controller, batteries and chargers in the configurator (https://premium-drones.ge/p150-max-platform) or choose a package. Generator and RTK are optional.",
          "Controller (owner, 23 Oct 2026): PDG stocks and supplies the XAG SRC5 Smart Remote Controller; it is in the Starter, Pro and Business packages and also sold separately. "
          "The XAG ACS4 Control Stick appears in XAG's official P150 MAX specifications as a compatible accessory, but PDG does not supply it: never offer it or say it is included.",
-         'Packages are cheaper than the same equipment bought item by item: ' + '; '.join(f"{p['name']} {p['price']:,} GEL instead of {p['single']:,} GEL" for p in _pd['packages']) + '.']
+         'Packages are cheaper than the same equipment bought item by item: ' + '; '.join(f"{p['name']} {p['price']:,} GEL instead of {p['single']:,} GEL (saving {p['single'] - p['price']:,} GEL), page https://premium-drones.ge{product_pages.url(p['sku'])}" for p in _pd['packages']) + '.']
+_bz = next(p for p in _pd['packages'] if p['sku'].endswith('BUSINESS'))
+_bzr = next(r for r in rows if r['sku'] == _bz['sku'])
+know += ['', '## Example answer about a package price (Georgian; same structure for every package and in every language)',
+         f"Visitor: გასაგებია, სრულად 105 ღირს?",
+         f"Answer: დიახ, XAG P150 MAX Business კომპლექტის ფასია ₾{_bz['price']:,} (დღგ-ს ჩათვლით). ეს სრული სამუშაო კომპლექტია: დრონი RevoSpray 5 სისტემით, XAG SRC5 მართვის პულტი, "
+         f"{_bzr['batteries']} აკუმულატორი B141050, {_bzr['chargers']} დამტენი CM13600S, {_bzr['towers']} გამაგრილებელი ავზი და XRTK7 RTK სადგური. "
+         f"ცალ-ცალკე ეს აღჭურვილობა ₾{_bz['single']:,} ღირს, კომპლექტით კი ₾{_bz['single'] - _bz['price']:,}-ს ზოგავთ. დეტალები: https://premium-drones.ge{product_pages.url(_bz['sku'])}"]
 know += ['', '## Buying and payment',
          "Online card payment is NOT available on the website at the moment; do not tell customers they can pay online. Do not mention deposit percentages.",
          'Orders are sent from the cart by WhatsApp or email; PDG confirms price, stock and delivery, then sends an invoice and the customer pays by bank transfer.',
