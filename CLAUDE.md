@@ -335,3 +335,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 4 Nov 2026, LIVE) Shop first screen: hero = h1 + short shop_intro (long text kept as search description shop_meta) + .buy-jumps (კონფიგურატორი / მზა კომპლექტები)
   + small links (parts, previous models); then the configurator (anchor #kits = zero-height div right before it, so the "prices" menu link lands on it);
   ordering steps = one slim line (.order-steps-compact) after the ready packages. Phone 390px: Starter selected and all four package prices on the first screen.
+- (owner, 4 Nov 2026; preview branch hide-quote until approved) Out-of-stock parts (catalog avail=quote, 37 items, "ფასი მოთხოვნით") are HIDDEN: not in the shop
+  grid (build-shop parts filter) and not in site search (build-search). They stay in catalog.csv and in the chat knowledge ("not in stock, price on request").
+  Previous-generation drones (P100 Pro / P100 / V40) are unchanged. Shop shows 266 in-stock parts.

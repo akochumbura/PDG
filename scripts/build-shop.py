@@ -406,7 +406,7 @@ for _s, (_ka, _en, _ru) in LEGACY_SPECS.items():
     _c['en'][pkey(_s) + '_spec'], _c['ru'][pkey(_s) + '_spec'] = _en, _ru
 _cj.write_text('window.PDG_CONTENT = ' + _json.dumps(_c, ensure_ascii=False, indent=2) + ';\n', encoding='utf-8')
 kits = [r for r in rows if r['group'] == 'kit']
-parts = [r for r in rows if r['group'] not in ('kit', 'legacy', 'drone')]
+parts = [r for r in rows if r['group'] not in ('kit', 'legacy', 'drone') and status(r) != 'quote']  # owner, 4 Nov 2026: out-of-stock (price on request) parts are hidden
 platform = [r for r in rows if r['group'] == 'drone']  # owner, 16 Oct 2026: standalone P150 MAX platform (own row below the packages)
 legacy = [r for r in rows if r['group'] == 'legacy']
 for _k, _v in list(TILE_TEXT.items()) + list(KEY_TEXT.items()):
