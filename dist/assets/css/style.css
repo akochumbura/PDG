@@ -1884,3 +1884,11 @@ html[lang=ka] .pp-title,html[lang=ka] h2,html[lang=ka] .pkg-tile-name{hyphens:ma
 @media(hover:hover) and (min-width:901px){.nav-group.nav-hover-off:hover .nav-sub{visibility:hidden;opacity:0}}
 dialog:focus,dialog:focus-visible{outline:none}
 #kits.shop-section{padding-bottom:0}#kits.shop-section+.pcfg-section{padding-top:clamp(28px,3vw,40px)}
+/* Shop first screen (owner, 4 Nov 2026): short hero, shortcuts, then the configurator; ordering steps as one slim line after the packages */
+.page-hero .buy-jumps{margin-top:18px}
+.page-hero .buy-jumps+.shop-jumps{margin-top:12px}
+.anchor-kits{height:0}
+.anchor-kits+.pcfg-section{padding-top:clamp(20px,2.4vw,32px)}
+.order-steps-compact{padding:0 0 clamp(28px,3vw,40px)}
+.order-steps-compact .order-steps{border:0;gap:6px 24px;display:flex;flex-wrap:wrap;counter-reset:st;padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.order-steps-compact .order-steps li{flex:1 1 220px;padding:0;border:0;font-size:13px;line-height:1.45;color:var(--muted);min-height:0}

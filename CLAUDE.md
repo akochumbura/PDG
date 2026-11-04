@@ -309,7 +309,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   Starter + 2 chargers -> Plus +₾1,002; Starter + 4b + 2c -> Business ₾1,994 cheaper; platform + SRC5 + 4b + 2c without tanks -> Starter ₾1,993 cheaper).
   One button applies the package (extras kept). Keys pc_hint_more / pc_hint_less / pc_hint_btn (configurator.TEXT). Pricing rules unchanged.
 
-## Buying refinement (owner brief, 4 Nov 2026; preview branch buying-refine until approved) — REPLACES the automatic package pricing and the #pcHint suggestion
+## Buying refinement (owner brief, 4 Nov 2026; approved, LIVE 4 Nov 2026) — REPLACES the automatic package pricing and the #pcHint suggestion
 - Pricing: items are priced one by one until the customer picks a package (preset) or presses "კომპლექტის არჩევა" on the offer. A chosen package stays while
   the selection holds all its components (extras priced on top); below that the configurator switches to item pricing with note pc_broken. Presets load exactly
   the package contents (platform only clears everything). Offer (#pcOffer) = only packages whose complete contents are selected, lowest total, saving vs the
@@ -332,3 +332,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   The drone (09-007-00188) stays the fixed base row of the configurator at its ₾41,999 component price (item-by-item totals, cart line for custom builds, worker CATALOG).
   New visits start with Starter (no ?c / ?kit in the address); ?c / ?m / ?kit links restore exactly. configurator.PAGE = /shop. /p150-max-platform (ka/en/ru) is a
   noindex forwarding page (not in the sitemap, no Product/Offer); script.js sends it to /shop + the same query + #configurator. Package pages link /shop?kit=<key>#configurator.
+- (owner, 4 Nov 2026, LIVE) Shop first screen: hero = h1 + short shop_intro (long text kept as search description shop_meta) + .buy-jumps (კონფიგურატორი / მზა კომპლექტები)
+  + small links (parts, previous models); then the configurator (anchor #kits = zero-height div right before it, so the "prices" menu link lands on it);
+  ordering steps = one slim line (.order-steps-compact) after the ready packages. Phone 390px: Starter selected and all four package prices on the first screen.

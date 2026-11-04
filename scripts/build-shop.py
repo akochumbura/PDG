@@ -460,7 +460,6 @@ pb = ROOT / 'scripts/page-bodies.html'
 t = pb.read_text(encoding='utf-8')
 subs = [
     (r'(<div class="shop-grid kit-grid">\n).*?(</div>\n<!--/kitGrid-->)', ''.join(card(r) for r in kits)),
-    (r'(<!--platformRow-->\n).*?(<!--/platformRow-->)', ''),  # owner, 4 Nov 2026: no standalone platform card
     (r'(<!--shopCfg-->).*?(<!--/shopCfg-->)', '\n' + PCFG.block() + '\n'),  # owner brief, 4 Nov 2026: the shop configurator comes before the ready packages
     (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div>\n<!--partsMore-->)', ''.join(card(r).replace('<article class="product"', '<article hidden class="product"', 1) if i >= 24 else card(r) for i, r in enumerate(parts))),  # first 24 visible, the rest revealed by "Load more" (shop.js PAGE)
     (r'(<div class="shop-grid" id="legacyGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in legacy)),
