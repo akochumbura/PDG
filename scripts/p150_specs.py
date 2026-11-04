@@ -180,9 +180,9 @@ SPECS = [
     ]},
     {'id': 'control', 'title': ('კავშირი და მართვა', 'Communication & control', 'Связь и управление'),
      # owner, 23 Oct 2026: PDG stocks and supplies the SRC5; ACS4 is on XAG's official list as a compatible control stick only.
-     'note': ('PDG-ის Starter, Pro და Business კომპლექტებში შედის XAG SRC5 ჭკვიანი მართვის პულტი. XAG ACS4 ჯოისტიკი XAG-ის ოფიციალურ მახასიათებლებში თავსებად აქსესუარადაა მითითებული; PDG მას არ აწვდის.',
-              'PDG Starter, Pro and Business packages include the XAG SRC5 Smart Remote Controller. The XAG ACS4 Control Stick is listed in XAG\'s official specifications as a compatible accessory; PDG does not supply it.',
-              'В комплекты PDG Starter, Pro и Business входит умный пульт XAG SRC5. Джойстик XAG ACS4 указан в официальных характеристиках XAG как совместимый аксессуар; PDG его не поставляет.'),
+     'note': ('PDG-ის Starter, Plus, Pro და Business კომპლექტებში შედის XAG SRC5 ჭკვიანი მართვის პულტი. XAG ACS4 ჯოისტიკი XAG-ის ოფიციალურ მახასიათებლებში თავსებად აქსესუარადაა მითითებული; PDG მას არ აწვდის.',
+              'PDG Starter, Plus, Pro and Business packages include the XAG SRC5 Smart Remote Controller. The XAG ACS4 Control Stick is listed in XAG\'s official specifications as a compatible accessory; PDG does not supply it.',
+              'В комплекты PDG Starter, Plus, Pro и Business входит умный пульт XAG SRC5. Джойстик XAG ACS4 указан в официальных характеристиках XAG как совместимый аксессуар; PDG его не поставляет.'),
      'blocks': [
         (('XAG SRC5 ჭკვიანი მართვის პულტი', 'XAG SRC5 Smart Remote Controller', 'Умный пульт XAG SRC5'), [
             (MODEL, 'M3SRC5A'),

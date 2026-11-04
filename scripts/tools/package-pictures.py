@@ -45,7 +45,7 @@ def compose(n_bat,n_ch,with_rtk,name):
     if r.width>1320: r=r.resize((1320,round(r.height*1320/r.width)),Image.LANCZOS)
     c.paste(r,((1400-r.width)//2,940-r.height))
     c.save(name+'.png'); return c
-compose(4,2,False,'starter'); compose(6,2,True,'pro'); compose(8,4,True,'business')
+compose(4,2,False,'starter'); compose(4,4,True,'plus'); compose(6,2,True,'pro'); compose(8,4,True,'business')  # Plus: owner, 4 Nov 2026
 
 # ---- gallery ----
 from PIL import Image, ImageChops
@@ -74,7 +74,7 @@ G=[('c596682a',render),('d945cba7',render),('68a548e0',render),('dddcd0dc',rende
    ('e149b3e0',photo),('5c5fa8d6',photo),('54f20ab0',photo),('787885b3',photo)]
 for i,(n,f) in enumerate(G,1):
     f(n).save(OUT+f'packages/p150-max-{i}.webp','WEBP',quality=84,method=6)
-for k,sku in [('starter','STARTER'),('pro','PRO'),('business','BUSINESS')]:
+for k,sku in [('starter','STARTER'),('plus','PLUS'),('pro','PRO'),('business','BUSINESS')]:
     fit43(Image.open(k+'.png').convert('RGB'),pad=0.03).save(OUT+f'products/PDG-P150MAX-{sku}.webp','WEBP',quality=86,method=6)
 print('ok')
 # thumbnails for the package page gallery

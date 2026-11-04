@@ -40,7 +40,7 @@ BY_SKU = {p['sku']: p for p in PAGES}
 
 # P150 MAX package pages (owner, 14 Oct 2026): first picture = the package's own combo picture (exactly its contents),
 # then the P150 MAX gallery (dist/assets/img/packages/p150-max-1..9.webp). Contents = catalog columns (see build-shop CONTENTS).
-KITS = {'PDG-P150MAX-STARTER': 'p150-max-starter', 'PDG-P150MAX-PRO': 'p150-max-pro', 'PDG-P150MAX-BUSINESS': 'p150-max-business'}
+KITS = {'PDG-P150MAX-STARTER': 'p150-max-starter', 'PDG-P150MAX-PLUS': 'p150-max-plus', 'PDG-P150MAX-PRO': 'p150-max-pro', 'PDG-P150MAX-BUSINESS': 'p150-max-business'}
 GALLERY = [  # (file, ka alt, en alt, ru alt)
     ('p150-max-1.webp', 'XAG P150 MAX — სამი მეოთხედის ხედი', 'XAG P150 MAX — three-quarter view', 'XAG P150 MAX — вид в три четверти'),
     ('p150-max-2.webp', 'XAG P150 MAX — გვერდითი ხედი', 'XAG P150 MAX — side view', 'XAG P150 MAX — вид сбоку'),

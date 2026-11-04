@@ -28,7 +28,7 @@ EXTRA = [('generators', '09-017-00109', 'pc_generator', 'დამუხტვ�
          ('led', '09-027-00003', 'pc_led', 'LED ფარი 90 ვტ', True)]  # owner, 18 Oct 2026: LED lights as an option for every setup
 KIT_COLS = ['remotes', 'batteries', 'chargers', 'towers', 'rtk', 'generators']
 # Owner, 16 Oct 2026: the same equipment bought one by one. Checked against the catalog at every build.
-OWNER_EQUIVALENT = {'PDG-P150MAX-STARTER': 79590, 'PDG-P150MAX-PRO': 95587, 'PDG-P150MAX-BUSINESS': 114583}
+OWNER_EQUIVALENT = {'PDG-P150MAX-STARTER': 79590, 'PDG-P150MAX-PLUS': 90587, 'PDG-P150MAX-PRO': 95587, 'PDG-P150MAX-BUSINESS': 114583}
 
 TEXT = {  # key: (ka, en, ru)
     'pc_remote': ('მართვის პულტი SRC5', 'SRC5 remote controller', 'Пульт управления SRC5'),

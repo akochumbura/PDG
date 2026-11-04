@@ -296,3 +296,8 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 4 Nov 2026, LIVE) Website chat price answers: for the platform or a package ALWAYS list contents, say it is a complete working set, give the item-by-item total and saving
   (KNOWLEDGE, from configurator data), end with the package page link; "კომპლექტი" never "პაკეტი"; never "დაახლოებით" next to a price; "104"/"105" from a visitor = exact ₾104,999.
   Example answer is generated in build-shop.py from the catalog (Business). Rule text in chatSystem (worker.template.js).
+- (owner, 4 Nov 2026; preview branch plus-package until approved) NEW package XAG P150 MAX Plus ₾83,999 (SKU PDG-P150MAX-PLUS, page /p150-max-plus):
+  drone (RevoSpray 5), SRC5, 4 B141050, 4 CM13600S, 2 cooling tanks, XRTK7. Item by item ₾90,587 (saving ₾6,588, 7.3%; between Starter 4.5% and Pro 7.9%).
+  Order everywhere: Starter, Plus, Pro, Business. Combo picture made by scripts/tools/package-pictures.py (compose(4,4,True,'plus')).
+  Shop kit grid 4 columns ≥1180px, 2 columns 701–1179px; P150 MAX / drones tiles 5 columns ≥1180px. faq_a3 / pf_q3 / pf_a3 / shop_intro / spec note mention Plus.
+  Pricing note for the owner: Starter + 2 batteries (no RTK) = ₾87,997 vs Pro (with XRTK7) ₾87,999, so in the configurator the RTK in Pro costs only ₾2 extra.

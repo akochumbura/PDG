@@ -229,7 +229,7 @@ def _n(r, c):
 
 def compare_text(kits):
     common = [c for c in _CMP_COLS if all(_n(r, c) == _n(kits[0], c) for r in kits) and _n(kits[0], c)]
-    lead = ('სამივე კომპლექტში შედის: ', 'All three packages include: ', 'Во все три комплекта входят: ')
+    lead = ('ყველა კომპლექტში შედის: ', 'All packages include: ', 'Во все комплекты входят: ')
     return tuple(lead[i] + ', '.join((f"{_n(kits[0], c)} × " if _n(kits[0], c) > 1 else '') + CMP_LABEL[c][i] for c in common) + '.' for i in range(3))
 
 
@@ -515,7 +515,7 @@ _pd = _pc.data()
 know += ['', '## Standalone platform and configurator (owner, 16 Oct 2026)',
          f"The XAG P150 MAX Platform ({_pd['platform']['price']:,} GEL, code {_pd['platform']['sku']}) is the drone with the RevoSpray 5 system only: the SRC5 remote controller, batteries and chargers are NOT included and it is not a complete working set. "
          "It suits operators who already own compatible equipment; others should add a controller, batteries and chargers in the configurator (https://premium-drones.ge/p150-max-platform) or choose a package. Generator and RTK are optional.",
-         "Controller (owner, 23 Oct 2026): PDG stocks and supplies the XAG SRC5 Smart Remote Controller; it is in the Starter, Pro and Business packages and also sold separately. "
+         "Controller (owner, 23 Oct 2026): PDG stocks and supplies the XAG SRC5 Smart Remote Controller; it is in the Starter, Plus, Pro and Business packages and also sold separately. "
          "The XAG ACS4 Control Stick appears in XAG's official P150 MAX specifications as a compatible accessory, but PDG does not supply it: never offer it or say it is included.",
          'Packages are cheaper than the same equipment bought item by item: ' + '; '.join(f"{p['name']} {p['price']:,} GEL instead of {p['single']:,} GEL (saving {p['single'] - p['price']:,} GEL), page https://premium-drones.ge{product_pages.url(p['sku'])}" for p in _pd['packages']) + '.']
 _bz = next(p for p in _pd['packages'] if p['sku'].endswith('BUSINESS'))
