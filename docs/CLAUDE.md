@@ -41,7 +41,8 @@ accepts it; before RESEND_API_KEY exists requests only land in /api/contact/inbo
 - P150 MAX specs on the site are from xa.com/en/p150max/p150maxspecs (Oct 2026). Do not add unverified specs.
   Full spec table ("მახასიათებლები", 109 rows, ka/en/ru) lives in scripts/p150_specs.py, built by scripts/build-specs.py.
 - Every new UI string needs ka (in the HTML), en and ru keys in dist/assets/js/content.js.
-- Payments: Bank of Georgia via dist/_worker.js, PAUSED and not live (see docs/07-payments.md). Never claim a payment succeeded
+- Payments: Bank of Georgia via dist/_worker.js, built (4 Nov 2026: all BOG methods on the hosted page, installment/BNPL via the BOG calculator,
+  signed callbacks, refunds on /api/orders, Telegram paid alerts) but OFF until BOG_CLIENT_ID/BOG_CLIENT_SECRET exist (docs/07-payments.md). Never claim a payment succeeded
   unless the bank receipt says completed. Under 20,000 GEL full payment, from 20,000 GEL deposit + bank transfer.
 - Server part: dist/_worker.js is GENERATED from scripts/worker.template.js by build-shop.py (prices + chat knowledge
   from the catalog). /api/*: payments (docs/07), AI chat (docs/10), accounts (docs/11). Each stays off until its

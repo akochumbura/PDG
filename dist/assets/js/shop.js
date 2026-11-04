@@ -1,5 +1,6 @@
 /* PDG shop: cart (kept in this browser), order by WhatsApp or e-mail, and online payment through
-   Bank of Georgia (card, Apple Pay, Google Pay). The Pay button appears only when /api/payments/config
+   Bank of Georgia (hosted page: card, Apple Pay, Google Pay and the bank's other methods; installment / pay in parts
+   through the BOG calculator when /api/payments/config lists them). The Pay button appears only when /api/payments/config
    says the bank keys are set (docs/07-payments.md). Orders under the threshold are paid in full,
    larger ones pay a deposit online. The payment page (payment.html) shows only what the bank confirms. */
 (function () {
@@ -102,6 +103,12 @@
       wa.classList.toggle("button-red", !payReady); wa.classList.toggle("button-line", payReady);
       document.getElementById("cartNote").hidden = payReady;
       document.getElementById("cartPayNote").hidden = !payReady;
+      var inst = payReady && PAY.inst, ln = document.getElementById("cartLoan");
+      if (ln) {
+        ln.hidden = !inst;
+        document.getElementById("cartLoanBtn").hidden = !(inst && inst.loan);
+        document.getElementById("cartBnplBtn").hidden = !(inst && inst.bnpl);
+      }
     }
   }
   /* Cart package offer (owner brief, 4 Nov 2026): the components in the cart - loose items and the contents of package lines, each counted
@@ -226,25 +233,64 @@
       location.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent("Premium Drones Georgia — " + label("lbOrder")) + "&body=" + encodeURIComponent(orderText());
     });
     var payBtn = document.getElementById("cartPay"), payErr = document.getElementById("cartPayError");
-    payBtn.addEventListener("click", function () {
-      if (paying || !payReady || !Object.keys(cart).length || !valid()) return;
-      paying = true; payBtn.disabled = true; payErr.hidden = true;
+    var startCheckout = function (plan) {
       var order = {
         items: Object.keys(cart).map(function (k) { return { sku: k, qty: cart[k].q }; }),
         lang: document.documentElement.lang,
         delivery: pickup() ? "pickup" : "delivery",
         customer: { name: form.elements.name.value.trim(), phone: form.elements.phone.value.trim(), address: form.elements.address.value.trim() }
       };
-      fetch(PAY.endpoint + "/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(order) })
+      if (plan) order.plan = plan;
+      return fetch(PAY.endpoint + "/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(order) })
         .then(function (r) { return r.json().then(function (d) { return [r.ok, d]; }); })
         .then(function (x) {
           var d = x[1];
           if (!x[0] || !d || !d.url) throw new Error("checkout");
           try { localStorage.setItem("pdg_pay", JSON.stringify({ id: d.id, ref: d.ref, mode: d.mode, total: d.total, amount: d.amount, t: Date.now() })); } catch (e) { /* private mode */ }
-          location.href = d.url;
-        })
-        .catch(function () { paying = false; payBtn.disabled = false; payErr.hidden = false; });
+          return d;
+        });
+    };
+    var payFail = function () { paying = false; payBtn.disabled = false; payErr.hidden = false; };
+    payBtn.addEventListener("click", function () {
+      if (paying || !payReady || !Object.keys(cart).length || !valid()) return;
+      paying = true; payBtn.disabled = true; payErr.hidden = true;
+      startCheckout(null).then(function (d) { location.href = d.url; }).catch(payFail);
     });
+    /* Installment / pay in parts: the Bank of Georgia calculator (bog-sdk.js) lets the visitor pick the term; the order is then
+       created on our server with that term (full amount, no deposit) and the SDK continues with the bank's application. */
+    var sdk = null;
+    var loadSdk = function () {
+      if (window.BOG && window.BOG.Calculator) return Promise.resolve();
+      if (sdk) return sdk;
+      sdk = new Promise(function (ok, no) {
+        var sc = document.createElement("script");
+        sc.src = "https://webstatic.bog.ge/bog-sdk/bog-sdk.js?version=2&client_id=" + encodeURIComponent(PAY.inst.clientId);
+        sc.async = true; sc.onload = function () { window.BOG && window.BOG.Calculator ? ok() : no(new Error("sdk")); };
+        sc.onerror = function () { sdk = null; no(new Error("sdk")); };
+        document.head.appendChild(sc);
+      });
+      return sdk;
+    };
+    var openLoan = function (kind) {
+      if (paying || !payReady || !PAY.inst || !Object.keys(cart).length || !valid()) return;
+      payErr.hidden = true;
+      var T = totals(), total = T[0] + ship(T[0]);
+      loadSdk().then(function () {
+        window.BOG.Calculator.open({
+          amount: total,
+          bnpl: kind === "bnpl",
+          onRequest: function (sel, successCb, closeCb) {
+            startCheckout({ kind: kind, month: Number(sel && sel.month), code: String(sel && sel.discount_code || "") })
+              .then(function (d) { successCb(d.id); })
+              .catch(function () { closeCb(); payErr.hidden = false; });
+          },
+          onComplete: function () { /* the bank sends the visitor to our /payment page (redirect_urls) */ }
+        });
+      }).catch(function () { payErr.hidden = false; });
+    };
+    var lb = document.getElementById("cartLoanBtn"), bb = document.getElementById("cartBnplBtn");
+    if (lb) lb.addEventListener("click", function () { openLoan("loan"); });
+    if (bb) bb.addEventListener("click", function () { openLoan("bnpl"); });
     window.addEventListener("pageshow", function () { paying = false; payBtn.disabled = false; });
   }
   if (location.hash === "#cart") openCart();
@@ -258,6 +304,7 @@
         if (!c || !c.enabled) return;
         if (c.threshold) PAY.threshold = c.threshold;
         if (c.depositPercent) PAY.depositPercent = c.depositPercent;
+        PAY.inst = c.installment && c.installment.clientId ? c.installment : null;
         payReady = true; render();
         var to = document.getElementById("termsOnline"); if (to) to.hidden = false;
       })
@@ -297,10 +344,14 @@
             } else show("paid", "lb_pay_done", label("lb_pay_done_text"));
             cart = {}; save(); render();
             try { localStorage.removeItem("pdg_pay"); } catch (e) { /* ignore */ }
+          } else if (s === "refunded" || s === "refunded_partially") {
+            show("refunded", "lb_pay_refunded", label("lb_pay_refunded_text"));
+            try { localStorage.removeItem("pdg_pay"); } catch (e) { /* ignore */ }
           } else if (s === "rejected") {
             show("failed", "lb_pay_failed", label("lb_pay_failed_text"));
           } else if (["created", "processing", "auth_requested", "blocked", "partial_completed"].indexOf(s) > -1) {
-            show("pending", "lb_pay_pending", label("lb_pay_pending_text"));
+            var loan = saved.mode === "loan" || saved.mode === "bnpl" || d.method === "bog_loan" || d.method === "bnpl";
+            show("pending", "lb_pay_pending", label(loan ? "lb_pay_loan_text" : "lb_pay_pending_text"));
             if (tries++ < 6) setTimeout(check, 4000);
           } else show("unknown", "lb_pay_unknown", label("lb_pay_unknown_text"));
         })

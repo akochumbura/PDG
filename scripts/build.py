@@ -61,8 +61,10 @@ def csp_hashes():
             found.add("'sha256-"+base64.b64encode(hashlib.sha256(m.group(2).encode('utf-8')).digest()).decode()+"'")
     return sorted(found)
 GAH=" https://static.cloudflareinsights.com"+(" https://www.googletagmanager.com" if GA else "")  # Cloudflare Web Analytics beacon is always allowed
-CSP=("default-src 'self'; script-src 'self' "+' '.join(csp_hashes())+GAH+"; style-src 'self' 'unsafe-inline'; img-src 'self' data:"+(" https://www.google-analytics.com https://www.googletagmanager.com" if GA else "")+"; font-src 'self'; "
-     "connect-src 'self' https://cloudflareinsights.com"+(" https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com" if GA else "")+"; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests")
+# Bank of Georgia calculator SDK (installment / pay in parts, docs/07-payments.md): loaded only when the bank lists it.
+BOG='https://webstatic.bog.ge https://*.bog.ge'
+CSP=("default-src 'self'; script-src 'self' "+BOG+" "+' '.join(csp_hashes())+GAH+"; style-src 'self' 'unsafe-inline' "+BOG+"; img-src 'self' data: "+BOG+""+(" https://www.google-analytics.com https://www.googletagmanager.com" if GA else "")+"; font-src 'self' "+BOG+"; "
+     "connect-src 'self' https://cloudflareinsights.com "+BOG+""+(" https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com" if GA else "")+"; media-src 'self'; object-src 'none'; frame-src "+BOG+"; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests")
 hp=D/'_headers'; hs=hp.read_text(encoding='utf-8')
 hs=re.sub(r'^  (Content-Security-Policy|Strict-Transport-Security):.*\n','',hs,flags=re.M)
 hs=hs.replace('/*\n','/*\n  Strict-Transport-Security: max-age=31536000\n  Content-Security-Policy: '+CSP+'\n',1)

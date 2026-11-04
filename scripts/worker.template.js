@@ -1,10 +1,16 @@
-/* Premium Drones Georgia — online payments through Bank of Georgia (card, Apple Pay, Google Pay).
+/* Premium Drones Georgia — online payments through Bank of Georgia (hosted payment page: card, Apple Pay, Google Pay,
+   BOG internet bank, MR/Plus points, gift cards; online installment and BNPL through the BOG calculator). Docs: api.bog.ge/docs.
    Cloudflare Pages "advanced mode" worker. GENERATED into dist/_worker.js by scripts/build-worker.py:
    edit scripts/worker.template.js, never dist/_worker.js. dist/_routes.json sends only /api/* here.
 
    Secrets live in Cloudflare (Pages > Settings > Variables and Secrets), never in these files:
      BOG_CLIENT_ID, BOG_CLIENT_SECRET   from Bank of Georgia Business Manager (required to switch payments on)
-     BOG_PAYMENT_METHODS                optional, default "card,google_pay,apple_pay"
+     BOG_PAYMENT_METHODS                optional; default = every method activated for PDG in Business Manager.
+                                        A list (e.g. "card,google_pay,apple_pay,bog_p2p,bog_loyalty,gift_card") restricts it.
+     BOG_INSTALLMENT                    optional: "loan", "bnpl" or "loan,bnpl" shows the installment / pay-in-parts buttons
+                                        (only after BOG has activated online installment for PDG).
+     BOG_TOKEN_URL, BOG_API_URL         optional overrides (e.g. the sandbox addresses BOG gives with test credentials)
+     BOG_CALLBACK_KEY                   optional PEM public key for callback signatures (default: the key published by BOG)
      ADMIN_KEY                          optional, opens /api/orders?key=... (needs the ORDERS binding)
      PAYMENTS_ENABLED = "off"           optional emergency switch
      ACCOUNTS_ENABLED = "off"           optional; customer accounts work as soon as the PDG_DATA binding exists
@@ -20,8 +26,20 @@
 const CATALOG = __CATALOG__;
 const RULES = __RULES__;
 const KNOWLEDGE = __KNOWLEDGE__;
-const BOG_TOKEN_URL = 'https://oauth2.bog.ge/auth/realms/bog/protocol/openid-connect/token';
-const BOG_API = 'https://api.bog.ge/payments/v1';
+const BOG_TOKEN = 'https://oauth2.bog.ge/auth/realms/bog/protocol/openid-connect/token';
+const BOG_BASE = 'https://api.bog.ge/payments/v1';
+const bogTokenUrl = env => /^https:\/\//.test(env.BOG_TOKEN_URL || '') ? env.BOG_TOKEN_URL : BOG_TOKEN;
+const bogApi = env => (/^https:\/\//.test(env.BOG_API_URL || '') ? env.BOG_API_URL : BOG_BASE).replace(/\/+$/, '');
+/* Public key BOG signs callbacks with (api.bog.ge/docs/payments/standard-process/callback, SHA256withRSA over the raw body). */
+const BOG_CALLBACK_PEM = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu4RUyAw3+CdkS3ZNILQh
+zHI9Hemo+vKB9U2BSabppkKjzjjkf+0Sm76hSMiu/HFtYhqWOESryoCDJoqffY0Q
+1VNt25aTxbj068QNUtnxQ7KQVLA+pG0smf+EBWlS1vBEAFbIas9d8c9b9sSEkTrr
+TYQ90WIM8bGB6S/KLVoT1a7SnzabjoLc5Qf/SLDG5fu8dH8zckyeYKdRKSBJKvhx
+tcBuHV4f7qsynQT+f2UYbESX/TLHwT5qFWZDHZ0YUOUIvb8n7JujVSGZO9/+ll/g
+4ZIWhC1MlJgPObDwRkRd8NFOopgxMcMsDIZIoLbWKhHVq67hdbwpAq9K9WMmEhPn
+PwIDAQAB
+-----END PUBLIC KEY-----`;
 const LANGS = ['ka', 'en', 'ru'];
 let cachedToken = null;
 
@@ -59,6 +77,7 @@ async function api(request, env, url) {
       if (route === 'GET /api/payments/status') return await status(env, url);
       if (route === 'POST /api/payments/callback') return await callback(request, env);
       if (route === 'GET /api/orders') return await orders(env, url);
+      if (route === 'POST /api/orders/refund') return await refund(request, env, url);
       if (route === 'POST /api/contact') return await contactSubmit(request, env, url);
       if (route === 'GET /api/contact/config') { let last = null; try { last = kv(env) ? JSON.parse(await kv(env).get('mail:last') || 'null') : null; } catch (e) { last = null; } return json({ enabled: contactReady(env), mail: contactMailOn(env), last }); }
       if (route === 'GET /api/contact/inbox') return await contactInbox(env, url);
@@ -92,14 +111,27 @@ function enabled(env) {
   return Boolean(env.BOG_CLIENT_ID && env.BOG_CLIENT_SECRET && env.PAYMENTS_ENABLED !== 'off');
 }
 
-function methods(env) {
-  const allowed = ['card', 'google_pay', 'apple_pay', 'bog_p2p', 'bog_loyalty', 'bnpl', 'bog_loan', 'gift_card'];
-  const list = String(env.BOG_PAYMENT_METHODS || 'card,google_pay,apple_pay').split(',').map(s => s.trim()).filter(s => allowed.includes(s));
-  return list.length ? list : ['card'];
+const BOG_METHODS = ['card', 'google_pay', 'apple_pay', 'bog_p2p', 'bog_loyalty', 'bnpl', 'bog_loan', 'gift_card'];
+const LOAN_METHODS = ['bnpl', 'bog_loan'];
+/* Methods for the hosted page. null = do not send payment_method, so the bank shows every method activated for PDG.
+   A deposit is never paid by installment: the loan methods are left out there. */
+function methods(env, mode) {
+  const set = String(env.BOG_PAYMENT_METHODS || '').split(',').map(s => s.trim()).filter(s => BOG_METHODS.includes(s));
+  if (mode === 'deposit') {
+    const list = (set.length ? set : BOG_METHODS).filter(m => !LOAN_METHODS.includes(m));
+    return list.length ? list : ['card'];
+  }
+  return set.length ? set : null;
+}
+function installment(env) {
+  if (!enabled(env)) return null;
+  const want = String(env.BOG_INSTALLMENT || '').split(',').map(s => s.trim().toLowerCase());
+  const loan = want.includes('loan') || want.includes('on'), bnpl = want.includes('bnpl') || want.includes('on');
+  return loan || bnpl ? { loan, bnpl, clientId: String(env.BOG_CLIENT_ID) } : null;
 }
 
 function publicConfig(env) {
-  return { enabled: enabled(env), threshold: RULES.threshold, depositPercent: RULES.depositPercent, currency: 'GEL' };
+  return { enabled: enabled(env), threshold: RULES.threshold, depositPercent: RULES.depositPercent, currency: 'GEL', installment: installment(env) };
 }
 
 /* Order amount: full price under the threshold, otherwise a deposit (whole lari, kept under the threshold). */
@@ -150,7 +182,7 @@ function orderRef() {
 async function bogToken(env) {
   const now = Date.now();
   if (cachedToken && cachedToken.exp > now + 60000 && cachedToken.id === env.BOG_CLIENT_ID) return cachedToken.value;
-  const res = await fetch(BOG_TOKEN_URL, {
+  const res = await fetch(bogTokenUrl(env), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -185,9 +217,20 @@ async function checkout(request, env, url) {
   const customer = { name: clean(c.name, 100), phone: clean(c.phone, 30), address: clean(c.address, 200) };
   if (customer.name.length < 2 || customer.phone.replace(/\D/g, '').length < 9) return json({ error: 'bad_customer' }, 400);
   const lang = LANGS.includes(input.lang) ? input.lang : 'ka';
+  /* Installment / BNPL: the visitor picked the term in the BOG calculator; the whole order goes to the bank (no deposit). */
+  let plan = null;
+  if (input.plan) {
+    const inst = installment(env);
+    const kind = input.plan.kind === 'bnpl' ? 'bnpl' : input.plan.kind === 'loan' ? 'loan' : '';
+    const month = Number(input.plan.month), code = String(input.plan.code || '');
+    if (!inst || !kind || !inst[kind]) return json({ error: 'installment_off' }, 400);
+    if (!Number.isInteger(month) || month < 1 || month > 72 || !/^[A-Za-z0-9_-]{1,40}$/.test(code)) return json({ error: 'bad_plan' }, 400);
+    plan = { kind, month, code };
+    q.mode = kind; q.amount = q.total;
+  }
   const ref = orderRef();
   const back = `${origin}${lang === 'ka' ? '' : '/' + lang}/payment?ref=${encodeURIComponent(ref)}`;
-  const basket = q.mode === 'full'
+  const basket = q.mode !== 'deposit'
     ? q.lines.map(l => ({ product_id: l.sku, description: l.name.slice(0, 120), quantity: l.qty, unit_price: l.price, total_price: l.price * l.qty }))
       .concat(q.shipping ? [{ product_id: 'DELIVERY', description: 'Delivery in Georgia', quantity: 1, unit_price: q.shipping, total_price: q.shipping }] : [])
     : [{ product_id: 'DEPOSIT', description: `Deposit ${RULES.depositPercent}% for order ${ref} (total GEL ${q.total})`, quantity: 1, unit_price: q.amount, total_price: q.amount }];
@@ -199,11 +242,17 @@ async function checkout(request, env, url) {
     ttl: 30,
     buyer: { full_name: customer.name },
     purchase_units: { currency: 'GEL', total_amount: q.amount, basket },
-    redirect_urls: { success: back, fail: back + '&r=fail' },
-    payment_method: methods(env)
+    redirect_urls: { success: back, fail: back + '&r=fail' }
   };
+  if (plan) {
+    body.payment_method = [plan.kind === 'bnpl' ? 'bnpl' : 'bog_loan'];
+    body.config = { loan: { type: plan.code, month: plan.month } };
+  } else {
+    const m = methods(env, q.mode);
+    if (m) body.payment_method = m;
+  }
   const token = await bogToken(env);
-  const send = payload => fetch(`${BOG_API}/ecommerce/orders`, {
+  const send = payload => fetch(`${bogApi(env)}/ecommerce/orders`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -215,11 +264,12 @@ async function checkout(request, env, url) {
     body: JSON.stringify(payload)
   });
   let res = await send(body);
-  if (!res.ok && res.status >= 400 && res.status < 500) {
-    // A method that is not yet activated in Business Manager can be refused: let the bank offer what is active.
-    console.warn('bog order refused with methods, retrying without', res.status, await res.text());
+  if (!res.ok && res.status >= 400 && res.status < 500 && !plan && body.payment_method) {
+    // A method that is not yet activated in Business Manager can be refused. Full payment: let the bank offer what is active.
+    // Deposit: fall back to card only (a deposit is never paid by installment).
+    console.warn('bog order refused with methods, retrying', res.status, await res.text());
     const { payment_method, ...rest } = body;
-    res = await send(rest);
+    res = await send(q.mode === 'deposit' ? { ...rest, payment_method: ['card'] } : rest);
   }
   if (!res.ok) {
     console.error('bog order failed', res.status, await res.text());
@@ -232,7 +282,7 @@ async function checkout(request, env, url) {
     return json({ error: 'bank_error' }, 502);
   }
   if (kv(env)) {
-    const record = { ref, bogId: data.id, created: new Date().toISOString(), lang, mode: q.mode, total: q.total, amount: q.amount,
+    const record = { ref, bogId: data.id, created: new Date().toISOString(), lang, mode: q.mode, total: q.total, amount: q.amount, plan,
       delivery: q.delivery, shipping: q.shipping,
       items: q.lines, customer, status: 'created' };
     await kv(env).put('order:' + ref, JSON.stringify(record), { expirationTtl: 60 * 60 * 24 * 730 });
@@ -244,7 +294,7 @@ async function checkout(request, env, url) {
 
 async function receipt(env, id) {
   const token = await bogToken(env);
-  const res = await fetch(`${BOG_API}/receipt/${encodeURIComponent(id)}`, { headers: { Authorization: 'Bearer ' + token } });
+  const res = await fetch(`${bogApi(env)}/receipt/${encodeURIComponent(id)}`, { headers: { Authorization: 'Bearer ' + token, 'Accept-Language': 'en' } });
   if (res.status === 404) return null;
   if (!res.ok) throw new Error('bog receipt ' + res.status);
   return res.json();
@@ -255,12 +305,25 @@ async function remember(env, r) {
   const key = 'order:' + r.external_order_id;
   const rec = await kv(env).get(key, 'json');
   if (!rec) return;
+  const before = rec.status;
+  const pu = r.purchase_units || {}, pd = r.payment_detail || {};
   rec.status = r.order_status && r.order_status.key || rec.status;
-  rec.paid = Number(r.purchase_units && r.purchase_units.transfer_amount) || 0;
-  rec.method = r.payment_detail && r.payment_detail.transfer_method && r.payment_detail.transfer_method.key || rec.method || '';
+  rec.paid = Number(pu.transfer_amount) || 0;
+  rec.refunded = Number(pu.refund_amount) || 0;
+  rec.method = pd.transfer_method && pd.transfer_method.key || rec.method || '';
+  rec.code = clean([pd.code, pd.code_description].filter(Boolean).join(' '), 120);
   rec.updated = new Date().toISOString();
   await kv(env).put(key, JSON.stringify(rec), { expirationTtl: 60 * 60 * 24 * 730 });
+  if (rec.status !== before && ['completed', 'refunded', 'refunded_partially'].includes(rec.status)) {
+    const word = { completed: 'PAID', refunded: 'REFUNDED', refunded_partially: 'PARTLY REFUNDED' }[rec.status];
+    const what = rec.status === 'completed' ? `₾${rec.paid}${rec.mode === 'deposit' ? ` deposit of ₾${rec.total} (rest by bank transfer)` : ''}` : `₾${rec.refunded} of ₾${rec.paid}`;
+    await tgSend(env, `PDG website: ${word} ${rec.ref} — ${what}, ${METHOD_NAMES[rec.method] || rec.method || 'payment'} (Bank of Georgia receipt).\n`
+      + `${rec.customer.name}, ${rec.customer.phone}${rec.customer.address ? ', ' + rec.customer.address : ''}\n`
+      + rec.items.map(i => `${i.qty} × ${i.name}`).join('\n') + `\n${rec.delivery === 'pickup' ? 'Pickup in Tbilisi' : 'Delivery ₾' + (rec.shipping || 0)}`);
+  }
 }
+const METHOD_NAMES = { card: 'card', google_pay: 'Google Pay', apple_pay: 'Apple Pay', bog_p2p: 'BOG internet bank', bog_loyalty: 'MR/Plus points',
+  bnpl: 'pay in parts (BNPL)', bog_loan: 'online installment', gift_card: 'gift card' };
 
 async function status(env, url) {
   if (!enabled(env)) return json({ error: 'payments_off' }, 503);
@@ -281,13 +344,35 @@ async function status(env, url) {
     ref: r.external_order_id || '',
     deposit: items.some(i => i && (i.product_id === 'DEPOSIT' || i.external_item_id === 'DEPOSIT')),
     amount: Number(pu.transfer_amount || pu.request_amount) || 0,
+    refunded: Number(pu.refund_amount) || 0,
+    method: r.payment_detail && r.payment_detail.transfer_method && r.payment_detail.transfer_method.key || '',
     currency: pu.currency_code || 'GEL'
   });
 }
 
+let callbackKey = null;
+async function verifyCallback(env, raw, sig) {
+  if (!sig) return false;
+  try {
+    const pem = String(env.BOG_CALLBACK_KEY || BOG_CALLBACK_PEM);
+    if (!callbackKey || callbackKey.pem !== pem) {
+      const der = Uint8Array.from(atob(pem.replace(/-----[^-]+-----/g, '').replace(/\s+/g, '')), c => c.charCodeAt(0));
+      callbackKey = { pem, key: await crypto.subtle.importKey('spki', der, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['verify']) };
+    }
+    const sigBytes = Uint8Array.from(atob(sig.trim()), c => c.charCodeAt(0));
+    return await crypto.subtle.verify('RSASSA-PKCS1-v1_5', callbackKey.key, sigBytes, new TextEncoder().encode(raw));
+  } catch (err) { console.error('callback signature', err); return false; }
+}
+
 async function callback(request, env) {
-  // The bank calls this after a payment. We never trust the body: we ask the bank for the receipt ourselves.
+  /* The bank calls this after a payment. The signature (Callback-Signature, SHA256withRSA over the raw body) is checked
+     before the body is read; even then the status is taken from the bank's own receipt, never from the body. */
   const raw = await request.text();
+  if (raw.length > 100000) return new Response('Too large', { status: 413 });
+  if (!await verifyCallback(env, raw, request.headers.get('Callback-Signature'))) {
+    console.warn('callback with a missing or wrong signature ignored');
+    return new Response('Bad signature', { status: 401 });
+  }
   let id = '';
   try { const b = JSON.parse(raw); id = String(b && b.body && b.body.order_id || ''); } catch { /* ignore */ }
   if (/^[A-Za-z0-9-]{8,64}$/.test(id) && enabled(env)) {
@@ -307,17 +392,57 @@ async function orders(env, url) {
   const recs = (await Promise.all(list.keys.map(k => kv(env).get(k.name, 'json')))).filter(Boolean)
     .sort((a, b) => String(b.created).localeCompare(String(a.created)));
   const users = (await kv(env).list({ prefix: 'user:', limit: 500 })).keys.length;
-  const rows = recs.map(o => `<tr><td>${esc(o.created.slice(0, 16).replace('T', ' '))}</td><td>${esc(o.ref)}</td><td>${esc(o.status)}</td>`
-    + `<td>${o.mode === 'deposit' ? 'deposit ' : ''}₾${esc(o.amount)} / ₾${esc(o.total)}</td><td>${esc(o.customer.name)}<br>${esc(o.customer.phone)}<br>${esc(o.customer.address)}${o.delivery ? '<br>' + (o.delivery === 'pickup' ? 'pickup Tbilisi' : 'delivery ₾' + esc(o.shipping || 0)) : ''}${o.account ? '<br>' + esc(o.account) : ''}</td>`
+  const refundable = o => o.bogId && ['completed', 'refunded_partially'].includes(o.status) && (o.paid || 0) > (o.refunded || 0);
+  const refundForm = o => refundable(o) ? `<form method="post" action="/api/orders/refund" style="margin-top:6px"><input type="hidden" name="key" value="${esc(key)}">`
+    + `<input type="hidden" name="ref" value="${esc(o.ref)}"><input name="amount" inputmode="decimal" placeholder="₾ (empty = all)" style="width:110px">`
+    + ` <label><input type="checkbox" name="confirm" value="yes" required> confirm</label> <button>Refund</button></form>` : '';
+  const rows = recs.map(o => `<tr><td>${esc(o.created.slice(0, 16).replace('T', ' '))}</td><td>${esc(o.ref)}</td><td>${esc(o.status)}`
+    + `${o.method ? '<br>' + esc(METHOD_NAMES[o.method] || o.method) : ''}${o.plan ? '<br>' + esc(o.plan.month) + ' months' : ''}${o.refunded ? '<br>refunded ₾' + esc(o.refunded) : ''}${refundForm(o)}</td>`
+    + `<td>${o.mode === 'deposit' ? 'deposit ' : ''}₾${esc(o.amount)} / ₾${esc(o.total)}${o.paid ? '<br>paid ₾' + esc(o.paid) : ''}</td><td>${esc(o.customer.name)}<br>${esc(o.customer.phone)}<br>${esc(o.customer.address)}${o.delivery ? '<br>' + (o.delivery === 'pickup' ? 'pickup Tbilisi' : 'delivery ₾' + esc(o.shipping || 0)) : ''}${o.account ? '<br>' + esc(o.account) : ''}</td>`
     + `<td>${o.items.map(i => esc(i.qty + ' × ' + i.name)).join('<br>')}</td></tr>`).join('');
   const page = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
 <title>PDG orders</title><style>body{font:14px/1.45 system-ui,sans-serif;margin:16px;color:#1c1c1c}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}th{font-weight:600}</style>
-<h1>PDG orders (${recs.length})</h1><p>Paid = status "completed". Deposit orders: the rest is paid by bank transfer. Status "requested" = sent by WhatsApp or e-mail by a signed-in customer. Customer accounts: ${users}.</p>
+<h1>PDG orders (${recs.length})</h1><p>Paid = status "completed" in the Bank of Georgia receipt. Refund: type an amount for a partial refund (empty = the whole paid amount), tick confirm, press Refund; the bank returns the money to the card / method used. Deposit orders: the rest is paid by bank transfer. Status "requested" = sent by WhatsApp or e-mail by a signed-in customer. Customer accounts: ${users}.</p>
 <p>Reset a customer's password: open /api/admin/reset?key=YOUR_KEY&amp;email=CUSTOMER_EMAIL and send them the temporary password.</p>
 <div style="overflow-x:auto"><table><tr><th>Date (UTC)</th><th>Order</th><th>Status</th><th>Paid / total</th><th>Customer</th><th>Items</th></tr>${rows}</table></div>`;
   return new Response(page, { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex', 'Referrer-Policy': 'no-referrer' } });
 }
 
+/* Refund (api.bog.ge/docs/payments/refund): full or partial, from the orders page only (ADMIN_KEY + same-origin form). */
+async function refund(request, env, url) {
+  const sentFrom = request.headers.get('Origin');
+  if (sentFrom && sentFrom !== url.origin) return json({ error: 'bad_origin' }, 403);
+  const form = new URLSearchParams((await request.text()).slice(0, 2000));
+  const key = form.get('key') || '';
+  if (!adminOk(env, key) || !kv(env)) return json({ error: 'not_found' }, 404);
+  const page = (msg, ok) => new Response(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>PDG refund</title>`
+    + `<style>body{font:16px/1.5 system-ui,sans-serif;margin:24px auto;max-width:560px;padding:0 16px}.ok{color:#1b7f3b}.err{color:#b3261e}a{color:#c00}</style>`
+    + `<p class="${ok ? 'ok' : 'err'}">${esc(msg)}</p><p><a href="/api/orders?key=${esc(encodeURIComponent(key))}">Back to orders</a></p>`,
+    { status: ok ? 200 : 400, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex', 'Referrer-Policy': 'no-referrer' } });
+  if (!enabled(env)) return page('Payments are off (no Bank of Georgia keys).', false);
+  if (form.get('confirm') !== 'yes') return page('Tick "confirm" to send a refund.', false);
+  const ref = form.get('ref') || '';
+  const rec = /^PDG-\d{6}-[A-Z0-9]{6}$/.test(ref) ? await kv(env).get('order:' + ref, 'json') : null;
+  if (!rec || !rec.bogId) return page('Order not found.', false);
+  try { await remember(env, await receipt(env, rec.bogId)); } catch (err) { console.error('refund receipt', err); }
+  const fresh = await kv(env).get('order:' + ref, 'json') || rec;
+  const left = Math.round(((fresh.paid || 0) - (fresh.refunded || 0)) * 100) / 100;
+  if (!['completed', 'refunded_partially'].includes(fresh.status) || left <= 0) return page(`Nothing to refund (bank status: ${fresh.status}).`, false);
+  const raw = String(form.get('amount') || '').replace(',', '.').replace(/[₾\s]/g, '');
+  const amount = raw ? Math.round(Number(raw) * 100) / 100 : null;
+  if (raw && (!(amount > 0) || amount > left)) return page(`Amount must be between 0.01 and ${left}.`, false);
+  const token = await bogToken(env);
+  const res = await fetch(`${bogApi(env)}/payment/refund/${encodeURIComponent(fresh.bogId)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token, 'Idempotency-Key': crypto.randomUUID() },
+    body: JSON.stringify(amount ? { amount } : {})
+  });
+  const d = await res.json().catch(() => ({}));
+  if (!res.ok) { console.error('bog refund', res.status, JSON.stringify(d)); return page(`The bank refused the refund (${res.status} ${d.message || d.key || ''}).`, false); }
+  fresh.refundRequests = (fresh.refundRequests || []).concat({ at: new Date().toISOString(), amount: amount || left, action: d.action_id || '' });
+  await kv(env).put('order:' + ref, JSON.stringify(fresh), { expirationTtl: 60 * 60 * 24 * 730 });
+  return page(`Refund of ₾${amount || left} sent to Bank of Georgia (${d.message || d.key || 'request received'}). The status changes to "refunded" when the bank confirms it.`, true);
+}
 
 /* ---------------- AI chat (Claude) ----------------
    The assistant answers from KNOWLEDGE only (built from the catalog, llms.txt, FAQ and terms at build time).
@@ -340,7 +465,19 @@ function chatProvider(env) {
 }
 function chatEnabled(env) { return Boolean(chatProvider(env) && env.CHAT_ENABLED !== 'off'); }
 
-function chatSystem(lang) {
+/* KNOWLEDGE is written at build time for "no online payment"; once the bank keys exist the chat tells the truth instead. */
+const PAY_OFF_LINE = 'Online card payment is NOT available on the website at the moment; do not tell customers they can pay online. Do not mention deposit percentages.';
+function knowledge(env) {
+  if (!enabled(env)) return KNOWLEDGE;
+  const inst = installment(env);
+  const line = `Online payment IS available in the website cart, on the secure Bank of Georgia page (card, Apple Pay, Google Pay and the other methods the bank shows there). `
+    + `Orders under GEL ${RULES.threshold} are paid in full; from GEL ${RULES.threshold} a ${RULES.depositPercent}% deposit is paid online and the rest by bank transfer against the invoice.`
+    + (inst ? ` ${[inst.loan && 'Bank of Georgia online installment', inst.bnpl && 'pay in parts (BNPL)'].filter(Boolean).join(' and ')} can be chosen in the cart; the bank sets the terms and approves it. Never quote monthly amounts or interest.` : '')
+    + ' Ordering by WhatsApp or email with invoice and bank transfer still works.';
+  return KNOWLEDGE.split(PAY_OFF_LINE).join(line);
+}
+
+function chatSystem(lang, env) {
   const language = { ka: 'Georgian', en: 'English', ru: 'Russian' }[lang] || 'Georgian';
   return `You are the website assistant of Premium Drones Georgia (PDG) — in Georgian "საქართველოს პრემიუმ დრონები", in Russian "Премиум Дроны Грузии".
 Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus region.
@@ -378,7 +515,7 @@ How to answer:
 - Helpful links (use the visitor's language version when relevant: /en/... or /ru/...): shop https://premium-drones.ge/shop, P150 MAX https://premium-drones.ge/p150-max, contact https://premium-drones.ge/consultation, service https://premium-drones.ge/service, academy https://premium-drones.ge/academy, terms https://premium-drones.ge/terms.
 
 KNOWLEDGE:
-${KNOWLEDGE}`;
+${knowledge(env)}`;
 }
 
 async function chatAllowed(env, ip) {
@@ -433,7 +570,7 @@ async function chat(request, env, url) {
 
 async function aiReply(env, lang, messages) {
   const learned = await learnText(env);
-  const system = chatSystem(lang) + (learned ? `\n\nANSWERS GIVEN BY THE PDG TEAM (trusted, newest first; they override KNOWLEDGE when they differ; reuse them for similar questions, but do not mention other customers):\n${learned}` : '');
+  const system = chatSystem(lang, env) + (learned ? `\n\nANSWERS GIVEN BY THE PDG TEAM (trusted, newest first; they override KNOWLEDGE when they differ; reuse them for similar questions, but do not mention other customers):\n${learned}` : '');
   const provider = chatProvider(env);
   let res;
   if (provider === 'openai') {

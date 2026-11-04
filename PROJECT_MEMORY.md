@@ -79,3 +79,10 @@
 ## 2026-11-04 — ყიდვის ნაწილის დახვეწა (preview: buying-refine)
 - მაღაზიაში კონფიგურატორი მზა კომპლექტებამდეა; კომპლექტის ფასი მხოლოდ კომპლექტის არჩევის/შეთავაზების მიღების შემდეგ ვრცელდება; შეთავაზება ზოგვის თანხით, კონფიგურატორშიც და კალათაშიც.
 - ტესტები: 96 ყიდვის სცენარი, 148 მობილური შემოწმება (360/390/430), 36 ინტერაქცია, 41 მომხმარებლის გზა, 1516 ფასის შედარება — ყველა წარმატებული.
+
+## 4 Nov 2026 — Bank of Georgia payments completed (preview branch bog-payments; OFF until keys)
+- Built from api.bog.ge/docs (llms.txt): hosted page with every activated method (no payment_method on full payment; deposit excludes bnpl/bog_loan),
+  installment + BNPL via BOG calculator SDK (BOG_INSTALLMENT=loan,bnpl; full amount, config.loan from the calculator), signed callbacks
+  (SHA256withRSA, BOG key built in, BOG_CALLBACK_KEY override), receipt-based status, refunds (full/partial) from /api/orders, Telegram PAID/REFUNDED
+  alerts, refunded + loan-review states on /payment, chat knowledge flips to "online payment available" when keys exist, sandbox via BOG_TOKEN_URL/BOG_API_URL.
+- Tested with a simulated bank: worker 35/35, cart UI with mocked calculator at 390 and 1366 px. Not tested against the real or sandbox BOG (no credentials).
