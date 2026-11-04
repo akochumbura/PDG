@@ -301,6 +301,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   Order everywhere: Starter, Plus, Pro, Business. Combo picture made by scripts/tools/package-pictures.py (compose(4,4,True,'plus')).
   Shop kit grid 4 columns ≥1180px, 2 columns 701–1179px; P150 MAX / drones tiles 5 columns ≥1180px. faq_a3 / pf_q3 / pf_a3 / shop_intro / spec note mention Plus.
   Pricing note for the owner: Starter + 2 batteries (no RTK) = ₾87,997 vs Pro (with XRTK7) ₾87,999, so in the configurator the RTK in Pro costs only ₾2 extra.
-- (owner, 4 Nov 2026) "Packages give discounts, the RTK must come with Pro": chat KNOWLEDGE has "Package upgrades" lines generated in build-shop.py for every
+- (owner, 4 Nov 2026, LIVE) "Packages give discounts, the RTK must come with Pro": chat KNOWLEDGE has "Package upgrades" lines generated in build-shop.py for every
   package that contains a smaller one (smaller + extra items vs the bigger package, with and without RTK); chatSystem tells the AI to recommend the package
   (e.g. Starter + 2 batteries ₾87,997 vs Pro ₾87,999 with XRTK7). Configurator pricing unchanged.
