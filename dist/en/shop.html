@@ -19,11 +19,11 @@
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=dea93b4c62">
   <script>try{var t=localStorage.getItem("pdge-theme")||"light";document.documentElement.dataset.theme=t}catch(e){}</script>
   <link rel="preload" href="/assets/fonts/D-DIN.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="/assets/css/style.css?v=5cd3b32949">
-  <script src="/assets/js/content-en.js?v=0c21b458f7" defer></script>
+  <link rel="stylesheet" href="/assets/css/style.css?v=c724347522">
+  <script src="/assets/js/content-en.js?v=87cbc03b80" defer></script>
   <script src="/assets/js/script.js?v=6e8f1b7d91" defer></script>
   <script src="/assets/js/payments-config.js?v=ec0c784248" defer></script>
-  <script src="/assets/js/shop.js?v=01c886d179" defer></script>
+  <script src="/assets/js/shop.js?v=27fab5b29e" defer></script>
   <script src="/assets/js/chat.js?v=c7a8f32027" defer></script>
   <script src="/assets/js/account.js?v=cdadcb30ae" defer></script>
 <script src="/assets/js/analytics.js?v=85d62f6363" defer></script>
@@ -5112,10 +5112,10 @@
 <div class="cart-loan-btns">
 <button class="button button-line" type="button" id="cartLoanBtn" hidden><span data-i18n="pay_loan">Installment</span></button><button class="button button-line" type="button" id="cartBnplBtn" hidden><span data-i18n="pay_bnpl">Pay in parts</span></button>
 </div>
-<p class="cart-note" data-i18n="cart_loan_note">You choose the installment or pay-in-parts terms in Bank of Georgia's calculator; the bank reviews the application. It covers the full order amount.</p>
+<p class="cart-note" hidden data-i18n="cart_loan_note">You choose the installment or pay-in-parts terms in Bank of Georgia's calculator; the bank reviews the application. It covers the full order amount.</p>
 </div>
 <p class="cart-error" id="cartPayError" role="alert" hidden data-i18n="cart_pay_error">The payment page could not be opened. Try again or order by WhatsApp.</p>
-<button class="button button-red" type="submit" id="cartWa"><span data-i18n="order_whatsapp">Order via WhatsApp</span></button><a class="button button-line" id="cartMail"><span data-i18n="order_email">Order by email</span></a>
+<button class="button button-red" type="submit" id="cartWa"><span data-i18n="order_whatsapp">Order via WhatsApp</span></button><a class="button button-line" id="cartMail"><span data-i18n="order_email">Order by email</span></a><p class="cart-alt" id="cartAlt" hidden><span data-i18n="cart_alt">Or order by:</span> <a href="#" id="cartAltWa">WhatsApp</a> · <a href="#" id="cartAltMail" data-i18n="cart_alt_mail">e-mail</a></p>
 </form>
 <p class="cart-note" id="cartNote" data-i18n="cart_note">Your order is sent by WhatsApp or e-mail. PDG confirms price, availability and delivery, then sends an invoice; payment is by bank transfer.</p>
 <p class="cart-note" id="cartPayNote" hidden data-i18n="cart_pay_note">Card (Visa, Mastercard), Apple Pay, Google Pay or another method the bank offers — on Bank of Georgia’s secure page. We never see your card details.</p>

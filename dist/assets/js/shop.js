@@ -110,15 +110,18 @@
       var dn = document.getElementById("cartDeposit");
       dn.hidden = !(payReady && dep);
       if (dep) dn.textContent = label("lbDeposit").replace("{pct}", PAY.depositPercent).replace("{deposit}", fmt(amount)).replace("{rest}", fmt(total - amount));
-      var wa = document.getElementById("cartWa");
-      wa.classList.toggle("button-red", !payReady); wa.classList.toggle("button-line", payReady);
+      /* Simple cart when online payment is on (owner, 4 Nov 2026): one red pay button, one installment button,
+         WhatsApp / e-mail as one small line of links. */
+      var wa = document.getElementById("cartWa"), ml = document.getElementById("cartMail"), alt = document.getElementById("cartAlt");
+      wa.hidden = payReady; ml.hidden = payReady; if (alt) alt.hidden = !payReady;
       document.getElementById("cartNote").hidden = payReady;
       document.getElementById("cartPayNote").hidden = !payReady;
       var inst = payReady && PAY.inst, ln = document.getElementById("cartLoan");
       if (ln) {
         ln.hidden = !inst;
+        /* One installment button: Bank of Georgia installment, or pay in parts when only that is switched on. */
         document.getElementById("cartLoanBtn").hidden = !(inst && inst.loan);
-        document.getElementById("cartBnplBtn").hidden = !(inst && inst.bnpl);
+        document.getElementById("cartBnplBtn").hidden = !(inst && inst.bnpl && !inst.loan);
       }
     }
   }
@@ -336,6 +339,9 @@
     var lb = document.getElementById("cartLoanBtn"), bb = document.getElementById("cartBnplBtn");
     if (lb) lb.addEventListener("click", function () { openLoan("loan"); });
     if (bb) bb.addEventListener("click", function () { openLoan("bnpl"); });
+    var aw = document.getElementById("cartAltWa"), am = document.getElementById("cartAltMail");
+    if (aw) aw.addEventListener("click", function (e) { e.preventDefault(); form.requestSubmit ? form.requestSubmit() : document.getElementById("cartWa").click(); });
+    if (am) am.addEventListener("click", function (e) { e.preventDefault(); document.getElementById("cartMail").click(); });
     window.addEventListener("pageshow", function () { paying = false; payBtn.disabled = false; });
   }
   if (location.hash === "#cart") openCart();

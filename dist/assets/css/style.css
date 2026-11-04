@@ -326,6 +326,7 @@ dialog.cart[open]{display:flex;flex-direction:column}
 .cart-form button.button,.cart-form a.button{border:0;cursor:pointer;width:100%;justify-content:center}
 .cart-form a.button-line,.cart-form button.button-line{border:1px solid var(--text);background:transparent;color:var(--text)}
 .cart-loan{display:grid;gap:8px}.cart-loan[hidden],.cart-loan .button[hidden]{display:none}.cart-loan-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.cart-form [hidden]{display:none!important}.cart-alt{margin:0;text-align:center;font-size:14px;color:var(--muted)}.cart-alt a{color:var(--text);text-decoration:underline;text-underline-offset:3px;padding:8px 2px;display:inline-block}
 .cart-error{margin:0;font-size:13px;color:var(--accent)}
 .not-found{min-height:56vh;border-bottom:0}
 .nf-actions{display:flex;flex-wrap:wrap;align-items:center;gap:20px 32px;margin-top:40px}
