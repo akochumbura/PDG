@@ -330,6 +330,34 @@
       var hit = PC.packages.filter(function (p) { return pcKeys.every(function (k) { return (p.q[k] || 0) === q[k]; }); })[0];
       return hit ? hit.sku : "";
     }
+    /* Owner, 4 Nov 2026: packages give discounts. Suggest the package that holds everything selected when it is cheaper than the selection,
+       or costs at most half of what it adds (e.g. Starter + 2 batteries -> Pro: ₾2 more, the XRTK7 RTK station included). */
+    function pcUpgrade(st) {
+      if (!pcKeys.some(function (k) { return st.q[k] > 0; })) return null;
+      var best = null;
+      PC.packages.forEach(function (p) {
+        if (st.pkg && st.pkg.p.sku === p.sku) return;
+        var tq = {}, add = [], addVal = 0, t = p.price;
+        pcKeys.forEach(function (k) {
+          var cur = st.q[k] || 0, need = p.q[k] || 0;
+          tq[k] = Math.max(cur, need);
+          if (need > cur) { add.push([k, need - cur]); addVal += (need - cur) * PC.items[k].price; }
+          if (tq[k] > need) t += (tq[k] - need) * PC.items[k].price;
+        });
+        if (!add.length || Object.keys(tq).some(function (k) { return tq[k] > (Number(pcInput(k).max) || 0); })) return;
+        var gap = t - st.total;
+        if (gap <= addVal / 2 && (!best || gap < best.gap)) best = { p: p, tq: tq, add: add, gap: gap };
+      });
+      return best;
+    }
+    var pcHintQ = null;
+    function pcShowHint(st) {
+      var box = document.getElementById("pcHint"); if (!box) return;
+      var u = pcUpgrade(st); box.hidden = !u; pcHintQ = u ? u.tq : null; if (!u) return;
+      var items = u.add.map(function (x) { return rowLabel(x[0]) + (x[1] > 1 ? " × " + x[1] : ""); }).join(", ");
+      document.getElementById("pcHintText").textContent = tx(u.gap > 0 ? "pc_hint_more" : "pc_hint_less").replace("{name}", u.p.short).replace("{gap}", fmt(Math.abs(u.gap))).replace("{items}", items);
+      document.getElementById("pcHintBtn").textContent = tx("pc_hint_btn").replace("{name}", u.p.short);
+    }
     function pcShow() {
       var st = pcState(), list = document.getElementById("pcList");
       pcRows.forEach(function (r) { r.classList.toggle("is-on", st.q[r.dataset.key] > 0); });
@@ -343,6 +371,7 @@
         v.className = "pcfg-li-price"; v.textContent = fmt(l.q * l.unit);
         li.append(n, v); list.appendChild(li);
       });
+      pcShowHint(st);
       var ap = document.getElementById("pcApplied");
       ap.hidden = !st.pkg; if (st.pkg) ap.textContent = tx("pc_applied").replace("{name}", st.pkg.p.short);
       var m = missing(st), rm = document.getElementById("pcRemind");
@@ -379,6 +408,7 @@
       var a = e.target.closest ? e.target.closest("[data-preset-link]") : null;
       if (a) preset(a.getAttribute("data-preset-link"));
     });
+    var hb = document.getElementById("pcHintBtn"); if (hb) hb.addEventListener("click", function () { if (pcHintQ) { setQ(pcHintQ); pcShow(); } });
     document.getElementById("pcWa").addEventListener("click", pcSend);
     document.getElementById("pcBarSend").addEventListener("click", pcSend);
     document.getElementById("pcCart").addEventListener("click", function () {

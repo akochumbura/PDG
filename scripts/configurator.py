@@ -58,6 +58,12 @@ TEXT = {  # key: (ka, en, ru)
     'pc_send': ('კონფიგურაციის გაგზავნა', 'Send configuration', 'Отправить конфигурацию'),
     'pc_cart': ('კალათაში დამატება', 'Add to cart', 'В корзину'),
     'pc_applied': ('გამოყენებულია {name} კომპლექტის ფასი', '{name} package price applied', 'Применена цена комплекта {name}'),
+    # owner, 4 Nov 2026: packages are the better deal - suggest the package when it is cheaper or costs only a little more
+    'pc_hint_more': ('{name} კომპლექტი მხოლოდ {gap}-ით მეტი ღირს და დამატებით შედის: {items}.', 'The {name} package costs only {gap} more and also includes: {items}.',
+                     'Комплект {name} стоит всего на {gap} больше и дополнительно включает: {items}.'),
+    'pc_hint_less': ('{name} კომპლექტი {gap}-ით ნაკლები ღირს და დამატებით შედის: {items}.', 'The {name} package costs {gap} less and also includes: {items}.',
+                     'Комплект {name} стоит на {gap} меньше и дополнительно включает: {items}.'),
+    'pc_hint_btn': ('აირჩიეთ {name}', 'Choose {name}', 'Выбрать {name}'),
     'pc_pkg_line': ('{name} კომპლექტი', '{name} package', 'Комплект {name}'),
     'pc_extras': ('დამატებით', 'In addition', 'Дополнительно'),
     'pc_remind': ('არ არის არჩეული: {list}. თუ თავსებადი აღჭურვილობა უკვე გაქვთ, შეგიძლიათ ასე გააგრძელოთ.',
@@ -155,6 +161,7 @@ def block(heading='h2'):
             f'<aside class="pcfg-summary" id="pcSummary" aria-labelledby="pcSumTitle"><h3 id="pcSumTitle" data-i18n="pc_summary">{t["pc_summary"]}</h3>'
             f'<ul class="pcfg-list" id="pcList"></ul>'
             f'<p class="pcfg-applied" id="pcApplied" hidden></p>'
+            f'<div class="pcfg-hint" id="pcHint" role="status" hidden><p id="pcHintText"></p><button class="button button-line pcfg-hint-btn" id="pcHintBtn" type="button"></button></div>'
             f'<p class="pcfg-remind" id="pcRemind" role="status" hidden></p>'
             f'<div class="pcfg-total-row"><span class="pcfg-total-label" data-i18n="pc_total">{t["pc_total"]}</span><strong class="pcfg-total" id="pcTotal" aria-live="polite">₾{d["platform"]["price"]:,}</strong></div>'
             f'<div class="pcfg-actions"><button class="button button-red" id="pcWa" type="button"><span data-i18n="pc_send">{t["pc_send"]}</span></button>'

@@ -19,11 +19,11 @@
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=dea93b4c62">
   <script>try{var t=localStorage.getItem("pdge-theme")||"light";document.documentElement.dataset.theme=t}catch(e){}</script>
   <link rel="preload" href="/assets/fonts/D-DIN.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="/assets/css/style.css?v=6da567ab64">
-  <script src="/assets/js/content-en.js?v=8d02b97911" defer></script>
+  <link rel="stylesheet" href="/assets/css/style.css?v=f083df7502">
+  <script src="/assets/js/content-en.js?v=f3be6f34e9" defer></script>
   <script src="/assets/js/script.js?v=bd9f5f4116" defer></script>
   <script src="/assets/js/payments-config.js?v=156ada99b6" defer></script>
-  <script src="/assets/js/shop.js?v=9a8d6624af" defer></script>
+  <script src="/assets/js/shop.js?v=ff3cf26093" defer></script>
   <script src="/assets/js/chat.js?v=c7a8f32027" defer></script>
   <script src="/assets/js/account.js?v=cdadcb30ae" defer></script>
 <script src="/assets/js/analytics.js?v=85d62f6363" defer></script>
@@ -255,6 +255,10 @@
 <aside class="pcfg-summary" id="pcSummary" aria-labelledby="pcSumTitle"><h3 id="pcSumTitle" data-i18n="pc_summary">Your configuration</h3>
 <ul class="pcfg-list" id="pcList"></ul>
 <p class="pcfg-applied" id="pcApplied" hidden></p>
+<div class="pcfg-hint" id="pcHint" role="status" hidden>
+<p id="pcHintText"></p>
+<button class="button button-line pcfg-hint-btn" id="pcHintBtn" type="button"></button>
+</div>
 <p class="pcfg-remind" id="pcRemind" role="status" hidden></p>
 <div class="pcfg-total-row">
 <span class="pcfg-total-label" data-i18n="pc_total">Total incl. VAT</span><strong class="pcfg-total" id="pcTotal" aria-live="polite">₾41,999</strong>
