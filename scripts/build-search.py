@@ -39,7 +39,7 @@ def page_url(rel):
 
 def ka_labels():
     """Georgian texts live in the HTML; read the category names from the shop page."""
-    doc = html.fromstring((DIST / 'shop.html').read_text(encoding='utf-8'))
+    doc = html.fromstring((DIST / 'parts.html').read_text(encoding='utf-8'))  # category chips live on the parts page
     out = {}
     for key in set(CAT.values()):
         el = doc.xpath(f'//*[@data-i18n="{key}"]')
@@ -51,8 +51,10 @@ def ka_labels():
 KA = ka_labels()
 from display_names import short_ka
 rows = list(csv.DictReader(open(ROOT / 'scripts/catalog.csv', encoding='utf-8')))
-shop_doc = html.fromstring((DIST / 'shop.html').read_text(encoding='utf-8'))
-prices = {b.get('data-sku'): int(b.get('data-price')) for b in shop_doc.xpath('//button[@data-sku][@data-price]')}
+prices = {}
+for _pg in ('shop.html', 'parts.html'):  # packages on /shop, parts on /parts (5 Nov 2026)
+    shop_doc = html.fromstring((DIST / _pg).read_text(encoding='utf-8'))
+    prices.update({b.get('data-sku'): int(b.get('data-price')) for b in shop_doc.xpath('//button[@data-sku][@data-price]')})
 
 out_dir = DIST / 'assets/search'
 out_dir.mkdir(parents=True, exist_ok=True)
@@ -63,7 +65,8 @@ for lang in ('ka', 'en', 'ru'):
         if f.name in SKIP:
             continue
         doc = html.fromstring(f.read_text(encoding='utf-8'))
-        for bad in doc.xpath('//header|//footer|//script|//style|//dialog|//*[@hidden]|//nav'):
+        # product cards are indexed as products, not as page text (5 Nov 2026: a code search shows the product, not the catalog page)
+        for bad in doc.xpath('//header|//footer|//script|//style|//dialog|//*[@hidden]|//nav|//article[contains(@class,"product")]'):
             bad.getparent().remove(bad)
         main = doc.xpath('//main') or [doc]
         h1 = ' '.join((main[0].xpath('.//h1') or [None])[0].text_content().split()) if main[0].xpath('.//h1') else ''
@@ -80,7 +83,7 @@ for lang in ('ka', 'en', 'ru'):
         g = r['group']
         key = CAT[g]
         cat = (KA.get(key) or T.get('ka', {}).get(key, '')) if lang == 'ka' else T[lang].get(key, '')
-        url = f'{prefix}{product_pages.url(r["sku"])}' if product_pages.url(r['sku']) else (f'{prefix}/shop#kits' if g == 'kit' else f'{prefix}/shop?q={r["sku"]}#parts')
+        url = f'{prefix}{product_pages.url(r["sku"])}' if product_pages.url(r['sku']) else (f'{prefix}/shop#kits' if g == 'kit' else f'{prefix}/parts?q={r["sku"]}')
         full_ka = (r.get('name_ka') or '').strip()
         r = dict(r, name_ka=short_ka(r['sku'], full_ka))
         local = (r.get('name_' + lang) or '').strip() if lang != 'en' else ''

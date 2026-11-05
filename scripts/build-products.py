@@ -108,7 +108,7 @@ for p in P.PAGES:
                            f'{_h[2]} — ₾{gel:,} с НДС' + (', в наличии в Грузии. ' if _in else '. ') + _first(p['intro'][2])))
     out.append(
         f'<template data-page="{p["slug"]}.html" data-ka-title="{title_ka}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro" data-meta="pd_{pid}_meta">\n'
-        f'  <section class="section pp-main pd-page"><div class="container pp-grid"><div class="pp-head pd-head"><a class="back-link pp-back" href="/shop.html#parts" data-local data-i18n="pd_back">← მაღაზია</a>'
+        f'  <section class="section pp-main pd-page"><div class="container pp-grid"><div class="pp-head pd-head"><a class="back-link pp-back" href="/parts.html" data-local data-i18n="pd_back">← მაღაზია</a>'
         + (f'<p class="eyebrow" data-i18n="pd_fits_control">{T["pd_fits_control"][0]}</p>' if p.get('specs') == 'control' else f'<p class="eyebrow" data-i18n="pd_fits">{T["pd_fits"][0]}</p>') +
         f'<h1 class="pp-title" data-i18n="pd_{pid}_h1">{html.escape(p["title"][0].split(" — ")[0])}</h1><p class="product-orig">{html.escape(r["name"])}</p>'
         f'<p class="pd-intro" data-i18n="pd_{pid}_intro">{html.escape(p["intro"][0])}</p></div>'
@@ -267,7 +267,7 @@ for m in LM.MODELS:
     put(f'pd_{pid}_spec', tuple(m['specs']))
     out.append(
         f'<template data-page="{slug}.html" data-ka-title="{html.escape(L["short"] + " — წინა თაობის მოდელი | საქართველოს პრემიუმ დრონები", quote=True)}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro">\n'
-        f'  <section class="section pp-main pd-page"><div class="container pp-grid"><div class="pp-head pd-head"><a class="back-link pp-back" href="/shop.html#previous-models" data-local data-i18n="pd_lg_back">← წინა მოდელები</a>'
+        f'  <section class="section pp-main pd-page"><div class="container pp-grid"><div class="pp-head pd-head"><a class="back-link pp-back" href="/drones.html#previous-models" data-local data-i18n="pd_lg_back">← წინა მოდელები</a>'
         f'<p class="eyebrow" data-i18n="pd_lg_eyebrow">წინა თაობა</p><h1 class="pp-title">{html.escape(L["short"])}</h1><p class="product-orig">{html.escape(m["name"])}</p>'
         f'<p class="pd-intro" data-i18n="pd_{pid}_intro">{html.escape(c["ka"][f"pd_{pid}_intro"])}</p></div>'
         f'<div class="pk-gallery pp-gallery"><div class="product-photo pd-photo pk-main"><img id="pkMain" src="{pics[0][0]}" width="1200" height="900" alt="{html.escape(pics[0][3], quote=True)}" data-i18n-alt="{pics[0][2]}" decoding="async"></div>'

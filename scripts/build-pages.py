@@ -245,14 +245,14 @@ def render(page_source, language, filename):
         if not d['mpn']: d.pop('mpn')
         if kit: d.update(category="Agricultural drone")
         return d
-    if filename=='shop.html':
+    if filename in ('shop.html','parts.html'):
         for card in doc.xpath('//article[contains(@class,"product")][@data-avail]'):
             kit='product-kit' in card.get('class','')
             img=(card.xpath('.//img/@src') or [''])[0]
             if not kit and not img.startswith('/assets/img/products/'): continue
             btn=(card.xpath('.//button[contains(@class,"add-btn")]') or [None])[0]
             if btn is None: continue
-            d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),img,card.get('data-avail'),kit,canonical+('#kits' if kit else '#parts'))
+            d=product(btn.get('data-sku'),btn.get('data-name'),btn.get('data-price'),img,card.get('data-avail'),kit,canonical+('#kits' if kit else ''))
             if d: graph.append(d)
     for box in doc.xpath('//article[contains(@class,"pd-buybox") or contains(@class,"pp-buy")][@data-avail][@data-avail!="out"]'):
         # Product page (battery, charger, charging station): Offer only with the product's own photo (as on the shop page).

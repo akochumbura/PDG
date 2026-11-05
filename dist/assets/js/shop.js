@@ -398,6 +398,7 @@
       var next = u.pathname + (u.search ? decodeURIComponent(u.search) : "") + u.hash;
       if (next !== location.pathname + location.search + location.hash) { try { history.replaceState(history.state, "", next); } catch (e) { /* ignore */ } }
     }
+    var pcExtraSeen = false;
     function pcShow() {
       var chosen = pcMode ? pkgBy(pcMode) : null;
       if (chosen && !fits(chosen, pcQ())) { pcBroken = chosen.short; pcMode = ""; }
@@ -407,12 +408,23 @@
       var extrasShown = false;
       pcLines(st).forEach(function (l) {
         if (l.extra && !extrasShown) { extrasShown = true; var h = document.createElement("li"); h.className = "pcfg-li-head"; h.textContent = tx("pc_extras"); list.appendChild(h); }
-        var li = document.createElement("li"), n = document.createElement("span"), v = document.createElement("span");
-        n.className = "pcfg-li-name"; n.textContent = l.label + (l.pkg ? "" : " × " + l.q);
-        if (l.pkg) { var sm = document.createElement("small"); sm.textContent = contentsText(l.pkg); n.appendChild(sm); li.className = "pcfg-li-pkg"; }
-        v.className = "pcfg-li-price"; v.textContent = fmt(l.q * l.unit);
-        li.append(n, v); list.appendChild(li);
+        /* One component per line, quantity aligned right (owner, 5 Nov 2026); a package lists its contents under its price. */
+        var line = function (cls, name, qty, price) {
+          var li = document.createElement("li"), n = document.createElement("span"), qd = document.createElement("span"), v = document.createElement("span");
+          if (cls) li.className = cls;
+          n.className = "pcfg-li-name"; n.textContent = name; qd.className = "pcfg-li-qty"; qd.textContent = qty; v.className = "pcfg-li-price"; v.textContent = price;
+          li.append(n, qd, v); list.appendChild(li);
+        };
+        line(l.pkg ? "pcfg-li-pkg" : "", l.label, l.pkg ? "" : "× " + l.q, fmt(l.q * l.unit));
+        if (l.pkg) {
+          line("pcfg-li-sub", tx("pc_platform"), "× 1", "");
+          Object.keys(l.pkg.q).forEach(function (k) { line("pcfg-li-sub", rowLabel(k), "× " + l.pkg.q[k], ""); });
+        }
       });
+      var exN = 0; pcKeys.forEach(function (k) { if (PC.items[k].group === "extra") exN += st.q[k] || 0; });
+      var exC = document.getElementById("pcExtraCount"), exD = document.getElementById("pcExtra");
+      if (exC) { exC.hidden = !exN; exC.textContent = tx("pc_extra_sel").replace("{n}", exN); }
+      if (exD && !pcExtraSeen) { pcExtraSeen = true; if (exN) exD.open = true; }  // a shared link with extras opens the list once
       var ap = document.getElementById("pcApplied");
       ap.classList.toggle("is-note", !st.pkg && !!pcBroken);
       ap.hidden = !st.pkg && !pcBroken;
@@ -482,14 +494,16 @@
     pcReady = true;
     /* Phones: a slim total + send bar replaces the call/chat bar while the options are on screen and the summary total is not.
        It hides while the menu, chat, cart or the on-screen keyboard are open. */
-    var bar = document.getElementById("pcBar"), sumEl = document.querySelector("#pcSummary .pcfg-total-row"), optEl = pcBox.querySelector(".pcfg-options");
+    /* 5 Nov 2026: the sticky total stays while the options are on screen; its send button hides while the summary's own buttons are visible. */
+    var bar = document.getElementById("pcBar"), sumEl = document.querySelector("#pcSummary .pcfg-actions"), optEl = pcBox.querySelector(".pcfg-options");
     if (bar && "IntersectionObserver" in window) {
       var vis = { sum: false, opt: false }, typing = false;
       var upd = function () {
         var b = document.body, busy = b.classList.contains("nav-lock") || b.classList.contains("chat-open") || b.classList.contains("modal-open") || typing;
-        var on = vis.opt && !vis.sum && !busy && window.matchMedia("(max-width: 768px)").matches;
+        var on = (vis.opt || vis.sum) && !busy && window.matchMedia("(max-width: 768px)").matches;
         bar.classList.toggle("is-on", on); bar.setAttribute("aria-hidden", on ? "false" : "true");
-        document.getElementById("pcBarSend").tabIndex = on ? 0 : -1;
+        var sendB = document.getElementById("pcBarSend"); sendB.hidden = vis.sum;
+        sendB.tabIndex = on && !vis.sum ? 0 : -1;
         document.body.classList.toggle("pcfg-bar-on", on);
       };
       new IntersectionObserver(function (es) { es.forEach(function (e) { vis.sum = e.isIntersecting; }); upd(); }, { threshold: 0 }).observe(sumEl);

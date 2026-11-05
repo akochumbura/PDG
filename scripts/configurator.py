@@ -48,6 +48,7 @@ TEXT = {  # key: (ka, en, ru)
     'pc_platform': ('XAG P150 MAX პლატფორმა (RevoSpray\u00a05)', 'XAG P150 MAX platform (RevoSpray\u00a05)', 'Платформа XAG P150 MAX (RevoSpray\u00a05)'),
     'pc_energy': ('მართვა და ენერგია', 'Control and power', 'Управление и питание'),
     'pc_extra': ('დამატებითი აღჭურვილობა', 'Additional equipment', 'Дополнительное оборудование'),
+    'pc_extra_sel': ('არჩეულია {n}', '{n} selected', 'выбрано: {n}'),
     'pc_more_count': ('არჩეულია: {n}', 'selected: {n}', 'выбрано: {n}'),
     'pc_optional': ('არასავალდებულო', 'optional', 'по желанию'),
     'pc_each': ('/ ცალი', '/ each', '/ шт.'),
@@ -150,8 +151,9 @@ def block(heading='h2'):
                          f' <span class="pcfg-preset-price">₾{p["price"]:,}</span></button>' for p in d['packages']))
     cfg = html.escape(json.dumps(d, ensure_ascii=False), quote=True)
     h = heading
-    return (f'<section class="section pcfg-section" id="configurator" aria-labelledby="pcfg-title"><div class="container">'
-            f'<div class="pcfg-head"><{h} id="pcfg-title" data-i18n="pc_title">{t["pc_title"]}</{h}><p class="pcfg-lead" data-i18n="pc_intro">{t["pc_intro"]}</p></div>'
+    # Owner, 5 Nov 2026: the buying page opens with "XAG P150 MAX" + one sentence (page hero), then the presets at once:
+    # no second "configurator" heading; the section keeps an accessible name.
+    return (f'<section class="section pcfg-section" id="configurator" aria-label="{t["pc_title"]}" data-i18n-aria="pc_title"><div class="container">'
             f'<div class="pcfg" id="platformConfig" data-config="{cfg}">'
             f'<div class="pcfg-options">'
             f'<div class="pcfg-presets" role="group" aria-labelledby="pcPresetsLabel"><span class="pcfg-presets-label" id="pcPresetsLabel" data-i18n="pc_presets">{t["pc_presets"]}</span>'
@@ -159,7 +161,9 @@ def block(heading='h2'):
             f'<div class="pcfg-row pcfg-fixed">{_thumb(d["platform"]["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="pc_platform">{t["pc_platform"]}</span>'
             f'<span class="pcfg-unit">₾{d["platform"]["price"]:,}</span></div><output class="pcfg-fixed-qty">1</output></div>'
             f'<div class="pcfg-group"><p class="pcfg-legend" data-i18n="pc_energy">{t["pc_energy"]}</p>{energy}</div>'
-            f'<div class="pcfg-group pcfg-extra"><p class="pcfg-legend" data-i18n="pc_extra">{t["pc_extra"]}</p>{extra}</div>'
+            # Optional extras collapsed at first (owner, 5 Nov 2026); the summary line shows how many are selected.
+            f'<details class="pcfg-group pcfg-extra" id="pcExtra"><summary class="pcfg-legend"><span data-i18n="pc_extra">{t["pc_extra"]}</span>'
+            f'<span class="pcfg-extra-count" id="pcExtraCount" hidden></span></summary>{extra}</details>'
             f'</div>'
             f'<aside class="pcfg-summary" id="pcSummary" aria-labelledby="pcSumTitle"><h3 id="pcSumTitle" data-i18n="pc_summary">{t["pc_summary"]}</h3>'
             f'<ul class="pcfg-list" id="pcList"></ul>'

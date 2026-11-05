@@ -430,8 +430,8 @@ def platform_link():
     """P150 MAX page hero (owner, 4 Nov 2026: no standalone platform offer): complete packages from the lowest package price + the configurator."""
     k = min(price(r, True) for r in kits)
     return ('<div class="pm-pricebar">'
-            f'<a class="pm-price-item" href="#kits"><span class="pm-price-label" data-i18n="pm_pl_kits">სრული კომპლექტები</span><span class="pm-price-val" data-i18n="pm_pl_kits_v">₾{k:,}-დან</span></a>'
-            '<a class="pm-price-item" href="/shop#configurator" data-local><span class="pm-price-label" data-i18n="pc_title">კონფიგურატორი</span><span class="pm-price-val pm-price-cta" data-i18n="pm_pl_cfg_v">აწყობა →</span></a></div>')
+            # 5 Nov 2026: one starting price, linking to the buying page (configurator + packages); no package cards on /p150-max.
+            f'<a class="pm-price-item" href="/shop" data-local><span class="pm-price-label" data-i18n="pm_pl_kits">სრული კომპლექტები</span><span class="pm-price-val" data-i18n="pm_pl_kits_v">₾{k:,}-დან</span></a></div>')
 
 
 def platform_kit_row(r):
@@ -462,11 +462,9 @@ subs = [
     (r'(<div class="shop-grid kit-grid">\n).*?(</div>\n<!--/kitGrid-->)', ''.join(card(r) for r in kits)),
     (r'(<!--shopCfg-->).*?(<!--/shopCfg-->)', '\n' + PCFG.block() + '\n'),  # owner brief, 4 Nov 2026: the shop configurator comes before the ready packages
     (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div>\n<!--partsMore-->)', ''.join(card(r).replace('<article class="product"', '<article hidden class="product"', 1) if i >= 24 else card(r) for i, r in enumerate(parts))),  # first 24 visible, the rest revealed by "Load more" (shop.js PAGE)
-    (r'(<div class="shop-grid" id="legacyGrid">\n).*?(</div></div></section>)', ''.join(card(r) for r in legacy)),
     # Owner, 16 Oct 2026 (second brief): the full configurator lives only on /p150-max-platform; the P150 MAX page links to it.
     (r'(<!--configurator-->\n).*?(<!--/configurator-->)', ''),
     (r'(<!--platformLink-->).*?(<!--/platformLink-->)', platform_link()),
-    (r'(<!--pmCompare-->).*?(<!--/pmCompare-->)', tiles([], kits)),  # owner, 4 Nov 2026: packages only
     (r'(<!--drKits-->).*?(<!--/drKits-->)', tiles([], kits).replace('data-kit="1"', 'data-kit="0"')),  # /drones (owner 19 Oct 2026): same four listings; schema stays on /p150-max
 ]
 home = ROOT / 'dist/index.html'

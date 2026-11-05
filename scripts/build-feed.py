@@ -60,7 +60,7 @@ def item(p):
 
 def main():
     seen, items = set(), []
-    for page in ('shop.html', 'p150-max.html'):
+    for page in ('shop.html', 'parts.html'):  # 5 Nov 2026: parts have their own page
         f = D / page
         if not f.exists():
             continue

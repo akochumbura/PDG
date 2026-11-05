@@ -4,6 +4,13 @@
     var m = /^(\/(?:en|ru))?\/p150-max-platform(?:\.html)?\/?$/.exec(location.pathname);
     if (m) location.replace((m[1] || "") + "/shop" + location.search + "#configurator");
   })();
+  /* 5 Nov 2026: parts have their own page and previous models live on /drones; old /shop#parts and /shop#previous-models links forward. */
+  (function () {
+    var m = /^(\/(?:en|ru))?\/shop(?:\.html)?\/?$/.exec(location.pathname);
+    if (!m) return;
+    if (location.hash === "#parts") location.replace((m[1] || "") + "/parts" + location.search);
+    else if (location.hash === "#previous-models") location.replace((m[1] || "") + "/drones#previous-models");
+  })();
   "use strict";
   const root = document.documentElement;
   const lang = ["ka", "en", "ru"].includes(root.lang) ? root.lang : "ka";

@@ -1907,3 +1907,64 @@ dialog:focus,dialog:focus-visible{outline:none}
 @media(max-width:600px){
   .hero-content .hero-tagline,.hero-content h1,.hero-content .hero-kicker{text-shadow:0 1px 10px rgba(12,30,40,.45)}
 }
+/* ==== Navigation + buying page (owner brief, 5 Nov 2026) ==== */
+/* Menu: Home, Products ▾, Prices and packages, Service, Academy, About, Contact. Regular text, even rows, the current page stronger. */
+.site-nav>a.nav-prices,.site-nav.is-open>a.nav-prices{color:inherit;font-weight:inherit}
+.site-nav>a[aria-current=page],.site-nav>a.nav-prices[aria-current=page],.site-nav .nav-sub a[aria-current=page]{font-weight:600;color:var(--text)}
+@media(min-width:901px){
+  .site-nav>a[data-home]{display:inline-flex}
+  .site-nav .nav-prices{color:var(--text)}
+  .mega.mega-list{display:block;max-width:none}
+  .mega.mega-list .mega-col{display:flex;flex-direction:column;gap:0;max-width:340px}
+  .mega.mega-list .mega-col a{font-size:15px;font-weight:400;padding:12px 0;border-bottom:1px solid var(--border)}
+}
+@media(min-width:901px) and (max-width:1365px){.site-nav>a[data-home]{display:none}}
+@media(max-width:900px){
+  .site-nav{padding-top:8px}
+  .site-nav>a,.site-nav .nav-group-btn{font-size:17px;font-weight:400;min-height:50px;padding:0;display:flex;align-items:center;width:100%;border-bottom:1px solid var(--border)}
+  .site-nav .nav-group{width:100%}
+  .site-nav .nav-group-btn{justify-content:space-between}
+  .site-nav .nav-sub a{font-size:16px;font-weight:400;min-height:48px;display:flex;align-items:center;padding:0 0 0 16px}
+  .site-nav .mega-head{display:none}
+  .site-nav .nav-prices{color:var(--text)}
+  .site-nav .nav-lang-d{margin-top:28px;width:100%}
+}
+/* Buying page: XAG P150 MAX + one sentence, then the presets. */
+.shop-hero{padding-block:clamp(20px,3vw,40px) 4px}
+.shop-hero h1{font-size:clamp(28px,3vw,40px);font-weight:600}
+.shop-hero .page-intro{margin-top:6px}
+.shop-hero+.anchor-kits+.pcfg-section,.shop-hero~.pcfg-section{padding-top:16px}
+/* Configurator typography: one weight for product names, quieter unit prices and section labels. */
+.pcfg-label,.pcfg-row.is-on .pcfg-label{font-weight:500;font-size:15px}
+.pcfg-unit{font-size:13px;color:var(--muted)}
+.pcfg-legend{font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted);border-bottom-color:var(--border)}
+.pcfg-preset{font-weight:600}
+.pcfg-preset-price{font-weight:400}
+details.pcfg-extra>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;color:var(--text);font-size:15px;font-weight:500}
+details.pcfg-extra>summary::-webkit-details-marker{display:none}
+details.pcfg-extra>summary::after{content:'+';font:300 24px/1 var(--font-latin);color:var(--accent);margin-left:auto}
+details.pcfg-extra[open]>summary::after{content:'−'}
+.pcfg-extra-count{font-size:13px;font-weight:400;color:var(--muted)}
+.pcfg-extra-count[hidden]{display:none}
+/* Summary: one component per line, quantity aligned right. */
+.pcfg-summary h3{font-size:15px;font-weight:600}
+.pcfg-list li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:4px 14px;align-items:baseline;font-size:14px}
+.pcfg-li-qty{font-family:var(--font-latin);color:var(--muted);white-space:nowrap;text-align:right}
+.pcfg-li-price{text-align:right;min-width:72px}
+.pcfg-li-pkg .pcfg-li-name{font-weight:600}
+.pcfg-list li.pcfg-li-sub{font-size:13px;color:var(--muted)}
+.pcfg-list li.pcfg-li-sub .pcfg-li-name{padding-left:12px}
+.pcfg-list li.pcfg-li-head{display:block}
+#pcBarSend[hidden]{display:none}
+/* Parts page */
+#parts.shop-section{padding-top:8px}
+/* 901–1179 px: seven menu items + icons fit on one row (measured in ka/en/ru, 5 Nov 2026). */
+@media(min-width:901px) and (max-width:1179px){.site-nav{gap:12px}.site-nav>a,.nav-group-btn{font-size:13px}.header-actions{gap:10px}}
+@media(min-width:901px) and (max-width:1099px){.site-nav>a.nav-top-about{display:none}}
+@media(min-width:901px) and (max-width:979px){.site-nav{gap:9px}.header-actions{gap:8px}}
+/* Parts page, phones: category chips on one scrollable row, so the list does not jump when the Georgian font loads (CLS 0.13 → 0). */
+@media(max-width:600px){#partChips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:calc(var(--gutter)*-1);padding-inline:var(--gutter)}#partChips::-webkit-scrollbar{display:none}#partChips .chip{flex:0 0 auto}}
+.pcfg-list li.pcfg-li-sub{grid-template-columns:minmax(0,1fr) auto}
+.pcfg-list li.pcfg-li-sub .pcfg-li-price{display:none}
+/* Buying page section headings: quieter than page titles (owner, 5 Nov 2026). */
+#packages h2,.pcfg-section h2{font-size:clamp(22px,2vw,28px);font-weight:600}

@@ -338,3 +338,12 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 4 Nov 2026, LIVE) Out-of-stock parts (catalog avail=quote, 37 items, "ფასი მოთხოვნით") are HIDDEN: not in the shop
   grid (build-shop parts filter) and not in site search (build-search). They stay in catalog.csv and in the chat knowledge ("not in stock, price on request").
   Previous-generation drones (P100 Pro / P100 / V40) stay on the site (owner). Shop shows 266 in-stock parts.
+
+## Navigation and shopping structure (owner brief, 5 Nov 2026; preview seo-georgia, REPLACES the 23 Oct header notes)
+- Menu: მთავარი, პროდუქცია ▾ (XAG P150 MAX, ნაწილები და აკუმულატორები /parts, წინა თაობის მოდელები /drones#previous-models; later the XAG ecosystem),
+  ფასები და კომპლექტები (/shop), სერვისი, აკადემია, ჩვენ შესახებ, კონტაქტი. Media (blog, gallery, FAQ) only in the footer. Language at the bottom of the phone menu.
+  Regular-weight 17px rows of 50px on phones; the current page is the only emphasised item (no red "prices" link). Desktop hides მთავარი below 1366px, "about" below 1100px.
+- One purpose per page: /p150-max = the drone (images, capabilities, specs) + ONE button to /shop and "from ₾75,999" (no package cards; #kits/#compare anchors kept on the button);
+  /shop = "XAG P150 MAX" + one sentence, then the configurator presets at once (no second heading), extras collapsed in <details id=pcExtra> with a selected count,
+  summary one component per line with right-aligned quantities, then the ready packages; /parts = parts and batteries (search, categories, sorting, load more, cart).
+  Old /shop#parts, /shop?q=…#parts and /shop#previous-models forward (script.js). Parts Product schema + merchant feed + search prices read /parts.
