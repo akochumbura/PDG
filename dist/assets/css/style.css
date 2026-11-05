@@ -2072,3 +2072,20 @@ html[data-theme=dark] .buy .pcfg-summary.buy-summary{background:#2c2c2e}
 .buy .pcfg-stepper{height:44px;min-height:44px}.buy .pcfg-stepper .qty-btn{width:44px}.pcfg-add{min-height:44px}
 .anchor-kits,.buy{scroll-margin-top:8px}
 .buy .pcfg-stepper{height:46px;min-height:46px}
+/* The package picture stays in view while the packages are chosen (owner, 5 Nov 2026): desktop = sticky left column;
+   phone = the picture is pinned under the header while the package rows scroll, then leaves with them. */
+.buy-grid{grid-template-rows:auto 1fr}
+.buy-pick{display:contents}
+.buy-media{grid-column:1;grid-row:1/3;align-self:start}
+.buy-head{grid-column:2;grid-row:1;min-width:0;color:var(--ink)}
+.buy-panel{grid-column:2;grid-row:2}
+.buy-figure img.is-swap{opacity:.35}
+@media(max-width:1023px){
+  .buy-grid{display:block}
+  .buy-pick{display:block}
+  .buy-media{position:sticky;top:calc(var(--header-height) + 1px);z-index:3;padding:8px 0 10px;background:var(--bg);box-shadow:0 0 0 100vmax var(--bg);clip-path:inset(0 -100vmax)}
+  .buy-figure{aspect-ratio:auto;height:clamp(150px,calc(100svh - var(--header-height) - 430px),min(calc((100vw - 32px) * .75),42svh))}
+  .buy-caption{display:none}
+  .buy-head{margin-top:16px}
+  .buy-panel{margin-top:0}
+}

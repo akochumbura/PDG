@@ -446,7 +446,7 @@
       var img = document.getElementById("buyImg");
       if (img) {
         var src = st.pkg ? "/assets/img/products/" + st.pkg.p.sku + ".webp" : "/assets/img/products/" + PC.platform.sku + ".webp";
-        if (img.getAttribute("src").split("?")[0] !== src) { img.src = src; img.alt = st.pkg ? st.pkg.p.name : PC.platform.name; }
+        if (img.getAttribute("src").split("?")[0] !== src) { img.classList.add("is-swap"); img.onload = function () { img.classList.remove("is-swap"); }; img.src = src; img.alt = st.pkg ? st.pkg.p.name : PC.platform.name; }
       }
       var sv = document.getElementById("pcSave");
       if (sv) { var save_ = st.pkg ? st.single - st.total : 0; sv.hidden = save_ <= 0; if (save_ > 0) sv.textContent = tx("pb_save").replace("{n}", fmt(save_).replace("₾", "")); }
