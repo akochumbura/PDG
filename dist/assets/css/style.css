@@ -2237,3 +2237,9 @@ html[data-theme=dark] .buy .buy-tiles+.pcfg-offer{background:#2c2c2e}
 .chat-fab{box-shadow:0 0 0 1px rgba(255,255,255,.22),0 10px 28px rgba(0,0,0,.28)}
 /* Owner, 6 Nov 2026: "შეიძინე" beside "პროდუქცია" on every page (red on desktop, a normal row in the phone menu). */
 @media(min-width:901px){.site-nav>a.nav-buy{color:var(--accent);font-weight:600}}
+/* P150 MAX chapters with XAG official media (owner, 6 Nov 2026): one large cinematic picture per chapter. */
+.pm-chapter-media{grid-column:1/-1;margin:0 0 clamp(8px,1.5vw,20px);border-radius:clamp(12px,1.4vw,22px);overflow:hidden;background:#0d0d0c;aspect-ratio:16/9}
+.pm-chapter-media img{display:block;width:100%;height:100%;object-fit:cover}
+.pm-chapter:first-child .pm-chapter-media{margin-top:0}
+.product-feature img{aspect-ratio:16/10;border-radius:clamp(12px,1.4vw,22px)}
+@media(max-width:600px){.pm-chapter-media{border-radius:12px;margin-inline:calc(var(--gutter) * -1 + 8px)}}

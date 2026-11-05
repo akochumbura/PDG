@@ -369,3 +369,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 6 Nov 2026, 02:21) Refinement: phone call/write bar ONLY on /consultation, /service, /academy (body.has-mbar, script.js); other pages = round chat button
   (hidden while the configurator bar, menu, chat or cart are open). The bar's write button is dark (red = buying only). /drones P150 card status = one grey word "ახალი" (model_new).
   Bigger type: --fs-h2 clamp(30px,3.4vw,48px) (phones 30px), --section-space clamp(72px,9vw,136px); intros 17–20px, darker. Intros shortened (product_page_intro, dr_intro).
+- (owner, 6 Nov 2026, 02:35) P150 MAX chapters carry XAG official media from xa.com/en/p150max (taken through the desktop browser, static.xag.cn; owner asked):
+  dist/assets/img/p150/{map,spray,spread,cargo,flight,power,build,feature}.webp (1920 + -960, 16:9, frames from XAG videos + studio render). No people
+  (the XRTK7 photo with a hand, a7ebe1a4, is NOT used). Raw set (35 photos + 16 video frames) was in the session scratchpad only. pm_spread_p shortened.
