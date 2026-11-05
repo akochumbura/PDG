@@ -78,15 +78,17 @@
     const onShop = /^\/(en\/|ru\/)?shop\/?$/.test(location.pathname);
     const strip = header.querySelector(".price-strip");
     /* Shown while scrolling down, fades away when scrolling up (owner, 5 Nov 2026). */
-    let lastY = window.scrollY;
+    let lastY = window.scrollY, run = 0;
     const onScroll = () => {
       const y = window.scrollY;
       header.classList.toggle("is-scrolled", y > 8);
       if (strip && !onShop) {
-        const d = y - lastY;
+        /* accumulate the travel in one direction so small jitters never flicker the strip */
+        const d = y - lastY; lastY = y;
+        if (d !== 0 && Math.sign(d) !== Math.sign(run)) run = 0;
+        run += d;
         let on = header.classList.contains("strip-on");
-        if (y < 280) on = false; else if (d > 4) on = true; else if (d < -4) on = false;
-        if (Math.abs(d) > 4 || y < 280) lastY = y;
+        if (y < 280) { on = false; run = 0; } else if (run > 24) on = true; else if (run < -24) on = false;
         if (on !== header.classList.contains("strip-on")) { header.classList.toggle("strip-on", on); strip.setAttribute("aria-hidden", on ? "false" : "true"); strip.tabIndex = on ? 0 : -1; }
       }
     };
