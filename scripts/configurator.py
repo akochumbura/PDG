@@ -60,15 +60,13 @@ TEXT = {  # key: (ka, en, ru)
     'pkc_close': ('დახურვა', 'Close', 'Закрыть'),
     # Premium buying page (owner, 5 Nov 2026: "work from the Apple site")
     'pb_eyebrow': ('სასოფლო-სამეურნეო დრონი', 'Agricultural drone', 'Сельскохозяйственный дрон'),
-    'pb_title': ('XAG P150 MAX-ის ყიდვა', 'Buy XAG P150 MAX', 'Купить XAG P150 MAX'),
+    'pb_title': ('XAG P150 MAX', 'XAG P150 MAX', 'XAG P150 MAX'),
     'pb_step1': ('კომპლექტი.', 'Package.', 'Комплект.'),
     'pb_step1_q': ('რომელი გჭირდებათ?', 'Which one is right for you?', 'Какой вам подходит?'),
     'pb_step2': ('კომპლექტში შედის.', 'What is included.', 'Что входит.'),
-    'pb_step2_q': ('რაოდენობა შეგიძლიათ შეცვალოთ.', 'You can change the quantities.', 'Количество можно изменить.'),
     'pb_step3': ('დამატებითი აღჭურვილობა.', 'Accessories.', 'Дополнительное оборудование.'),
     'pb_step3_q': ('გენერატორი, გაფანტვა, ტვირთი და სხვა.', 'Generator, spreading, cargo and more.', 'Генератор, разбрасывание, груз и другое.'),
     'pb_add': ('დამატება', 'Add', 'Добавить'),
-    'pb_photo': ('ფოტოზე — არჩეული კომპლექტის შემადგენლობა.', 'Pictured: the contents of the selected package.', 'На фото — состав выбранного комплекта.'),
     'pb_save': ('₾{n}-ით ნაკლები, ვიდრე ცალ-ცალკე ყიდვისას.', '₾{n} less than buying the items separately.', 'На ₾{n} дешевле, чем по отдельности.'),
     'pb_t1': ('XAG-ის ოფიციალური გარანტია — 1 წელი', 'Official XAG warranty — 1 year', 'Официальная гарантия XAG — 1 год'),
     'pb_t2': ('სერვისი თბილისში, წინასწარი შეთანხმებით', 'Service in Tbilisi, by appointment', 'Сервис в Тбилиси, по записи'),
@@ -195,7 +193,7 @@ def block(heading='h1'):
     return (f'<section class="buy" id="configurator" aria-labelledby="buyTitle"><div class="container buy-grid">'
             f'<div class="buy-pick"><div class="buy-media"><figure class="buy-figure"><img id="buyImg" src="/assets/img/products/{first["sku"]}.webp" width="1200" height="900" '
             f'alt="{html.escape(first["name"], quote=True)}" fetchpriority="high" decoding="async"></figure>'
-            f'<p class="buy-caption" data-i18n="pb_photo">{t["pb_photo"]}</p></div>'
+            f'</div>'
             f'<div class="buy-head">'
             f'<p class="buy-eyebrow" data-i18n="pb_eyebrow">{t["pb_eyebrow"]}</p><{heading} class="buy-title" id="buyTitle" data-i18n="pb_title">{t["pb_title"]}</{heading}>'
             f'<a class="buy-specs" href="/p150-max#specifications" data-local><span data-i18n="pb_specs">{t["pb_specs"]}</span> <span aria-hidden="true">›</span></a>'
@@ -203,7 +201,7 @@ def block(heading='h1'):
             f'<span class="buy-step-q" data-i18n="pb_step1_q">{t["pb_step1_q"]}</span></h2><div class="pkr-list">{rows}</div></div></div></div>'
             f'<div class="buy-panel"><div class="pcfg" id="platformConfig" data-config="{cfg}">'
             f'<div class="pcfg-options">'
-            f'<div class="buy-step"><h2 class="buy-step-h"><span data-i18n="pb_step2">{t["pb_step2"]}</span> <span class="buy-step-q" data-i18n="pb_step2_q">{t["pb_step2_q"]}</span></h2>'
+            f'<div class="buy-step"><h2 class="buy-step-h"><span data-i18n="pb_step2">{t["pb_step2"]}</span></h2>'
             f'<div class="buy-tiles"><div class="pcfg-row pcfg-fixed">{_thumb(d["platform"]["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="pc_platform">{t["pc_platform"]}</span>'
             f'<span class="pcfg-unit">₾{d["platform"]["price"]:,}</span></div><output class="pcfg-fixed-qty">1</output></div>{energy}</div></div>'
             f'<details class="buy-step pcfg-extra" id="pcExtra"><summary class="buy-step-h"><span><span data-i18n="pb_step3">{t["pb_step3"]}</span> '
