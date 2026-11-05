@@ -77,10 +77,16 @@
        (not on /shop itself). It overlays the page, so nothing jumps. */
     const onShop = /^\/(en\/|ru\/)?shop\/?$/.test(location.pathname);
     const strip = header.querySelector(".price-strip");
+    /* Shown while scrolling down, fades away when scrolling up (owner, 5 Nov 2026). */
+    let lastY = window.scrollY;
     const onScroll = () => {
-      header.classList.toggle("is-scrolled", window.scrollY > 8);
+      const y = window.scrollY;
+      header.classList.toggle("is-scrolled", y > 8);
       if (strip && !onShop) {
-        const on = window.scrollY > 280;
+        const d = y - lastY;
+        let on = header.classList.contains("strip-on");
+        if (y < 280) on = false; else if (d > 4) on = true; else if (d < -4) on = false;
+        if (Math.abs(d) > 4 || y < 280) lastY = y;
         if (on !== header.classList.contains("strip-on")) { header.classList.toggle("strip-on", on); strip.setAttribute("aria-hidden", on ? "false" : "true"); strip.tabIndex = on ? 0 : -1; }
       }
     };

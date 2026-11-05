@@ -498,13 +498,14 @@
     var ob0 = document.getElementById("pcOfferBtn");
     if (ob0) ob0.addEventListener("click", function () { if (pcOfferPkg) { pcMode = pcOfferPkg.sku; pcBroken = ""; pcShow(); } });
     document.getElementById("pcWa").addEventListener("click", pcSend);
-    document.getElementById("pcBarSend").addEventListener("click", pcSend);
-    document.getElementById("pcCart").addEventListener("click", function () {
+    /* Owner, 5 Nov 2026: the main action is the cart (red); WhatsApp is the secondary option. Adding opens the cart. */
+    function pcToCart() {
       var st = pcShow();
       pcLines(st).forEach(function (l) { addItem(l.sku, l.cn, l.unit, l.q, l.max); });
-      save(); render();
-      var b = this; b.classList.add("is-added"); setTimeout(function () { b.classList.remove("is-added"); }, 900);
-    });
+      save(); render(); openCart();
+    }
+    document.getElementById("pcBarSend").addEventListener("click", pcToCart);
+    document.getElementById("pcCart").addEventListener("click", pcToCart);
     /* Shared links (?c=batteries-4_chargers-2&m=pro) and package pages (?kit=starter); older links may still carry &p=. */
     var qs = new URLSearchParams(location.search), q0 = {}, kit = (qs.get("kit") || "").toLowerCase(), mode0 = (qs.get("m") || "").toLowerCase();
     String(qs.get("c") || "").split("_").forEach(function (x) { var m = /^([a-z0-9]+)-(\d+)$/.exec(x); if (m && PC.items[m[1]]) q0[m[1]] = Number(m[2]); });

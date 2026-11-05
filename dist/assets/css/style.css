@@ -2152,3 +2152,11 @@ html[data-theme=dark] .buy .pcfg-summary.buy-summary{background:#2c2c2e}
 }
 @media(prefers-reduced-motion:reduce){.price-strip{transition:none}}
 @media(max-width:1023px) and (max-height:700px){.buy-figure{max-height:130px}.buy-thumbs{margin-top:2px}}
+/* Phone gallery (fix 5 Nov 2026): full-width picture; no aspect-ratio with max-height (iOS Safari then narrowed the frame). */
+@media(max-width:1023px){
+  .buy-figure{aspect-ratio:auto;max-height:none;width:100%;height:calc((100vw - 32px) * .606)}
+  .buy-thumbs{margin-top:2px}
+  .buy-thumb{height:24px}
+}
+@media(min-width:769px) and (max-width:1023px){.buy-figure{height:min(calc((100vw - 80px) * .606),42svh)}}
+.price-strip{transition:transform .25s ease,opacity .25s ease,visibility 0s linear .25s}

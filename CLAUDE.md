@@ -356,3 +356,5 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 5 Nov 2026 night) Buying page gallery: tightly cropped package pictures dist/assets/img/buy/<SKU>.webp (1168x708, cut from products/<SKU>.webp)
   + owner field photos buy/field-spray|field-spread|field-cargo.webp (no people). Swipe + dots on phones, thumbnails on desktop; choosing a package returns to slide 1.
   "ფასები და კომპლექტები": red in the desktop header; phones get a red strip under the header after 280px of scrolling (.price-strip, not on /shop).
+- (owner, 5 Nov 2026, 22:40, LIVE) Buying page main action = red "კალათაში დამატება" (adds and opens the cart; phone bar "კალათაში"); WhatsApp = secondary outline button.
+  Phone picture = full width (height (100vw-32px)*0.606, no aspect-ratio+max-height: iOS narrowed it). Red prices strip: shows while scrolling down, fades when scrolling up.

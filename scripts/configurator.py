@@ -79,7 +79,8 @@ TEXT = {  # key: (ka, en, ru)
     'pc_each': ('/ ცალი', '/ each', '/ шт.'),
     'pc_summary': ('თქვენი კონფიგურაცია', 'Your configuration', 'Ваша конфигурация'),
     'pc_total': ('ჯამი, დღგ-ს ჩათვლით', 'Total incl. VAT', 'Итого с НДС'),
-    'pc_send': ('შეკვეთის გაგზავნა WhatsApp-ით', 'Send the order via WhatsApp', 'Отправить заказ в WhatsApp'),
+    'pc_send': ('WhatsApp-ით გაგზავნა', 'Send via WhatsApp', 'Отправить в WhatsApp'),
+    'pc_bar_cart': ('კალათაში', 'Add to cart', 'В корзину'),
     'pc_cart': ('კალათაში დამატება', 'Add to cart', 'В корзину'),
     'pc_applied': ('გამოყენებულია {name} კომპლექტის ფასი', '{name} package price applied', 'Применена цена комплекта {name}'),
     # owner brief, 4 Nov 2026 (buying refinement): package prices apply only after the customer chooses or accepts a package
@@ -89,9 +90,8 @@ TEXT = {  # key: (ka, en, ru)
     'pc_offer_btn': ('კომპლექტის არჩევა', 'Choose the package', 'Выбрать комплект'),
     'pc_broken': ('{name} კომპლექტის შემადგენლობა აღარ არის სრული, ამიტომ ფასი ცალ-ცალკეა დათვლილი.', 'The {name} package is no longer complete, so items are priced individually.',
                   'Комплект {name} больше не полный, поэтому цена рассчитана поштучно.'),
-    'pc_send_short': ('WhatsApp-ით', 'WhatsApp', 'WhatsApp'),
     'pc_send_aria': ('შეკვეთის გაგზავნა WhatsApp-ით', 'Send the order via WhatsApp', 'Отправить заказ в WhatsApp'),
-    'pb_next': ('WhatsApp-ში გაიხსნება მზა შეტყობინება. PDG დაგიდასტურებთ ფასს, მარაგს და მიწოდებას.', 'A ready message opens in WhatsApp. PDG then confirms the price, stock and delivery.', 'В WhatsApp откроется готовое сообщение. PDG подтвердит цену, наличие и доставку.'),
+    'pb_next': ('შეკვეთის შემდეგ PDG დაგიკავშირდებათ და დაგიდასტურებთ ფასს, მარაგს და მიწოდებას.', 'After you order, PDG contacts you to confirm the price, stock and delivery.', 'После заказа PDG свяжется с вами и подтвердит цену, наличие и доставку.'),
     'pb_gallery': ('ფოტოები', 'Photos', 'Фото'),
     'pb_ph_pkg': ('არჩეული კომპლექტი', 'Selected package', 'Выбранный комплект'),
     'pb_ph_spray': ('XAG დრონი შეწამვლისას', 'XAG drone spraying', 'Дрон XAG при опрыскивании'),
@@ -233,13 +233,13 @@ def block(heading='h1'):
             f'<p class="pcfg-applied" id="pcApplied" hidden></p>'
             f'<div class="pcfg-offer" id="pcOffer" hidden><p id="pcOfferText"></p><button class="button button-line pcfg-offer-btn" id="pcOfferBtn" type="button" data-i18n="pc_offer_btn">{t["pc_offer_btn"]}</button></div>'
             f'<p class="pcfg-remind" id="pcRemind" role="status" hidden></p>'
-            f'<div class="pcfg-actions"><button class="button button-red" id="pcWa" type="button"><span data-i18n="pc_send">{t["pc_send"]}</span></button>'
-            f'<button class="button button-line" id="pcCart" type="button"><span data-i18n="pc_cart">{t["pc_cart"]}</span></button></div>'
+            f'<div class="pcfg-actions"><button class="button button-red" id="pcCart" type="button"><span data-i18n="pc_cart">{t["pc_cart"]}</span></button>'
+            f'<button class="button button-line" id="pcWa" type="button"><span data-i18n="pc_send">{t["pc_send"]}</span></button></div>'
             f'<p class="buy-next" data-i18n="pb_next">{t["pb_next"]}</p>'
             f'<ul class="buy-trust">{trust}</ul>'
             f'<details class="buy-lines"><summary data-i18n="pkc_contents">{t["pkc_contents"]}</summary><ul class="pcfg-list" id="pcList"></ul></details>'
             f'</aside></div></div></div>'
             f'<div class="pcfg-bar" id="pcBar" aria-hidden="true"><div class="pcfg-bar-sum"><strong id="pcBarTotal">₾{first["price"]:,}</strong>'
             f'<span class="pcfg-bar-label" data-i18n="pc_vat_short">{t["pc_vat_short"]}</span></div>'
-            f'<button class="button button-red" type="button" id="pcBarSend" tabindex="-1" aria-label="{t["pc_send_aria"]}" data-i18n-aria="pc_send_aria"><span data-i18n="pc_send_short">{t["pc_send_short"]}</span></button></div>'
+            f'<button class="button button-red" type="button" id="pcBarSend" tabindex="-1" aria-label="{t["pc_cart"]}" data-i18n-aria="pc_cart"><span data-i18n="pc_bar_cart">{t["pc_bar_cart"]}</span></button></div>'
             f'</section>')
