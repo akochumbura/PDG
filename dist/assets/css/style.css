@@ -2251,3 +2251,9 @@ html[data-theme=dark] .buy .buy-tiles+.pcfg-offer{background:#2c2c2e}
 .pm-media-pair figure{margin:0;border-radius:clamp(12px,1.4vw,22px);overflow:hidden;aspect-ratio:16/9;background:#0d0d0c}
 @media(max-width:700px){.pm-media-pair{grid-template-columns:1fr}}
 .product-feature video{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:clamp(12px,1.4vw,22px);display:block;background:#0d0d0c}
+/* Phone header (owner, 6 Nov 2026): small search icon between the menu lines and the PDG logo. */
+@media(max-width:900px){.header-actions .search-btn{display:inline-flex;position:absolute;left:40px;top:50%;transform:translateY(-50%);margin:0;width:40px;height:40px}}
+@media(max-width:340px){.header-actions .search-btn{display:none}}
+/* Price strip: no negative z-index (iOS Safari did not deliver taps to it); the header row stays above it. */
+.site-header>.header-inner{position:relative;z-index:2;background:inherit}
+@media(max-width:900px){.price-strip{z-index:1}}

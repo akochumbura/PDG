@@ -80,7 +80,7 @@
     const onShop = /^\/(en\/|ru\/)?shop\/?$/.test(location.pathname);
     const strip = header.querySelector(".price-strip");
     /* Shown while scrolling down, fades away when scrolling up (owner, 5 Nov 2026). */
-    let lastY = window.scrollY, run = 0;
+    let lastY = window.scrollY, turn = window.scrollY, dirUp = false;
     /* Never two identical buttons on one screen (owner, 6 Nov 2026): while a button to the shop is visible in the page, the strip stays away. */
     let shopBtnsSeen = 0;
     if (strip && "IntersectionObserver" in window) {
@@ -92,12 +92,15 @@
       const y = window.scrollY;
       header.classList.toggle("is-scrolled", y > 8);
       if (strip && !onShop) {
-        /* accumulate the travel in one direction so small jitters never flicker the strip */
-        const d = y - lastY; lastY = y;
-        if (d !== 0 && Math.sign(d) !== Math.sign(run)) run = 0;
-        run += d;
+        /* Turning points (owner, 6 Nov 2026): shows after 24px of travel down, hides after 16px up; tiny jitters (<3px) are ignored. */
+        const d = y - lastY;
         let on = header.classList.contains("strip-on");
-        if (y < 280 || shopBtnsSeen) { on = false; run = 0; } else if (run > 24) on = true; else if (run < -24) on = false;
+        if (Math.abs(d) >= 3) {
+          if (d > 0) { if (dirUp) { dirUp = false; turn = lastY; } if (y - turn > 24) on = true; }
+          else { if (!dirUp) { dirUp = true; turn = lastY; } if (turn - y > 16) on = false; }
+          lastY = y;
+        }
+        if (y < 280 || shopBtnsSeen) on = false;
         if (on !== header.classList.contains("strip-on")) { header.classList.toggle("strip-on", on); strip.setAttribute("aria-hidden", on ? "false" : "true"); strip.tabIndex = on ? 0 : -1; }
       }
     };

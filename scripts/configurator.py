@@ -249,7 +249,7 @@ def block(heading='h1'):
             f'<div class="buy-pick"><div class="buy-media">{gallery}</div>'
             f'<div class="buy-head">'
             f'<p class="buy-eyebrow" data-i18n="pb_eyebrow">{t["pb_eyebrow"]}</p><{heading} class="buy-title" id="buyTitle" data-i18n="pb_title">{t["pb_title"]}</{heading}>'
-            f'<a class="buy-specs" href="/p150-max#specifications" data-local><span data-i18n="pb_specs">{t["pb_specs"]}</span> <span aria-hidden="true">›</span></a>'
+            f'<a class="buy-specs" href="/p150-max" data-local><span data-i18n="pb_specs">{t["pb_specs"]}</span> <span aria-hidden="true">›</span></a>'
             f'<div class="buy-step pcfg-presets" role="group" aria-label="{t["pb_step1"]} {t["pb_step1_q"]}"><div class="pkr-list">{rows}</div><p class="pkr-vat" data-i18n="pb_vat">{t["pb_vat"]}</p></div></div></div>'
             f'<div class="buy-panel"><div class="pcfg" id="platformConfig" data-config="{cfg}">'
             f'<div class="pcfg-options">'

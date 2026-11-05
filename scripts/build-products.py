@@ -199,7 +199,7 @@ for sku, slug in P.KITS.items():
         f'<input class="qty-input" type="number" inputmode="numeric" min="1"' + (f' max="{kit_max}"' if kit_max else '') + ' step="1" value="1" aria-label="რაოდენობა" data-i18n-aria="qty_label">'
         f'<button type="button" class="qty-btn" data-step="1" aria-label="რაოდენობის გაზრდა" data-i18n-aria="qty_more">+</button></div>'
         f'<button type="button" class="add-btn" data-sku="{sku}" data-name="{name}" data-price="{gel}" data-i18n="add_to_cart">კალათაში</button></div>'
-        f'<p class="pd-links"><a href="/p150-max.html#specifications" data-local><span data-i18n="pd_pk_specs">P150 MAX-ის სრული მახასიათებლები</span></a>'
+        f'<p class="pd-links"><a href="/p150-max.html" data-local><span data-i18n="pd_pk_specs">P150 MAX-ის სრული მახასიათებლები</span></a>'
         f'<a href="/shop?kit={sku.split('-')[-1].lower()}#configurator" data-local><span data-i18n="pd_pk_cfg">კომპლექტის შეცვლა კონფიგურატორში</span></a></p>'
         f'</article></div></section>\n</template>\n')
 
