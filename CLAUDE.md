@@ -366,3 +366,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   (desktop and phone). /shop is reached through the red strip, the home hero "შეძენა", and the P150 MAX page button (not in any menu).
 - (owner, 6 Nov 2026, 02:11) Products menu = XAG P150 MAX, დრონები (/drones: P150 MAX + its packages first, then previous models), ნაწილები და აკუმულატორები.
   Rule: never two identical buttons on one screen — the red strip stays hidden while any in-page button to /shop is visible (script.js shopBtnsSeen).
+- (owner, 6 Nov 2026, 02:21) Refinement: phone call/write bar ONLY on /consultation, /service, /academy (body.has-mbar, script.js); other pages = round chat button
+  (hidden while the configurator bar, menu, chat or cart are open). The bar's write button is dark (red = buying only). /drones P150 card status = one grey word "ახალი" (model_new).
+  Bigger type: --fs-h2 clamp(30px,3.4vw,48px) (phones 30px), --section-space clamp(72px,9vw,136px); intros 17–20px, darker. Intros shortened (product_page_intro, dr_intro).

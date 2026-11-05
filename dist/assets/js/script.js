@@ -71,6 +71,8 @@
     setTimeout(() => reveal.forEach((el) => el.classList.add("is-in")), 4000);
     if (location.hash) reveal.forEach((el) => el.classList.add("is-in"));
   }
+  /* Owner, 6 Nov 2026: the phone call/write bar only on the contact, service and academy pages; elsewhere the round chat button. */
+  if (/^\/(en\/|ru\/)?(consultation|service|academy)(\.html)?\/?$/.test(location.pathname)) document.body.classList.add("has-mbar");
   const header = document.querySelector(".site-header");
   if (header) {
     /* Phones (owner, 5 Nov 2026): a red "prices and packages" strip appears under the header once the visitor scrolls down

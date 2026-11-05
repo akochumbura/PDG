@@ -2214,3 +2214,24 @@ html[data-theme=dark] .buy .buy-tiles+.pcfg-offer{background:#2c2c2e}
   .hero .hero-actions{flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:stretch;width:100%;gap:10px}
   .hero .hero-actions .button{flex:1 1 0;min-width:0;max-width:170px;padding-inline:12px}
 }
+/* ===== Refinement, owner 6 Nov 2026 ===== */
+/* 1. Red only means "buy": the phone bar's write button is dark. */
+@media(max-width:768px){.mobile-bar-main{background:var(--text);border-color:var(--text);color:var(--bg)}}
+/* 2. Call/write bar only on contact, service and academy; other pages get the round chat button. */
+@media(max-width:768px){
+  body:not(.has-mbar) .mobile-bar{display:none}
+  body:not(.has-mbar){padding-bottom:0}
+  body:not(.has-mbar) .chat-fab{display:inline-flex;bottom:calc(16px + env(safe-area-inset-bottom));right:16px}
+  body.pcfg-bar-on .chat-fab,body.nav-lock .chat-fab,body.chat-open .chat-fab,body.modal-open .chat-fab,body.acc-typing .chat-fab{display:none}
+  body.pcfg-bar-on{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+}
+/* 3. One quiet word instead of a red status line. */
+.model-status.is-new,html[data-theme=dark] .model-status.is-new{color:var(--muted);font-weight:500;letter-spacing:0}
+/* 4. Typography: bigger headlines, calmer intros, more air. */
+:root{--fs-h2:clamp(30px,3.4vw,48px);--section-space:clamp(72px,9vw,136px)}
+@media(max-width:600px){:root{--fs-h2:30px;--section-space:64px}}
+.section-heading{margin-bottom:clamp(28px,3.4vw,52px)}
+.page-hero p:not(.eyebrow):not(.back-link),.pm-hero-text>p:not(.eyebrow),.section-heading+p,.model-text{max-width:36em;font-size:clamp(17px,1.35vw,20px);line-height:1.6;color:var(--text);opacity:.82}
+.page-intro{max-width:34em;font-size:clamp(17px,1.35vw,20px);line-height:1.6;color:var(--text);opacity:.82}
+/* The round chat button stays visible on dark sections too. */
+.chat-fab{box-shadow:0 0 0 1px rgba(255,255,255,.22),0 10px 28px rgba(0,0,0,.28)}
