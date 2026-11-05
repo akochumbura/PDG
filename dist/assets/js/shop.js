@@ -446,6 +446,7 @@
       var img = document.getElementById("buyImg");
       if (img) {
         var src = "/assets/img/buy/" + (st.pkg ? st.pkg.p.sku : PC.platform.sku) + ".webp";
+        var zp = document.getElementById("buyZoomPkg"); if (zp) zp.src = "/assets/img/buy/" + (st.pkg ? st.pkg.p.sku : PC.platform.sku) + ".webp";
         var th = document.getElementById("buyThumb"); if (th) th.src = st.pkg ? "/assets/img/packages/" + st.pkg.p.sku + "-t.webp" : "/assets/img/products/thumbs/" + PC.platform.sku + ".webp";
         if (pcReady && typeof buyGo === "function") buyGo(0);
         if (img.getAttribute("src").split("?")[0] !== src) { img.classList.add("is-swap"); img.onload = function () { img.classList.remove("is-swap"); }; img.src = src; img.alt = st.pkg ? st.pkg.p.name : PC.platform.name; }
@@ -484,6 +485,32 @@
     if (slidesEl) {
       thumbs.forEach(function (b) { b.addEventListener("click", function () { buyGo(Number(b.dataset.slide)); }); });
       var sT = 0; slidesEl.addEventListener("scroll", function () { clearTimeout(sT); sT = setTimeout(function () { buyMark(Math.round(slidesEl.scrollLeft / slidesEl.clientWidth)); }, 60); }, { passive: true });
+    }
+    /* Full-screen pictures (owner, 5 Nov 2026): a tap on the picture (not a swipe) or the corner button opens the same slide large. */
+    var zd = document.getElementById("buyZoom"), zt = document.getElementById("buyZoomTrack"), zc = document.getElementById("buyZoomCount");
+    if (zd && zt && slidesEl) {
+      var zN = zt.children.length, zLast = null, zCur = 0;
+      var zAt = function () { return Math.round(zt.scrollLeft / Math.max(1, zt.clientWidth)); };
+      var zShow = function (i) { i = Math.max(0, Math.min(zN - 1, i)); zCur = i; zt.scrollTo({ left: i * zt.clientWidth, behavior: "instant" }); zc.textContent = (i + 1) + " / " + zN; };
+      var zOpen = function () {
+        var i = Math.round(slidesEl.scrollLeft / Math.max(1, slidesEl.clientWidth));
+        zt.querySelectorAll("img").forEach(function (im) { im.loading = "eager"; });
+        zLast = document.activeElement;
+        if (zd.showModal) zd.showModal(); else zd.setAttribute("open", "");
+        document.body.classList.add("modal-open");
+        requestAnimationFrame(function () { zShow(i); });
+      };
+      var zClose = function () { if (zd.open) zd.close(); };
+      zd.addEventListener("close", function () { document.body.classList.remove("modal-open"); buyGo(zCur); if (zLast && zLast.focus) zLast.focus(); });
+      var down = null;
+      slidesEl.addEventListener("pointerdown", function (e) { down = [e.clientX, e.clientY]; });
+      slidesEl.addEventListener("click", function (e) { if (down && Math.abs(e.clientX - down[0]) < 8 && Math.abs(e.clientY - down[1]) < 8) zOpen(); down = null; });
+      document.getElementById("buyZoomOpen").addEventListener("click", zOpen);
+      document.getElementById("buyZoomX").addEventListener("click", zClose);
+      zd.querySelectorAll(".buy-zoom-nav").forEach(function (b) { b.addEventListener("click", function () { zShow(zAt() + Number(b.dataset.dir)); }); });
+      zd.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") zShow(zAt() + 1); if (e.key === "ArrowLeft") zShow(zAt() - 1); });
+      var zT = 0; zt.addEventListener("scroll", function () { clearTimeout(zT); zT = setTimeout(function () { if (!zd.open) return; zCur = zAt(); zc.textContent = (zCur + 1) + " / " + zN; }, 60); }, { passive: true });
+      zd.addEventListener("click", function (e) { if (e.target === zd || e.target.classList.contains("buy-zoom-slide")) zClose(); });
     }
     /* Buying page (5 Nov 2026): package rows sit above the configurator; "add" on an accessory sets it to 1 (then the stepper shows). */
     document.addEventListener("click", function (e) {

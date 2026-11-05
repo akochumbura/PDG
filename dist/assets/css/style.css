@@ -2160,3 +2160,28 @@ html[data-theme=dark] .buy .pcfg-summary.buy-summary{background:#2c2c2e}
 }
 @media(min-width:769px) and (max-width:1023px){.buy-figure{height:min(calc((100vw - 80px) * .606),42svh)}}
 .price-strip{transition:transform .25s ease,opacity .25s ease,visibility 0s linear .25s}
+/* Full-screen pictures on the buying page (owner, 5 Nov 2026) */
+.buy-slides{cursor:zoom-in}
+.buy-zoom-open{position:absolute;right:10px;bottom:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border:0;border-radius:50%;
+  background:rgba(255,255,255,.85);color:#1d1d1f;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.buy-zoom-open:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.buy-zoom{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#fff;color:#1d1d1f;overflow:hidden}
+.buy-zoom::backdrop{background:#fff}
+.buy-zoom[open]{display:block}
+.buy-zoom-track{display:flex;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior:contain}
+.buy-zoom-track::-webkit-scrollbar{display:none}
+.buy-zoom-slide{flex:0 0 100%;height:100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;padding:64px 16px calc(56px + env(safe-area-inset-bottom))}
+.buy-zoom-slide img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
+.buy-zoom-photo{background:#000;padding:0}
+.buy-zoom-photo img{max-height:100%}
+.buy-zoom-x{position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px;z-index:2;width:44px;height:44px;border:0;border-radius:50%;background:rgba(240,240,242,.92);color:#1d1d1f;font-size:28px;line-height:1;cursor:pointer}
+.buy-zoom-nav{position:absolute;top:50%;z-index:2;width:48px;height:48px;margin-top:-24px;border:0;border-radius:50%;background:rgba(240,240,242,.92);color:#1d1d1f;font-size:30px;line-height:1;cursor:pointer}
+.buy-zoom-prev{left:16px}.buy-zoom-next{right:16px}
+.buy-zoom-count{position:absolute;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));margin:0;text-align:center;font:500 14px/1 var(--font-latin);color:#6e6e73}
+.buy-zoom-x:focus-visible,.buy-zoom-nav:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+@media(max-width:768px){.buy-zoom-nav{display:none}.buy-zoom-open{width:36px;height:36px;right:8px;bottom:8px}}
+/* Items open their own page; gallery photos open full screen (owner, 5 Nov 2026). */
+.pcfg-thumb-link{display:block;line-height:0}
+a.pcfg-label{color:inherit;text-decoration:none}
+a.pcfg-label:hover{text-decoration:underline;text-underline-offset:3px}
+.buy-slide{cursor:zoom-in}

@@ -93,6 +93,10 @@ TEXT = {  # key: (ka, en, ru)
     'pc_send_aria': ('შეკვეთის გაგზავნა WhatsApp-ით', 'Send the order via WhatsApp', 'Отправить заказ в WhatsApp'),
     'pb_next': ('შეკვეთის შემდეგ PDG დაგიკავშირდებათ და დაგიდასტურებთ ფასს, მარაგს და მიწოდებას.', 'After you order, PDG contacts you to confirm the price, stock and delivery.', 'После заказа PDG свяжется с вами и подтвердит цену, наличие и доставку.'),
     'pb_gallery': ('ფოტოები', 'Photos', 'Фото'),
+    'pb_zoom': ('სრულ ეკრანზე ნახვა', 'View full screen', 'Открыть на весь экран'),
+    'pb_zoom_close': ('დახურვა', 'Close', 'Закрыть'),
+    'pb_zoom_prev': ('წინა ფოტო', 'Previous photo', 'Предыдущее фото'),
+    'pb_zoom_next': ('შემდეგი ფოტო', 'Next photo', 'Следующее фото'),
     'pb_ph_pkg': ('არჩეული კომპლექტი', 'Selected package', 'Выбранный комплект'),
     'pb_ph_spray': ('XAG დრონი შეწამვლისას', 'XAG drone spraying', 'Дрон XAG при опрыскивании'),
     'pb_ph_spread': ('XAG დრონი გრანულების გაფანტვისას', 'XAG drone spreading granules', 'Дрон XAG разбрасывает гранулы'),
@@ -164,15 +168,34 @@ def _thumb(sku):
     return '<span class="pcfg-thumb" aria-hidden="true"></span>'
 
 
+def _href(sku):
+    """Own page of a configurator item (owner, 5 Nov 2026: items are clickable): product page, the P150 MAX page for the drone,
+    otherwise the item in the parts list."""
+    import product_pages
+    if sku == PLATFORM:
+        return '/p150-max'
+    u = product_pages.url(sku)
+    return u if u and not u.startswith('/shop') else f'/parts?q={sku}'
+
+
+def _linked(sku, ka, lab):
+    """Thumbnail + name, both opening the item's page."""
+    h = _href(sku)
+    return (f'<a class="pcfg-thumb-link" href="{h}" data-local tabindex="-1" aria-hidden="true">{_thumb(sku)}</a>',
+            f'<a class="pcfg-label" href="{h}" data-local data-i18n="{lab}">{html.escape(ka)}</a>')
+
+
 def _row(key, it, ka, opt, add=False):
     lab = it['label']
     # add=True (accessories): an "add" button until the item is chosen, then the quantity stepper (Apple-style accessory cards)
     if key == 'remotes':  # owner, 5 Nov 2026: one SRC5 per drone, not changeable (same as the drone row)
-        return (f'<div class="pcfg-row pcfg-fixed-row" data-key="{key}">{_thumb(it["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="{lab}">{html.escape(ka)}</span>'
+        th, nm = _linked(it["sku"], ka, lab)
+        return (f'<div class="pcfg-row pcfg-fixed-row" data-key="{key}">{th}<div class="pcfg-name">{nm}'
                 f'<span class="pcfg-unit">₾{it["price"]:,}</span></div><output class="pcfg-fixed-qty">1</output>'
                 f'<input class="qty-input" type="hidden" min="1" max="1" value="1" data-fixed="1"></div>')
     plus = f'<button type="button" class="pcfg-add" data-add-key="{key}"><span data-i18n="pb_add">{TEXT["pb_add"][0]}</span></button>' if add else ''
-    return (f'<div class="pcfg-row{" pcfg-acc" if add else ""}" data-key="{key}">{_thumb(it["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="{lab}">{html.escape(ka)}</span>'
+    th, nm = _linked(it["sku"], ka, lab)
+    return (f'<div class="pcfg-row{" pcfg-acc" if add else ""}" data-key="{key}">{th}<div class="pcfg-name">{nm}'
             f'<span class="pcfg-unit">₾{it["price"]:,} <span data-i18n="pc_each">/ ცალი</span></span></div>{plus}'
             f'<div class="qty-stepper pcfg-stepper"><button type="button" class="qty-btn" data-step="-1" aria-label="რაოდენობის შემცირება" data-i18n-aria="qty_less">−</button>'
             f'<input class="qty-input" type="number" inputmode="numeric" min="0" max="{it["max"]}" step="1" value="0" aria-label="{html.escape(ka, quote=True)}" data-i18n-aria="{lab}">'
@@ -208,7 +231,16 @@ def block(heading='h1'):
               + ''.join(f'<div class="buy-slide buy-slide-photo"><img src="/assets/img/buy/{f}.webp" width="1600" height="969" alt="{t[k]}" aria-label="{t[k]}" data-i18n-aria="{k}" loading="lazy" decoding="async"></div>' for f, k in photos))
     thumbs = (f'<button type="button" class="buy-thumb is-on" data-slide="0" aria-label="{t["pb_ph_pkg"]}" data-i18n-aria="pb_ph_pkg" aria-current="true"><img id="buyThumb" src="/assets/img/packages/{first["sku"]}-t.webp" width="240" height="180" alt="" decoding="async"></button>'
               + ''.join(f'<button type="button" class="buy-thumb" data-slide="{i + 1}" aria-label="{t[k]}" data-i18n-aria="{k}"><img src="/assets/img/buy/{f}-t.webp" width="160" height="97" alt="" loading="lazy" decoding="async"></button>' for i, (f, k) in enumerate(photos)))
-    gallery = f'<figure class="buy-figure"><div class="buy-slides" id="buySlides">{slides}</div></figure><div class="buy-thumbs" role="group" aria-label="{t["pb_gallery"]}" data-i18n-aria="pb_gallery">{thumbs}</div>'
+    # Full-screen view (owner, 5 Nov 2026): tapping a picture opens it large; swipe / arrows / Esc.
+    zoom = (f'<dialog class="buy-zoom" id="buyZoom" aria-label="{t["pb_gallery"]}" data-i18n-aria="pb_gallery">'
+            f'<button type="button" class="buy-zoom-x" id="buyZoomX" aria-label="{t["pb_zoom_close"]}" data-i18n-aria="pb_zoom_close">×</button>'
+            f'<button type="button" class="buy-zoom-nav buy-zoom-prev" data-dir="-1" aria-label="{t["pb_zoom_prev"]}" data-i18n-aria="pb_zoom_prev">‹</button>'
+            f'<div class="buy-zoom-track" id="buyZoomTrack">'
+            f'<div class="buy-zoom-slide"><img id="buyZoomPkg" src="/assets/img/buy/{first["sku"]}.webp" width="1168" height="708" alt="" decoding="async" loading="lazy"></div>'
+            + ''.join(f'<div class="buy-zoom-slide buy-zoom-photo"><img src="/assets/img/buy/{f}.webp" width="1600" height="969" alt="" loading="lazy" decoding="async"></div>' for f, k in photos)
+            + f'</div><button type="button" class="buy-zoom-nav buy-zoom-next" data-dir="1" aria-label="{t["pb_zoom_next"]}" data-i18n-aria="pb_zoom_next">›</button>'
+            f'<p class="buy-zoom-count" id="buyZoomCount" aria-live="polite">1 / 4</p></dialog>')
+    gallery = f'<figure class="buy-figure"><div class="buy-slides" id="buySlides" title="{t["pb_zoom"]}">{slides}</div><button type="button" class="buy-zoom-open" id="buyZoomOpen" aria-label="{t["pb_zoom"]}" data-i18n-aria="pb_zoom"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></figure>{zoom}<div class="buy-thumbs" role="group" aria-label="{t["pb_gallery"]}" data-i18n-aria="pb_gallery">{thumbs}</div>'
     trust = ''.join(f'<li data-i18n="{k}">{t[k]}</li>' for k in ('pb_t1', 'pb_t2', 'pb_t3', 'pb_t4'))
     return (f'<section class="buy" id="configurator" aria-labelledby="buyTitle"><div class="container buy-grid">'
             f'<div class="buy-pick"><div class="buy-media">{gallery}</div>'
@@ -220,7 +252,7 @@ def block(heading='h1'):
             f'<div class="buy-panel"><div class="pcfg" id="platformConfig" data-config="{cfg}">'
             f'<div class="pcfg-options">'
             f'<div class="buy-step"><h2 class="buy-step-h"><span data-i18n="pb_step2">{t["pb_step2"]}</span></h2>'
-            f'<div class="buy-tiles"><div class="pcfg-row pcfg-fixed">{_thumb(d["platform"]["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="pc_platform">{t["pc_platform"]}</span>'
+            f'<div class="buy-tiles"><div class="pcfg-row pcfg-fixed"><a class="pcfg-thumb-link" href="/p150-max" data-local tabindex="-1" aria-hidden="true">{_thumb(d["platform"]["sku"])}</a><div class="pcfg-name"><a class="pcfg-label" href="/p150-max" data-local data-i18n="pc_platform">{t["pc_platform"]}</a>'
             f'<span class="pcfg-unit">₾{d["platform"]["price"]:,}</span></div><output class="pcfg-fixed-qty">1</output></div>{energy}</div></div>'
             f'<details class="buy-step pcfg-extra" id="pcExtra"><summary class="buy-step-h"><span class="buy-sum-t"><span data-i18n="pb_step3">{t["pb_step3"]}</span>'
             f'<small class="buy-step-sub" data-i18n="pb_step3_q">{t["pb_step3_q"]}</small></span><span class="pcfg-extra-count" id="pcExtraCount" hidden></span></summary>'
