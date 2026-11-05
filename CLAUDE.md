@@ -134,7 +134,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   GEORGIA line), aspect ratios kept, centred; header = PDG ~ XAG with a literal "~", strip = PDG ~ XAG; "~" in --xag-black. build.py adds ?v=hash to /assets/img URLs so changed logos/photos reach visitors at once.
 - Home hero (owner, 14 Oct 2026 night): heading, sentence and buttons at the top with equal gaps (32px desktop, 24px phone);
   the whole drone must stay visible (wide screens: photo right of the text, hero ≤ 56vw tall; ≤1240px: text above the full photo).
-- Home page <title> + share preview (owner final brief, 19 Oct 2026, overrides earlier) = exactly "Premium Drones Georgia | XAG P150 Max" in ka/en/ru. Brand text is never written in capitals (the logo image is unchanged).
+- Home page <title> (owner SEO brief 5 Nov 2026, replaces "Premium Drones Georgia | XAG P150 Max"): "PDG — Premium Drones Georgia | XAG სასოფლო-სამეურნეო დრონები" (en: XAG agricultural drones, ru: Сельскохозяйственные дроны XAG). Search purpose per page: docs/13-seo.md. Brand text is never written in capitals (the logo image is unchanged).
 - (owner, 14 Oct 2026, 23:15) Parts not on the packing list (avail=quote) = "არ არის მარაგში" + price on request (not "მარაგი დაზუსტდება").
   Screws and similar fasteners = 5-15 GEL by invoice landed cost (cost x 2.5 + 3.5, clamped; import-price-list.py: 02-004-*, nut/bolt/circlip, M-size gaskets).
   Package contents link to their pages: drone → /p150-max, SRC5, B141050, CM13600S, cooling tank, XRTK7 (product_pages.py).

@@ -56,14 +56,22 @@ def page_path(filename):
 
 # Owner-verified facts only (14 Oct 2026): Tbilisi = storage and service by appointment (not a showroom, no opening hours);
 # Lagodekhi = warehouse (in a village of the Lagodekhi area; no street address published) and field operations. No HQ claim.
-ORG = {"@context": "https://schema.org", "@type": "Organization", "name": "Premium Drones Georgia", "alternateName": ["საქართველოს პრემიუმ დრონები", "Премиум Дроны Грузии", "PDG"],
+# SEO brief 5 Nov 2026: PDG is its own business (seller of XAG products), named "PDG — Premium Drones Georgia" where a full name fits.
+ORG = {"@context": "https://schema.org", "@type": "Organization", "name": "Premium Drones Georgia", "alternateName": ["PDG — Premium Drones Georgia", "PDG", "საქართველოს პრემიუმ დრონები"],
        "description": "Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus region: XAG drones, batteries, chargers, generators, parts, service and training.",
        "url": BASE_URL + "/", "logo": BASE_URL + "/assets/img/pdg-logo-light.png", "image": BASE_URL + "/assets/img/og-image.jpg",
        "telephone": "+995550004333", "email": "info@premium-drones.ge",
        "location": [{"@type": "Place", "name": "Premium Drones Georgia, Tbilisi (storage and service, by appointment)",
                      "address": {"@type": "PostalAddress", "streetAddress": "12 Panaskerteli-Tsitsishvili St", "addressLocality": "Tbilisi", "addressCountry": "GE"}},
                     {"@type": "Place", "name": "Premium Drones Georgia, Lagodekhi (warehouse and field operations)",
-                     "address": {"@type": "PostalAddress", "addressLocality": "Lagodekhi", "addressCountry": "GE"}}]}
+                     "address": {"@type": "PostalAddress", "addressLocality": "Lagodekhi", "addressRegion": "Kakheti", "addressCountry": "GE"}}]}
+
+# Breadcrumb parent of each inner page: (path, content key, Georgian name). Pages not listed sit directly under home.
+_ART=('/blog','nav_blog','ბლოგი'); _P150=('/p150-max','nav_p150','XAG P150 MAX'); _SHOP=('/shop','nav_shop','მაღაზია'); _DR=('/drones','nav_drones','დრონები')
+CRUMB_PARENT={'choosing-a-drone.html':_ART,'first-flight.html':_ART,'batteries-and-charging.html':_ART,'service-and-parts.html':_ART,
+              'p150-max-starter.html':_P150,'p150-max-plus.html':_P150,'p150-max-pro.html':_P150,'p150-max-business.html':_P150,
+              'b141050-battery.html':_SHOP,'cm13600s-charger.html':_SHOP,'gc4000-plus-generator.html':_SHOP,'battery-cooling-tank.html':_SHOP,
+              'src5-remote-controller.html':_SHOP,'xrtk7-rtk-station.html':_SHOP,'xag-p100-pro.html':_DR,'xag-p100.html':_DR,'xag-v40.html':_DR}
 
 def localized_href(href, language, filename):
     parts = urlsplit(href)
@@ -142,8 +150,13 @@ def render(page_source, language, filename):
     for m in doc.xpath('//meta[@property="og:description"]'): m.set('content',desc); m.attrib.pop('data-i18n-content',None)
     for m in doc.xpath('//meta[@property="og:locale"]'): m.getparent().remove(m)
     etree.SubElement(doc_head,'meta',property='og:locale',content={'ka':'ka_GE','en':'en_US','ru':'ru_RU'}[language])
-    for image in doc.xpath('//meta[@property="og:image"]'):image.set('content',BASE_URL+'/assets/img/og-image.jpg')
+    # Share / search image (5 Nov 2026): a product, package or model page uses its own first photo; other pages the site image.
+    own_img=(doc.xpath('//main//div[contains(@class,"pd-photo") or contains(@class,"pp-gallery") or contains(@class,"pd-gallery")]//img/@src') or [''])[0].split('?')[0]
+    # Kept on the JPEG site image: WebP previews are not shown by every messenger (WhatsApp, Viber). Product photos are in the Product schema.
+    og=BASE_URL+'/assets/img/og-image.jpg'
+    for image in doc.xpath('//meta[@property="og:image"]'):image.set('content',og)
     graph=[]
+    lp='' if language=='ka' else '/'+language
     if filename=='index.html':
         org=dict(ORG); org['@id']=BASE_URL+'/#business'
         org['sameAs']=[u for u in SOCIAL.values() if u.strip()]
@@ -153,8 +166,24 @@ def render(page_source, language, filename):
             "availableLanguage":["ka","en","ru"],"areaServed":"GE","hoursAvailable":[
             {"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"09:00","closes":"21:00"},
             {"@type":"OpeningHoursSpecification","dayOfWeek":"Saturday","opens":"09:00","closes":"15:00"}]}
-        org['knowsAbout']=["agricultural drones","crop spraying drones","drone crop spraying","drone spreading","drone operator training","drone repair","agricultural drone batteries and parts","XAG P150 MAX","XAG P150","XAG P100 Pro","XAG V40","XAG V50 Pro","DJI Agras T100","DJI Agras T70P","DJI Agras T50","DJI Agras T40","DJI Agras T25"]
+        # 5 Nov 2026: only what PDG actually sells and does (no other brands' models: PDG is an XAG dealer).
+        org['knowsAbout']=["agricultural drones","drone crop spraying","drone granule spreading","drone field mapping","agricultural drone operator training",
+                           "agricultural drone service and repair","XAG P150 MAX","XAG agricultural drone batteries, chargers and parts"]
+        org['brand']={"@type":"Brand","name":"XAG"}
         org.pop('@context',None); graph.append(org)
+        graph.append({"@type":"WebSite","@id":BASE_URL+'/#website',"url":BASE_URL+'/',"name":"Premium Drones Georgia",
+                      "alternateName":["PDG — Premium Drones Georgia","PDG","საქართველოს პრემიუმ დრონები"],
+                      "inLanguage":["ka","en","ru"],"publisher":{"@id":BASE_URL+'/#business'}})
+    # BreadcrumbList (5 Nov 2026): home > section > page, from the site's real structure and the page's own h1.
+    if filename not in ('index.html','404.html','payment.html','account.html','p150-max-platform.html'):
+        h1=(doc.xpath('//h1') or [None])[0]
+        name=re.sub(r'\s+',' ',h1.text_content()).strip().rstrip('.') if h1 is not None else title_text.split(' | ')[0]
+        HOME={'ka':'მთავარი','en':'Home','ru':'Главная'}[language]
+        crumbs=[(HOME,BASE_URL+lp+'/')]
+        parent=CRUMB_PARENT.get(filename)
+        if parent: crumbs.append((DICT[language].get(parent[1],parent[2]) if language!='ka' else parent[2], BASE_URL+lp+parent[0]))
+        crumbs.append((name,canonical))
+        graph.append({"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":i+1,"name":n,"item":u} for i,(n,u) in enumerate(crumbs)]})
     if True:
         faq=[{"@type":"Question","name":d.findtext('summary').strip(),"acceptedAnswer":{"@type":"Answer","text":d.findtext('p').strip()}} for d in doc.xpath('//details[contains(@class,"faq-item")]')]
         if faq: graph.append({"@type":"FAQPage","mainEntity":faq})
@@ -193,10 +222,12 @@ def render(page_source, language, filename):
         pid=BASE_URL+'/shop#'+sku
         if own:
             url=BASE_URL+lp+own; pid=url+'#product'
-        d={"@type":"Product","@id":pid,"name":name,"sku":sku,"brand":{"@type":"Brand","name":"XAG"},
+        d={"@type":"Product","@id":pid,"name":name,"sku":sku,"mpn":sku if sku[:1].isdigit() else None,"brand":{"@type":"Brand","name":"XAG"},
            "image":BASE_URL+img if img.startswith('/') else img,"description":KIT_DESC if kit else PART_DESC.format(sku),
            "offers":{"@type":"Offer","price":price,"priceCurrency":"GEL","availability":AVAIL[avail],"itemCondition":"https://schema.org/NewCondition",
+                     "priceSpecification":{"@type":"UnitPriceSpecification","price":price,"priceCurrency":"GEL","valueAddedTaxIncluded":True},
                      "url":url,"seller":{"@id":BASE_URL+'/#business'},"hasMerchantReturnPolicy":RETURNS,"shippingDetails":SHIP(price)}}
+        if not d['mpn']: d.pop('mpn')
         if kit: d.update(category="Agricultural drone")
         return d
     if filename=='shop.html':
@@ -225,14 +256,29 @@ def render(page_source, language, filename):
         ld.text=json.dumps({"@context":"https://schema.org","@graph":graph},ensure_ascii=False)
     return '<!doctype html>\n'+etree.tostring(doc,encoding='unicode',method='html',pretty_print=True)
 
+import datetime, hashlib
+today=datetime.date.today().isoformat()
+# Truthful <lastmod> (5 Nov 2026): a URL's date changes only when what it says changes (title, description, main text, prices),
+# not on every build. scripts/lastmod.json keeps {url: [content hash, date]}.
+LASTMOD_FILE=ROOT/'scripts/lastmod.json'
+try: LASTMOD=json.loads(LASTMOD_FILE.read_text(encoding='utf-8'))
+except FileNotFoundError: LASTMOD={}
+def content_hash(page):
+    d=html.fromstring(page)
+    parts=[d.findtext('.//title') or '']+d.xpath('//meta[@name="description"]/@content')
+    parts+= [re.sub(r'\s+',' ',m.text_content()) for m in d.xpath('//main')]
+    parts+= d.xpath('//main//button[@data-price]/@data-price')+d.xpath('//main//li[@data-price]/@data-price')
+    return hashlib.sha256('\n'.join(parts).encode()).hexdigest()[:16]
 for filename,page_source in pages.items():
     for language in ['ka','en','ru']:
         target=PUBLIC if language=='ka' else PUBLIC/language
         target.mkdir(exist_ok=True)
-        (target/filename).write_text(render(page_source,language,filename),encoding='utf-8')
-
-import datetime
-today=datetime.date.today().isoformat()
+        out=render(page_source,language,filename)
+        (target/filename).write_text(out,encoding='utf-8')
+        key=('' if language=='ka' else '/'+language)+page_path(filename)
+        h=content_hash(out)
+        if LASTMOD.get(key,[None])[0]!=h: LASTMOD[key]=[h,today]
+LASTMOD_FILE.write_text(json.dumps(dict(sorted(LASTMOD.items())),indent=0,ensure_ascii=False)+'\n',encoding='utf-8')
 urls=[]
 for filename in pages:
     if filename in ('404.html','payment.html','account.html','p150-max-platform.html'):continue
@@ -240,7 +286,8 @@ for filename in pages:
     alts=''.join(f'<xhtml:link rel="alternate" hreflang="{l}" href="{BASE_URL}{"" if l in ("ka","x-default") else "/"+l}{path}"/>' for l in ['ka','en','ru','x-default'])
     for language in ['ka','en','ru']:
         prefix='' if language=='ka' else '/'+language
-        urls.append(f'<url><loc>{BASE_URL}{prefix}{path}</loc><lastmod>{today}</lastmod>{alts}</url>')
+        urls.append(f'<url><loc>{BASE_URL}{prefix}{path}</loc><lastmod>{LASTMOD.get(prefix+path,[0,today])[1]}</lastmod>{alts}</url>')
 (PUBLIC/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">'+''.join(urls)+'</urlset>',encoding='utf-8')
-(PUBLIC/'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: '+BASE_URL+'/sitemap.xml\n',encoding='utf-8')
+# /api/ = server endpoints (payments, chat, accounts): nothing to index there.
+(PUBLIC/'robots.txt').write_text('User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: '+BASE_URL+'/sitemap.xml\n',encoding='utf-8')
 print(f'Generated {len(pages)*3} pages in ka/en/ru, with canonical origin {BASE_URL}.')

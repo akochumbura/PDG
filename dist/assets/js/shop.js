@@ -172,6 +172,9 @@
     cart[sku] = cart[sku] || { n: name, p: price, q: 0 };
     if (max > 0) cart[sku].m = max;
     cart[sku].q = clampInt(cart[sku].q + q, 1, cart[sku].m || 0);
+    /* Analytics (5 Nov 2026): GA4 add_to_cart — product code, name, price and quantity only, never customer data. */
+    document.dispatchEvent(new CustomEvent("pdg:track", { detail: { name: "add_to_cart", params: { currency: "GEL", value: price * q,
+      items: [{ item_id: sku, item_name: name, price: price, quantity: q }] } } }));
   }
   function openCart() { if (dlg && dlg.showModal && !dlg.open) { dlg.showModal(); document.body.classList.add("modal-open"); } }
 

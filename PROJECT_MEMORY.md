@@ -79,3 +79,10 @@
 ## 2026-11-04 — ყიდვის ნაწილის დახვეწა (preview: buying-refine)
 - მაღაზიაში კონფიგურატორი მზა კომპლექტებამდეა; კომპლექტის ფასი მხოლოდ კომპლექტის არჩევის/შეთავაზების მიღების შემდეგ ვრცელდება; შეთავაზება ზოგვის თანხით, კონფიგურატორშიც და კალათაშიც.
 - ტესტები: 96 ყიდვის სცენარი, 148 მობილური შემოწმება (360/390/430), 36 ინტერაქცია, 41 მომხმარებლის გზა, 1516 ფასის შედარება — ყველა წარმატებული.
+
+## 5 Nov 2026 — SEO brief (branch seo-georgia, preview only until approved)
+- Search purpose per page + technical rules: docs/13-seo.md. New: home title "PDG — Premium Drones Georgia | XAG სასოფლო-სამეურნეო დრონები";
+  /shop title "სასოფლო-სამეურნეო დრონის ფასი — XAG P150 MAX კომპლექტები", H1 "ფასები და კომპლექტაციები"; /drones H1 "სასოფლო-სამეურნეო დრონები";
+  /service H1 key service_h1; fuller search descriptions via data-meta (blog, gallery, articles, faq, drones, consultation, about, every product and package page
+  with price incl. VAT and contents generated from the catalog). Schema: WebSite, BreadcrumbList, Organization without other brands' models, VAT in offers.
+  robots.txt Disallow /api/; sitemap lastmod from content hashes (scripts/lastmod.json); helpful 404 links; GA4 add_to_cart (no personal data).

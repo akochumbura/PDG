@@ -99,8 +99,15 @@ for p in P.PAGES:
     wa = 'https://wa.me/995550004333?text=' + quote(f'გამარჯობა! მაინტერესებს {r["name"]} ({sku}).')
     dl = ''.join(f'<div>{label("dt", f"pd_{pid}_{i}l", lab)}{value(f"pd_{pid}_{i}v", val)}</div>' for i, (lab, val) in enumerate(specs))
     title_ka = html.escape(p['title'][0] + ' | საქართველოს პრემიუმ დრონები', quote=True)
+    # Search description (5 Nov 2026): name, price incl. VAT and stock exactly as the page shows them, then the intro.
+    _h = [t.split(' — ')[0] for t in p['title']]
+    _in = stock > 0
+    _first = lambda t: t.split('. ')[0].rstrip('.') + '.'  # first sentence only, so the description stays short
+    put(f'pd_{pid}_meta', (f'{_h[0]} — ₾{gel:,} დღგ-ს ჩათვლით' + (', მარაგშია საქართველოში. ' if _in else '. ') + _first(p['intro'][0]),
+                           f'{_h[1]} — ₾{gel:,} incl. VAT' + (', in stock in Georgia. ' if _in else '. ') + _first(p['intro'][1]),
+                           f'{_h[2]} — ₾{gel:,} с НДС' + (', в наличии в Грузии. ' if _in else '. ') + _first(p['intro'][2])))
     out.append(
-        f'<template data-page="{p["slug"]}.html" data-ka-title="{title_ka}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro">\n'
+        f'<template data-page="{p["slug"]}.html" data-ka-title="{title_ka}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro" data-meta="pd_{pid}_meta">\n'
         f'  <section class="section pp-main pd-page"><div class="container pp-grid"><div class="pp-head pd-head"><a class="back-link pp-back" href="/shop.html#parts" data-local data-i18n="pd_back">← მაღაზია</a>'
         + (f'<p class="eyebrow" data-i18n="pd_fits_control">{T["pd_fits_control"][0]}</p>' if p.get('specs') == 'control' else f'<p class="eyebrow" data-i18n="pd_fits">{T["pd_fits"][0]}</p>') +
         f'<h1 class="pp-title" data-i18n="pd_{pid}_h1">{html.escape(p["title"][0].split(" — ")[0])}</h1><p class="product-orig">{html.escape(r["name"])}</p>'
@@ -150,6 +157,10 @@ for sku, slug in P.KITS.items():
     put(f'pd_{pid}_intro', KIT_INTRO[slug])
     put(f'pd_{pid}_title', (f'{r["name"]} — კომპლექტი, შემადგენლობა და ფასი', f'{r["name"]} — package contents and price', f'{r["name"]} — состав комплекта и цена'))
     put(f'pd_{pid}_alt', (f'{r["name"]} — კომპლექტის შემადგენლობა', f'{r["name"]} — package contents', f'{r["name"]} — состав комплекта'))
+    # Search description (5 Nov 2026): price incl. VAT and the exact contents from the catalog (as listed on the page).
+    _cn = [(int(r[col]), key) for col, key in CONTENTS if (r.get(col) or '').strip() and int(r[col])]
+    put(f'pd_{pid}_meta', tuple(f'{r["name"]} — ₾{gel:,} {vat}: ' + ', '.join(f'{n} × {c[l][key]}' for n, key in _cn) + end
+                                for l, vat, end in (('ka', 'დღგ-ს ჩათვლით', '. მარაგშია.'), ('en', 'incl. VAT', '. In stock.'), ('ru', 'с НДС', '. В наличии.'))))
     items = []
     for col, key in CONTENTS:
         n = (r.get(col) or '').strip()
@@ -174,7 +185,7 @@ for sku, slug in P.KITS.items():
     _lim = [_st.get(v, 0) // int(r[k]) for k, v in _parts.items() if (r.get(k) or '').strip() and int(r[k])]
     kit_max = min(_lim) if _lim else 0
     out.append(
-        f'<template data-page="{slug}.html" data-ka-title="{html.escape(r["name"] + " — კომპლექტის შემადგენლობა და ფასი | საქართველოს პრემიუმ დრონები", quote=True)}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro">\n'
+        f'<template data-page="{slug}.html" data-ka-title="{html.escape(r["name"] + " — კომპლექტის შემადგენლობა და ფასი | საქართველოს პრემიუმ დრონები", quote=True)}" data-title="pd_{pid}_title" data-description="pd_{pid}_intro" data-meta="pd_{pid}_meta">\n'
         f'  <section class="section pp-main pd-page"><div class="container pp-grid"><div class="pp-head pd-head"><a class="back-link pp-back" href="/shop.html#kits" data-local data-i18n="pd_pk_back">← კომპლექტები</a>'
         f'<p class="eyebrow">XAG P150 MAX</p><h1 class="pp-title">{html.escape(r["name"])}</h1>'
         f'<p class="pd-intro" data-i18n="pd_{pid}_intro">{html.escape(KIT_INTRO[slug][0])}</p></div>'
