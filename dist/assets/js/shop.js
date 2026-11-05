@@ -445,7 +445,9 @@
       /* Picture of the chosen package (custom build: the drone); saving vs buying item by item, stated quietly. */
       var img = document.getElementById("buyImg");
       if (img) {
-        var src = st.pkg ? "/assets/img/products/" + st.pkg.p.sku + ".webp" : "/assets/img/products/" + PC.platform.sku + ".webp";
+        var src = "/assets/img/buy/" + (st.pkg ? st.pkg.p.sku : PC.platform.sku) + ".webp";
+        var th = document.getElementById("buyThumb"); if (th) th.src = st.pkg ? "/assets/img/packages/" + st.pkg.p.sku + "-t.webp" : "/assets/img/products/thumbs/" + PC.platform.sku + ".webp";
+        if (pcReady && typeof buyGo === "function") buyGo(0);
         if (img.getAttribute("src").split("?")[0] !== src) { img.classList.add("is-swap"); img.onload = function () { img.classList.remove("is-swap"); }; img.src = src; img.alt = st.pkg ? st.pkg.p.name : PC.platform.name; }
       }
       var sv = document.getElementById("pcSave");
@@ -475,6 +477,14 @@
     }
     pcBox.addEventListener("input", function (e) { if (e.target.classList.contains("qty-input")) pcShow(); });
     pcBox.addEventListener("change", function (e) { if (e.target.classList.contains("qty-input")) pcShow(); });
+    /* Gallery: thumbnails / dots scroll the slides; swiping updates them. */
+    var slidesEl = document.getElementById("buySlides"), thumbs = document.querySelectorAll(".buy-thumb");
+    function buyMark(i) { thumbs.forEach(function (b, n) { b.classList.toggle("is-on", n === i); if (n === i) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current"); }); }
+    function buyGo(i) { if (!slidesEl) return; var w = slidesEl.clientWidth; if (Math.round(slidesEl.scrollLeft / w) !== i) slidesEl.scrollTo({ left: i * w, behavior: "smooth" }); buyMark(i); }
+    if (slidesEl) {
+      thumbs.forEach(function (b) { b.addEventListener("click", function () { buyGo(Number(b.dataset.slide)); }); });
+      var sT = 0; slidesEl.addEventListener("scroll", function () { clearTimeout(sT); sT = setTimeout(function () { buyMark(Math.round(slidesEl.scrollLeft / slidesEl.clientWidth)); }, 60); }, { passive: true });
+    }
     /* Buying page (5 Nov 2026): package rows sit above the configurator; "add" on an accessory sets it to 1 (then the stepper shows). */
     document.addEventListener("click", function (e) {
       var b = e.target.closest(".pcfg-preset"); if (b) { preset(b.dataset.preset); return; }

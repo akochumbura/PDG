@@ -92,6 +92,11 @@ TEXT = {  # key: (ka, en, ru)
     'pc_send_short': ('WhatsApp-ით', 'WhatsApp', 'WhatsApp'),
     'pc_send_aria': ('შეკვეთის გაგზავნა WhatsApp-ით', 'Send the order via WhatsApp', 'Отправить заказ в WhatsApp'),
     'pb_next': ('WhatsApp-ში გაიხსნება მზა შეტყობინება. PDG დაგიდასტურებთ ფასს, მარაგს და მიწოდებას.', 'A ready message opens in WhatsApp. PDG then confirms the price, stock and delivery.', 'В WhatsApp откроется готовое сообщение. PDG подтвердит цену, наличие и доставку.'),
+    'pb_gallery': ('ფოტოები', 'Photos', 'Фото'),
+    'pb_ph_pkg': ('არჩეული კომპლექტი', 'Selected package', 'Выбранный комплект'),
+    'pb_ph_spray': ('XAG დრონი შეწამვლისას', 'XAG drone spraying', 'Дрон XAG при опрыскивании'),
+    'pb_ph_spread': ('XAG დრონი გრანულების გაფანტვისას', 'XAG drone spreading granules', 'Дрон XAG разбрасывает гранулы'),
+    'pb_ph_cargo': ('XAG დრონი ტვირთის გადატანისას', 'XAG drone carrying cargo', 'Дрон XAG переносит груз'),
     'pb_vat': ('ფასები დღგ-ს ჩათვლით', 'Prices include VAT', 'Цены с НДС'),
     'pc_vat_short': ('დღგ-ს ჩათვლით', 'incl. VAT', 'с НДС'),
     'pc_jump_cfg': ('კონფიგურატორი', 'Configurator', 'Конфигуратор'),
@@ -195,11 +200,18 @@ def block(heading='h1'):
         f'<span class="pkr-price pcfg-preset-price">₾{p["price"]:,}</span></button>' for p in d['packages'])
     cfg = html.escape(json.dumps(d, ensure_ascii=False), quote=True)
     first = d['packages'][0]
+    # Gallery (owner, 5 Nov 2026): the chosen package (tightly cropped picture, assets/img/buy/) + three field photos the owner supplied.
+    # Swipe on phones (scroll-snap, dots), thumbnails on desktop.
+    photos = [('field-spray', 'pb_ph_spray'), ('field-spread', 'pb_ph_spread'), ('field-cargo', 'pb_ph_cargo')]
+    slides = (f'<div class="buy-slide"><img id="buyImg" src="/assets/img/buy/{first["sku"]}.webp" width="1168" height="708" '
+              f'alt="{html.escape(first["name"], quote=True)}" fetchpriority="high" decoding="async"></div>'
+              + ''.join(f'<div class="buy-slide buy-slide-photo"><img src="/assets/img/buy/{f}.webp" width="1600" height="969" alt="{t[k]}" aria-label="{t[k]}" data-i18n-aria="{k}" loading="lazy" decoding="async"></div>' for f, k in photos))
+    thumbs = (f'<button type="button" class="buy-thumb is-on" data-slide="0" aria-label="{t["pb_ph_pkg"]}" data-i18n-aria="pb_ph_pkg" aria-current="true"><img id="buyThumb" src="/assets/img/packages/{first["sku"]}-t.webp" width="240" height="180" alt="" decoding="async"></button>'
+              + ''.join(f'<button type="button" class="buy-thumb" data-slide="{i + 1}" aria-label="{t[k]}" data-i18n-aria="{k}"><img src="/assets/img/buy/{f}-t.webp" width="160" height="97" alt="" loading="lazy" decoding="async"></button>' for i, (f, k) in enumerate(photos)))
+    gallery = f'<figure class="buy-figure"><div class="buy-slides" id="buySlides">{slides}</div></figure><div class="buy-thumbs" role="group" aria-label="{t["pb_gallery"]}" data-i18n-aria="pb_gallery">{thumbs}</div>'
     trust = ''.join(f'<li data-i18n="{k}">{t[k]}</li>' for k in ('pb_t1', 'pb_t2', 'pb_t3', 'pb_t4'))
     return (f'<section class="buy" id="configurator" aria-labelledby="buyTitle"><div class="container buy-grid">'
-            f'<div class="buy-pick"><div class="buy-media"><figure class="buy-figure"><img id="buyImg" src="/assets/img/products/{first["sku"]}.webp" width="1200" height="900" '
-            f'alt="{html.escape(first["name"], quote=True)}" fetchpriority="high" decoding="async"></figure>'
-            f'</div>'
+            f'<div class="buy-pick"><div class="buy-media">{gallery}</div>'
             f'<div class="buy-head">'
             f'<p class="buy-eyebrow" data-i18n="pb_eyebrow">{t["pb_eyebrow"]}</p><{heading} class="buy-title" id="buyTitle" data-i18n="pb_title">{t["pb_title"]}</{heading}>'
             f'<a class="buy-specs" href="/p150-max#specifications" data-local><span data-i18n="pb_specs">{t["pb_specs"]}</span> <span aria-hidden="true">›</span></a>'

@@ -2116,3 +2116,39 @@ html[data-theme=dark] .buy .pcfg-summary.buy-summary{background:#2c2c2e}
 .buy-lines>summary{display:flex;align-items:center;min-height:44px}
 .faq-item summary:after{flex:0 0 20px;width:20px;text-align:center}.faq-item summary{min-width:0;overflow-wrap:anywhere}
 .faq-item summary{padding-right:8px}
+/* Gallery on the buying page (owner, 5 Nov 2026): tightly cropped package picture + field photos; swipe on phones, thumbnails on desktop. */
+.buy-figure{aspect-ratio:1168/708;display:block;position:relative}
+.buy-slides{display:flex;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.buy-slides::-webkit-scrollbar{display:none}
+.buy-slide{flex:0 0 100%;height:100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center}
+.buy-slide img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.buy-slide-photo img{object-fit:cover;mix-blend-mode:normal}
+.buy-thumbs{display:flex;gap:10px;margin-top:12px;justify-content:center}
+.buy-thumb{width:76px;height:52px;padding:0;border:1px solid var(--hair);border-radius:8px;background:var(--stage);overflow:hidden;cursor:pointer;opacity:.75;transition:opacity .15s ease,border-color .15s ease}
+.buy-thumb img{width:100%;height:100%;object-fit:cover}
+.buy-thumb:first-child img{object-fit:contain;mix-blend-mode:multiply}
+.buy-thumb.is-on{opacity:1;border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.buy-thumb:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+@media(max-width:1023px){
+  .buy-figure{height:auto;aspect-ratio:1168/708;max-height:clamp(170px,calc(100svh - var(--header-height) - 470px),60vw)}
+  .buy-thumbs{gap:8px;margin-top:8px}
+  /* phones: the thumbnails become small dots so the pinned picture stays compact */
+  .buy-thumb{width:28px;height:28px;border:0;background:none;box-shadow:none;opacity:1;position:relative}
+  .buy-thumb img{display:none}
+  .buy-thumb::before{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:var(--hair)}
+  .buy-thumb.is-on{box-shadow:none}
+  .buy-thumb.is-on::before{background:var(--ink)}
+}
+/* Desktop: "prices and packages" in red in the header (owner, 5 Nov 2026). Phones: red strip under the header after scrolling. */
+@media(min-width:901px){.site-nav>a.nav-prices,.site-nav>a.nav-prices[aria-current=page]{color:var(--accent);font-weight:600}}
+.price-strip{display:none}
+@media(max-width:900px){
+  .site-header{position:sticky}
+  .price-strip{display:flex;align-items:center;justify-content:center;gap:8px;position:absolute;left:0;right:0;top:100%;height:44px;background:var(--accent);color:var(--on-accent);
+    font-size:15px;font-weight:600;text-decoration:none;transform:translateY(-100%);opacity:0;visibility:hidden;pointer-events:none;transition:transform .2s ease,opacity .2s ease,visibility 0s linear .2s;z-index:-1}
+  .site-header.strip-on .price-strip{transform:none;opacity:1;visibility:visible;pointer-events:auto;transition:transform .2s ease,opacity .2s ease}
+  .price-strip:active{background:var(--accent-strong)}
+  body.nav-lock .price-strip{display:none}
+}
+@media(prefers-reduced-motion:reduce){.price-strip{transition:none}}
+@media(max-width:1023px) and (max-height:700px){.buy-figure{max-height:130px}.buy-thumbs{margin-top:2px}}

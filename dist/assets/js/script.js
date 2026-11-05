@@ -73,7 +73,17 @@
   }
   const header = document.querySelector(".site-header");
   if (header) {
-    const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 8);
+    /* Phones (owner, 5 Nov 2026): a red "prices and packages" strip appears under the header once the visitor scrolls down
+       (not on /shop itself). It overlays the page, so nothing jumps. */
+    const onShop = /^\/(en\/|ru\/)?shop\/?$/.test(location.pathname);
+    const strip = header.querySelector(".price-strip");
+    const onScroll = () => {
+      header.classList.toggle("is-scrolled", window.scrollY > 8);
+      if (strip && !onShop) {
+        const on = window.scrollY > 280;
+        if (on !== header.classList.contains("strip-on")) { header.classList.toggle("strip-on", on); strip.setAttribute("aria-hidden", on ? "false" : "true"); strip.tabIndex = on ? 0 : -1; }
+      }
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
   }
