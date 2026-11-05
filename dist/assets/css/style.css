@@ -2257,3 +2257,14 @@ html[data-theme=dark] .buy .buy-tiles+.pcfg-offer{background:#2c2c2e}
 /* Price strip: no negative z-index (iOS Safari did not deliver taps to it); the header row stays above it. */
 .site-header>.header-inner{position:relative;z-index:2;background:inherit}
 @media(max-width:900px){.price-strip{z-index:1}}
+/* Owner, 6 Nov 2026, 03:20: in the phone menu ONLY "შეძენა" is red — no red for the current page, open groups or sub-links. */
+@media(max-width:900px){
+  .site-nav a[aria-current=page],.site-nav .nav-group-btn.is-current,.site-nav .nav-group-btn[aria-expanded=true],.site-nav .mega-col a[aria-current=page],
+  .site-nav.is-open>a[aria-current=page]:not(.nav-account-m),.site-nav.is-open .nav-group-btn.is-current,.nav-lang-d .nav-lang-opts a[aria-current=page]{color:var(--text)}
+  .site-nav .nav-group-btn[aria-expanded=true] svg,.site-nav .nav-group-btn.is-current svg{color:var(--text)}
+  .site-nav.is-open>a.nav-buy,.site-nav.is-open>a.nav-buy[aria-current=page]{color:var(--accent)}
+}
+/* Video boxes (fix 6 Nov 2026): the video fills its 16:9 frame exactly (its own box was taller than the frame, so it looked cropped and was not seen as "on screen"). */
+.pm-chapter-media:not(.pm-media-pair),.pm-media-pair figure{position:relative}
+.pm-chapter-media video,.pm-media-pair figure video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.product-feature video{aspect-ratio:16/10;height:auto}

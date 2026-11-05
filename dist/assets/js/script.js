@@ -379,19 +379,29 @@
     });
   });
 })();
-/* P150 MAX media (owner, 6 Nov 2026): XAG videos play silently only while on screen; reduced motion keeps the still picture. */
+/* P150 MAX media (owner, 6 Nov 2026; smoother 03:20): XAG videos are silent loops. A video starts loading ~1 screen before it is
+   reached (so it is ready when it arrives), and only the most visible one plays — one decoder at a time keeps iPhones smooth.
+   Reduced motion keeps the still picture. */
 (function () {
-  var vids = document.querySelectorAll("video.pm-video");
+  var vids = Array.prototype.slice.call(document.querySelectorAll("video.pm-video"));
   if (!vids.length) return;
   var big = window.matchMedia("(min-width: 1000px)").matches;
-  vids.forEach(function (v) { if (big && v.dataset.posterLg) v.poster = v.dataset.posterLg; });
+  vids.forEach(function (v) { if (big && v.dataset.posterLg) v.poster = v.dataset.posterLg; v.muted = true; v.defaultMuted = true; v.setAttribute("muted", ""); });
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
-  var io = new IntersectionObserver(function (es) {
-    es.forEach(function (e) {
-      var v = e.target;
-      if (e.isIntersecting) { if (v.preload !== "auto") { v.preload = "auto"; } var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+  function warm(v) { if (v.dataset.warm) return; v.dataset.warm = "1"; v.preload = "auto"; try { v.load(); } catch (e) {} }
+  var near = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) warm(e.target); }); }, { rootMargin: "100% 0px 100% 0px" });
+  vids.forEach(function (v) { near.observe(v); });
+  var ratio = new Map();
+  function pick() {
+    var best = null, br = 0.3;
+    vids.forEach(function (v) { var r = ratio.get(v) || 0; if (r > br) { br = r; best = v; } });
+    vids.forEach(function (v) {
+      if (v === best) { if (v.paused) { warm(v); var p = v.play(); if (p && p.catch) p.catch(function () {}); } }
       else if (!v.paused) v.pause();
     });
-  }, { threshold: 0.35 });
-  vids.forEach(function (v) { io.observe(v); });
+  }
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { ratio.set(e.target, e.intersectionRatio); }); pick(); },
+    { threshold: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1] });
+  vids.forEach(function (v) { io.observe(v); v.addEventListener("canplay", pick); });
+  document.addEventListener("visibilitychange", function () { if (document.hidden) vids.forEach(function (v) { v.pause(); }); else pick(); });
 })();

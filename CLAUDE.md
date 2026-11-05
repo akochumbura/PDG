@@ -379,3 +379,5 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 6 Nov 2026, 03:11) Red strip: no negative z-index (iOS taps); REVERSED 03:17 = appears only when scrolling UP (24px), hides when scrolling down (16px) (turning points, jitter <3px ignored).
   Phone header: search icon right of the menu lines (left of the PDG logo). Links "ყველა მახასიათებელი"/"მახასიათებლები" from other pages open /p150-max at the top
   (only the P150 MAX page's own hero link jumps to #specifications).
+- (owner, 6 Nov 2026, 03:20, LIVE) Videos: H.264 Main@3.1, 1 s keyframes, max 3 Mbit/s; the video fills its 16:9 frame absolutely (its own box was taller → cropped and not "on screen");
+  loads ~1 screen ahead, ONLY the most visible video plays (one decoder), pauses in background tabs. Phone menu: ONLY შეძენა is red (no current-page / open-group red).
