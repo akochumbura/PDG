@@ -19,9 +19,9 @@ PAGE = '/shop'  # owner, 4 Nov 2026: one configurator, on the shop (the old plat
 ENERGY = [('remotes', '05-002-02725', 'pc_remote', 'მართვის პულტი SRC5', False),
           ('batteries', '09-017-00073', 'pc_battery', 'აკუმულატორი B141050', False),
           ('chargers', '09-017-00069', 'pc_charger', 'დამტენი CM13600S', False),
-          ('towers', '09-017-00065', 'pc_tower', 'აკუმულატორის გამაგრილებელი ავზი', False)]
+          ('towers', '09-017-00065', 'pc_tower', 'აკუმულატორის გამაგრილებელი ავზი', False),
+          ('rtk', '09-016-00083', 'pc_rtk', 'მობილური RTK სადგური XRTK7', True)]  # 5 Nov 2026: with the package contents (Plus/Pro/Business include it)
 EXTRA = [('generators', '09-017-00109', 'pc_generator', 'დამუხტვის სადგური (გენერატორი) GC4000+', True),
-         ('rtk', '09-016-00083', 'pc_rtk', 'მობილური RTK სადგური XRTK7', True),
          ('spreader', '09-023-00145', 'pc_revocast', 'გრანულების გამფანტველი RevoCast\u00a05', True),
          ('sling', '05-002-02682', 'pc_revosling', 'ტვირთის საკიდი სისტემა RevoSling (შასით)', True),
          ('nozzle4', '05-002-02640', 'pc_nozzle4', '4-გამფრქვევიანი განახლების კომპლექტი (P150 MAX)', True),
@@ -49,6 +49,15 @@ TEXT = {  # key: (ka, en, ru)
     'pc_energy': ('მართვა და ენერგია', 'Control and power', 'Управление и питание'),
     'pc_extra': ('დამატებითი აღჭურვილობა', 'Additional equipment', 'Дополнительное оборудование'),
     'pc_extra_sel': ('არჩეულია {n}', '{n} selected', 'выбрано: {n}'),
+    'pkc_save': ('დაზოგავთ', 'You save', 'Экономия'),
+    'pkc_bat': ('აკუმ.', 'batt.', 'акк.'),
+    'pkc_chg': ('დამტ.', 'charg.', 'заряд.'),
+    'pkc_incl': ('ყველა კომპლექტში: დრონი RevoSpray 5-ით, SRC5 მართვის პულტი და 2 გამაგრილებელი ავზი. გენერატორი იყიდება ცალკე.',
+                 'Every package: the drone with RevoSpray 5, the SRC5 remote controller and 2 cooling tanks. The generator is sold separately.',
+                 'В каждом комплекте: дрон с RevoSpray 5, пульт SRC5 и 2 охлаждающих бака. Генератор продаётся отдельно.'),
+    'pkc_specs': ('P150 MAX-ის მახასიათებლები', 'P150 MAX specifications', 'Характеристики P150 MAX'),
+    'pkc_contents': ('შემადგენლობა', 'Contents', 'Состав'),
+    'pkc_close': ('დახურვა', 'Close', 'Закрыть'),
     'pc_more_count': ('არჩეულია: {n}', 'selected: {n}', 'выбрано: {n}'),
     'pc_optional': ('არასავალდებულო', 'optional', 'по желанию'),
     'pc_each': ('/ ცალი', '/ each', '/ шт.'),
@@ -147,17 +156,31 @@ def block(heading='h2'):
     lst = {k: (ka, opt) for k, s_, l_, ka, opt in ENERGY + EXTRA}
     energy = ''.join(_row(k, d['items'][k], *lst[k]) for k, *_ in ENERGY)
     extra = ''.join(_row(k, d['items'][k], *lst[k]) for k, *_ in EXTRA)
-    presets = (''.join(f'<button type="button" class="pcfg-preset" data-preset="{p["sku"]}" aria-pressed="false">{html.escape(p["short"])}'
-                         f' <span class="pcfg-preset-price">₾{p["price"]:,}</span></button>' for p in d['packages']))
+    # Package cards (owner, 5 Nov 2026): photo of the contents, name, price, the three differences and the saving vs item by item.
+    def keys(p):
+        q = p['q']
+        rtk = f'<b>{q["rtk"]}</b> RTK' if q.get('rtk') else 'RTK —'
+        return (f'<b>{q.get("batteries", 0)}</b> <span data-i18n="pkc_bat">{t["pkc_bat"]}</span> · <b>{q.get("chargers", 0)}</b> '
+                f'<span data-i18n="pkc_chg">{t["pkc_chg"]}</span> · {rtk}')
+    presets = ''.join(
+        f'<button type="button" class="pcfg-preset pkc" data-preset="{p["sku"]}" aria-pressed="false">'
+        f'<img class="pkc-img" src="/assets/img/packages/{p["sku"]}-t.webp" width="240" height="180" alt="" decoding="async">'
+        f'<span class="pkc-name">{html.escape(p["short"])}</span><span class="pcfg-preset-price">₾{p["price"]:,}</span>'
+        f'<span class="pkc-keys">{keys(p)}</span>'
+        + (f'<span class="pkc-save"><span data-i18n="pkc_save">{t["pkc_save"]}</span> ₾{p["single"] - p["price"]:,}</span>' if p['single'] > p['price'] else '')
+        + '</button>' for p in d['packages'])
     cfg = html.escape(json.dumps(d, ensure_ascii=False), quote=True)
     h = heading
     # Owner, 5 Nov 2026: the buying page opens with "XAG P150 MAX" + one sentence (page hero), then the presets at once:
     # no second "configurator" heading; the section keeps an accessible name.
     return (f'<section class="section pcfg-section" id="configurator" aria-label="{t["pc_title"]}" data-i18n-aria="pc_title"><div class="container">'
+            f'<div class="pcfg-presets pkc-wrap" role="group" aria-label="{t["pc_presets"]}" data-i18n-aria="pc_presets"><div class="pcfg-preset-list pkc-list">{presets}</div>'
+            f'<p class="pkc-incl"><span data-i18n="pkc_incl">{t["pkc_incl"]}</span> <a class="text-link" href="/p150-max#specifications" data-local><span data-i18n="pkc_specs">{t["pkc_specs"]}</span><span aria-hidden="true">→</span></a></p></div>'
             f'<div class="pcfg" id="platformConfig" data-config="{cfg}">'
+            # Contents of the chosen package = the quantity rows (variant A: under the cards; variant B on phones: a bottom sheet)
+            f'<div class="pcfg-sheet-head"><strong id="pcSheetTitle"></strong><button type="button" class="pcfg-sheet-close" id="pcSheetClose" aria-label="{t["pkc_close"]}" data-i18n-aria="pkc_close">×</button></div>'
             f'<div class="pcfg-options">'
-            f'<div class="pcfg-presets" role="group" aria-labelledby="pcPresetsLabel"><span class="pcfg-presets-label" id="pcPresetsLabel" data-i18n="pc_presets">{t["pc_presets"]}</span>'
-            f'<div class="pcfg-preset-list">{presets}</div></div>'
+            f'<p class="pcfg-legend pcfg-contents-title" data-i18n="pkc_contents">{t["pkc_contents"]}</p>'
             f'<div class="pcfg-row pcfg-fixed">{_thumb(d["platform"]["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="pc_platform">{t["pc_platform"]}</span>'
             f'<span class="pcfg-unit">₾{d["platform"]["price"]:,}</span></div><output class="pcfg-fixed-qty">1</output></div>'
             f'<div class="pcfg-group"><p class="pcfg-legend" data-i18n="pc_energy">{t["pc_energy"]}</p>{energy}</div>'

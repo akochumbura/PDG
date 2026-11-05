@@ -459,7 +459,6 @@ import json
 pb = ROOT / 'scripts/page-bodies.html'
 t = pb.read_text(encoding='utf-8')
 subs = [
-    (r'(<div class="shop-grid kit-grid">\n).*?(</div>\n<!--/kitGrid-->)', ''.join(card(r) for r in kits)),
     (r'(<!--shopCfg-->).*?(<!--/shopCfg-->)', '\n' + PCFG.block() + '\n'),  # owner brief, 4 Nov 2026: the shop configurator comes before the ready packages
     (r'(<div class="shop-grid" id="partsGrid">\n).*?(</div>\n<!--partsMore-->)', ''.join(card(r).replace('<article class="product"', '<article hidden class="product"', 1) if i >= 24 else card(r) for i, r in enumerate(parts))),  # first 24 visible, the rest revealed by "Load more" (shop.js PAGE)
     # Owner, 16 Oct 2026 (second brief): the full configurator lives only on /p150-max-platform; the P150 MAX page links to it.
