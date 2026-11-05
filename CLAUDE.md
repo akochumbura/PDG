@@ -363,7 +363,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   cheapest package that, with the selected surplus items on top, costs less than the current total; it may hold MORE than selected (pc_up lists the added parts,
   accepting adds them; quantities never go down). B13970S (09-017-00064) uses the B141050 picture (owner request).
 - (owner, 6 Nov 2026, 02:00) "ფასები და კომპლექტები" is gone everywhere: nav_prices = "შეძენა" (Buy / Купить), shop_title = შეძენა, and the link is REMOVED from the main menu
-  (desktop and phone). /shop is reached through the red strip, the home hero "შეძენა", and the P150 MAX page button (not in any menu).
+  (desktop and phone). 6 Nov 02:35: "შეიძინე" (nav_buy, red on desktop) → /shop restored beside "პროდუქცია" on every page. /shop is also reached through the red strip, the home hero "შეძენა", and the P150 MAX page button (not in any menu).
 - (owner, 6 Nov 2026, 02:11) Products menu = XAG P150 MAX, დრონები (/drones: P150 MAX + its packages first, then previous models), ნაწილები და აკუმულატორები.
   Rule: never two identical buttons on one screen — the red strip stays hidden while any in-page button to /shop is visible (script.js shopBtnsSeen).
 - (owner, 6 Nov 2026, 02:21) Refinement: phone call/write bar ONLY on /consultation, /service, /academy (body.has-mbar, script.js); other pages = round chat button

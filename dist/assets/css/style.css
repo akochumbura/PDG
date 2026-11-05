@@ -2235,3 +2235,5 @@ html[data-theme=dark] .buy .buy-tiles+.pcfg-offer{background:#2c2c2e}
 .page-intro{max-width:34em;font-size:clamp(17px,1.35vw,20px);line-height:1.6;color:var(--text);opacity:.82}
 /* The round chat button stays visible on dark sections too. */
 .chat-fab{box-shadow:0 0 0 1px rgba(255,255,255,.22),0 10px 28px rgba(0,0,0,.28)}
+/* Owner, 6 Nov 2026: "შეიძინე" beside "პროდუქცია" on every page (red on desktop, a normal row in the phone menu). */
+@media(min-width:901px){.site-nav>a.nav-buy{color:var(--accent);font-weight:600}}
