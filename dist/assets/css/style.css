@@ -1902,3 +1902,8 @@ dialog:focus,dialog:focus-visible{outline:none}
 /* Tap targets (5 Nov 2026 audit): package contents links and shop card titles get a taller hit area without changing the layout. */
 .pk-in a{display:inline-block;padding:6px 0;margin:-6px 0}
 @media (max-width:768px){.shop-grid .product-body .product-link{display:block;padding:4px 0}}
+/* Phones (5 Nov 2026 accessibility check): white hero text sits on the light sky (contrast ~2.7:1, below WCAG). The approved
+   phone hero has no shade, so only a soft text shadow is added here; a darker sky area would be the owner's design decision. */
+@media(max-width:600px){
+  .hero-content .hero-tagline,.hero-content h1,.hero-content .hero-kicker{text-shadow:0 1px 10px rgba(12,30,40,.45)}
+}

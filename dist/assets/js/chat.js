@@ -115,7 +115,10 @@
       msgs.forEach(function (m) { bubble(m.r, m.t); });
       var mine = msgs.filter(function (m) { return m.r === "v"; }).length;
       var answered = msgs.some(function (m) { return m.r === "team"; });
-      if (live && mine && !ai && !answered) {
+      /* 5 Nov 2026: also when the AI could not answer (provider error / limit): the last message is still the visitor's,
+         so ask for a contact like the team-only chat does, instead of leaving the question without any reply. */
+      var unanswered = msgs.length && msgs[msgs.length - 1].r === "v";
+      if (live && mine && !answered && (!ai || (unanswered && !busy))) {
         if (store(CONTACT_KEY)) bubble("ai", t("chat_contact_thanks")); else log.appendChild(contactBox());
       }
       chips.hidden = mine > 0;
@@ -166,7 +169,7 @@
           bubble("ai", t(d && d.error === "busy" ? "chat_busy" : "chat_error"), "chat-error");
           other.hidden = false; log.scrollTop = log.scrollHeight;
         })
-        .then(function () { busy = false; go.disabled = false; box.focus(); });
+        .then(function () { busy = false; go.disabled = false; if (ai && msgs.length && msgs[msgs.length - 1].r === "v") draw(); box.focus(); });
     }
     function size() { box.style.height = ""; if (box.value) box.style.height = Math.min(Math.max(box.scrollHeight, 46), 140) + "px"; }
     box.addEventListener("input", size);
