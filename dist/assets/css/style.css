@@ -2192,3 +2192,25 @@ a.pcfg-label{display:block;padding:12px 0;margin:-12px 0}
 html[data-theme=dark] .buy-zoom,html[data-theme=dark] .buy-zoom::backdrop,html[data-theme=dark] .buy-zoom-slide,html[data-theme=dark] .buy-zoom-photo{background:#000}
 html[data-theme=dark] .buy-zoom-count{color:#a1a1a6}
 html[data-theme=dark] .buy-zoom-x,html[data-theme=dark] .buy-zoom-nav{background:rgba(58,58,60,.92);color:#f5f5f7}
+/* Owner, 6 Nov 2026: the red header link reads "შეძენა" on desktop; the phone menu keeps "ფასები და კომპლექტები". */
+.nav-prices .np-m{display:none}
+@media(max-width:900px){.nav-prices .np-d{display:none}.nav-prices .np-m{display:inline}}
+/* Phone bar: the package saving, when there is one (owner, 6 Nov 2026); tapping it shows the suggestion. */
+.pcfg-bar-deal{display:block;margin:2px 0 0;padding:0;border:0;background:none;font:600 12px/1.3 var(--font-ka,inherit);color:var(--accent);text-align:left;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.pcfg-bar-deal[hidden]{display:none}
+.pcfg-bar-sum:has(.pcfg-bar-deal:not([hidden])) .pcfg-bar-label{display:none}
+.buy .buy-tiles+.pcfg-offer{margin-top:16px}
+/* Dark theme: product thumbnails sit on a light tile (multiply on a dark surface made them disappear). */
+html[data-theme=dark] .buy .pcfg-thumb{mix-blend-mode:normal;background:#f2f2f4}
+.buy .buy-tiles+.pcfg-offer{border:0;background:var(--stage);padding:18px}
+.buy .pcfg-offer p{font-size:15px;color:var(--ink)}
+.buy .pcfg-offer p b{font-weight:600}
+.buy .pcfg-offer p strong{color:var(--accent);font-weight:600;white-space:nowrap}
+html[data-theme=dark] .buy .buy-tiles+.pcfg-offer{background:#2c2c2e}
+/* Home hero, two actions (owner, 6 Nov 2026): შეძენა (main) + დეტალები, equal width; side by side on phones. */
+.hero .hero-actions{gap:12px}
+.hero .hero-actions .button{min-width:168px;min-height:48px;padding-inline:28px}
+@media(max-width:600px){
+  .hero .hero-actions{flex-direction:row;flex-wrap:nowrap;justify-content:center;align-items:stretch;width:100%;gap:10px}
+  .hero .hero-actions .button{flex:1 1 0;min-width:0;max-width:170px;padding-inline:12px}
+}

@@ -349,10 +349,13 @@
       var chosen = pcMode ? pkgBy(pcMode) : null;
       if (chosen && fits(chosen, q)) pkg = withPkg(chosen, q);
       var total = pkg ? pkg.total : single;
+      /* One suggestion (owner, 6 Nov 2026): any package that, with the selected surplus items on top, costs less than the current total.
+         It may hold more than was selected (the next level with fewer chosen parts): the extra parts are listed and added on acceptance. */
       PC.packages.forEach(function (p) {
-        if (!fits(p, q) || (pkg && pkg.p === p)) return;
-        var c = withPkg(p, q);
-        if (c.total < total && (!offer || c.total < offer.total)) offer = c;
+        if (pkg && pkg.p === p) return;
+        var c = withPkg(p, q); c.added = [];
+        pcKeys.forEach(function (k) { var d = (p.q[k] || 0) - (q[k] || 0); if (d > 0) c.added.push([k, d]); });
+        if (c.total < total && (!offer || c.total < offer.total || (c.total === offer.total && c.added.length > offer.added.length))) offer = c;
       });
       if (offer) offer.saving = total - offer.total;
       return { q: q, single: single, pkg: pkg, total: total, offer: offer };
@@ -429,13 +432,19 @@
       ap.classList.toggle("is-note", !st.pkg && !!pcBroken);
       ap.hidden = !st.pkg && !pcBroken;
       ap.textContent = st.pkg ? tx("pc_applied").replace("{name}", st.pkg.p.short) : (pcBroken ? tx("pc_broken").replace("{name}", pcBroken) : "");
-      var ob = document.getElementById("pcOffer");
-      pcOfferPkg = st.offer ? st.offer.p : null;
+      var ob = document.getElementById("pcOffer"), deal = document.getElementById("pcBarDeal");
+      pcOfferPkg = st.offer || null;
       if (ob) {
         ob.hidden = !st.offer;
-        if (st.offer) document.getElementById("pcOfferText").textContent = tx("pc_offer").replace("{name}", st.offer.p.short).replace("{total}", fmt(st.offer.total)).replace("{saving}", fmt(st.offer.saving))
-          + (st.offer.extras.length ? " " + tx("pc_offer_extras") : "");
+        if (st.offer) {
+          var o = st.offer, txt = o.added.length
+            ? tx("pc_up").replace("{added}", o.added.map(function (x) { return rowLabel(x[0]) + " × " + x[1]; }).join(", "))
+            : tx("pc_offer") + (o.extras.length ? " " + tx("pc_offer_extras") : "");
+          var esc = function (v) { return String(v).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+          document.getElementById("pcOfferText").innerHTML = esc(txt).replace("{name}", "<b>" + esc(o.p.short) + "</b>").replace("{total}", esc(fmt(o.total))).replace("{saving}", "<strong>" + esc(fmt(o.saving)) + "</strong>");
+        }
       }
+      if (deal) { deal.hidden = !st.offer; if (st.offer) deal.textContent = tx("pc_deal").replace("{name}", st.offer.p.short).replace("{saving}", fmt(st.offer.saving)); }
       var m = missing(st), rm = document.getElementById("pcRemind");
       rm.hidden = !m.length; if (m.length) rm.textContent = tx("pc_remind").replace("{list}", m.join(", "));
       document.getElementById("pcTotal").textContent = fmt(st.total);
@@ -523,7 +532,14 @@
       if (a) preset(a.getAttribute("data-preset-link"));
     });
     var ob0 = document.getElementById("pcOfferBtn");
-    if (ob0) ob0.addEventListener("click", function () { if (pcOfferPkg) { pcMode = pcOfferPkg.sku; pcBroken = ""; pcShow(); } });
+    /* Accepting: the package price applies; parts it holds beyond the selection are added (quantities never go down). */
+    if (ob0) ob0.addEventListener("click", function () {
+      var o = pcOfferPkg; if (!o) return;
+      if (o.added.length) { var q = pcQ(); o.added.forEach(function (x) { q[x[0]] = (q[x[0]] || 0) + x[1]; }); setQ(q); }
+      pcMode = o.p.sku; pcBroken = ""; pcShow();
+    });
+    var dl0 = document.getElementById("pcBarDeal");
+    if (dl0) dl0.addEventListener("click", function () { var ob = document.getElementById("pcOffer"); if (ob && !ob.hidden) ob.scrollIntoView({ behavior: "smooth", block: "center" }); });
     document.getElementById("pcWa").addEventListener("click", pcSend);
     /* Owner, 5 Nov 2026: the main action is the cart (red); WhatsApp is the secondary option. Adding opens the cart. */
     function pcToCart() {

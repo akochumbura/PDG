@@ -19,11 +19,11 @@
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png?v=dea93b4c62">
   <script>try{var t=localStorage.getItem("pdge-theme")||"light";document.documentElement.dataset.theme=t}catch(e){}</script>
   <link rel="preload" href="/assets/fonts/D-DIN.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="/assets/css/style.css?v=94c7f99572">
-  <script src="/assets/js/content-en.js?v=51f8137c32" defer></script>
+  <link rel="stylesheet" href="/assets/css/style.css?v=954d6f6062">
+  <script src="/assets/js/content-en.js?v=b3cb03c372" defer></script>
   <script src="/assets/js/script.js?v=d8319444b3" defer></script>
   <script src="/assets/js/payments-config.js?v=ec0c784248" defer></script>
-  <script src="/assets/js/shop.js?v=7a239ca751" defer></script>
+  <script src="/assets/js/shop.js?v=1f94c6270d" defer></script>
   <script src="/assets/js/chat.js?v=b9ab8bc123" defer></script>
   <script src="/assets/js/account.js?v=cdadcb30ae" defer></script>
 <script src="/assets/js/analytics.js?v=85d62f6363" defer></script>
@@ -51,7 +51,7 @@
 </div>
 </div></div>
 </div>
-        <a class="nav-prices" href="/en/shop" data-local data-i18n="nav_prices">Prices and packages</a>
+        <a class="nav-prices" href="/en/shop" data-local><span class="np-d" data-i18n="strip_buy">Buy</span><span class="np-m" data-i18n="nav_prices">Prices and packages</span></a>
         <a href="/en/service" data-local data-i18n="nav_service">Service</a>
         <a href="/en/academy" data-local data-i18n="nav_academy">Academy</a>
         <a href="/en/about" data-local class="nav-top-about" data-i18n="nav_about">About us</a>
@@ -71,7 +71,7 @@
         <button type="button" class="search-btn" id="searchOpen" aria-label="Search" data-i18n-aria="search_open" aria-haspopup="dialog"><svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button><a class="account-link" href="/en/account" data-local aria-label="Account" data-i18n-aria="nav_account"><svg width="21" height="21" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg></a><a class="cart-link" href="/en/shop#cart" data-local aria-label="Cart" data-i18n-aria="cart_title"><svg width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg><span class="cart-count" id="cartCount" hidden>0</span></a><button class="nav-toggle" id="navToggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Open menu" data-i18n-aria="menu_open"><span></span><span></span></button>
       </div>
     </div>
-    <a class="price-strip" href="/en/shop" data-local tabindex="-1" aria-hidden="true"><span data-i18n="nav_prices">Prices and packages</span> <span aria-hidden="true">→</span></a>
+    <a class="price-strip" href="/en/shop" data-local tabindex="-1" aria-hidden="true"><span data-i18n="strip_buy">Buy</span> <span aria-hidden="true">→</span></a>
   </header><main id="main"><div id="kits" class="anchor-kits"></div>
 <!--shopCfg-->
 <section class="buy" id="configurator" aria-labelledby="buyTitle"><div class="container buy-grid">
@@ -107,7 +107,7 @@
 <div class="buy-panel"><div class="pcfg" id="platformConfig" data-config='{"platform": {"sku": "09-007-00188", "name": "XAG P150 MAX Platform (RevoSpray 5)", "price": 41999, "max": 10}, "items": {"remotes": {"sku": "05-002-02725", "name": "XAG SRC5 Smart remote controller", "price": 4999, "max": 10, "group": "energy", "label": "pc_remote"}, "batteries": {"sku": "09-017-00073", "name": "XAG B141050 Smart Super Charge Battery", "price": 5999, "max": 60, "group": "energy", "label": "pc_battery"}, "chargers": {"sku": "09-017-00069", "name": "XAG CM13600S Charger", "price": 3499, "max": 24, "group": "energy", "label": "pc_charger"}, "towers": {"sku": "09-017-00065", "name": "XAG 2024 Battery Cooling Tower (INTL)", "price": 799, "max": 24, "group": "energy", "label": "pc_tower"}, "rtk": {"sku": "09-016-00083", "name": "XAG XRTK7 Mobile Station (INTL)", "price": 3999, "max": 8, "group": "energy", "label": "pc_rtk"}, "generators": {"sku": "09-017-00109", "name": "XAG GC4000+ Super Charging Station (Gen III)", "price": 5899, "max": 8, "group": "extra", "label": "pc_generator"}, "spreader": {"sku": "09-023-00145", "name": "XAG P150 Max RevoCast 5 (Screw Feeder L)", "price": 8999, "max": 2, "group": "extra", "label": "pc_revocast"}, "sling": {"sku": "05-002-02682", "name": "XAG RevoSling system (RevoSling + Landing Gear 05-002-02683, INTL)", "price": 3498, "max": 2, "group": "extra", "label": "pc_revosling"}, "nozzle4": {"sku": "05-002-02640", "name": "XAG 4-Nozzle Upgrade Kit (INTL) (P150MAX)", "price": 2699, "max": 3, "group": "extra", "label": "pc_nozzle4"}, "led": {"sku": "09-027-00003", "name": "XAG 90W LED Headlight", "price": 1499, "max": 2, "group": "extra", "label": "pc_led"}}, "packages": [{"sku": "PDG-P150MAX-STARTER", "name": "XAG P150 MAX Starter", "short": "Starter", "price": 75999, "single": 79590, "q": {"remotes": 1, "batteries": 4, "chargers": 2, "towers": 2}, "max": 10, "url": "/p150-max-starter", "key": "starter"}, {"sku": "PDG-P150MAX-PLUS", "name": "XAG P150 MAX Plus", "short": "Plus", "price": 83999, "single": 90587, "q": {"remotes": 1, "batteries": 4, "chargers": 4, "towers": 2, "rtk": 1}, "max": 6, "url": "/p150-max-plus", "key": "plus"}, {"sku": "PDG-P150MAX-PRO", "name": "XAG P150 MAX Pro", "short": "Pro", "price": 87999, "single": 95587, "q": {"remotes": 1, "batteries": 6, "chargers": 2, "towers": 2, "rtk": 1}, "max": 8, "url": "/p150-max-pro", "key": "pro"}, {"sku": "PDG-P150MAX-BUSINESS", "name": "XAG P150 MAX Business", "short": "Business", "price": 104999, "single": 114583, "q": {"remotes": 1, "batteries": 8, "chargers": 4, "towers": 2, "rtk": 1}, "max": 6, "url": "/p150-max-business", "key": "business"}], "page": "/shop"}'>
 <div class="pcfg-options">
 <div class="buy-step">
-<h2 class="buy-step-h"><span data-i18n="pb_step2">What is included.</span></h2>
+<h2 class="buy-step-h"><span data-i18n="pb_step2">Adjust your package</span></h2>
 <div class="buy-tiles">
 <div class="pcfg-row pcfg-fixed">
 <a class="pcfg-thumb-link" href="/en/p150-max" data-local tabindex="-1" aria-hidden="true"><img class="pcfg-thumb" src="/assets/img/products/thumbs/09-007-00188.webp?v=afac9f516b" width="96" height="72" alt="" loading="lazy" decoding="async"></a><div class="pcfg-name">
@@ -153,6 +153,10 @@
 <button type="button" class="qty-btn" data-step="-1" aria-label="Decrease quantity" data-i18n-aria="qty_less">−</button><input class="qty-input" type="number" inputmode="numeric" min="0" max="8" step="1" value="0" aria-label="XRTK7 mobile RTK station" data-i18n-aria="pc_rtk"><button type="button" class="qty-btn" data-step="1" aria-label="Increase quantity" data-i18n-aria="qty_more">+</button>
 </div>
 </div>
+</div>
+<div class="pcfg-offer" id="pcOffer" role="status" hidden>
+<p id="pcOfferText"></p>
+<button class="button button-line pcfg-offer-btn" id="pcOfferBtn" type="button" data-i18n="pc_offer_btn">Choose the package</button>
 </div>
 </div>
 <details class="buy-step pcfg-extra" id="pcExtra"><summary class="buy-step-h"><span class="buy-sum-t"><span data-i18n="pb_step3">Accessories</span><small class="buy-step-sub" data-i18n="pb_step3_q">Generator, spreading, cargo and more.</small></span><span class="pcfg-extra-count" id="pcExtraCount" hidden></span></summary><div class="buy-acc">
@@ -204,10 +208,6 @@
 </div>
 <p class="buy-save" id="pcSave" hidden></p>
 <p class="pcfg-applied" id="pcApplied" hidden></p>
-<div class="pcfg-offer" id="pcOffer" hidden>
-<p id="pcOfferText"></p>
-<button class="button button-line pcfg-offer-btn" id="pcOfferBtn" type="button" data-i18n="pc_offer_btn">Choose the package</button>
-</div>
 <p class="pcfg-remind" id="pcRemind" role="status" hidden></p>
 <div class="pcfg-actions">
 <button class="button button-red" id="pcCart" type="button"><span data-i18n="pc_cart">Add to cart</span></button><button class="button button-line" id="pcWa" type="button"><span data-i18n="pc_send">Send via WhatsApp</span></button>
@@ -224,7 +224,7 @@
 </div>
 <div class="pcfg-bar" id="pcBar" aria-hidden="true">
 <div class="pcfg-bar-sum">
-<strong id="pcBarTotal">₾75,999</strong><span class="pcfg-bar-label" data-i18n="pc_vat_short">incl. VAT</span>
+<strong id="pcBarTotal">₾75,999</strong><span class="pcfg-bar-label" data-i18n="pc_vat_short">incl. VAT</span><button class="pcfg-bar-deal" id="pcBarDeal" type="button" hidden></button>
 </div>
 <button class="button button-red" type="button" id="pcBarSend" tabindex="-1" aria-label="Add to cart" data-i18n-aria="pc_cart"><span data-i18n="pc_bar_cart">Add to cart</span></button>
 </div></section>

@@ -63,7 +63,7 @@ TEXT = {  # key: (ka, en, ru)
     'pb_title': ('XAG P150 MAX', 'XAG P150 MAX', 'XAG P150 MAX'),
     'pb_step1': ('კომპლექტი.', 'Package.', 'Комплект.'),
     'pb_step1_q': ('რომელი გჭირდებათ?', 'Which one is right for you?', 'Какой вам подходит?'),
-    'pb_step2': ('კომპლექტში შედის.', 'What is included.', 'Что входит.'),
+    'pb_step2': ('მოარგეთ კომპლექტი', 'Adjust your package', 'Настройте комплект'),
     'pb_step3': ('დამატებითი აღჭურვილობა', 'Accessories', 'Дополнительное оборудование'),
     'pb_step3_q': ('გენერატორი, გაფანტვა, ტვირთი და სხვა.', 'Generator, spreading, cargo and more.', 'Генератор, разбрасывание, груз и другое.'),
     'pb_add': ('დამატება', 'Add', 'Добавить'),
@@ -87,6 +87,9 @@ TEXT = {  # key: (ka, en, ru)
     'pc_offer': ('{name} კომპლექტით ჯამი იქნება {total} — დაზოგავთ {saving}.', 'With the {name} package the total is {total}, you save {saving}.',
                  'С комплектом {name} итого {total}, экономия {saving}.'),
     'pc_offer_extras': ('დანარჩენი ნივთები ცალკე ფასით რჩება.', 'The other items stay at their own prices.', 'Остальное остается по отдельным ценам.'),
+    'pc_up': ('{name} კომპლექტით ჯამი იქნება {total} — დაზოგავთ {saving} და დამატებით მიიღებთ: {added}.', 'With the {name} package the total is {total}, you save {saving} and also get: {added}.',
+              'С комплектом {name} итого {total}, экономия {saving}, и дополнительно вы получите: {added}.'),
+    'pc_deal': ('{name}: დაზოგეთ {saving}', '{name}: save {saving}', '{name}: экономия {saving}'),
     'pc_offer_btn': ('კომპლექტის არჩევა', 'Choose the package', 'Выбрать комплект'),
     'pc_broken': ('{name} კომპლექტის შემადგენლობა აღარ არის სრული, ამიტომ ფასი ცალ-ცალკეა დათვლილი.', 'The {name} package is no longer complete, so items are priced individually.',
                   'Комплект {name} больше не полный, поэтому цена рассчитана поштучно.'),
@@ -252,7 +255,8 @@ def block(heading='h1'):
             f'<div class="pcfg-options">'
             f'<div class="buy-step"><h2 class="buy-step-h"><span data-i18n="pb_step2">{t["pb_step2"]}</span></h2>'
             f'<div class="buy-tiles"><div class="pcfg-row pcfg-fixed"><a class="pcfg-thumb-link" href="/p150-max" data-local tabindex="-1" aria-hidden="true">{_thumb(d["platform"]["sku"])}</a><div class="pcfg-name"><a class="pcfg-label" href="/p150-max" data-local data-i18n="pc_platform">{t["pc_platform"]}</a>'
-            f'<span class="pcfg-unit">₾{d["platform"]["price"]:,}</span></div><output class="pcfg-fixed-qty">1</output></div>{energy}</div></div>'
+            f'<span class="pcfg-unit">₾{d["platform"]["price"]:,}</span></div><output class="pcfg-fixed-qty">1</output></div>{energy}</div>'
+            f'<div class="pcfg-offer" id="pcOffer" role="status" hidden><p id="pcOfferText"></p><button class="button button-line pcfg-offer-btn" id="pcOfferBtn" type="button" data-i18n="pc_offer_btn">{t["pc_offer_btn"]}</button></div></div>'
             f'<details class="buy-step pcfg-extra" id="pcExtra"><summary class="buy-step-h"><span class="buy-sum-t"><span data-i18n="pb_step3">{t["pb_step3"]}</span>'
             f'<small class="buy-step-sub" data-i18n="pb_step3_q">{t["pb_step3_q"]}</small></span><span class="pcfg-extra-count" id="pcExtraCount" hidden></span></summary>'
             f'<div class="buy-acc">{extra}</div></details>'
@@ -262,7 +266,6 @@ def block(heading='h1'):
             f'<span class="pcfg-total-label" data-i18n="pc_vat_short">{t["pc_vat_short"]}</span></div>'
             f'<p class="buy-save" id="pcSave" hidden></p>'
             f'<p class="pcfg-applied" id="pcApplied" hidden></p>'
-            f'<div class="pcfg-offer" id="pcOffer" hidden><p id="pcOfferText"></p><button class="button button-line pcfg-offer-btn" id="pcOfferBtn" type="button" data-i18n="pc_offer_btn">{t["pc_offer_btn"]}</button></div>'
             f'<p class="pcfg-remind" id="pcRemind" role="status" hidden></p>'
             f'<div class="pcfg-actions"><button class="button button-red" id="pcCart" type="button"><span data-i18n="pc_cart">{t["pc_cart"]}</span></button>'
             f'<button class="button button-line" id="pcWa" type="button"><span data-i18n="pc_send">{t["pc_send"]}</span></button></div>'
@@ -271,6 +274,6 @@ def block(heading='h1'):
             f'<details class="buy-lines"><summary data-i18n="pkc_contents">{t["pkc_contents"]}</summary><ul class="pcfg-list" id="pcList"></ul></details>'
             f'</aside></div></div></div>'
             f'<div class="pcfg-bar" id="pcBar" aria-hidden="true"><div class="pcfg-bar-sum"><strong id="pcBarTotal">₾{first["price"]:,}</strong>'
-            f'<span class="pcfg-bar-label" data-i18n="pc_vat_short">{t["pc_vat_short"]}</span></div>'
+            f'<span class="pcfg-bar-label" data-i18n="pc_vat_short">{t["pc_vat_short"]}</span><button class="pcfg-bar-deal" id="pcBarDeal" type="button" hidden></button></div>'
             f'<button class="button button-red" type="button" id="pcBarSend" tabindex="-1" aria-label="{t["pc_cart"]}" data-i18n-aria="pc_cart"><span data-i18n="pc_bar_cart">{t["pc_bar_cart"]}</span></button></div>'
             f'</section>')

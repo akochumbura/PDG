@@ -358,3 +358,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   "ფასები და კომპლექტები": red in the desktop header; phones get a red strip under the header after 280px of scrolling (.price-strip, not on /shop).
 - (owner, 5 Nov 2026, 22:40, LIVE) Buying page main action = red "კალათაში დამატება" (adds and opens the cart; phone bar "კალათაში"); WhatsApp = secondary outline button.
   Phone picture = full width (height (100vw-32px)*0.606, no aspect-ratio+max-height: iOS narrowed it). Red prices strip: shows while scrolling down, fades when scrolling up.
+- (owner, 6 Nov 2026, LIVE) Red strip + desktop red header link = "შეძენა" (strip_buy; phone menu keeps "ფასები და კომპლექტები"); home hero = red "შეძენა" (/shop) + outline "დეტალები" (/p150-max).
+  Buying page list heading "მოარგეთ კომპლექტი" (pb_step2). Package suggestion (#pcOffer, directly under the list, + "Pro: დაზოგეთ ₾X" in the phone bar):
+  cheapest package that, with the selected surplus items on top, costs less than the current total; it may hold MORE than selected (pc_up lists the added parts,
+  accepting adds them; quantities never go down). B13970S (09-017-00064) uses the B141050 picture (owner request).

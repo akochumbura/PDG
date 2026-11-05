@@ -21,11 +21,11 @@
   <link rel="preload" href="/assets/fonts/D-DIN.woff" as="font" type="font/woff" crossorigin>
   <link rel="preload" href="/assets/img/p150-max-flight.webp?v=a092c97404" as="image" media="(min-width: 701px)" imagesrcset="/assets/img/p150-max-flight-2048.webp?v=722dac8934 2048w, /assets/img/p150-max-flight.webp 3840w" imagesizes="100vw" fetchpriority="high">
   <link rel="preload" href="/assets/img/p150-max-flight-1200.webp?v=b2d9e74c15" as="image" media="(max-width: 700px)" fetchpriority="high">
-  <link rel="stylesheet" href="/assets/css/style.css?v=94c7f99572">
-  <script src="/assets/js/content-en.js?v=51f8137c32" defer></script>
+  <link rel="stylesheet" href="/assets/css/style.css?v=954d6f6062">
+  <script src="/assets/js/content-en.js?v=b3cb03c372" defer></script>
   <script src="/assets/js/script.js?v=d8319444b3" defer></script>
   <script src="/assets/js/payments-config.js?v=ec0c784248" defer></script>
-  <script src="/assets/js/shop.js?v=7a239ca751" defer></script>
+  <script src="/assets/js/shop.js?v=1f94c6270d" defer></script>
   <script src="/assets/js/chat.js?v=b9ab8bc123" defer></script>
   <script src="/assets/js/account.js?v=cdadcb30ae" defer></script>
 <script src="/assets/js/analytics.js?v=85d62f6363" defer></script>
@@ -54,7 +54,7 @@
 </div>
 </div></div>
 </div>
-        <a class="nav-prices" href="/en/shop" data-local data-i18n="nav_prices">Prices and packages</a>
+        <a class="nav-prices" href="/en/shop" data-local><span class="np-d" data-i18n="strip_buy">Buy</span><span class="np-m" data-i18n="nav_prices">Prices and packages</span></a>
         <a href="/en/service" data-local data-i18n="nav_service">Service</a>
         <a href="/en/academy" data-local data-i18n="nav_academy">Academy</a>
         <a href="/en/about" data-local class="nav-top-about" data-i18n="nav_about">About us</a>
@@ -74,7 +74,7 @@
         <button type="button" class="search-btn" id="searchOpen" aria-label="Search" data-i18n-aria="search_open" aria-haspopup="dialog"><svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button><a class="account-link" href="/en/account" data-local aria-label="Account" data-i18n-aria="nav_account"><svg width="21" height="21" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg></a><a class="cart-link" href="/en/shop#cart" data-local aria-label="Cart" data-i18n-aria="cart_title"><svg width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg><span class="cart-count" id="cartCount" hidden>0</span></a><button class="nav-toggle" id="navToggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Open menu" data-i18n-aria="menu_open"><span></span><span></span></button>
       </div>
     </div>
-    <a class="price-strip" href="/en/shop" data-local tabindex="-1" aria-hidden="true"><span data-i18n="nav_prices">Prices and packages</span> <span aria-hidden="true">→</span></a>
+    <a class="price-strip" href="/en/shop" data-local tabindex="-1" aria-hidden="true"><span data-i18n="strip_buy">Buy</span> <span aria-hidden="true">→</span></a>
   </header>
   <main id="main">
     <section class="hero" id="top" aria-labelledby="hero-heading">
@@ -88,7 +88,8 @@
         <h1 id="hero-heading" data-i18n="hero_title">XAG P150 MAX</h1>
         <p class="hero-kicker" data-i18n="hero_kind">Agricultural drone</p>
       <div class="hero-actions">
-<a class="button button-red" href="/en/p150-max" data-local><span data-i18n="hero_prices">Details</span></a>
+<a class="button button-red" href="/en/shop" data-local><span data-i18n="hero_buy">Buy</span></a>
+<a class="button button-ghost" href="/en/p150-max" data-local><span data-i18n="hero_prices">Details</span></a>
       </div>
       </div>
       <a class="hero-scroll" href="#drones"><span data-i18n="scroll_hint">Scroll to explore</span><span aria-hidden="true">↓</span></a>
