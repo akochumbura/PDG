@@ -79,6 +79,13 @@
     const strip = header.querySelector(".price-strip");
     /* Shown while scrolling down, fades away when scrolling up (owner, 5 Nov 2026). */
     let lastY = window.scrollY, run = 0;
+    /* Never two identical buttons on one screen (owner, 6 Nov 2026): while a button to the shop is visible in the page, the strip stays away. */
+    let shopBtnsSeen = 0;
+    if (strip && "IntersectionObserver" in window) {
+      const seen = new Set();
+      const io = new IntersectionObserver((es) => { es.forEach((e) => { if (e.isIntersecting) seen.add(e.target); else seen.delete(e.target); }); shopBtnsSeen = seen.size; onScroll(); }, { rootMargin: "-110px 0px 0px 0px" });
+      document.querySelectorAll("main a.button[href]").forEach((a) => { if (/^\/(en\/|ru\/)?shop(\.html)?\/?$/.test(a.pathname)) io.observe(a); });
+    }
     const onScroll = () => {
       const y = window.scrollY;
       header.classList.toggle("is-scrolled", y > 8);
@@ -88,7 +95,7 @@
         if (d !== 0 && Math.sign(d) !== Math.sign(run)) run = 0;
         run += d;
         let on = header.classList.contains("strip-on");
-        if (y < 280) { on = false; run = 0; } else if (run > 24) on = true; else if (run < -24) on = false;
+        if (y < 280 || shopBtnsSeen) { on = false; run = 0; } else if (run > 24) on = true; else if (run < -24) on = false;
         if (on !== header.classList.contains("strip-on")) { header.classList.toggle("strip-on", on); strip.setAttribute("aria-hidden", on ? "false" : "true"); strip.tabIndex = on ? 0 : -1; }
       }
     };
