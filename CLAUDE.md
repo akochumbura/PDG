@@ -347,3 +347,9 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   /shop = "XAG P150 MAX" + one sentence, then the configurator presets at once (no second heading), extras collapsed in <details id=pcExtra> with a selected count,
   summary one component per line with right-aligned quantities, then the ready packages; /parts = parts and batteries (search, categories, sorting, load more, cart).
   Old /shop#parts, /shop?q=…#parts and /shop#previous-models forward (script.js). Parts Product schema + merchant feed + search prices read /parts.
+- (owner, 5 Nov 2026, approved "yes") /shop = premium buying page (configurator.block(), "work from the Apple site"): large package picture (products/<package SKU>.webp,
+  the drone for custom builds) sticky on the left (desktop) / pinned under the header while the package rows scroll (phones); h1 "XAG P150 MAX";
+  package rows (name, batteries · chargers · RTK, price 20px/600) + "ფასები დღგ-ს ჩათვლით"; "კომპლექტში შედის." list (drone and SRC5 fixed at 1, the rest steppers);
+  "დამატებითი აღჭურვილობა" (examples in small text) as accessory cards with "დამატება"; summary: total, quiet saving vs item by item, "შეკვეთის გაგზავნა WhatsApp-ით"
+  + next-step note (pb_next), cart button, four verified trust facts (pb_t1..4). Drone row name = "XAG P150 MAX — RevoSpray 5" (pc_platform, no "პლატფორმა").
+  No separate ready-package cards on /shop (span#packages kept as an anchor). Pricing rules, ?c=/?m=/?kit= links, cart and offer unchanged.

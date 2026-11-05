@@ -2089,3 +2089,24 @@ html[data-theme=dark] .buy .pcfg-summary.buy-summary{background:#2c2c2e}
   .buy-head{margin-top:16px}
   .buy-panel{margin-top:0}
 }
+/* Owner, 5 Nov 2026 (phone review): quantities fully visible, prices as strong as the names, VAT by the selector, short accessories heading, next step under the button. */
+.buy .pcfg-stepper .qty-input{width:48px;min-width:48px;padding:0;font-size:17px;font-weight:500;text-align:center}
+.buy .pcfg-fixed-qty{min-width:48px;font-size:17px;color:var(--ink);text-align:center;justify-self:end;margin-right:44px}
+.pcfg-preset.pkr .pkr-price{font:600 20px/1.2 var(--font-latin)}
+.pkr-vat{margin:10px 0 0;font-size:13px;color:var(--soft);text-align:right}
+.buy-sum-t{display:flex;flex-direction:column;gap:4px}
+.buy-step-sub{font-size:14px;font-weight:400;line-height:1.4;color:var(--soft)}
+.buy-next{margin:-4px 0 0;font-size:13px;line-height:1.5;color:var(--soft)}
+@media(max-width:768px){.pcfg-preset.pkr .pkr-price{font-size:18px}.pcfg-bar .button{min-width:0}}
+.buy-grid{row-gap:0}
+.buy .pcfg-label{overflow-wrap:normal;word-break:normal}
+@media(max-width:768px){
+  .buy .pcfg-row{grid-template-columns:44px minmax(0,1fr) auto;gap:10px}
+  .buy .pcfg-thumb{width:44px;height:33px}
+  .buy .pcfg-label{font-size:14px}
+  .buy .pcfg-stepper .qty-btn{width:40px}
+  .buy .pcfg-stepper .qty-input{width:40px;min-width:40px}
+  .buy .pcfg-fixed-qty{min-width:40px;margin-right:41px}
+  .buy .pcfg-acc .pcfg-stepper .qty-btn{width:44px}
+}
+@media(max-width:374px){.pcfg-preset.pkr{padding:14px 14px;gap:10px}.pkr-keys{font-size:12px}.pcfg-preset.pkr .pkr-price{font-size:17px}}

@@ -45,7 +45,7 @@ TEXT = {  # key: (ka, en, ru)
     'pc_intro': ('აირჩიეთ კომპლექტი და საჭიროებისამებრ შეცვალეთ რაოდენობა.', 'Pick a package and change the quantities if you need to.',
                  'Выберите комплект и при необходимости измените количество.'),
     'pc_presets': ('სწრაფი არჩევანი', 'Quick choice', 'Быстрый выбор'),
-    'pc_platform': ('XAG P150 MAX პლატფორმა (RevoSpray\u00a05)', 'XAG P150 MAX platform (RevoSpray\u00a05)', 'Платформа XAG P150 MAX (RevoSpray\u00a05)'),
+    'pc_platform': ('XAG P150 MAX — RevoSpray\u00a05', 'XAG P150 MAX — RevoSpray\u00a05', 'XAG P150 MAX — RevoSpray\u00a05'),
     'pc_energy': ('მართვა და ენერგია', 'Control and power', 'Управление и питание'),
     'pc_extra': ('დამატებითი აღჭურვილობა', 'Additional equipment', 'Дополнительное оборудование'),
     'pc_extra_sel': ('არჩეულია {n}', '{n} selected', 'выбрано: {n}'),
@@ -64,7 +64,7 @@ TEXT = {  # key: (ka, en, ru)
     'pb_step1': ('კომპლექტი.', 'Package.', 'Комплект.'),
     'pb_step1_q': ('რომელი გჭირდებათ?', 'Which one is right for you?', 'Какой вам подходит?'),
     'pb_step2': ('კომპლექტში შედის.', 'What is included.', 'Что входит.'),
-    'pb_step3': ('დამატებითი აღჭურვილობა.', 'Accessories.', 'Дополнительное оборудование.'),
+    'pb_step3': ('დამატებითი აღჭურვილობა', 'Accessories', 'Дополнительное оборудование'),
     'pb_step3_q': ('გენერატორი, გაფანტვა, ტვირთი და სხვა.', 'Generator, spreading, cargo and more.', 'Генератор, разбрасывание, груз и другое.'),
     'pb_add': ('დამატება', 'Add', 'Добавить'),
     'pb_save': ('₾{n}-ით ნაკლები, ვიდრე ცალ-ცალკე ყიდვისას.', '₾{n} less than buying the items separately.', 'На ₾{n} дешевле, чем по отдельности.'),
@@ -79,7 +79,7 @@ TEXT = {  # key: (ka, en, ru)
     'pc_each': ('/ ცალი', '/ each', '/ шт.'),
     'pc_summary': ('თქვენი კონფიგურაცია', 'Your configuration', 'Ваша конфигурация'),
     'pc_total': ('ჯამი, დღგ-ს ჩათვლით', 'Total incl. VAT', 'Итого с НДС'),
-    'pc_send': ('კონფიგურაციის გაგზავნა', 'Send configuration', 'Отправить конфигурацию'),
+    'pc_send': ('შეკვეთის გაგზავნა WhatsApp-ით', 'Send the order via WhatsApp', 'Отправить заказ в WhatsApp'),
     'pc_cart': ('კალათაში დამატება', 'Add to cart', 'В корзину'),
     'pc_applied': ('გამოყენებულია {name} კომპლექტის ფასი', '{name} package price applied', 'Применена цена комплекта {name}'),
     # owner brief, 4 Nov 2026 (buying refinement): package prices apply only after the customer chooses or accepts a package
@@ -89,8 +89,10 @@ TEXT = {  # key: (ka, en, ru)
     'pc_offer_btn': ('კომპლექტის არჩევა', 'Choose the package', 'Выбрать комплект'),
     'pc_broken': ('{name} კომპლექტის შემადგენლობა აღარ არის სრული, ამიტომ ფასი ცალ-ცალკეა დათვლილი.', 'The {name} package is no longer complete, so items are priced individually.',
                   'Комплект {name} больше не полный, поэтому цена рассчитана поштучно.'),
-    'pc_send_short': ('გაგზავნა', 'Send', 'Отправить'),
-    'pc_send_aria': ('კონფიგურაციის გაგზავნა WhatsApp-ით', 'Send the configuration by WhatsApp', 'Отправить конфигурацию в WhatsApp'),
+    'pc_send_short': ('WhatsApp-ით', 'WhatsApp', 'WhatsApp'),
+    'pc_send_aria': ('შეკვეთის გაგზავნა WhatsApp-ით', 'Send the order via WhatsApp', 'Отправить заказ в WhatsApp'),
+    'pb_next': ('WhatsApp-ში გაიხსნება მზა შეტყობინება. PDG დაგიდასტურებთ ფასს, მარაგს და მიწოდებას.', 'A ready message opens in WhatsApp. PDG then confirms the price, stock and delivery.', 'В WhatsApp откроется готовое сообщение. PDG подтвердит цену, наличие и доставку.'),
+    'pb_vat': ('ფასები დღგ-ს ჩათვლით', 'Prices include VAT', 'Цены с НДС'),
     'pc_vat_short': ('დღგ-ს ჩათვლით', 'incl. VAT', 'с НДС'),
     'pc_jump_cfg': ('კონფიგურატორი', 'Configurator', 'Конфигуратор'),
     'pc_jump_pkgs': ('მზა კომპლექტები', 'Ready packages', 'Готовые комплекты'),
@@ -160,6 +162,10 @@ def _thumb(sku):
 def _row(key, it, ka, opt, add=False):
     lab = it['label']
     # add=True (accessories): an "add" button until the item is chosen, then the quantity stepper (Apple-style accessory cards)
+    if key == 'remotes':  # owner, 5 Nov 2026: one SRC5 per drone, not changeable (same as the drone row)
+        return (f'<div class="pcfg-row pcfg-fixed-row" data-key="{key}">{_thumb(it["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="{lab}">{html.escape(ka)}</span>'
+                f'<span class="pcfg-unit">₾{it["price"]:,}</span></div><output class="pcfg-fixed-qty">1</output>'
+                f'<input class="qty-input" type="hidden" min="1" max="1" value="1" data-fixed="1"></div>')
     plus = f'<button type="button" class="pcfg-add" data-add-key="{key}"><span data-i18n="pb_add">{TEXT["pb_add"][0]}</span></button>' if add else ''
     return (f'<div class="pcfg-row{" pcfg-acc" if add else ""}" data-key="{key}">{_thumb(it["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="{lab}">{html.escape(ka)}</span>'
             f'<span class="pcfg-unit">₾{it["price"]:,} <span data-i18n="pc_each">/ ცალი</span></span></div>{plus}'
@@ -198,14 +204,14 @@ def block(heading='h1'):
             f'<p class="buy-eyebrow" data-i18n="pb_eyebrow">{t["pb_eyebrow"]}</p><{heading} class="buy-title" id="buyTitle" data-i18n="pb_title">{t["pb_title"]}</{heading}>'
             f'<a class="buy-specs" href="/p150-max#specifications" data-local><span data-i18n="pb_specs">{t["pb_specs"]}</span> <span aria-hidden="true">›</span></a>'
             f'<div class="buy-step pcfg-presets" role="group" aria-labelledby="pbStep1"><h2 class="buy-step-h" id="pbStep1"><span data-i18n="pb_step1">{t["pb_step1"]}</span> '
-            f'<span class="buy-step-q" data-i18n="pb_step1_q">{t["pb_step1_q"]}</span></h2><div class="pkr-list">{rows}</div></div></div></div>'
+            f'<span class="buy-step-q" data-i18n="pb_step1_q">{t["pb_step1_q"]}</span></h2><div class="pkr-list">{rows}</div><p class="pkr-vat" data-i18n="pb_vat">{t["pb_vat"]}</p></div></div></div>'
             f'<div class="buy-panel"><div class="pcfg" id="platformConfig" data-config="{cfg}">'
             f'<div class="pcfg-options">'
             f'<div class="buy-step"><h2 class="buy-step-h"><span data-i18n="pb_step2">{t["pb_step2"]}</span></h2>'
             f'<div class="buy-tiles"><div class="pcfg-row pcfg-fixed">{_thumb(d["platform"]["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="pc_platform">{t["pc_platform"]}</span>'
             f'<span class="pcfg-unit">₾{d["platform"]["price"]:,}</span></div><output class="pcfg-fixed-qty">1</output></div>{energy}</div></div>'
-            f'<details class="buy-step pcfg-extra" id="pcExtra"><summary class="buy-step-h"><span><span data-i18n="pb_step3">{t["pb_step3"]}</span> '
-            f'<span class="buy-step-q" data-i18n="pb_step3_q">{t["pb_step3_q"]}</span></span><span class="pcfg-extra-count" id="pcExtraCount" hidden></span></summary>'
+            f'<details class="buy-step pcfg-extra" id="pcExtra"><summary class="buy-step-h"><span class="buy-sum-t"><span data-i18n="pb_step3">{t["pb_step3"]}</span>'
+            f'<small class="buy-step-sub" data-i18n="pb_step3_q">{t["pb_step3_q"]}</small></span><span class="pcfg-extra-count" id="pcExtraCount" hidden></span></summary>'
             f'<div class="buy-acc">{extra}</div></details>'
             f'</div>'
             f'<aside class="pcfg-summary buy-summary" id="pcSummary" aria-labelledby="pcSumTitle"><h2 class="buy-step-h" id="pcSumTitle" data-i18n="pb_summary">{t["pb_summary"]}</h2>'
@@ -217,6 +223,7 @@ def block(heading='h1'):
             f'<p class="pcfg-remind" id="pcRemind" role="status" hidden></p>'
             f'<div class="pcfg-actions"><button class="button button-red" id="pcWa" type="button"><span data-i18n="pc_send">{t["pc_send"]}</span></button>'
             f'<button class="button button-line" id="pcCart" type="button"><span data-i18n="pc_cart">{t["pc_cart"]}</span></button></div>'
+            f'<p class="buy-next" data-i18n="pb_next">{t["pb_next"]}</p>'
             f'<ul class="buy-trust">{trust}</ul>'
             f'<details class="buy-lines"><summary data-i18n="pkc_contents">{t["pkc_contents"]}</summary><ul class="pcfg-list" id="pcList"></ul></details>'
             f'</aside></div></div></div>'

@@ -453,7 +453,8 @@
       if (pcReady) pcRemember(st);
       return st;
     }
-    function setQ(q) { pcKeys.forEach(function (k) { var i = pcInput(k); i.value = clampInt(q[k] || 0, 0, Number(i.max) || 0); }); }
+    /* Fixed rows (SRC5: one per drone, owner 5 Nov 2026) always stay at 1, also for old ?c= links. */
+    function setQ(q) { pcKeys.forEach(function (k) { var i = pcInput(k); i.value = i.dataset.fixed ? 1 : clampInt(q[k] || 0, 0, Number(i.max) || 0); }); }
     /* Presets load exactly the package contents at the advertised price; extras can be added afterwards. */
     function preset(v) {
       var p = pkgBy(v); if (!p) return;
@@ -497,6 +498,7 @@
     /* Shared links (?c=batteries-4_chargers-2&m=pro) and package pages (?kit=starter); older links may still carry &p=. */
     var qs = new URLSearchParams(location.search), q0 = {}, kit = (qs.get("kit") || "").toLowerCase(), mode0 = (qs.get("m") || "").toLowerCase();
     String(qs.get("c") || "").split("_").forEach(function (x) { var m = /^([a-z0-9]+)-(\d+)$/.exec(x); if (m && PC.items[m[1]]) q0[m[1]] = Number(m[2]); });
+    if (qs.get("c")) q0.remotes = 1;  // SRC5 is fixed at one per drone (owner, 5 Nov 2026)
     var kp = pkgBy(kit);
     if (kp && !qs.get("c")) { Object.keys(kp.q).forEach(function (k) { q0[k] = kp.q[k]; }); pcMode = kp.sku; }
     var mp = pkgBy(mode0); if (mp && fits(mp, q0)) pcMode = mp.sku;
