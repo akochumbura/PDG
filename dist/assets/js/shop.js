@@ -534,6 +534,12 @@
       if (countEl) countEl.textContent = tx("parts_count").replace("{n}", shown).replace("{total}", matched.length);
       if (moreBtn) { moreBtn.hidden = left <= 0; moreBtn.textContent = tx("parts_more").replace("{n}", Math.min(PAGE, left)); }
     }
+    /* Back-navigation state (5 Nov 2026): filters, sorting and "load more" are kept in this history entry (the address is unchanged),
+       so returning from a product page shows the same list and the browser can restore the scroll position. */
+    try {
+      history.replaceState(Object.assign({}, history.state || {}, { parts: { cat: cat, s: search.value, lo: pMin ? pMin.value : "", hi: pMax ? pMax.value : "",
+        sort: sortSel ? sortSel.value : "", limit: limit } }), "");
+    } catch (e) { /* ignore */ }
   }
   if (moreBtn) moreBtn.addEventListener("click", function () {
     var before = limit; limit += PAGE; run(true);
@@ -564,5 +570,13 @@
     if (wanted && c.dataset.filter === wanted) c.click();
   });
   if (askedFor) { search.value = askedFor.slice(0, 60); }
-  run();
+  var back = history.state && history.state.parts;
+  if (back && typeof back === "object") {
+    search.value = String(back.s || "").slice(0, 60);
+    if (pMin) pMin.value = back.lo || ""; if (pMax) pMax.value = back.hi || "";
+    chips.forEach(function (o) { var on = o.dataset.filter === (back.cat || "all"); o.classList.toggle("is-on", on); o.setAttribute("aria-pressed", String(on)); if (on) cat = o.dataset.filter; });
+    if (sortSel && back.sort && Array.prototype.some.call(sortSel.options, function (o) { return o.value === back.sort; })) sortSel.value = back.sort;
+    order();
+    limit = Math.max(PAGE, Math.min(Number(back.limit) || PAGE, list.length)); run(true);
+  } else run();
 })();

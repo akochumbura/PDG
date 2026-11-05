@@ -988,7 +988,7 @@ async function tgSecret(env) { return (await sha('tg-hook:' + String(env.TELEGRA
 async function telegramHook(request, env, url) {
   const ok = new Response('OK', { status: 200 });
   if (!kv(env) || !String(env.TELEGRAM_BOT_TOKEN || '').trim()) return ok;
-  if ((request.headers.get('X-Telegram-Bot-Api-Secret-Token') || '') !== await tgSecret(env)) return new Response('forbidden', { status: 403 });
+  if (!same(request.headers.get('X-Telegram-Bot-Api-Secret-Token') || '', await tgSecret(env))) return new Response('forbidden', { status: 403 });  // constant-time (5 Nov 2026)
   let up; try { up = JSON.parse((await request.text()).slice(0, 100000)); } catch { return ok; }
   const m = up && up.message;
   if (!m || !m.chat || String(m.chat.id) !== await tgChat(env)) return ok;  // only the connected owner chat

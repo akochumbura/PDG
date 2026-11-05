@@ -184,7 +184,7 @@
     function open(on) {
       openNow = on; panel.hidden = !on; fab.setAttribute("aria-expanded", String(on)); document.body.classList.toggle("chat-open", on);
       openers.forEach(function (o) { o.setAttribute("aria-expanded", String(on)); });
-      if (on) { draw(); markSeen(); fetchNew(); fit(); if (live) box.focus(); } else { fit(); (window.innerWidth > 768 ? fab : (openers[0] || fab)).focus(); }
+      if (on) { draw(); markSeen(); fetchNew(); fit(); if (live) box.focus(); else { var f = panel.querySelector(".chat-other a, button"); if (f) f.focus(); } } else { fit(); (window.innerWidth > 768 ? fab : (openers[0] || fab)).focus(); }
       schedule();
     }
     api.open = open;

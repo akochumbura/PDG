@@ -57,12 +57,12 @@ def page_path(filename):
 # Owner-verified facts only (14 Oct 2026): Tbilisi = storage and service by appointment (not a showroom, no opening hours);
 # Lagodekhi = warehouse (in a village of the Lagodekhi area; no street address published) and field operations. No HQ claim.
 # SEO brief 5 Nov 2026: PDG is its own business (seller of XAG products), named "PDG — Premium Drones Georgia" where a full name fits.
-ORG = {"@context": "https://schema.org", "@type": "Organization", "name": "Premium Drones Georgia", "alternateName": ["PDG — Premium Drones Georgia", "PDG", "საქართველოს პრემიუმ დრონები"],
+ORG = {"@context": "https://schema.org", "@type": "Organization", "name": "Premium Drones Georgia", "legalName": "Premium Drones Georgia LLC", "foundingDate": "2022", "alternateName": ["PDG — Premium Drones Georgia", "PDG", "საქართველოს პრემიუმ დრონები"],
        "description": "Premium Drones Georgia is the official and exclusive XAG dealer in the Caucasus region: XAG drones, batteries, chargers, generators, parts, service and training.",
        "url": BASE_URL + "/", "logo": BASE_URL + "/assets/img/pdg-logo-light.png", "image": BASE_URL + "/assets/img/og-image.jpg",
        "telephone": "+995550004333", "email": "info@premium-drones.ge",
        "location": [{"@type": "Place", "name": "Premium Drones Georgia, Tbilisi (storage and service, by appointment)",
-                     "address": {"@type": "PostalAddress", "streetAddress": "12 Panaskerteli-Tsitsishvili St", "addressLocality": "Tbilisi", "addressCountry": "GE"}},
+                     "address": {"@type": "PostalAddress", "streetAddress": "12 Panaskerteli-Tsitsishvili St", "addressLocality": "Tbilisi", "postalCode": "0160", "addressCountry": "GE"}},
                     {"@type": "Place", "name": "Premium Drones Georgia, Lagodekhi (warehouse and field operations)",
                      "address": {"@type": "PostalAddress", "addressLocality": "Lagodekhi", "addressRegion": "Kakheti", "addressCountry": "GE"}}]}
 
@@ -121,6 +121,18 @@ def render(page_source, language, filename):
     # Remove any prior generated metadata so repeated generation is idempotent.
     for el in doc.xpath('//link[@rel="canonical" or @rel="alternate"] | //meta[@property="og:url"] | //meta[@name="robots"] | //script[@type="application/ld+json"]'):
         el.getparent().remove(el)
+    # Product names (5 Nov 2026): the official XAG name joins the code line under the card title, and is dropped where it
+    # repeats the title exactly (English pages), so a card reads: category, code · XAG name, title.
+    for orig in doc.xpath('//*[contains(@class,"product-orig")]'):
+        box=orig.getparent(); title=(box.xpath('./h3|./h1') or [None])[0]
+        same=title is not None and ' '.join(title.text_content().split())==' '.join(orig.text_content().split())
+        sku=(orig.xpath('ancestor::*[contains(@class,"product-body")][1]//p[contains(@class,"product-sku")]') or [None])[0]
+        if same: box.remove(orig)
+        elif sku is not None and title is not None and title.tag=='h3':
+            sku.text=(sku.text or '').strip()+' · '+orig.text_content().strip(); box.remove(orig)
+            # the code line goes under the title, so the card reads: category, title, code · XAG name
+            link=title.getparent() if title.getparent() is not None and 'product-link' in (title.getparent().get('class') or '') else title
+            sku.getparent().remove(sku); link.addnext(sku)
     doc_head=doc.find('head')
     path=page_path(filename)
     canonical=BASE_URL+prefix+path
@@ -189,7 +201,10 @@ def render(page_source, language, filename):
         if faq: graph.append({"@type":"FAQPage","mainEntity":faq})
     # Product/Offer schema = exactly what the page shows: packages, and shop items that have their own photo.
     # Availability comes from each card (data-avail); quote-only parts and previous-generation models get no Offer.
-    KIT_DESC={"ka":"სასოფლო-სამეურნეო დრონი ნაკვეთის რუკის შედგენისთვის, შეწამვლისთვის, გრანულების გაფანტვისთვის და ტვირთის გადატანისთვის","en":"Agricultural drone for field mapping, spraying, granule spreading and cargo transport","ru":"Сельскохозяйственный дрон для картографирования полей, опрыскивания, разбрасывания гранул и перевозки грузов"}[language]
+    # 5 Nov 2026: packages include the RevoSpray 5 spraying system; RevoCast 5 (spreading) and RevoSling (cargo) are sold separately.
+    KIT_DESC={"ka":"XAG P150 MAX სასოფლო-სამეურნეო დრონის კომპლექტი RevoSpray 5 შესაწამლი სისტემით, რუკის შედგენისა და შეწამვლისთვის. გრანულების გაფანტვის (RevoCast 5) და ტვირთის გადატანის (RevoSling) მოდულები იყიდება ცალკე.",
+              "en":"XAG P150 MAX agricultural drone package with the RevoSpray 5 spraying system, for field mapping and spraying. RevoCast 5 spreading and RevoSling cargo modules are sold separately.",
+              "ru":"Комплект сельскохозяйственного дрона XAG P150 MAX с системой опрыскивания RevoSpray 5 для картографирования и опрыскивания. Модули RevoCast 5 (разбрасывание) и RevoSling (перевозка грузов) продаются отдельно."}[language]
     AVAIL={'in_stock':'https://schema.org/InStock'}
     # Return policy = the terms page (terms_p5): 14 days, unused, complete, original packaging; contact first.
     # Return fees / method are not stated in the terms, so they are not claimed here.

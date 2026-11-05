@@ -28,7 +28,7 @@ SYN = {
 }
 # Shown instead of a price for quote-only parts and previous models (never ₾0).
 DICT_Q = {'ka': 'ფასი მოთხოვნით', 'en': 'Price on request', 'ru': 'Цена по запросу'}
-CAT = {'power': 'cat_power', 'spray': 'cat_spray', 'control': 'cat_control', 'acc': 'cat_acc', 'spare': 'cat_spare', 'kit': 'packages_title', 'drone': 'cat_drone'}
+CAT = {'power': 'cat_power', 'spray': 'cat_spray', 'control': 'cat_control', 'acc': 'cat_acc', 'spare': 'cat_spare', 'kit': 'pc_pkgs_cat', 'drone': 'cat_drone'}
 
 
 def page_url(rel):
@@ -79,7 +79,7 @@ for lang in ('ka', 'en', 'ru'):
     for r in [x for x in rows if x['group'] != 'drone' and (x.get('avail') or '') != 'quote']:  # owner, 4 Nov 2026: no drone alone, no out-of-stock parts
         g = r['group']
         key = CAT[g]
-        cat = KA.get(key, '') if lang == 'ka' else T[lang].get(key, '')
+        cat = (KA.get(key) or T.get('ka', {}).get(key, '')) if lang == 'ka' else T[lang].get(key, '')
         url = f'{prefix}{product_pages.url(r["sku"])}' if product_pages.url(r['sku']) else (f'{prefix}/shop#kits' if g == 'kit' else f'{prefix}/shop?q={r["sku"]}#parts')
         full_ka = (r.get('name_ka') or '').strip()
         r = dict(r, name_ka=short_ka(r['sku'], full_ka))

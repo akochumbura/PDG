@@ -86,3 +86,11 @@
   /service H1 key service_h1; fuller search descriptions via data-meta (blog, gallery, articles, faq, drones, consultation, about, every product and package page
   with price incl. VAT and contents generated from the catalog). Schema: WebSite, BreadcrumbList, Organization without other brands' models, VAT in offers.
   robots.txt Disallow /api/; sitemap lastmod from content hashes (scripts/lastmod.json); helpful 404 links; GA4 add_to_cart (no personal data).
+- 5 Nov 2026 audit pass (seo-georgia): search shows one result per destination (product before page) + arrow-key navigation; FAQ answers end with
+  short links (.faq-links); faq_a2 says exposure is reduced, protective equipment still needed when mixing/filling; About XAG has a discreet link
+  "PDG — XAG-ის ოფიციალური დისტრიბუტორი" -> xa.com/en/business/how-to-buy (XAG lists Premium Drones Georgia LLC, Tbilisi 0160); Organization has
+  legalName, foundingDate 2022, postalCode 0160 (xa.com is NOT in sameAs). Cart total shows "დღგ-ს ჩათვლით". Shop cards: category, title,
+  "code · XAG name" (English name dropped where it repeats the title); #partsGrid cards use content-visibility (layout ~0.4 s faster on phones);
+  filters/sort/"load more" kept in history.state for back navigation. Package Product descriptions: RevoSpray 5 included, RevoCast 5 / RevoSling separate.
+  _headers: no '/* no-cache' any more (it was joined onto asset rules, so fonts were revalidated on every page -> fallback-font flash); /assets/* 1 day.
+  Telegram webhook secret compared in constant time. Preview chat shows the honest "unavailable" text because Preview deployments have no KV/secrets.

@@ -183,12 +183,16 @@
       const score = (it) => terms.every((t) => it.h.includes(t)) ? terms.reduce((s, t) => s + (it.ht.includes(t) ? 3 : 1), 0) : 0;
       /* Ties: an item with its own product page first (the B141050 battery before parts that mention B141050), then in-stock priced items. */
       const rank = (p) => { const s = score(p); return s ? s + (p.u && p.u.indexOf("?q=") < 0 ? 2 : 0) + (p.p > 0 ? 0.5 : 0) : 0; };
-      const prods = index.products.map((p) => [rank(p), p]).filter((a) => a[0]).sort((a, b) => b[0] - a[0]).slice(0, 8).map((a) => a[1]);
-      const pages = index.pages.map((p) => [score(p), p]).filter((a) => a[0]).sort((a, b) => b[0] - a[0]).slice(0, 6).map((a) => a[1]);
+      /* One result per destination (5 Nov 2026): a product page found as a product (with code, price) is not listed again under pages. */
+      const dest = (u) => String(u || "").split("#")[0].replace(/\/$/, "") || "/";
+      const seen = new Set();
+      const prods = index.products.map((p) => [rank(p), p]).filter((a) => a[0]).sort((a, b) => b[0] - a[0]).map((a) => a[1])
+        .filter((p) => { const d = p.u.indexOf("?q=") < 0 ? dest(p.u) : p.u; if (seen.has(d)) return false; seen.add(d); return true; }).slice(0, 8);
+      const pages = index.pages.map((p) => [score(p), p]).filter((a) => a[0] && !seen.has(dest(a[1].u))).sort((a, b) => b[0] - a[0]).slice(0, 6).map((a) => a[1]);
       if (!prods.length && !pages.length) { none.hidden = false; return; }
       let out = "";
       if (prods.length) out += '<p class="search-group">' + esc(txt("lbSearchProducts")) + "</p><ul>" + prods.map((p) =>
-        '<li><a class="search-product" href="' + esc(p.u) + '"><span class="sp-name">' + esc(p.n) + '</span><span class="sp-meta">' + (p.o ? esc(p.o) + " · " : "") + esc(p.s) + " · " + esc(p.c) + '</span><span class="sp-price">' + (p.p > 0 ? "₾" + Number(p.p).toLocaleString("en-US") : esc(p.q || "")) + "</span></a></li>").join("") + "</ul>";
+        '<li><a class="search-product" href="' + esc(p.u) + '"><span class="sp-name">' + esc(p.n) + '</span><span class="sp-meta">' + esc([p.o, p.s, p.c].filter(Boolean).join(" · ")) + '</span><span class="sp-price">' + (p.p > 0 ? "₾" + Number(p.p).toLocaleString("en-US") : esc(p.q || "")) + "</span></a></li>").join("") + "</ul>";
       if (pages.length) out += '<p class="search-group">' + esc(txt("lbSearchPages")) + "</p><ul>" + pages.map((p) =>
         '<li><a class="search-page" href="' + esc(p.u) + '"><span class="sp-name">' + esc(p.t) + '</span><span class="sp-text">' + esc(snippet(p, terms)) + "</span></a></li>").join("") + "</ul>";
       box.innerHTML = out;
@@ -211,6 +215,16 @@
     searchDlg.addEventListener("close", () => document.body.classList.remove("modal-open"));
     input.addEventListener("input", () => (index ? run() : load().then(run)));
     input.addEventListener("keydown", (e) => { if (e.key === "Escape") { e.preventDefault(); searchDlg.close(); } });
+    /* Arrow keys move between the input and the results (Enter opens the focused result). */
+    searchDlg.addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+      const links = [input].concat(Array.from(box.querySelectorAll("a")));
+      if (links.length < 2) return;
+      const i = links.indexOf(document.activeElement);
+      if (i < 0) return;
+      e.preventDefault();
+      links[(i + (e.key === "ArrowDown" ? 1 : links.length - 1)) % links.length].focus();
+    });
     document.addEventListener("keydown", (e) => {
       const typing = /input|textarea|select/i.test((e.target && e.target.tagName) || "") || (e.target && e.target.isContentEditable);
       if ((e.key === "k" && (e.ctrlKey || e.metaKey)) || (e.key === "/" && !typing)) { e.preventDefault(); openSearch(); }

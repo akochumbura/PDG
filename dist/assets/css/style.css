@@ -319,6 +319,7 @@ dialog.cart[open]{display:flex;flex-direction:column}
 .ci-price{font-family:var(--font-latin);font-weight:500;text-align:right}
 .cart-foot{padding:24px 28px;display:grid;gap:12px;border-top:1px solid var(--border);margin-top:auto}
 .cart-total{display:flex;justify-content:space-between;font-size:20px;margin:0}
+.cart-vat{font-size:13px;color:var(--muted);font-weight:400}
 .cart-note{font-size:12px;color:var(--muted);margin:0}
 .cart-form{display:grid;gap:12px}
 .cart-form label{display:grid;gap:6px;font-size:13px;color:var(--muted)}
@@ -451,6 +452,7 @@ html[data-theme=dark] .site-footer{--muted:#a9a9a3;--border:#34342f;background:v
 .faq-item summary:after{content:'+';font:300 26px/1 var(--font-latin);color:var(--accent);transition:transform var(--ease)}
 .faq-item[open] summary:after{transform:rotate(45deg)}
 .faq-item p{color:var(--muted);padding:0 40px 24px 0;max-width:62ch}
+.faq-item p.faq-links{color:var(--text);margin-top:-12px;font-size:15px}.faq-links a{color:var(--text);text-underline-offset:3px;display:inline-block;padding:6px 0}
 .social-links{display:flex;flex-wrap:wrap;gap:8px 18px}
 .social-links:empty{display:none}
 .contact-options .social-links,.about-text .social-links{margin-top:20px;font-size:15px}
@@ -930,6 +932,7 @@ html[data-theme=dark] .dealer-logo .logo-dark,html[data-theme=dark] .about-xag-m
 }
 .kit-config .page-intro{margin-bottom:28px}
 .about-xag-text p{margin:0 0 14px}
+.about-xag-dir{font-size:14px}.about-xag-dir .text-link{color:var(--muted);border-color:var(--border)}
 /* Brand strip below the hero: XAG ~ PDG, centred, then the dealer sentence (owner, 14 Oct 2026) */
 .dealer-band .dealer-inner{flex-direction:column;align-items:center;justify-content:center;gap:clamp(14px,2vw,22px);padding-block:clamp(28px,3.4vw,48px);text-align:center}
 .dealer-logos{--logo-h:clamp(34px,5.4vw,76px);display:flex;align-items:center;justify-content:center;gap:clamp(16px,2.4vw,36px);margin-inline:auto}
@@ -1893,3 +1896,9 @@ dialog:focus,dialog:focus-visible{outline:none}
 .order-steps-compact{padding:0 0 clamp(28px,3vw,40px)}
 .order-steps-compact .order-steps{border:0;gap:6px 24px;display:flex;flex-wrap:wrap;counter-reset:st;padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .order-steps-compact .order-steps li{flex:1 1 220px;padding:0;border:0;font-size:13px;line-height:1.45;color:var(--muted);min-height:0}
+/* Shop parts list (5 Nov 2026, measured): 266 cards are in the HTML for search engines and no-JS visitors; the browser skips
+   layout and paint for cards outside the screen. Saved ~0.4 s of layout on a mid-range phone. */
+#partsGrid>.product{content-visibility:auto;contain-intrinsic-size:auto 440px}
+/* Tap targets (5 Nov 2026 audit): package contents links and shop card titles get a taller hit area without changing the layout. */
+.pk-in a{display:inline-block;padding:6px 0;margin:-6px 0}
+@media (max-width:768px){.shop-grid .product-body .product-link{display:block;padding:4px 0}}

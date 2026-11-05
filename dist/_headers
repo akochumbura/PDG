@@ -5,11 +5,10 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(self)
-  Cache-Control: no-cache
+# Pages keep Cloudflare's default (revalidate every visit). Assets (5 Nov 2026): the old '/* no-cache' was joined onto these rules by
+# Cloudflare, so fonts were revalidated on every navigation and the menu briefly showed a fallback font. Asset URLs carry ?v= hashes.
 /assets/*
-  Cache-Control: public, max-age=3600
-/assets/fonts/*
-  Cache-Control: public, max-age=2592000
+  Cache-Control: public, max-age=86400
 # Preview and pages.dev addresses stay out of search engines (Cloudflare Pages host rules); premium-drones.ge is not affected.
 https://:project.pages.dev/*
   X-Robots-Tag: noindex
