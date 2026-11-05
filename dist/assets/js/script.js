@@ -376,3 +376,19 @@
     });
   });
 })();
+/* P150 MAX media (owner, 6 Nov 2026): XAG videos play silently only while on screen; reduced motion keeps the still picture. */
+(function () {
+  var vids = document.querySelectorAll("video.pm-video");
+  if (!vids.length) return;
+  var big = window.matchMedia("(min-width: 1000px)").matches;
+  vids.forEach(function (v) { if (big && v.dataset.posterLg) v.poster = v.dataset.posterLg; });
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      var v = e.target;
+      if (e.isIntersecting) { if (v.preload !== "auto") { v.preload = "auto"; } var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+      else if (!v.paused) v.pause();
+    });
+  }, { threshold: 0.35 });
+  vids.forEach(function (v) { io.observe(v); });
+})();

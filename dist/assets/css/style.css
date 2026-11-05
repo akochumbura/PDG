@@ -2243,3 +2243,14 @@ html[data-theme=dark] .buy .buy-tiles+.pcfg-offer{background:#2c2c2e}
 .pm-chapter:first-child .pm-chapter-media{margin-top:0}
 .product-feature img{aspect-ratio:16/10;border-radius:clamp(12px,1.4vw,22px)}
 @media(max-width:600px){.pm-chapter-media{border-radius:12px;margin-inline:calc(var(--gutter) * -1 + 8px)}}
+/* Phone menu (owner, 6 Nov 2026): მთავარი, პროდუქცია and კონტაქტი bold; შეძენა red (regular) between მთავარი and პროდუქცია; all other rows regular. */
+@media(max-width:900px){
+  .site-nav.is-open>a,.site-nav.is-open>a[aria-current=page]:not(.nav-account-m),.site-nav.is-open .nav-group-btn,.site-nav.is-open .nav-group-btn.is-current,.site-nav.is-open .nav-group-btn[aria-expanded=true]{color:var(--text);font-weight:400}
+  .site-nav.is-open>a.nav-home,.site-nav.is-open>a.nav-contact,.site-nav.is-open>.nav-group:not(.nav-group-services)>.nav-group-btn{font-weight:600}
+  .site-nav.is-open>a.nav-buy{color:var(--accent);font-weight:400}
+}
+.pm-chapter-media video{display:block;width:100%;height:100%;object-fit:cover;background:#0d0d0c}
+.pm-media-pair{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.2vw,18px);background:none;aspect-ratio:auto;border-radius:0;overflow:visible}
+.pm-media-pair figure{margin:0;border-radius:clamp(12px,1.4vw,22px);overflow:hidden;aspect-ratio:16/9;background:#0d0d0c}
+@media(max-width:700px){.pm-media-pair{grid-template-columns:1fr}}
+.product-feature video{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:clamp(12px,1.4vw,22px);display:block;background:#0d0d0c}

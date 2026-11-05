@@ -372,3 +372,7 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
 - (owner, 6 Nov 2026, 02:35) P150 MAX chapters carry XAG official media from xa.com/en/p150max (taken through the desktop browser, static.xag.cn; owner asked):
   dist/assets/img/p150/{map,spray,spread,cargo,flight,power,build,feature}.webp (1920 + -960, 16:9, frames from XAG videos + studio render). No people
   (the XRTK7 photo with a hand, a7ebe1a4, is NOT used). Raw set (35 photos + 16 video frames) was in the session scratchpad only. pm_spread_p shortened.
+- (owner, 6 Nov 2026, 02:48) Phone menu: მთავარი, შეძენა (red, regular weight), პროდუქცია, სერვისი, აკადემია, ჩვენ შესახებ, კონტაქტი; bold = მთავარი, პროდუქცია, კონტაქტი only.
+  P150 MAX page: all 9 XAG videos (downloaded from static.xag.cn via the desktop browser) as silent loops: dist/assets/video/p150/{feature,map,spray,spread,cargo,flight,ai,power,ppar}
+  .mp4 (H.264 1280, CRF 25-28, no audio, faststart) + .webm (VP9 fallback); posters = p150/*.webp. Play only while on screen (script.js, IntersectionObserver),
+  preload none, reduced motion = still poster. Flight chapter = 2-up (obstacle avoidance + AI assistance); build chapter = route-planning video (ppar).
