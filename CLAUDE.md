@@ -376,6 +376,6 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   P150 MAX page: all 9 XAG videos (downloaded from static.xag.cn via the desktop browser) as silent loops: dist/assets/video/p150/{feature,map,spray,spread,cargo,flight,ai,power,ppar}
   .mp4 (H.264 1280, CRF 25-28, no audio, faststart) + .webm (VP9 fallback); posters = p150/*.webp. Play only while on screen (script.js, IntersectionObserver),
   preload none, reduced motion = still poster. Flight chapter = 2-up (obstacle avoidance + AI assistance); build chapter = route-planning video (ppar).
-- (owner, 6 Nov 2026, 03:11) Red strip: no negative z-index (iOS taps), shows after 24px down, hides after 16px up (turning points, jitter <3px ignored).
+- (owner, 6 Nov 2026, 03:11) Red strip: no negative z-index (iOS taps); REVERSED 03:17 = appears only when scrolling UP (24px), hides when scrolling down (16px) (turning points, jitter <3px ignored).
   Phone header: search icon right of the menu lines (left of the PDG logo). Links "ყველა მახასიათებელი"/"მახასიათებლები" from other pages open /p150-max at the top
   (only the P150 MAX page's own hero link jumps to #specifications).

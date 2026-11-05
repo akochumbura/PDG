@@ -92,12 +92,12 @@
       const y = window.scrollY;
       header.classList.toggle("is-scrolled", y > 8);
       if (strip && !onShop) {
-        /* Turning points (owner, 6 Nov 2026): shows after 24px of travel down, hides after 16px up; tiny jitters (<3px) are ignored. */
+        /* Owner, 6 Nov 2026, 03:17: hides while scrolling down, appears only when scrolling back up (24px); hides after 16px down; tiny jitters (<3px) are ignored. */
         const d = y - lastY;
         let on = header.classList.contains("strip-on");
         if (Math.abs(d) >= 3) {
-          if (d > 0) { if (dirUp) { dirUp = false; turn = lastY; } if (y - turn > 24) on = true; }
-          else { if (!dirUp) { dirUp = true; turn = lastY; } if (turn - y > 16) on = false; }
+          if (d > 0) { if (dirUp) { dirUp = false; turn = lastY; } if (y - turn > 16) on = false; }
+          else { if (!dirUp) { dirUp = true; turn = lastY; } if (turn - y > 24) on = true; }
           lastY = y;
         }
         if (y < 280 || shopBtnsSeen) on = false;
