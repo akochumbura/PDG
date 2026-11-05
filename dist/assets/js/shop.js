@@ -442,7 +442,14 @@
       document.getElementById("pcBarTotal").textContent = fmt(st.total);
       var pressed = st.pkg ? st.pkg.p.sku : "";
       document.querySelectorAll(".pcfg-preset").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.preset === pressed ? "true" : "false"); });
-      var shT = document.getElementById("pcSheetTitle"); if (shT) shT.textContent = st.pkg ? st.pkg.p.name : tx("pc_summary");
+      /* Picture of the chosen package (custom build: the drone); saving vs buying item by item, stated quietly. */
+      var img = document.getElementById("buyImg");
+      if (img) {
+        var src = st.pkg ? "/assets/img/products/" + st.pkg.p.sku + ".webp" : "/assets/img/products/" + PC.platform.sku + ".webp";
+        if (img.getAttribute("src").split("?")[0] !== src) { img.src = src; img.alt = st.pkg ? st.pkg.p.name : PC.platform.name; }
+      }
+      var sv = document.getElementById("pcSave");
+      if (sv) { var save_ = st.pkg ? st.single - st.total : 0; sv.hidden = save_ <= 0; if (save_ > 0) sv.textContent = tx("pb_save").replace("{n}", fmt(save_).replace("₾", "")); }
       if (pcReady) pcRemember(st);
       return st;
     }
@@ -467,28 +474,12 @@
     }
     pcBox.addEventListener("input", function (e) { if (e.target.classList.contains("qty-input")) pcShow(); });
     pcBox.addEventListener("change", function (e) { if (e.target.classList.contains("qty-input")) pcShow(); });
-    /* Package cards sit above the configurator (5 Nov 2026). Variant B (preview: ?ui=b) opens the contents as a bottom sheet on phones. */
-    var uiB = false;
-    try {
-      if (/[?&]ui=b\b/.test(location.search)) sessionStorage.setItem("pdg_ui", "b");
-      if (/[?&]ui=a\b/.test(location.search)) sessionStorage.removeItem("pdg_ui");
-      uiB = sessionStorage.getItem("pdg_ui") === "b";
-    } catch (e) { uiB = /[?&]ui=b\b/.test(location.search); }
-    if (uiB) document.documentElement.classList.add("pkc-sheet");
-    var sheetOn = function () { return uiB && window.matchMedia("(max-width: 768px)").matches; };
-    var lastCard = null;
-    var openSheet = function (on) {
-      pcBox.classList.toggle("is-open", on); document.body.classList.toggle("modal-open", on); document.body.classList.toggle("sheet-open", on);
-      if (on) { var c = document.getElementById("pcSheetClose"); if (c) c.focus(); } else if (lastCard) lastCard.focus();
-    };
+    /* Buying page (5 Nov 2026): package rows sit above the configurator; "add" on an accessory sets it to 1 (then the stepper shows). */
     document.addEventListener("click", function (e) {
-      var b = e.target.closest(".pcfg-preset"); if (!b) return;
-      preset(b.dataset.preset); lastCard = b;
-      if (sheetOn()) openSheet(true);
+      var b = e.target.closest(".pcfg-preset"); if (b) { preset(b.dataset.preset); return; }
+      var ad = e.target.closest(".pcfg-add");
+      if (ad) { var i = pcInput(ad.dataset.addKey); if (i && (Number(i.max) || 0) > 0) { i.value = 1; pcShow(); var r = ad.closest(".pcfg-row"); var plus = r && r.querySelector('.qty-btn[data-step="1"]'); if (plus) plus.focus(); } }
     });
-    var shClose = document.getElementById("pcSheetClose");
-    if (shClose) shClose.addEventListener("click", function () { openSheet(false); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && pcBox.classList.contains("is-open")) openSheet(false); });
     document.addEventListener("click", function (e) {
       var a = e.target.closest ? e.target.closest("[data-preset-link]") : null;
       if (a) preset(a.getAttribute("data-preset-link"));

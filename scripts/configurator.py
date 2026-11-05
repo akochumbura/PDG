@@ -58,6 +58,24 @@ TEXT = {  # key: (ka, en, ru)
     'pkc_specs': ('P150 MAX-ის მახასიათებლები', 'P150 MAX specifications', 'Характеристики P150 MAX'),
     'pkc_contents': ('შემადგენლობა', 'Contents', 'Состав'),
     'pkc_close': ('დახურვა', 'Close', 'Закрыть'),
+    # Premium buying page (owner, 5 Nov 2026: "work from the Apple site")
+    'pb_eyebrow': ('სასოფლო-სამეურნეო დრონი', 'Agricultural drone', 'Сельскохозяйственный дрон'),
+    'pb_title': ('XAG P150 MAX-ის ყიდვა', 'Buy XAG P150 MAX', 'Купить XAG P150 MAX'),
+    'pb_step1': ('კომპლექტი.', 'Package.', 'Комплект.'),
+    'pb_step1_q': ('რომელი გჭირდებათ?', 'Which one is right for you?', 'Какой вам подходит?'),
+    'pb_step2': ('კომპლექტში შედის.', 'What is included.', 'Что входит.'),
+    'pb_step2_q': ('რაოდენობა შეგიძლიათ შეცვალოთ.', 'You can change the quantities.', 'Количество можно изменить.'),
+    'pb_step3': ('დამატებითი აღჭურვილობა.', 'Accessories.', 'Дополнительное оборудование.'),
+    'pb_step3_q': ('გენერატორი, გაფანტვა, ტვირთი და სხვა.', 'Generator, spreading, cargo and more.', 'Генератор, разбрасывание, груз и другое.'),
+    'pb_add': ('დამატება', 'Add', 'Добавить'),
+    'pb_photo': ('ფოტოზე — არჩეული კომპლექტის შემადგენლობა.', 'Pictured: the contents of the selected package.', 'На фото — состав выбранного комплекта.'),
+    'pb_save': ('₾{n}-ით ნაკლები, ვიდრე ცალ-ცალკე ყიდვისას.', '₾{n} less than buying the items separately.', 'На ₾{n} дешевле, чем по отдельности.'),
+    'pb_t1': ('XAG-ის ოფიციალური გარანტია — 1 წელი', 'Official XAG warranty — 1 year', 'Официальная гарантия XAG — 1 год'),
+    'pb_t2': ('სერვისი თბილისში, წინასწარი შეთანხმებით', 'Service in Tbilisi, by appointment', 'Сервис в Тбилиси, по записи'),
+    'pb_t3': ('ოპერატორის სწავლება PDG აკადემიაში', 'Operator training at PDG Academy', 'Обучение операторов в Академии PDG'),
+    'pb_t4': ('მიწოდება საქართველოში — ₾100-დან უფასოდ', 'Delivery in Georgia — free from ₾100', 'Доставка по Грузии — бесплатно от ₾100'),
+    'pb_specs': ('ყველა მახასიათებელი', 'All specifications', 'Все характеристики'),
+    'pb_summary': ('თქვენი კომპლექტი', 'Your configuration', 'Ваша конфигурация'),
     'pc_more_count': ('არჩეულია: {n}', 'selected: {n}', 'выбрано: {n}'),
     'pc_optional': ('არასავალდებულო', 'optional', 'по желанию'),
     'pc_each': ('/ ცალი', '/ each', '/ шт.'),
@@ -141,62 +159,70 @@ def _thumb(sku):
     return '<span class="pcfg-thumb" aria-hidden="true"></span>'
 
 
-def _row(key, it, ka, opt):
+def _row(key, it, ka, opt, add=False):
     lab = it['label']
-    return (f'<div class="pcfg-row" data-key="{key}">{_thumb(it["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="{lab}">{html.escape(ka)}</span>'
-            f'<span class="pcfg-unit">₾{it["price"]:,} <span data-i18n="pc_each">/ ცალი</span></span></div>'
+    # add=True (accessories): an "add" button until the item is chosen, then the quantity stepper (Apple-style accessory cards)
+    plus = f'<button type="button" class="pcfg-add" data-add-key="{key}"><span data-i18n="pb_add">{TEXT["pb_add"][0]}</span></button>' if add else ''
+    return (f'<div class="pcfg-row{" pcfg-acc" if add else ""}" data-key="{key}">{_thumb(it["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="{lab}">{html.escape(ka)}</span>'
+            f'<span class="pcfg-unit">₾{it["price"]:,} <span data-i18n="pc_each">/ ცალი</span></span></div>{plus}'
             f'<div class="qty-stepper pcfg-stepper"><button type="button" class="qty-btn" data-step="-1" aria-label="რაოდენობის შემცირება" data-i18n-aria="qty_less">−</button>'
             f'<input class="qty-input" type="number" inputmode="numeric" min="0" max="{it["max"]}" step="1" value="0" aria-label="{html.escape(ka, quote=True)}" data-i18n-aria="{lab}">'
             f'<button type="button" class="qty-btn" data-step="1" aria-label="რაოდენობის გაზრდა" data-i18n-aria="qty_more">+</button></div></div>')
 
 
-def block(heading='h2'):
+def block(heading='h1'):
+    """The buying page (owner, 5 Nov 2026, "work from the Apple site"): a large picture of the chosen package on the left
+    (sticky on desktop), the choices on the right in three calm steps, then the summary with the price and verified trust facts.
+    The pricing logic, ids and data are the same as before (shop.js)."""
     d = data()
     t = {k: v[0] for k, v in TEXT.items()}
     lst = {k: (ka, opt) for k, s_, l_, ka, opt in ENERGY + EXTRA}
     energy = ''.join(_row(k, d['items'][k], *lst[k]) for k, *_ in ENERGY)
-    extra = ''.join(_row(k, d['items'][k], *lst[k]) for k, *_ in EXTRA)
-    # Package cards (owner, 5 Nov 2026): photo of the contents, name, price, the three differences and the saving vs item by item.
+    extra = ''.join(_row(k, d['items'][k], *lst[k], add=True) for k, *_ in EXTRA)
     def keys(p):
         q = p['q']
-        rtk = f'<b>{q["rtk"]}</b> RTK' if q.get('rtk') else 'RTK —'
-        return (f'<b>{q.get("batteries", 0)}</b> <span data-i18n="pkc_bat">{t["pkc_bat"]}</span> · <b>{q.get("chargers", 0)}</b> '
-                f'<span data-i18n="pkc_chg">{t["pkc_chg"]}</span> · {rtk}')
-    presets = ''.join(
-        f'<button type="button" class="pcfg-preset pkc" data-preset="{p["sku"]}" aria-pressed="false">'
-        f'<img class="pkc-img" src="/assets/img/packages/{p["sku"]}-t.webp" width="240" height="180" alt="" decoding="async">'
-        f'<span class="pkc-name">{html.escape(p["short"])}</span><span class="pcfg-preset-price">₾{p["price"]:,}</span>'
-        f'<span class="pkc-keys">{keys(p)}</span>'
-        + (f'<span class="pkc-save"><span data-i18n="pkc_save">{t["pkc_save"]}</span> ₾{p["single"] - p["price"]:,}</span>' if p['single'] > p['price'] else '')
-        + '</button>' for p in d['packages'])
+        bits = [f'{q.get("batteries", 0)} <span data-i18n="kk_bat">აკუმულატორი</span>', f'{q.get("chargers", 0)} <span data-i18n="kk_chg">დამტენი</span>']
+        if q.get('rtk'):
+            bits.append('RTK')
+        return ' · '.join(bits)
+    rows = ''.join(
+        f'<button type="button" class="pcfg-preset pkr" data-preset="{p["sku"]}" data-img="/assets/img/products/{p["sku"]}.webp" aria-pressed="false">'
+        f'<span class="pkr-main"><span class="pkr-name">{html.escape(p["short"])}</span><span class="pkr-keys">{keys(p)}</span></span>'
+        f'<span class="pkr-price pcfg-preset-price">₾{p["price"]:,}</span></button>' for p in d['packages'])
     cfg = html.escape(json.dumps(d, ensure_ascii=False), quote=True)
-    h = heading
-    # Owner, 5 Nov 2026: the buying page opens with "XAG P150 MAX" + one sentence (page hero), then the presets at once:
-    # no second "configurator" heading; the section keeps an accessible name.
-    return (f'<section class="section pcfg-section" id="configurator" aria-label="{t["pc_title"]}" data-i18n-aria="pc_title"><div class="container">'
-            f'<div class="pcfg-presets pkc-wrap" role="group" aria-label="{t["pc_presets"]}" data-i18n-aria="pc_presets"><div class="pcfg-preset-list pkc-list">{presets}</div>'
-            f'<p class="pkc-incl"><span data-i18n="pkc_incl">{t["pkc_incl"]}</span> <a class="text-link" href="/p150-max#specifications" data-local><span data-i18n="pkc_specs">{t["pkc_specs"]}</span><span aria-hidden="true">→</span></a></p></div>'
+    first = d['packages'][0]
+    trust = ''.join(f'<li data-i18n="{k}">{t[k]}</li>' for k in ('pb_t1', 'pb_t2', 'pb_t3', 'pb_t4'))
+    return (f'<section class="buy" id="configurator" aria-labelledby="buyTitle"><div class="container buy-grid">'
+            f'<div class="buy-media"><figure class="buy-figure"><img id="buyImg" src="/assets/img/products/{first["sku"]}.webp" width="1200" height="900" '
+            f'alt="{html.escape(first["name"], quote=True)}" fetchpriority="high" decoding="async"></figure>'
+            f'<p class="buy-caption" data-i18n="pb_photo">{t["pb_photo"]}</p></div>'
+            f'<div class="buy-panel">'
+            f'<p class="buy-eyebrow" data-i18n="pb_eyebrow">{t["pb_eyebrow"]}</p><{heading} class="buy-title" id="buyTitle" data-i18n="pb_title">{t["pb_title"]}</{heading}>'
+            f'<a class="buy-specs" href="/p150-max#specifications" data-local><span data-i18n="pb_specs">{t["pb_specs"]}</span> <span aria-hidden="true">›</span></a>'
+            f'<div class="buy-step pcfg-presets" role="group" aria-labelledby="pbStep1"><h2 class="buy-step-h" id="pbStep1"><span data-i18n="pb_step1">{t["pb_step1"]}</span> '
+            f'<span class="buy-step-q" data-i18n="pb_step1_q">{t["pb_step1_q"]}</span></h2><div class="pkr-list">{rows}</div></div>'
             f'<div class="pcfg" id="platformConfig" data-config="{cfg}">'
-            # Contents of the chosen package = the quantity rows (variant A: under the cards; variant B on phones: a bottom sheet)
-            f'<div class="pcfg-sheet-head"><strong id="pcSheetTitle"></strong><button type="button" class="pcfg-sheet-close" id="pcSheetClose" aria-label="{t["pkc_close"]}" data-i18n-aria="pkc_close">×</button></div>'
             f'<div class="pcfg-options">'
-            f'<p class="pcfg-legend pcfg-contents-title" data-i18n="pkc_contents">{t["pkc_contents"]}</p>'
-            f'<div class="pcfg-row pcfg-fixed">{_thumb(d["platform"]["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="pc_platform">{t["pc_platform"]}</span>'
-            f'<span class="pcfg-unit">₾{d["platform"]["price"]:,}</span></div><output class="pcfg-fixed-qty">1</output></div>'
-            f'<div class="pcfg-group"><p class="pcfg-legend" data-i18n="pc_energy">{t["pc_energy"]}</p>{energy}</div>'
-            # Optional extras collapsed at first (owner, 5 Nov 2026); the summary line shows how many are selected.
-            f'<details class="pcfg-group pcfg-extra" id="pcExtra"><summary class="pcfg-legend"><span data-i18n="pc_extra">{t["pc_extra"]}</span>'
-            f'<span class="pcfg-extra-count" id="pcExtraCount" hidden></span></summary>{extra}</details>'
+            f'<div class="buy-step"><h2 class="buy-step-h"><span data-i18n="pb_step2">{t["pb_step2"]}</span> <span class="buy-step-q" data-i18n="pb_step2_q">{t["pb_step2_q"]}</span></h2>'
+            f'<div class="buy-tiles"><div class="pcfg-row pcfg-fixed">{_thumb(d["platform"]["sku"])}<div class="pcfg-name"><span class="pcfg-label" data-i18n="pc_platform">{t["pc_platform"]}</span>'
+            f'<span class="pcfg-unit">₾{d["platform"]["price"]:,}</span></div><output class="pcfg-fixed-qty">1</output></div>{energy}</div></div>'
+            f'<details class="buy-step pcfg-extra" id="pcExtra"><summary class="buy-step-h"><span><span data-i18n="pb_step3">{t["pb_step3"]}</span> '
+            f'<span class="buy-step-q" data-i18n="pb_step3_q">{t["pb_step3_q"]}</span></span><span class="pcfg-extra-count" id="pcExtraCount" hidden></span></summary>'
+            f'<div class="buy-acc">{extra}</div></details>'
             f'</div>'
-            f'<aside class="pcfg-summary" id="pcSummary" aria-labelledby="pcSumTitle"><h3 id="pcSumTitle" data-i18n="pc_summary">{t["pc_summary"]}</h3>'
-            f'<ul class="pcfg-list" id="pcList"></ul>'
+            f'<aside class="pcfg-summary buy-summary" id="pcSummary" aria-labelledby="pcSumTitle"><h2 class="buy-step-h" id="pcSumTitle" data-i18n="pb_summary">{t["pb_summary"]}</h2>'
+            f'<div class="pcfg-total-row"><strong class="pcfg-total" id="pcTotal" aria-live="polite">₾{first["price"]:,}</strong>'
+            f'<span class="pcfg-total-label" data-i18n="pc_vat_short">{t["pc_vat_short"]}</span></div>'
+            f'<p class="buy-save" id="pcSave" hidden></p>'
             f'<p class="pcfg-applied" id="pcApplied" hidden></p>'
             f'<div class="pcfg-offer" id="pcOffer" hidden><p id="pcOfferText"></p><button class="button button-line pcfg-offer-btn" id="pcOfferBtn" type="button" data-i18n="pc_offer_btn">{t["pc_offer_btn"]}</button></div>'
             f'<p class="pcfg-remind" id="pcRemind" role="status" hidden></p>'
-            f'<div class="pcfg-total-row"><span class="pcfg-total-label" data-i18n="pc_total">{t["pc_total"]}</span><strong class="pcfg-total" id="pcTotal" aria-live="polite">₾{d["platform"]["price"]:,}</strong></div>'
             f'<div class="pcfg-actions"><button class="button button-red" id="pcWa" type="button"><span data-i18n="pc_send">{t["pc_send"]}</span></button>'
-            f'<button class="button button-line" id="pcCart" type="button"><span data-i18n="pc_cart">{t["pc_cart"]}</span></button></div></aside></div>'
-            f'<div class="pcfg-bar" id="pcBar" aria-hidden="true"><div class="pcfg-bar-sum"><strong id="pcBarTotal">₾{d["platform"]["price"]:,}</strong>'
+            f'<button class="button button-line" id="pcCart" type="button"><span data-i18n="pc_cart">{t["pc_cart"]}</span></button></div>'
+            f'<ul class="buy-trust">{trust}</ul>'
+            f'<details class="buy-lines"><summary data-i18n="pkc_contents">{t["pkc_contents"]}</summary><ul class="pcfg-list" id="pcList"></ul></details>'
+            f'</aside></div></div></div>'
+            f'<div class="pcfg-bar" id="pcBar" aria-hidden="true"><div class="pcfg-bar-sum"><strong id="pcBarTotal">₾{first["price"]:,}</strong>'
             f'<span class="pcfg-bar-label" data-i18n="pc_vat_short">{t["pc_vat_short"]}</span></div>'
             f'<button class="button button-red" type="button" id="pcBarSend" tabindex="-1" aria-label="{t["pc_send_aria"]}" data-i18n-aria="pc_send_aria"><span data-i18n="pc_send_short">{t["pc_send_short"]}</span></button></div>'
-            f'</div></section>')
+            f'</section>')
