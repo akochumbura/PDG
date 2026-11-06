@@ -381,3 +381,5 @@ Pending from owner: product photos (no people), BOG agreement, deposit % (10% as
   (only the P150 MAX page's own hero link jumps to #specifications).
 - (owner, 6 Nov 2026, 03:20, LIVE) Videos: H.264 Main@3.1, 1 s keyframes, max 3 Mbit/s; the video fills its 16:9 frame absolutely (its own box was taller → cropped and not "on screen");
   loads ~1 screen ahead, ONLY the most visible video plays (one decoder), pauses in background tabs. Phone menu: ONLY შეძენა is red (no current-page / open-group red).
+- (owner, 6 Nov 2026, 21:44) Red scroll strip (.price-strip) REMOVED everywhere: /shop is reached through the static red "შეძენა" menu link, the home hero and the P150 MAX button.
+  Products menu: "XAG P150 MAX" (a.nav-p150) is bold red; "შეძენა" stays red.

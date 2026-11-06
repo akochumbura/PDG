@@ -106,3 +106,5 @@
 - (owner, 5 Nov 2026, 22:40, LIVE) Buying page main action = red "კალათაში დამატება" (adds and opens the cart; phone bar "კალათაში"); WhatsApp = secondary outline button.
   Phone picture = full width (height (100vw-32px)*0.606, no aspect-ratio+max-height: iOS narrowed it). Red prices strip: shows while scrolling down, fades when scrolling up.
 - 6 Nov 2026: შეძენა strip/header/hero; "მოარგეთ კომპლექტი"; unified package suggestion under the list (+ phone bar saving link); B13970S picture = B141050 (owner); dark-theme thumbnails on light tiles.
+
+- 6 Nov 2026 21:44: scroll strip removed; XAG P150 MAX menu link bold red (owner).

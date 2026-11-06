@@ -2268,3 +2268,6 @@ html[data-theme=dark] .buy .buy-tiles+.pcfg-offer{background:#2c2c2e}
 .pm-chapter-media:not(.pm-media-pair),.pm-media-pair figure{position:relative}
 .pm-chapter-media video,.pm-media-pair figure video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .product-feature video{aspect-ratio:16/10;height:auto}
+
+/* Owner, 6 Nov 2026, 21:44: XAG P150 MAX in the Products menu = bold red. The scroll strip is removed (only the static menu link). */
+.site-nav a.nav-p150,.site-nav a.nav-p150[aria-current=page],.site-nav .mega-col a.nav-p150[aria-current=page]{color:var(--accent);font-weight:700}
